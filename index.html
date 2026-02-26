@@ -645,59 +645,208 @@
     signupWithEmail, 
     signInWithGoogle, 
     logout,
-    initAuthModal
+    initAuthModal,
+    resetPassword,
+    updatePasswordStrength
   } from './auth-modal.js';
   
   // Make functions available globally
   window.showAuthModal = showAuthModal;
   window.hideAuthModal = hideAuthModal;
   window.switchAuthTab = switchAuthTab;
+  window.updatePasswordStrength = updatePasswordStrength;
+  
+  // Handle Login
   window.handleLogin = async () => {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    await loginWithEmail(email, password);
+    const emailInput = document.getElementById('loginEmail');
+    const passwordInput = document.getElementById('loginPassword');
+    
+    if (!emailInput || !passwordInput) {
+      console.error('Login form inputs not found');
+      return;
+    }
+    
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    
+    if (!email || !password) {
+      alert('Please fill in all fields');
+      return;
+    }
+    
+    try {
+      await loginWithEmail(email, password);
+    } catch (error) {
+      console.error('Login error:', error);
+    }
   };
+  
+  // Handle Signup
   window.handleSignup = async () => {
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const confirmPassword = document.getElementById('signupConfirmPassword').value;
+    const emailInput = document.getElementById('signupEmail');
+    const passwordInput = document.getElementById('signupPassword');
+    const confirmPasswordInput = document.getElementById('signupConfirmPassword');
+    const termsCheckbox = document.getElementById('terms');
+    
+    if (!emailInput || !passwordInput || !confirmPasswordInput) {
+      console.error('Signup form inputs not found');
+      return;
+    }
+    
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+    const termsAccepted = termsCheckbox ? termsCheckbox.checked : true;
+    
+    if (!email || !password || !confirmPassword) {
+      alert('Please fill in all fields');
+      return;
+    }
     
     if (password !== confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
     
-    await signupWithEmail(email, password);
-  };
-  window.handleGoogleSignIn = async () => {
-    await signInWithGoogle();
-  };
-  window.handleLogout = async () => {
-    await logout();
+    if (!termsAccepted) {
+      alert('Please accept the terms and conditions');
+      return;
+    }
+    
+    try {
+      await signupWithEmail(email, password, confirmPassword, termsAccepted);
+    } catch (error) {
+      console.error('Signup error:', error);
+    }
   };
   
-  // Load auth modal HTML
-  fetch('auth-modal.html')
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById('authModalContainer').innerHTML = data;
+  // Handle Google Sign In
+  window.handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.error('Google sign in error:', error);
+    }
+  };
+  
+  // Handle Forgot Password
+  window.handleForgotPassword = async () => {
+    const email = prompt('Please enter your email address to reset your password:');
+    if (email && email.trim()) {
+      try {
+        await resetPassword(email.trim());
+      } catch (error) {
+        console.error('Password reset error:', error);
+      }
+    }
+  };
+  
+  // Handle Logout
+  window.handleLogout = async () => {
+    if (confirm('Are you sure you want to logout?')) {
+      try {
+        await logout();
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    }
+  };
+  
+  // Show loading state
+  function showLoading(containerId) {
+    const container = document.getElementById(containerId);
+    if (container) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+          <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top-color: #d4af37; border-radius: 50%; margin: 0 auto; animation: spin 1s linear infinite;"></div>
+          <p style="margin-top: 1rem; color: #999;">Loading...</p>
+        </div>
+        <style>
+          @keyframes spin { to { transform: rotate(360deg); } }
+        </style>
+      `;
+    }
+  }
+  
+  // Load all components in sequence
+  async function loadComponents() {
+    // Show loading states
+    showLoading('header');
+    showLoading('footer');
+    
+    try {
+      // Load auth modal first
+      const authResponse = await fetch('auth-modal.html');
+      if (!authResponse.ok) throw new Error('Failed to load auth modal');
+      const authData = await authResponse.text();
+      
+      const authContainer = document.getElementById('authModalContainer');
+      if (authContainer) {
+        authContainer.innerHTML = authData;
+      }
+      
+      // Initialize auth modal after it's loaded
       initAuthModal();
-    });
-    // Load header.html
-    fetch('header.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('header').innerHTML = data;
-      })
-      .catch(error => console.error('Error loading header:', error));
-
-    // Load footer.html
-    fetch('footer.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('footer').innerHTML = data;
-      })
-      .catch(error => console.error('Error loading footer:', error));
-  </script>
+      
+      // Load header
+      const headerResponse = await fetch('header.html');
+      if (!headerResponse.ok) throw new Error('Failed to load header');
+      const headerData = await headerResponse.text();
+      
+      const headerContainer = document.getElementById('header');
+      if (headerContainer) {
+        headerContainer.innerHTML = headerData;
+      }
+      
+      // Load footer
+      const footerResponse = await fetch('footer.html');
+      if (!footerResponse.ok) throw new Error('Failed to load footer');
+      const footerData = await footerResponse.text();
+      
+      const footerContainer = document.getElementById('footer');
+      if (footerContainer) {
+        footerContainer.innerHTML = footerData;
+      }
+      
+      // Re-initialize auth modal after header is loaded (to attach profile icon listeners)
+      setTimeout(() => {
+        initAuthModal();
+      }, 100);
+      
+    } catch (error) {
+      console.error('Error loading components:', error);
+      
+      // Show error message in containers
+      ['header', 'footer'].forEach(id => {
+        const container = document.getElementById(id);
+        if (container) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 2rem; color: #e74c3c;">
+              <i class="fa-solid fa-exclamation-circle"></i>
+              <p>Failed to load content. Please refresh the page.</p>
+            </div>
+          `;
+        }
+      });
+    }
+  }
+  
+  // Start loading when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadComponents);
+  } else {
+    loadComponents();
+  }
+  
+  // Add CSS animation for loading spinner
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+  
+</script>
 </body>
 </html>
