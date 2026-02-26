@@ -658,16 +658,8 @@
   
   // Handle Login
   window.handleLogin = async () => {
-    const emailInput = document.getElementById('loginEmail');
-    const passwordInput = document.getElementById('loginPassword');
-    
-    if (!emailInput || !passwordInput) {
-      console.error('Login form inputs not found');
-      return;
-    }
-    
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
+    const email = document.getElementById('loginEmail')?.value?.trim();
+    const password = document.getElementById('loginPassword')?.value;
     
     if (!email || !password) {
       alert('Please fill in all fields');
@@ -683,20 +675,10 @@
   
   // Handle Signup
   window.handleSignup = async () => {
-    const emailInput = document.getElementById('signupEmail');
-    const passwordInput = document.getElementById('signupPassword');
-    const confirmPasswordInput = document.getElementById('signupConfirmPassword');
-    const termsCheckbox = document.getElementById('terms');
-    
-    if (!emailInput || !passwordInput || !confirmPasswordInput) {
-      console.error('Signup form inputs not found');
-      return;
-    }
-    
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-    const confirmPassword = confirmPasswordInput.value;
-    const termsAccepted = termsCheckbox ? termsCheckbox.checked : true;
+    const email = document.getElementById('signupEmail')?.value?.trim();
+    const password = document.getElementById('signupPassword')?.value;
+    const confirmPassword = document.getElementById('signupConfirmPassword')?.value;
+    const termsAccepted = document.getElementById('terms')?.checked || false;
     
     if (!email || !password || !confirmPassword) {
       alert('Please fill in all fields');
@@ -732,7 +714,7 @@
   // Handle Forgot Password
   window.handleForgotPassword = async () => {
     const email = prompt('Please enter your email address to reset your password:');
-    if (email && email.trim()) {
+    if (email?.trim()) {
       try {
         await resetPassword(email.trim());
       } catch (error) {
@@ -752,63 +734,31 @@
     }
   };
   
-  // Show loading state
-  function showLoading(containerId) {
-    const container = document.getElementById(containerId);
-    if (container) {
-      container.innerHTML = `
-        <div style="text-align: center; padding: 2rem;">
-          <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top-color: #d4af37; border-radius: 50%; margin: 0 auto; animation: spin 1s linear infinite;"></div>
-          <p style="margin-top: 1rem; color: #999;">Loading...</p>
-        </div>
-        <style>
-          @keyframes spin { to { transform: rotate(360deg); } }
-        </style>
-      `;
-    }
-  }
-  
-  // Load all components in sequence
-  async function loadComponents() {
-    // Show loading states
-    showLoading('header');
-    showLoading('footer');
-    
+  // Load all components in parallel
+  async function loadAllComponents() {
     try {
-      // Load auth modal first
-      const authResponse = await fetch('auth-modal.html');
-      if (!authResponse.ok) throw new Error('Failed to load auth modal');
-      const authData = await authResponse.text();
+      // Load all files in parallel
+      const [authModal, header, footer] = await Promise.all([
+        fetch('auth-modal.html').then(res => {
+          if (!res.ok) throw new Error('Failed to load auth modal');
+          return res.text();
+        }),
+        fetch('header.html').then(res => {
+          if (!res.ok) throw new Error('Failed to load header');
+          return res.text();
+        }),
+        fetch('footer.html').then(res => {
+          if (!res.ok) throw new Error('Failed to load footer');
+          return res.text();
+        })
+      ]);
       
-      const authContainer = document.getElementById('authModalContainer');
-      if (authContainer) {
-        authContainer.innerHTML = authData;
-      }
+      // Insert all content
+      document.getElementById('authModalContainer').innerHTML = authModal;
+      document.getElementById('header').innerHTML = header;
+      document.getElementById('footer').innerHTML = footer;
       
-      // Initialize auth modal after it's loaded
-      initAuthModal();
-      
-      // Load header
-      const headerResponse = await fetch('header.html');
-      if (!headerResponse.ok) throw new Error('Failed to load header');
-      const headerData = await headerResponse.text();
-      
-      const headerContainer = document.getElementById('header');
-      if (headerContainer) {
-        headerContainer.innerHTML = headerData;
-      }
-      
-      // Load footer
-      const footerResponse = await fetch('footer.html');
-      if (!footerResponse.ok) throw new Error('Failed to load footer');
-      const footerData = await footerResponse.text();
-      
-      const footerContainer = document.getElementById('footer');
-      if (footerContainer) {
-        footerContainer.innerHTML = footerData;
-      }
-      
-      // Re-initialize auth modal after header is loaded (to attach profile icon listeners)
+      // Initialize auth modal after content is loaded
       setTimeout(() => {
         initAuthModal();
       }, 100);
@@ -816,36 +766,28 @@
     } catch (error) {
       console.error('Error loading components:', error);
       
-      // Show error message in containers
-      ['header', 'footer'].forEach(id => {
-        const container = document.getElementById(id);
-        if (container) {
-          container.innerHTML = `
-            <div style="text-align: center; padding: 2rem; color: #e74c3c;">
-              <i class="fa-solid fa-exclamation-circle"></i>
-              <p>Failed to load content. Please refresh the page.</p>
-            </div>
-          `;
-        }
-      });
+      // Show error message
+      const errorHtml = `
+        <div style="text-align: center; padding: 2rem; color: #e74c3c;">
+          <i class="fa-solid fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+          <p>Failed to load content. Please refresh the page or try again later.</p>
+          <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #d4af37; border: none; border-radius: 8px; cursor: pointer;">
+            Refresh Page
+          </button>
+        </div>
+      `;
+      
+      document.getElementById('header').innerHTML = errorHtml;
+      document.getElementById('footer').innerHTML = errorHtml;
     }
   }
   
   // Start loading when DOM is ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadComponents);
+    document.addEventListener('DOMContentLoaded', loadAllComponents);
   } else {
-    loadComponents();
+    loadAllComponents();
   }
-  
-  // Add CSS animation for loading spinner
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  `;
-  document.head.appendChild(style);
   
 </script>
 </body>
