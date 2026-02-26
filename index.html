@@ -645,150 +645,59 @@
     signupWithEmail, 
     signInWithGoogle, 
     logout,
-    initAuthModal,
-    resetPassword,
-    updatePasswordStrength
+    initAuthModal
   } from './auth-modal.js';
   
   // Make functions available globally
   window.showAuthModal = showAuthModal;
   window.hideAuthModal = hideAuthModal;
   window.switchAuthTab = switchAuthTab;
-  window.updatePasswordStrength = updatePasswordStrength;
-  
-  // Handle Login
   window.handleLogin = async () => {
-    const email = document.getElementById('loginEmail')?.value?.trim();
-    const password = document.getElementById('loginPassword')?.value;
-    
-    if (!email || !password) {
-      alert('Please fill in all fields');
-      return;
-    }
-    
-    try {
-      await loginWithEmail(email, password);
-    } catch (error) {
-      console.error('Login error:', error);
-    }
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    await loginWithEmail(email, password);
   };
-  
-  // Handle Signup
   window.handleSignup = async () => {
-    const email = document.getElementById('signupEmail')?.value?.trim();
-    const password = document.getElementById('signupPassword')?.value;
-    const confirmPassword = document.getElementById('signupConfirmPassword')?.value;
-    const termsAccepted = document.getElementById('terms')?.checked || false;
-    
-    if (!email || !password || !confirmPassword) {
-      alert('Please fill in all fields');
-      return;
-    }
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('signupConfirmPassword').value;
     
     if (password !== confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
     
-    if (!termsAccepted) {
-      alert('Please accept the terms and conditions');
-      return;
-    }
-    
-    try {
-      await signupWithEmail(email, password, confirmPassword, termsAccepted);
-    } catch (error) {
-      console.error('Signup error:', error);
-    }
+    await signupWithEmail(email, password);
   };
-  
-  // Handle Google Sign In
   window.handleGoogleSignIn = async () => {
-    try {
-      await signInWithGoogle();
-    } catch (error) {
-      console.error('Google sign in error:', error);
-    }
+    await signInWithGoogle();
   };
-  
-  // Handle Forgot Password
-  window.handleForgotPassword = async () => {
-    const email = prompt('Please enter your email address to reset your password:');
-    if (email?.trim()) {
-      try {
-        await resetPassword(email.trim());
-      } catch (error) {
-        console.error('Password reset error:', error);
-      }
-    }
-  };
-  
-  // Handle Logout
   window.handleLogout = async () => {
-    if (confirm('Are you sure you want to logout?')) {
-      try {
-        await logout();
-      } catch (error) {
-        console.error('Logout error:', error);
-      }
-    }
+    await logout();
   };
   
-  // Load all components in parallel
-  async function loadAllComponents() {
-    try {
-      // Load all files in parallel
-      const [authModal, header, footer] = await Promise.all([
-        fetch('auth-modal.html').then(res => {
-          if (!res.ok) throw new Error('Failed to load auth modal');
-          return res.text();
-        }),
-        fetch('header.html').then(res => {
-          if (!res.ok) throw new Error('Failed to load header');
-          return res.text();
-        }),
-        fetch('footer.html').then(res => {
-          if (!res.ok) throw new Error('Failed to load footer');
-          return res.text();
-        })
-      ]);
-      
-      // Insert all content
-      document.getElementById('authModalContainer').innerHTML = authModal;
-      document.getElementById('header').innerHTML = header;
-      document.getElementById('footer').innerHTML = footer;
-      
-      // Initialize auth modal after content is loaded
-      setTimeout(() => {
-        initAuthModal();
-      }, 100);
-      
-    } catch (error) {
-      console.error('Error loading components:', error);
-      
-      // Show error message
-      const errorHtml = `
-        <div style="text-align: center; padding: 2rem; color: #e74c3c;">
-          <i class="fa-solid fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-          <p>Failed to load content. Please refresh the page or try again later.</p>
-          <button onclick="location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #d4af37; border: none; border-radius: 8px; cursor: pointer;">
-            Refresh Page
-          </button>
-        </div>
-      `;
-      
-      document.getElementById('header').innerHTML = errorHtml;
-      document.getElementById('footer').innerHTML = errorHtml;
-    }
-  }
-  
-  // Start loading when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadAllComponents);
-  } else {
-    loadAllComponents();
-  }
-  
-</script>
+  // Load auth modal HTML
+  fetch('auth-modal.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('authModalContainer').innerHTML = data;
+      initAuthModal();
+    });
+    // Load header.html
+    fetch('header.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('header').innerHTML = data;
+      })
+      .catch(error => console.error('Error loading header:', error));
+
+    // Load footer.html
+    fetch('footer.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('footer').innerHTML = data;
+      })
+      .catch(error => console.error('Error loading footer:', error));
+  </script>
 </body>
 </html>
