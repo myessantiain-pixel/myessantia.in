@@ -1,0 +1,140 @@
+/* ---------- HEADER STYLES ---------- */
+/* TOP BAR */
+.top-bar {
+  background: #0c0c0c;
+  color: #f0f0f0;
+  padding: 0.6rem 0;
+  font-size: 0.7rem;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.top-bar .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.top-bar-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.2rem 1rem;
+}
+
+.top-bar-links a {
+  text-decoration: none;
+  color: #ddd;
+  font-size: 0.7rem;
+  font-weight: 300;
+  transition: color 0.2s;
+  padding: 0.2rem 0;
+}
+
+.trust-badge i { color: #d4af37; }
+
+/* MAIN HEADER */
+.main-header {
+  background: #ffffff;
+  padding: 0.8rem 0;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.main-header .container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.2rem;
+}
+
+/* Updated Logo Style - as requested */
+.logo {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-transform: none;
+  font-size: 2rem;
+  color: #161616;
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.logo span {
+  font-weight: 500;
+  color: #d4af37;
+  font-style: italic;
+}
+
+.nav-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 0.8rem;
+  margin: 0;
+  padding: 0.3rem 0;
+  order: 3;
+  width: 100%;
+  justify-content: center;
+}
+
+.nav-item { list-style: none; }
+
+.nav-link {
+  text-decoration: none;
+  color: #1e1e1e;
+  font-weight: 400;
+  font-size: 0.9rem;
+  border-bottom: 1px solid transparent;
+  transition: 0.2s;
+  padding: 0.3rem 0;
+  display: inline-block;
+}
+
+.header-icons {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  order: 2;
+}
+
+.header-icons a {
+  color: #202020;
+  font-size: 1.3rem;
+  transition: color 0.2s;
+  position: relative;
+  padding: 0.2rem;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: #d4af37;
+  color: #0c0c0c;
+  font-size: 0.6rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+/* Tablet/Desktop Header Adjustments */
+@media (min-width: 640px) {
+  .top-bar .container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .nav-menu {
+    width: auto;
+    order: 0;
+    justify-content: flex-start;
+  }
+  .header-icons { order: 1; }
+}
