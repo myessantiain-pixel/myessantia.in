@@ -104,6 +104,7 @@
   background-size: cover;
   background-position: center;
   background-color: #f4f2ef;
+  flex-shrink: 0;
 }
 
 .cart-item-details {
@@ -129,6 +130,7 @@
   color: #d4af37;
   font-weight: 600;
   font-size: 1.1rem;
+  margin-bottom: 0.5rem;
 }
 
 .cart-item-actions {
