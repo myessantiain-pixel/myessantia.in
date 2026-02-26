@@ -59,10 +59,10 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem 0.2rem;
+  gap: 0.5rem;
 }
 
-/* Logo Style */
+/* Logo Style - stays on left */
 .logo {
   font-family: 'Montserrat', sans-serif;
   font-weight: 800;
@@ -80,48 +80,12 @@
   font-style: italic;
 }
 
-/* Navigation Menu - 3 items per row on mobile */
-.nav-menu {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  margin: 0.5rem 0 0;
-  padding: 0.5rem 0 0;
-  width: 100%;
-  border-top: 1px solid #f0f0f0;
-}
-
-.nav-item { 
-  list-style: none;
-  text-align: center;
-}
-
-/* Fixed navigation links */
-.nav-item a {
-  text-decoration: none;
-  color: #1e1e1e;
-  font-weight: 500;
-  font-size: 0.85rem;
-  transition: 0.2s;
-  padding: 0.5rem 0.2rem;
-  display: block;
-  background: #f8f8f8;
-  border-radius: 30px;
-  border: 1px solid #eeeeee;
-}
-
-.nav-item a:hover {
-  background: #d4af37;
-  color: #0c0c0c;
-  border-color: #d4af37;
-}
-
-/* Header Icons */
+/* Header Icons - moved to right on same line */
 .header-icons {
   display: flex;
   gap: 1.2rem;
   align-items: center;
-  order: 2;
+  margin-left: auto; /* Pushes icons to the right */
 }
 
 .header-icons a {
@@ -148,6 +112,42 @@
   border-radius: 50%;
 }
 
+/* Navigation Menu - full width below logo and icons */
+.nav-menu {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0 0;
+  width: 100%;
+  border-top: 1px solid #f0f0f0;
+  flex: 0 0 100%; /* Ensures menu takes full width */
+}
+
+.nav-item { 
+  list-style: none;
+  text-align: center;
+}
+
+.nav-item a {
+  text-decoration: none;
+  color: #1e1e1e;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: 0.2s;
+  padding: 0.5rem 0.2rem;
+  display: block;
+  background: #f8f8f8;
+  border-radius: 30px;
+  border: 1px solid #eeeeee;
+}
+
+.nav-item a:hover {
+  background: #d4af37;
+  color: #0c0c0c;
+  border-color: #d4af37;
+}
+
 /* Tablet/Desktop Header Adjustments */
 @media (min-width: 640px) {
   .top-bar .container {
@@ -158,6 +158,7 @@
   .main-header .container {
     padding-left: 2rem;
     padding-right: 2rem;
+    flex-wrap: nowrap; /* Prevent wrapping on desktop */
   }
   
   /* Revert to horizontal menu on tablet/desktop */
@@ -169,6 +170,13 @@
     border-top: none;
     margin: 0;
     padding: 0.3rem 0;
+    flex: 1; /* Allow menu to grow */
+    order: 1; /* Menu in the middle */
+  }
+  
+  .header-icons {
+    order: 2; /* Icons on the right */
+    margin-left: 0;
   }
   
   .nav-item a {
@@ -185,8 +193,6 @@
     border-bottom: 1px solid #d4af37;
     color: #1e1e1e;
   }
-  
-  .header-icons { order: 1; }
 }
 
 /* Desktop adjustments */
@@ -206,5 +212,9 @@
   .nav-item a {
     font-size: 0.75rem;
     padding: 0.4rem 0.1rem;
+  }
+  
+  .header-icons {
+    gap: 0.8rem;
   }
 }
