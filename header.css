@@ -52,7 +52,7 @@
   gap: 0.5rem 0.2rem;
 }
 
-/* Updated Logo Style - as requested */
+/* Updated Logo Style */
 .logo {
   font-family: 'Montserrat', sans-serif;
   font-weight: 800;
@@ -70,28 +70,39 @@
   font-style: italic;
 }
 
+/* Updated Navigation Menu - 3 items per row on mobile */
 .nav-menu {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 0.8rem;
-  margin: 0;
-  padding: 0.3rem 0;
-  order: 3;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0 0;
   width: 100%;
-  justify-content: center;
+  border-top: 1px solid #f0f0f0;
 }
 
-.nav-item { list-style: none; }
+.nav-item { 
+  list-style: none;
+  text-align: center;
+}
 
 .nav-link {
   text-decoration: none;
   color: #1e1e1e;
-  font-weight: 400;
-  font-size: 0.9rem;
-  border-bottom: 1px solid transparent;
+  font-weight: 500;
+  font-size: 0.85rem;
   transition: 0.2s;
-  padding: 0.3rem 0;
-  display: inline-block;
+  padding: 0.5rem 0.2rem;
+  display: block;
+  background: #f8f8f8;
+  border-radius: 30px;
+  border: 1px solid #eeeeee;
+}
+
+.nav-link:hover {
+  background: #d4af37;
+  color: #0c0c0c;
+  border-color: #d4af37;
 }
 
 .header-icons {
@@ -131,10 +142,44 @@
     flex-direction: row;
     justify-content: space-between;
   }
+  
+  /* Revert to horizontal menu on tablet/desktop */
   .nav-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 0.8rem;
     width: auto;
-    order: 0;
-    justify-content: flex-start;
+    border-top: none;
+    margin: 0;
+    padding: 0.3rem 0;
   }
+  
+  .nav-link {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0.3rem 0;
+    font-size: 0.9rem;
+    border-bottom: 1px solid transparent;
+  }
+  
+  .nav-link:hover {
+    background: transparent;
+    border-bottom: 1px solid #d4af37;
+    color: #1e1e1e;
+  }
+  
   .header-icons { order: 1; }
+}
+
+/* For very small screens (under 360px) */
+@media (max-width: 360px) {
+  .nav-menu {
+    gap: 0.3rem;
+  }
+  
+  .nav-link {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.1rem;
+  }
 }
