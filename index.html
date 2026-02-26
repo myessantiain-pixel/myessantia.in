@@ -645,35 +645,73 @@
     signupWithEmail, 
     signInWithGoogle, 
     logout,
-    initAuthModal
+    initAuthModal,
+    resetPassword,
+    updatePasswordStrength
   } from './auth-modal.js';
   
   // Make functions available globally
   window.showAuthModal = showAuthModal;
   window.hideAuthModal = hideAuthModal;
   window.switchAuthTab = switchAuthTab;
+  window.updatePasswordStrength = updatePasswordStrength;
+  
+  // Handle Login
   window.handleLogin = async () => {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
+    const email = document.getElementById('loginEmail')?.value;
+    const password = document.getElementById('loginPassword')?.value;
+    
+    if (!email || !password) {
+      alert('Please fill in all fields');
+      return;
+    }
+    
     await loginWithEmail(email, password);
   };
+  
+  // Handle Signup
   window.handleSignup = async () => {
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const confirmPassword = document.getElementById('signupConfirmPassword').value;
+    const email = document.getElementById('signupEmail')?.value;
+    const password = document.getElementById('signupPassword')?.value;
+    const confirmPassword = document.getElementById('signupConfirmPassword')?.value;
+    const termsAccepted = document.getElementById('terms')?.checked;
+    
+    if (!email || !password || !confirmPassword) {
+      alert('Please fill in all fields');
+      return;
+    }
     
     if (password !== confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
     
-    await signupWithEmail(email, password);
+    if (!termsAccepted) {
+      alert('Please accept the terms and conditions');
+      return;
+    }
+    
+    await signupWithEmail(email, password, confirmPassword, termsAccepted);
   };
+  
+  // Handle Google Sign In
   window.handleGoogleSignIn = async () => {
     await signInWithGoogle();
   };
+  
+  // Handle Forgot Password
+  window.handleForgotPassword = async () => {
+    const email = prompt('Please enter your email address to reset your password:');
+    if (email && email.trim()) {
+      await resetPassword(email.trim());
+    }
+  };
+  
+  // Handle Logout
   window.handleLogout = async () => {
-    await logout();
+    if (confirm('Are you sure you want to logout?')) {
+      await logout();
+    }
   };
   
   // Load auth modal HTML
@@ -682,22 +720,28 @@
     .then(data => {
       document.getElementById('authModalContainer').innerHTML = data;
       initAuthModal();
-    });
-    // Load header.html
-    fetch('header.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('header').innerHTML = data;
-      })
-      .catch(error => console.error('Error loading header:', error));
+    })
+    .catch(error => console.error('Error loading auth modal:', error));
 
-    // Load footer.html
-    fetch('footer.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('footer').innerHTML = data;
-      })
-      .catch(error => console.error('Error loading footer:', error));
-  </script>
+  // Load header.html
+  fetch('header.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('header').innerHTML = data;
+      // Re-initialize auth modal after header is loaded to attach profile icon listeners
+      setTimeout(() => {
+        initAuthModal();
+      }, 100);
+    })
+    .catch(error => console.error('Error loading header:', error));
+
+  // Load footer.html
+  fetch('footer.html')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('footer').innerHTML = data;
+    })
+    .catch(error => console.error('Error loading footer:', error));
+</script>
 </body>
 </html>
