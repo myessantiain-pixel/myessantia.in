@@ -18,23 +18,39 @@
       <a href="index.html" class="logo">MyEssantia<span>.</span></a>
       <div class="header-icons">
         <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
-        <a href="#" aria-label="Profile"><i class="fa-regular fa-user"></i></a>
-        <a href="#" style="position: relative;">
+        <a href="#"><i class="fa-regular fa-user"></i></a>
+        <a href="#" id="cart-icon" style="position: relative;">
           <i class="fa-solid fa-bag-shopping"></i>
-          <span class="cart-count">3</span>
+          <span class="cart-count" id="cart-count">0</span>
         </a>
       </div>
       <ul class="nav-menu">
-        <li class="nav-item"><a href="index.html">Home</a></li>
-        <li class="nav-item"><a href="accessories.html">Accessories</a></li>
-        <li class="nav-item"><a href="essentials.html">Essentials</a></li>
-        <li class="nav-item"><a href="new.html">New-in</a></li>
-        <li class="nav-item"><a href="myorders.html">My Orders</a></li>
-        <li class="nav-item"><a href="enquire.html">Enquire</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Accessories</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Essentials</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">New-in</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">My Orders</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Enquire</a></li>
       </ul>
     </div>
   </div>
 </header>
 
-<!-- Auth Modal Container -->
-<div id="authModalContainer"></div>
+<!-- Cart Modal -->
+<div id="cart-modal" class="cart-modal">
+  <div class="cart-modal-content">
+    <div class="cart-modal-header">
+      <h3>Your Cart (<span id="cart-item-count">0</span> items)</h3>
+      <button class="close-cart" id="close-cart">&times;</button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <!-- Cart items will be dynamically inserted here -->
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total:</span>
+        <span id="cart-total-amount">₹0</span>
+      </div>
+      <button class="btn checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+    </div>
+  </div>
+</div>
