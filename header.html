@@ -36,56 +36,5 @@
   </div>
 </header>
 
-<!-- Add these before closing body tag -->
-<script type="module">
-  // Import auth functions
-  import { 
-    showAuthModal, 
-    hideAuthModal, 
-    switchAuthTab, 
-    loginWithEmail, 
-    signupWithEmail, 
-    signInWithGoogle, 
-    logout,
-    initAuthModal
-  } from './auth-modal.js';
-  
-  // Make functions available globally
-  window.showAuthModal = showAuthModal;
-  window.hideAuthModal = hideAuthModal;
-  window.switchAuthTab = switchAuthTab;
-  window.handleLogin = async () => {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    await loginWithEmail(email, password);
-  };
-  window.handleSignup = async () => {
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const confirmPassword = document.getElementById('signupConfirmPassword').value;
-    
-    if (password !== confirmPassword) {
-      alert('Passwords do not match!');
-      return;
-    }
-    
-    await signupWithEmail(email, password);
-  };
-  window.handleGoogleSignIn = async () => {
-    await signInWithGoogle();
-  };
-  window.handleLogout = async () => {
-    await logout();
-  };
-  
-  // Load auth modal HTML
-  fetch('auth-modal.html')
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById('authModalContainer').innerHTML = data;
-      initAuthModal();
-    });
-</script>
-
 <!-- Auth Modal Container -->
 <div id="authModalContainer"></div>
