@@ -68,7 +68,7 @@ footer::before {
   padding-bottom: 0.75rem;
 }
 
-/* Underline effect for headings */
+/* Underline effect for headings - Left aligned by default */
 .footer-col h5::after {
   content: '';
   position: absolute;
@@ -286,9 +286,20 @@ footer::before {
 }
 
 /* Mobile Optimizations */
-@media (max-width: 480px) {
-  footer {
-    padding: 3rem 0 1.5rem;
+@media (max-width: 768px) {
+  .footer-col {
+    text-align: left; /* Keep text left-aligned */
+  }
+  
+  .footer-col:first-child {
+    text-align: left; /* Brand column also left-aligned */
+    max-width: 100%;
+  }
+  
+  /* Keep the yellow dash left-aligned on mobile */
+  .footer-col h5::after {
+    left: 0;
+    transform: none; /* Remove any transform that might center it */
   }
   
   .footer-newsletter {
@@ -311,16 +322,36 @@ footer::before {
   }
   
   .social-links {
-    justify-content: center;
+    justify-content: flex-start; /* Left align social links */
+  }
+}
+
+/* Small Mobile Optimizations */
+@media (max-width: 480px) {
+  footer {
+    padding: 3rem 0 1.5rem;
+  }
+  
+  .footer-col {
+    text-align: left; /* Ensure left alignment */
   }
   
   .footer-col:first-child {
-    text-align: center;
-    max-width: 100%;
+    text-align: left;
   }
   
+  /* Explicitly keep dash left-aligned */
   .footer-col h5::after {
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    transform: none;
+    margin-left: 0; /* Remove any margin that might center it */
+  }
+  
+  .social-links {
+    justify-content: flex-start;
+  }
+  
+  .footer-col h5 {
+    text-align: left; /* Ensure headings are left-aligned */
   }
 }
