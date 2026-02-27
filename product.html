@@ -33,11 +33,30 @@
       padding: 0 2rem;
     }
 
+    .breadcrumb {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      padding: 2rem 0 1rem;
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb a {
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover {
+      color: #d4af37;
+    }
+
     .product-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 4rem;
-      padding: 3rem 0;
+      padding: 1rem 0 3rem;
     }
 
     /* Gallery Section */
@@ -54,12 +73,19 @@
       overflow: hidden;
       margin-bottom: 1rem;
       background: #f4f2ef;
+      cursor: zoom-in;
+      transition: transform 0.3s;
     }
 
     .main-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .main-image:hover img {
+      transform: scale(1.05);
     }
 
     .thumbnail-grid {
@@ -75,11 +101,13 @@
       cursor: pointer;
       border: 2px solid transparent;
       transition: all 0.2s;
+      opacity: 0.7;
     }
 
     .thumbnail:hover,
     .thumbnail.active {
       border-color: #d4af37;
+      opacity: 1;
     }
 
     .thumbnail img {
@@ -113,11 +141,13 @@
       color: #666;
       margin-bottom: 1rem;
       font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .product-brand i {
       color: #d4af37;
-      margin-right: 0.3rem;
     }
 
     .rating-reviews {
@@ -125,12 +155,16 @@
       align-items: center;
       gap: 1rem;
       margin-bottom: 1.5rem;
+      padding: 1rem 0;
+      border-top: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
     }
 
     .stars {
       color: #d4af37;
       display: flex;
       gap: 2px;
+      font-size: 1.1rem;
     }
 
     .rating-value {
@@ -148,10 +182,11 @@
     }
 
     .current-price {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: 600;
       color: #d4af37;
       font-family: 'Montserrat', sans-serif;
+      line-height: 1;
     }
 
     .inr-symbol {
@@ -159,13 +194,31 @@
       font-weight: 500;
     }
 
-    .stock-status {
+    .original-price {
+      font-size: 1.2rem;
+      color: #999;
+      text-decoration: line-through;
+      margin-left: 1rem;
+    }
+
+    .discount-badge {
       display: inline-block;
+      background: #4CAF50;
+      color: white;
       padding: 0.3rem 1rem;
       border-radius: 30px;
       font-size: 0.85rem;
       font-weight: 600;
-      margin-top: 0.5rem;
+      margin-left: 1rem;
+    }
+
+    .stock-status {
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 1rem;
     }
 
     .in-stock {
@@ -185,100 +238,195 @@
 
     /* Free Delivery Bar */
     .delivery-bar {
-      background: #f8f6f2;
-      border-radius: 60px;
-      padding: 1rem 1.5rem;
+      background: linear-gradient(135deg, #f8f6f2 0%, #f0ede8 100%);
+      border-radius: 20px;
+      padding: 1.5rem;
       margin: 2rem 0;
+      position: relative;
+      overflow: hidden;
     }
 
-    .delivery-text {
+    .delivery-bar::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%);
+      animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .delivery-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
     }
 
-    .delivery-text span {
-      font-size: 0.9rem;
-      color: #555;
+    .delivery-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: #333;
     }
 
-    .delivery-text i {
+    .delivery-title i {
       color: #d4af37;
+      font-size: 1.2rem;
+    }
+
+    .delivery-threshold {
+      background: #d4af37;
+      color: #0c0c0c;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .progress-container {
+      position: relative;
+      z-index: 1;
     }
 
     .progress-bar {
       width: 100%;
-      height: 8px;
+      height: 12px;
       background: #e0e0e0;
-      border-radius: 10px;
+      border-radius: 20px;
       overflow: hidden;
+      margin: 1rem 0;
     }
 
     .progress-fill {
       height: 100%;
-      background: #d4af37;
+      background: linear-gradient(90deg, #d4af37, #f5d742);
       width: 0%;
-      transition: width 0.3s;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shine 2s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
     .delivery-message {
-      margin-top: 0.5rem;
-      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
       color: #666;
+      padding: 0.5rem 0;
     }
 
     .delivery-message i {
       color: #4CAF50;
-      margin-right: 0.3rem;
+      font-size: 1.2rem;
+    }
+
+    .delivery-message.eligible i {
+      color: #4CAF50;
+    }
+
+    .delivery-message.not-eligible i {
+      color: #ff9800;
+    }
+
+    .cart-value {
+      font-weight: 600;
+      color: #d4af37;
     }
 
     /* Quantity Selector */
-    .quantity-selector {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+    .quantity-section {
       margin: 2rem 0;
     }
 
     .quantity-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       font-weight: 500;
       color: #333;
+      margin-bottom: 1rem;
+    }
+
+    .quantity-label i {
+      color: #d4af37;
     }
 
     .quantity-controls {
       display: flex;
       align-items: center;
-      border: 1px solid #ddd;
-      border-radius: 40px;
-      overflow: hidden;
+      gap: 0.5rem;
     }
 
     .quantity-btn {
-      width: 45px;
-      height: 45px;
-      border: none;
+      width: 50px;
+      height: 50px;
+      border: 1px solid #ddd;
       background: white;
+      border-radius: 15px;
       font-size: 1.2rem;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .quantity-btn:hover {
-      background: #f0f0f0;
+    .quantity-btn:hover:not(:disabled) {
+      background: #d4af37;
+      border-color: #d4af37;
+      color: white;
+    }
+
+    .quantity-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .quantity-input {
-      width: 60px;
-      height: 45px;
-      border: none;
-      border-left: 1px solid #ddd;
-      border-right: 1px solid #ddd;
+      width: 80px;
+      height: 50px;
+      border: 1px solid #ddd;
+      border-radius: 15px;
       text-align: center;
-      font-size: 1rem;
-      font-weight: 500;
+      font-size: 1.2rem;
+      font-weight: 600;
+      background: #f8f8f8;
     }
 
+    .stock-info {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    /* Action Buttons */
     .action-buttons {
       display: flex;
       gap: 1rem;
@@ -303,32 +451,111 @@
     .btn-add-to-cart {
       background: #1a1a1a;
       color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-add-to-cart::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(212, 175, 55, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-add-to-cart:hover::before {
+      width: 300px;
+      height: 300px;
     }
 
     .btn-add-to-cart:hover {
       background: #d4af37;
       color: #0c0c0c;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
     }
 
     .btn-buy-now {
       background: #d4af37;
       color: #0c0c0c;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-buy-now::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-buy-now:hover::before {
+      width: 300px;
+      height: 300px;
     }
 
     .btn-buy-now:hover {
       background: #c4a030;
       transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Product Highlights */
+    .product-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: #f8f6f2;
+      border-radius: 30px;
+    }
+
+    .highlight {
+      text-align: center;
+    }
+
+    .highlight i {
+      font-size: 1.5rem;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+    }
+
+    .highlight span {
+      display: block;
+      font-size: 0.85rem;
+      color: #666;
     }
 
     /* Product Details Tabs */
     .product-details-tabs {
       margin-top: 3rem;
+      background: white;
+      border-radius: 30px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .tab-headers {
       display: flex;
       gap: 2rem;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 2px solid #f0f0f0;
     }
 
     .tab-header {
@@ -337,6 +564,11 @@
       font-weight: 500;
       color: #666;
       position: relative;
+      transition: color 0.2s;
+    }
+
+    .tab-header:hover {
+      color: #d4af37;
     }
 
     .tab-header.active {
@@ -346,20 +578,32 @@
     .tab-header.active::after {
       content: '';
       position: absolute;
-      bottom: -1px;
+      bottom: -2px;
       left: 0;
       width: 100%;
       height: 2px;
       background: #d4af37;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { width: 0; }
+      to { width: 100%; }
     }
 
     .tab-content {
       padding: 2rem 0;
       display: none;
+      animation: fadeIn 0.5s ease;
     }
 
     .tab-content.active {
       display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .specs-list {
@@ -367,39 +611,45 @@
     }
 
     .specs-list li {
-      padding: 0.8rem 0;
+      padding: 1rem 0;
       border-bottom: 1px solid #f0f0f0;
       display: flex;
-      gap: 1rem;
+      gap: 2rem;
     }
 
     .specs-list li strong {
-      min-width: 120px;
+      min-width: 150px;
       color: #333;
+      font-weight: 600;
+    }
+
+    .specs-list li span {
+      color: #666;
     }
 
     /* Return Policy Section */
     .return-policy {
-      background: #f8f6f2;
+      background: linear-gradient(135deg, #fff8f0 0%, #fff 100%);
       border-radius: 30px;
       padding: 2rem;
       margin: 3rem 0;
+      border: 1px solid #f0e0d0;
     }
 
     .policy-title {
       display: flex;
       align-items: center;
       gap: 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     .policy-title i {
-      font-size: 2rem;
+      font-size: 2.5rem;
       color: #d4af37;
     }
 
     .policy-title h3 {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: 500;
     }
 
@@ -407,12 +657,19 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1.5rem;
+      margin-bottom: 1.5rem;
     }
 
     .policy-card {
       background: white;
       border-radius: 20px;
       padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.3s;
+    }
+
+    .policy-card:hover {
+      transform: translateY(-5px);
     }
 
     .policy-card i {
@@ -434,14 +691,77 @@
 
     .policy-note {
       margin-top: 1.5rem;
-      padding: 1rem;
+      padding: 1.2rem;
       background: #ffebee;
       border-radius: 15px;
       color: #b71c1c;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
+      border-left: 4px solid #b71c1c;
+    }
+
+    .policy-note i {
+      font-size: 1.5rem;
+    }
+
+    /* Related Products */
+    .related-section {
+      margin: 4rem 0;
+    }
+
+    .related-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    .related-card {
+      text-decoration: none;
+      color: inherit;
+      background: white;
+      border-radius: 20px;
+      padding: 1rem;
+      transition: all 0.3s;
+      border: 1px solid #f0f0f0;
+    }
+
+    .related-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      border-color: #d4af37;
+    }
+
+    .related-image {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 15px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .related-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .related-title-small {
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+
+    .related-price {
+      color: #d4af37;
+      font-weight: 600;
     }
 
     @media (max-width: 768px) {
@@ -465,6 +785,16 @@
       .policy-grid {
         grid-template-columns: 1fr;
       }
+
+      .related-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 1rem; }
+      .related-grid { grid-template-columns: 1fr; }
+      .quantity-controls { flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -472,6 +802,16 @@
   <div id="header"></div>
 
   <main>
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="collection.html">Collection</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span id="breadcrumb-product">Product</span>
+      </div>
+    </div>
+
     <div class="container" id="product-container"></div>
   </main>
 
@@ -528,16 +868,20 @@
         return;
       }
 
+      document.getElementById('breadcrumb-product').textContent = product.title;
       renderProduct(product);
+      renderRelatedProducts(product);
     }
 
     function renderProduct(product) {
       const container = document.getElementById('product-container');
-      const images = product.images && product.images.length ? product.images : [product.primaryImg, product.secondaryImg].filter(Boolean);
+      const images = product.images && product.images.length ? product.images : 
+                     [product.primaryImg, product.secondaryImg].filter(Boolean);
       const mainImage = images[0] || 'https://via.placeholder.com/600';
       const stock = product.stock || 10;
+      
       const cartItem = cart.find(item => item.id === product.id);
-      const quantity = cartItem ? cartItem.quantity : 1;
+      const initialQuantity = cartItem ? cartItem.quantity : 1;
 
       const specs = product.specs && product.specs.length ? product.specs : [
         `Material: Premium Quality`,
@@ -547,11 +891,13 @@
       ];
 
       const description = product.description || product.shortDesc || 'No description available.';
+      const originalPrice = Math.round(product.price * 1.2);
+      const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
 
       container.innerHTML = `
         <div class="product-container">
           <div class="gallery-section">
-            <div class="main-image">
+            <div class="main-image" onclick="zoomImage(this)">
               <img src="${mainImage}" alt="${product.title}" id="main-product-image">
             </div>
             <div class="thumbnail-grid" id="thumbnail-grid">
@@ -566,7 +912,10 @@
           <div class="product-info">
             <div class="product-category">${product.category}</div>
             <h1 class="product-title">${product.title}</h1>
-            <div class="product-brand"><i class="fa-regular fa-building"></i> ${product.brand || 'MyEssantia'}</div>
+            <div class="product-brand">
+              <i class="fa-regular fa-building"></i> 
+              ${product.brand || 'MyEssantia'}
+            </div>
             
             <div class="rating-reviews">
               <div class="stars">
@@ -577,33 +926,73 @@
             </div>
 
             <div class="price-section">
-              <span class="current-price"><span class="inr-symbol">₹</span>${product.price.toLocaleString()}</span>
-              <div class="stock-status ${stock > 0 ? (stock > 10 ? 'in-stock' : 'low-stock') : 'out-of-stock'}">
+              <span class="current-price">
+                <span class="inr-symbol">₹</span>${product.price.toLocaleString()}
+              </span>
+              <span class="original-price">₹${originalPrice.toLocaleString()}</span>
+              <span class="discount-badge">${discount}% OFF</span>
+              <div class="stock-status ${stock > 10 ? 'in-stock' : (stock > 0 ? 'low-stock' : 'out-of-stock')}">
                 ${stock > 10 ? 'In Stock' : (stock > 0 ? `Only ${stock} left in stock` : 'Out of Stock')}
               </div>
             </div>
 
             <div class="delivery-bar" id="delivery-bar">
-              <div class="delivery-text">
-                <span><i class="fa-solid fa-truck"></i> Free Delivery</span>
-                <span>on orders above ₹1,299</span>
+              <div class="delivery-header">
+                <div class="delivery-title">
+                  <i class="fa-solid fa-truck-fast"></i>
+                  <span>Free Delivery</span>
+                </div>
+                <div class="delivery-threshold">₹1,299 minimum</div>
               </div>
-              <div class="progress-bar">
-                <div class="progress-fill" id="delivery-progress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div>
-              </div>
-              <div class="delivery-message" id="delivery-message">
-                ${product.price >= 1299 
-                  ? '<i class="fa-solid fa-circle-check"></i> You are eligible for FREE delivery!' 
-                  : `<i class="fa-solid fa-circle-info"></i> Add ₹${(1299 - product.price).toLocaleString()} more for FREE delivery`}
+              
+              <div class="progress-container">
+                <div class="progress-bar">
+                  <div class="progress-fill" id="delivery-progress" style="width: ${Math.min(100, (product.price * initialQuantity / 1299) * 100)}%"></div>
+                </div>
+                
+                <div class="delivery-message" id="delivery-message">
+                  <i class="fa-solid ${product.price * initialQuantity >= 1299 ? 'fa-circle-check eligible' : 'fa-circle-info not-eligible'}"></i>
+                  <span id="delivery-text">
+                    ${product.price * initialQuantity >= 1299 
+                      ? 'You are eligible for FREE delivery!' 
+                      : `Add <span class="cart-value">₹${(1299 - (product.price * initialQuantity)).toLocaleString()}</span> more for FREE delivery`}
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div class="quantity-selector">
-              <span class="quantity-label">Quantity:</span>
+            <div class="product-highlights">
+              <div class="highlight">
+                <i class="fa-solid fa-truck"></i>
+                <span>Free Shipping</span>
+              </div>
+              <div class="highlight">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>Easy Returns</span>
+              </div>
+              <div class="highlight">
+                <i class="fa-solid fa-shield"></i>
+                <span>1 Year Warranty</span>
+              </div>
+            </div>
+
+            <div class="quantity-section">
+              <div class="quantity-label">
+                <i class="fa-solid fa-cubes"></i>
+                <span>Select Quantity</span>
+              </div>
               <div class="quantity-controls">
-                <button class="quantity-btn" onclick="updateQuantityInput(-1)" ${stock === 0 ? 'disabled' : ''}>−</button>
-                <input type="text" class="quantity-input" id="product-quantity" value="${quantity}" readonly>
-                <button class="quantity-btn" onclick="updateQuantityInput(1)" ${stock === 0 ? 'disabled' : ''}>+</button>
+                <button class="quantity-btn" onclick="updateQuantity(-1)" ${stock === 0 ? 'disabled' : ''}>
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+                <input type="text" class="quantity-input" id="product-quantity" value="${initialQuantity}" readonly>
+                <button class="quantity-btn" onclick="updateQuantity(1)" ${stock === 0 || initialQuantity >= stock ? 'disabled' : ''}>
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+              <div class="stock-info">
+                <i class="fa-regular fa-clock"></i> 
+                ${stock} units available
               </div>
             </div>
 
@@ -631,7 +1020,7 @@
                 <ul class="specs-list">
                   ${specs.map(spec => {
                     const [key, value] = spec.split(':');
-                    return `<li><strong>${key}:</strong> ${value || ''}</li>`;
+                    return `<li><strong>${key}:</strong> <span>${value || ''}</span></li>`;
                   }).join('')}
                 </ul>
               </div>
@@ -667,12 +1056,41 @@
 
               <div class="policy-note">
                 <i class="fa-solid fa-circle-exclamation"></i>
-                <strong>Important:</strong> Always record an unboxing video. Returns without video proof cannot be processed.
+                <div>
+                  <strong>Important:</strong> Always record an unboxing video. Returns without video proof cannot be processed.
+                </div>
               </div>
             </div>
           </div>
         </div>
       `;
+    }
+
+    function renderRelatedProducts(currentProduct) {
+      const related = products
+        .filter(p => p.category === currentProduct.category && p.id !== currentProduct.id)
+        .slice(0, 4);
+
+      if (related.length === 0) return;
+
+      const relatedHtml = `
+        <div class="related-section">
+          <h2 class="related-title">You May Also Like</h2>
+          <div class="related-grid">
+            ${related.map(p => `
+              <a href="product.html?id=${p.id}" class="related-card">
+                <div class="related-image">
+                  <img src="${p.images && p.images[0] ? p.images[0] : (p.primaryImg || 'https://via.placeholder.com/200')}" alt="${p.title}">
+                </div>
+                <div class="related-title-small">${p.title}</div>
+                <div class="related-price">₹${p.price.toLocaleString()}</div>
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      document.getElementById('product-container').insertAdjacentHTML('beforeend', relatedHtml);
     }
 
     function getStarRating(rating) {
@@ -691,11 +1109,53 @@
       element.classList.add('active');
     };
 
-    window.updateQuantityInput = function(change) {
+    window.zoomImage = function(element) {
+      element.classList.toggle('zoomed');
+    };
+
+    function updateDeliveryBar() {
+      const productId = getProductId();
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      const quantity = parseInt(document.getElementById('product-quantity')?.value || 1);
+      const totalPrice = product.price * quantity;
+      const progressBar = document.getElementById('delivery-progress');
+      const deliveryMessage = document.getElementById('delivery-message');
+      const deliveryText = document.getElementById('delivery-text');
+
+      if (progressBar) {
+        const percentage = Math.min(100, (totalPrice / 1299) * 100);
+        progressBar.style.width = percentage + '%';
+      }
+
+      if (deliveryMessage && deliveryText) {
+        const icon = deliveryMessage.querySelector('i');
+        if (totalPrice >= 1299) {
+          icon.className = 'fa-solid fa-circle-check eligible';
+          deliveryText.innerHTML = 'You are eligible for FREE delivery!';
+        } else {
+          icon.className = 'fa-solid fa-circle-info not-eligible';
+          deliveryText.innerHTML = `Add <span class="cart-value">₹${(1299 - totalPrice).toLocaleString()}</span> more for FREE delivery`;
+        }
+      }
+    }
+
+    window.updateQuantity = function(change) {
       const input = document.getElementById('product-quantity');
+      if (!input) return;
+
       let value = parseInt(input.value) || 1;
+      const productId = getProductId();
+      const product = products.find(p => p.id === productId);
+      
+      if (!product) return;
+      
       value = Math.max(1, value + change);
+      if (value > product.stock) value = product.stock;
+      
       input.value = value;
+      updateDeliveryBar();
     };
 
     window.addToCart = function(productId) {
@@ -720,7 +1180,19 @@
 
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
       updateCartCount();
-      alert(`${product.title} added to cart!`);
+
+      const btn = event?.target?.closest('button');
+      if (btn) {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Added to Cart!';
+        btn.style.background = '#4CAF50';
+        btn.style.color = 'white';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          btn.style.color = '';
+        }, 2000);
+      }
     };
 
     window.buyNow = function(productId) {
@@ -974,6 +1446,7 @@
   </script>
 
   <style>
+    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -1015,19 +1488,27 @@
       color: #999;
     }
 
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .cart-item-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      background-size: cover;
+      background-position: center;
+    }
+
     .profile-avatar {
       width: 80px;
       height: 80px;
       border-radius: 50%;
       margin: 0 auto 1rem;
       overflow: hidden;
-    }
-
-    .profile-details {
-      background: #f9f9f9;
-      padding: 1rem;
-      border-radius: 12px;
-      margin: 1rem 0;
     }
 
     .google-login-btn {
