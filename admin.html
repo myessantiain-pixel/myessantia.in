@@ -217,20 +217,46 @@
       box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
     }
 
-    .image-preview {
+    /* Page Selector */
+    .page-selector {
       display: flex;
       gap: 1rem;
-      margin-top: 1rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
     }
 
-    .preview-box {
-      width: 100px;
-      height: 100px;
+    .page-option {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .page-option label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem;
+      background: #f8f6f2;
       border-radius: 12px;
-      background: #f5f5f5;
-      background-size: cover;
-      background-position: center;
-      border: 2px dashed #ddd;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+      text-transform: none;
+      font-size: 0.95rem;
+    }
+
+    .page-option input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #d4af37;
+    }
+
+    .page-option label:hover {
+      background: #ece8e2;
+    }
+
+    .home-option {
+      border-left: 3px solid #d4af37;
     }
 
     .btn {
@@ -300,6 +326,25 @@
       background-position: center;
     }
 
+    .page-badges {
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+    }
+
+    .page-badge {
+      background: #f0f0f0;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .page-badge.home {
+      background: #d4af37;
+      color: #0c0c0c;
+    }
+
     .action-btns {
       display: flex;
       gap: 0.5rem;
@@ -329,6 +374,19 @@
       transform: translateY(-2px);
     }
 
+    .show-on-home {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #4CAF50;
+      margin-right: 0.3rem;
+    }
+
+    .show-on-home.hidden {
+      background: #999;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .sidebar {
@@ -351,6 +409,10 @@
       
       .form-group.full-width {
         grid-column: span 1;
+      }
+      
+      .page-selector {
+        flex-direction: column;
       }
     }
   </style>
@@ -407,20 +469,20 @@
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <i class="fa-solid fa-layer-group"></i>
+            <i class="fa-solid fa-house"></i>
           </div>
           <div class="stat-info">
-            <h3 id="total-categories">2</h3>
-            <p>Categories</p>
+            <h3 id="home-products">0</h3>
+            <p>On Homepage</p>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">
-            <i class="fa-solid fa-cart-shopping"></i>
+            <i class="fa-solid fa-layer-group"></i>
           </div>
           <div class="stat-info">
-            <h3 id="total-orders">0</h3>
-            <p>Active Orders</p>
+            <h3 id="total-categories">3</h3>
+            <p>Categories</p>
           </div>
         </div>
       </div>
@@ -472,6 +534,36 @@
             </div>
             
             <div class="form-group full-width">
+              <label>Show on Pages</label>
+              <div class="page-selector">
+                <div class="page-option">
+                  <label class="home-option">
+                    <input type="checkbox" id="show-on-home" checked>
+                    <i class="fa-solid fa-house"></i> Home Page
+                  </label>
+                </div>
+                <div class="page-option">
+                  <label>
+                    <input type="checkbox" id="show-on-accessories" checked>
+                    <i class="fa-solid fa-bag-shopping"></i> Accessories
+                  </label>
+                </div>
+                <div class="page-option">
+                  <label>
+                    <input type="checkbox" id="show-on-essentials" checked>
+                    <i class="fa-solid fa-bolt"></i> Essentials
+                  </label>
+                </div>
+                <div class="page-option">
+                  <label>
+                    <input type="checkbox" id="show-on-new" checked>
+                    <i class="fa-solid fa-star"></i> New-in
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group full-width">
               <label>Description (Optional)</label>
               <textarea id="product-description" rows="3" placeholder="Product description..."></textarea>
             </div>
@@ -504,6 +596,7 @@
               <th>Category</th>
               <th>Price</th>
               <th>Rating</th>
+              <th>Pages</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -535,17 +628,67 @@
           rating: 4.7,
           primaryImg: "https://images.unsplash.com/photo-1594734417407-396c2f1bd4e5?q=80&w=1887&auto=format&fit=crop",
           secondaryImg: "https://images.unsplash.com/photo-1627123424574-7247585940ea?q=80&w=1887&auto=format&fit=crop",
-          description: "Premium leather cardholder with RFID blocking"
+          description: "Premium leather cardholder with RFID blocking",
+          showOnHome: true,
+          showOnAccessories: true,
+          showOnEssentials: false,
+          showOnNew: false
         },
         {
           id: 2,
+          title: "minimal mesh watch",
+          category: "accessories",
+          price: 4490,
+          rating: 4.2,
+          primaryImg: "https://images.unsplash.com/photo-1615655137840-7b7d8b8f93c7?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1888&auto=format&fit=crop",
+          description: "Minimalist mesh watch with stainless steel band",
+          showOnHome: true,
+          showOnAccessories: true,
+          showOnEssentials: false,
+          showOnNew: false
+        },
+        {
+          id: 3,
           title: "slim power bank",
           category: "essentials",
           price: 3590,
           rating: 5.0,
           primaryImg: "https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop",
           secondaryImg: "https://images.unsplash.com/photo-1609592424741-2abf387c3745?q=80&w=1887&auto=format&fit=crop",
-          description: "10000mAh slim power bank with fast charging"
+          description: "10000mAh slim power bank with fast charging",
+          showOnHome: true,
+          showOnAccessories: false,
+          showOnEssentials: true,
+          showOnNew: false
+        },
+        {
+          id: 4,
+          title: "aviator sunglasses",
+          category: "accessories",
+          price: 2990,
+          rating: 4.3,
+          primaryImg: "https://images.unsplash.com/photo-1509695507497-903c140c43b0?q=80&w=1973&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1880&auto=format&fit=crop",
+          description: "Classic aviator sunglasses with UV400 protection",
+          showOnHome: true,
+          showOnAccessories: true,
+          showOnEssentials: false,
+          showOnNew: false
+        },
+        {
+          id: 5,
+          title: "65w gaN charger",
+          category: "essentials",
+          price: 3790,
+          rating: 4.1,
+          primaryImg: "https://images.unsplash.com/photo-1615525131611-9e1c98e2b8b9?q=80&w=1964&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1615525153961-3f6f6a5f23f3?q=80&w=1887&auto=format&fit=crop",
+          description: "65W GaN charger with 3 ports",
+          showOnHome: true,
+          showOnAccessories: false,
+          showOnEssentials: true,
+          showOnNew: true
         }
       ];
       saveProducts();
@@ -561,9 +704,14 @@
     const productPrimaryImg = document.getElementById('product-primary-img');
     const productSecondaryImg = document.getElementById('product-secondary-img');
     const productDescription = document.getElementById('product-description');
+    const showOnHome = document.getElementById('show-on-home');
+    const showOnAccessories = document.getElementById('show-on-accessories');
+    const showOnEssentials = document.getElementById('show-on-essentials');
+    const showOnNew = document.getElementById('show-on-new');
     const productsList = document.getElementById('products-list');
     const emptyProducts = document.getElementById('empty-products');
     const totalProducts = document.getElementById('total-products');
+    const homeProducts = document.getElementById('home-products');
     const formTitle = document.getElementById('form-title');
     const cancelEdit = document.getElementById('cancel-edit');
 
@@ -576,6 +724,7 @@
     // Update statistics
     function updateStats() {
       totalProducts.textContent = products.length;
+      homeProducts.textContent = products.filter(p => p.showOnHome).length;
     }
 
     // Render products table
@@ -588,29 +737,42 @@
 
       emptyProducts.style.display = 'none';
       
-      productsList.innerHTML = products.map(product => `
-        <tr>
-          <td>
-            <div class="product-thumb" style="background-image: url('${product.primaryImg}')"></div>
-          </td>
-          <td>${product.title}</td>
-          <td>${product.category}</td>
-          <td>₹${product.price.toLocaleString()}</td>
-          <td>
-            ${product.rating} <i class="fa-solid fa-star" style="color: #d4af37; font-size: 0.8rem;"></i>
-          </td>
-          <td>
-            <div class="action-btns">
-              <button class="edit-btn" onclick="editProduct(${product.id})">
-                <i class="fa-solid fa-edit"></i> Edit
-              </button>
-              <button class="delete-btn" onclick="deleteProduct(${product.id})">
-                <i class="fa-solid fa-trash"></i> Delete
-              </button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
+      productsList.innerHTML = products.map(product => {
+        const pages = [];
+        if (product.showOnHome) pages.push('<span class="page-badge home"><i class="fa-solid fa-house"></i> Home</span>');
+        if (product.showOnAccessories) pages.push('<span class="page-badge">Accessories</span>');
+        if (product.showOnEssentials) pages.push('<span class="page-badge">Essentials</span>');
+        if (product.showOnNew) pages.push('<span class="page-badge">New-in</span>');
+        
+        return `
+          <tr>
+            <td>
+              <div class="product-thumb" style="background-image: url('${product.primaryImg}')"></div>
+            </td>
+            <td>${product.title}</td>
+            <td>${product.category}</td>
+            <td>₹${product.price.toLocaleString()}</td>
+            <td>
+              ${product.rating} <i class="fa-solid fa-star" style="color: #d4af37; font-size: 0.8rem;"></i>
+            </td>
+            <td>
+              <div class="page-badges">
+                ${pages.join(' ')}
+              </div>
+            </td>
+            <td>
+              <div class="action-btns">
+                <button class="edit-btn" onclick="editProduct(${product.id})">
+                  <i class="fa-solid fa-edit"></i> Edit
+                </button>
+                <button class="delete-btn" onclick="deleteProduct(${product.id})">
+                  <i class="fa-solid fa-trash"></i> Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
       
       updateStats();
     }
@@ -626,7 +788,11 @@
         rating: parseFloat(productRating.value),
         primaryImg: productPrimaryImg.value,
         secondaryImg: productSecondaryImg.value,
-        description: productDescription.value || ''
+        description: productDescription.value || '',
+        showOnHome: showOnHome.checked,
+        showOnAccessories: showOnAccessories.checked,
+        showOnEssentials: showOnEssentials.checked,
+        showOnNew: showOnNew.checked
       };
 
       if (productId.value) {
@@ -659,6 +825,10 @@
       productPrimaryImg.value = product.primaryImg;
       productSecondaryImg.value = product.secondaryImg;
       productDescription.value = product.description || '';
+      showOnHome.checked = product.showOnHome !== false;
+      showOnAccessories.checked = product.showOnAccessories !== false;
+      showOnEssentials.checked = product.showOnEssentials !== false;
+      showOnNew.checked = product.showOnNew !== false;
       
       formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> Edit Product';
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -678,14 +848,29 @@
     function resetForm() {
       productForm.reset();
       productId.value = '';
+      showOnHome.checked = true;
+      showOnAccessories.checked = true;
+      showOnEssentials.checked = true;
+      showOnNew.checked = true;
       formTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add New Product';
     }
 
     cancelEdit.addEventListener('click', resetForm);
 
-    // Get products by category (for frontend pages)
-    window.getProductsByCategory = function(category) {
-      return products.filter(p => p.category === category);
+    // Get products for specific pages
+    window.getProductsForPage = function(page) {
+      switch(page) {
+        case 'home':
+          return products.filter(p => p.showOnHome === true);
+        case 'accessories':
+          return products.filter(p => p.showOnAccessories === true && p.category === 'accessories');
+        case 'essentials':
+          return products.filter(p => p.showOnEssentials === true && p.category === 'essentials');
+        case 'newarrival':
+          return products.filter(p => p.showOnNew === true && p.category === 'newarrival');
+        default:
+          return products;
+      }
     };
 
     // Get all products
