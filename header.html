@@ -16,6 +16,21 @@
   <div class="main-header">
     <div class="container">
       <a href="#" class="logo">MyEssantia<span>.</span></a>
+      
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      
+      <ul class="nav-menu" id="nav-menu">
+        <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="accessories.html" class="nav-link">Accessories</a></li>
+        <li class="nav-item"><a href="essentials.html" class="nav-link">Essentials</a></li>
+        <li class="nav-item"><a href="newarrival.html" class="nav-link">New-in</a></li>
+        <li class="nav-item"><a href="myorders.html" class="nav-link">My Orders</a></li>
+        <li class="nav-item"><a href="enquire.html" class="nav-link">Enquire</a></li>
+      </ul>
+      
       <div class="header-icons">
         <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
         <a href="#" id="profile-icon">
@@ -26,14 +41,6 @@
           <span class="cart-count" id="cart-count">0</span>
         </a>
       </div>
-      <ul class="nav-menu">
-                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-        <li class="nav-item"><a href="accessories.html" class="nav-link">Accessories</a></li>
-        <li class="nav-item"><a href="essentials.html" class="nav-link">Essentials</a></li>
-        <li class="nav-item"><a href="newarrival.html" class="nav-link">New-in</a></li>
-        <li class="nav-item"><a href="myorders.html" class="nav-link">My Orders</a></li>
-        <li class="nav-item"><a href="enquire.html" class="nav-link">Enquire</a></li>
-      </ul>
     </div>
   </div>
 </header>
@@ -47,11 +54,15 @@
     </div>
     <div class="cart-items" id="cart-items">
       <!-- Cart items will be dynamically inserted here -->
+      <div class="empty-cart-message">
+        <i class="fa-regular fa-cart-shopping"></i>
+        <p>Your cart is empty</p>
+      </div>
     </div>
     <div class="modal-footer">
       <div class="cart-total">
         <span>Total:</span>
-        <span id="cart-total-amount">₹0</span>
+        <span id="cart-total-amount">₹0.00</span>
       </div>
       <button class="btn checkout-btn" id="checkout-btn">Proceed to Checkout</button>
     </div>
