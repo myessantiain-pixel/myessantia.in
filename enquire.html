@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>ESSENCE · enquire</title>
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Separate CSS Files (will be loaded dynamically) -->
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="footer.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #fafafa;
+      color: #1a1a1a;
+      line-height: 1.5;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      width: 100%;
+    }
+
+    .bg-noise {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+      background-repeat: repeat;
+    }
+
+    .page-title {
+      text-align: center;
+      padding: 1rem 0 2rem;
+    }
+    .page-title h1 {
+      font-size: clamp(2.2rem, 6vw, 2.8rem);
+      font-weight: 400;
+      color: #1a1a1a;
+    }
+    .page-title h1 span {
+      color: #d4af37;
+      font-weight: 500;
+      font-style: italic;
+    }
+    .page-title p {
+      color: #5f5b57;
+      max-width: 500px;
+      margin: 0.5rem auto 0;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+    }
+
+    /* --- ENQUIRY FORM CARD --- */
+    .enquiry-card {
+      background: #ffffff;
+      border-radius: 32px;
+      padding: clamp(1.8rem, 5vw, 2.5rem);
+      box-shadow: 0 15px 35px -10px rgba(0,0,0,0.05);
+      border: 1px solid #f0f0f0;
+      max-width: 700px;
+      margin: 0 auto 3rem;
+    }
+
+    .enquiry-card h2 {
+      font-size: clamp(1.5rem, 4vw, 1.8rem);
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 400;
+    }
+    .enquiry-card h2 i {
+      color: #d4af37;
+      margin-right: 10px;
+    }
+
+    .form-row {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-row label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #5f5b57;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .form-row input, .form-row textarea {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border: 1px solid #e5e5e5;
+      border-radius: 30px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      transition: all 0.2s;
+      background: #fcfcfc;
+    }
+
+    .form-row textarea {
+      border-radius: 30px;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-row input:focus, .form-row textarea:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+      background: #ffffff;
+    }
+
+    .file-upload-area {
+      background: #f9f7f4;
+      border: 2px dashed #d4af37;
+      border-radius: 40px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 1.5rem;
+    }
+
+    .file-upload-area:hover {
+      background: #f2eee8;
+    }
+
+    .file-upload-area i {
+      font-size: 2.5rem;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+    }
+
+    .file-upload-area p {
+      color: #7f7a74;
+      font-size: 0.95rem;
+    }
+
+    .file-upload-area input {
+      display: none;
+    }
+
+    .image-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin: 1rem 0 0.5rem;
+    }
+
+    .preview-thumb {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      object-fit: cover;
+      border: 2px solid #e0d9d0;
+    }
+
+    .submit-btn {
+      background: #1a1a1a;
+      color: white;
+      width: 100%;
+      padding: 1.2rem;
+      border: none;
+      border-radius: 60px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+      background: #d4af37;
+      color: #0c0c0c;
+      transform: scale(1.02);
+    }
+
+    /* success message */
+    .success-message {
+      background: #e3f1e3;
+      border-radius: 40px;
+      padding: 1.5rem;
+      text-align: center;
+      margin: 1.5rem 0 0;
+      border: 1px solid #b6d7b6;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+      animation: fadeIn 0.4s;
+    }
+
+    .success-message i {
+      font-size: 2.5rem;
+      color: #1e7a44;
+      margin-bottom: 0.5rem;
+    }
+
+    .success-message h3 {
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+
+    .success-message p {
+      color: #2b5e2b;
+    }
+
+    /* enquiries list */
+    .enquiries-title {
+      font-size: clamp(1.8rem, 4vw, 2rem);
+      font-weight: 400;
+      margin: 3rem 0 2rem;
+      text-align: center;
+    }
+    .enquiries-title span {
+      color: #d4af37;
+      border-bottom: 2px solid #ece8e2;
+      padding-bottom: 0.2rem;
+    }
+
+    .enquiries-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .enquiry-item {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 1.8rem;
+      box-shadow: 0 8px 22px -8px rgba(0,0,0,0.05);
+      border: 1px solid #f5f5f5;
+      transition: 0.2s;
+    }
+
+    .enquiry-item:hover {
+      box-shadow: 0 18px 30px -12px rgba(0,0,0,0.1);
+    }
+
+    .enquiry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px dashed #f0f0f0;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .enquiry-name {
+      font-weight: 600;
+      font-size: 1.2rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    /* status badges */
+    .status-badge {
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .status-received { background: #e8eaf6; color: #3f51b5; }
+    .status-processing { background: #fff0db; color: #b85b1a; }
+    .status-completed { background: #e3f1e3; color: #1e7a44; }
+    .status-invalid { background: #ffebee; color: #b71c1c; }
+
+    .enquiry-contact {
+      font-size: 0.9rem;
+      color: #5f5b57;
+      margin-bottom: 1rem;
+      word-break: break-word;
+    }
+
+    .enquiry-contact i {
+      width: 20px;
+      color: #d4af37;
+    }
+
+    .enquiry-images {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .enquiry-image-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      object-fit: cover;
+      border: 1px solid #eee;
+      background: #f9f7f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .enquiry-message {
+      background: #faf9f7;
+      border-radius: 18px;
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+      margin: 0.8rem 0;
+      color: #3e3a36;
+    }
+
+    .enquiry-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.8rem;
+      font-size: 0.8rem;
+      color: #8f8b85;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .empty-enquiries {
+      text-align: center;
+      padding: 3rem;
+      background: #ffffff;
+      border-radius: 40px;
+      border: 1px solid #f0f0f0;
+      grid-column: 1 / -1;
+    }
+
+    .empty-enquiries i {
+      font-size: 3rem;
+      color: #d4af37;
+      opacity: 0.5;
+      margin-bottom: 1rem;
+    }
+
+    /* Touch targets */
+    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .submit-btn, .file-upload-area {
+      touch-action: manipulation;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 0 1.2rem; }
+      .enquiry-card { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body class="bg-noise">
+  
+  <!-- Header loaded dynamically -->
+  <div id="header"></div>
+
+  <main>
+    <div class="container page-title">
+      <h1>enquire <span>now</span></h1>
+      <p>Upload product images & tell us what you need</p>
+    </div>
+
+    <!-- ENQUIRY FORM -->
+    <div class="container">
+      <div class="enquiry-card">
+        <h2><i class="fa-regular fa-message"></i> submit enquiry</h2>
+        
+        <div class="form-row">
+          <label>full name *</label>
+          <input type="text" id="enquiryName" placeholder="e.g. Alex Morgan" value="Alex Morgan">
+        </div>
+
+        <div class="form-row">
+          <label>email *</label>
+          <input type="email" id="enquiryEmail" placeholder="alex@example.com" value="alex@example.com">
+        </div>
+
+        <div class="form-row">
+          <label>phone (optional)</label>
+          <input type="tel" id="enquiryPhone" placeholder="+1 234 567 890" value="+91 98765 43210">
+        </div>
+
+        <!-- custom file upload with preview -->
+        <div class="file-upload-area" id="fileUploadArea">
+          <i class="fa-regular fa-images"></i>
+          <p>click or drag to upload product images</p>
+          <input type="file" id="imageUpload" multiple accept="image/*">
+        </div>
+        <div class="image-preview" id="imagePreview"></div>
+
+        <div class="form-row">
+          <label>your message / enquiry</label>
+          <textarea id="enquiryMessage" placeholder="Tell us about the product, quantity, or any specific request...">I'm interested in the leather collection, especially cardholders and watch straps. Do you have them in burgundy?</textarea>
+        </div>
+
+        <button class="submit-btn" id="submitEnquiry"><i class="fa-regular fa-paper-plane"></i> submit enquiry</button>
+
+        <!-- success message (hidden initially) -->
+        <div class="success-message" id="successMessage">
+          <i class="fa-regular fa-circle-check"></i>
+          <h3>thank you!</h3>
+          <p>We'll get back to you soon.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENQUIRIES LIST SECTION (only shows user's own submissions) -->
+    <div class="container">
+      <h2 class="enquiries-title"><span>your</span> enquiries</h2>
+      <div class="enquiries-grid" id="enquiriesGrid">
+        <!-- dynamic content will be injected via js -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer loaded dynamically -->
+  <div id="footer"></div>
+
+  <script>
+    // Cart state - initialize from localStorage
+    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
+    
+    // User state - initialize from localStorage
+    let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+
+    // Load header and footer
+    Promise.all([
+      fetch('header.html').then(res => res.text()).catch(() => {
+        console.warn('header.html not found, using empty placeholder');
+        return '';
+      }),
+      fetch('footer.html').then(res => res.text()).catch(() => {
+        console.warn('footer.html not found, using empty placeholder');
+        return '';
+      })
+    ]).then(([headerData, footerData]) => {
+      document.getElementById('header').innerHTML = headerData || getDefaultHeader();
+      document.getElementById('footer').innerHTML = footerData || getDefaultFooter();
+      
+      // Initialize after components are loaded
+      setTimeout(() => {
+        initializeApp();
+      }, 100);
+    }).catch(error => {
+      console.error('Error loading components:', error);
+      // Use default header/footer if fetch fails
+      document.getElementById('header').innerHTML = getDefaultHeader();
+      document.getElementById('footer').innerHTML = getDefaultFooter();
+      setTimeout(() => {
+        initializeApp();
+      }, 100);
+    });
+
+    // Default header HTML in case header.html is not available
+    function getDefaultHeader() {
+      return `
+        <header style="background: #ffffff; border-bottom: 1px solid #f0f0f0; padding: 0.8rem 0;">
+          <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="logo">
+              <a href="/" style="text-decoration: none; color: #1a1a1a;">
+                <span style="font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 500;">MyEssantia</span>
+                <span style="font-size: 0.7rem; color: #d4af37; display: block; line-height: 1;">premium essentials</span>
+              </a>
+            </div>
+            <nav style="display: flex; gap: 2rem;">
+              <a href="#" style="text-decoration: none; color: #1a1a1a;">shop</a>
+              <a href="#" style="text-decoration: none; color: #1a1a1a;">new</a>
+              <a href="#" style="text-decoration: none; color: #1a1a1a;">editorial</a>
+            </nav>
+            <div class="header-icons" style="display: flex; gap: 1.2rem; align-items: center;">
+              <a href="#" id="profile-icon" style="font-size: 1.3rem; color: #1a1a1a;">
+                <i class="fa-regular fa-user"></i>
+              </a>
+              <a href="#" id="cart-icon" style="font-size: 1.3rem; color: #1a1a1a; position: relative;">
+                <i class="fa-regular fa-bag-shopping"></i>
+                <span id="cart-count" style="position: absolute; top: -8px; right: -8px; background: #d4af37; color: #0c0c0c; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center;">0</span>
+              </a>
+            </div>
+          </div>
+        </header>
+
+        <!-- Cart Modal -->
+        <div id="cart-modal" class="modal" style="display: none;">
+          <div class="modal-content" style="background: white; border-radius: 30px;">
+            <div class="modal-header">
+              <h3>Your Cart</h3>
+              <button id="close-cart" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="cart-footer">
+              <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-amount">₹0</span>
+              </div>
+              <button id="checkout-btn" class="btn" style="width: 100%;">Checkout</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div id="profile-modal" class="modal" style="display: none;">
+          <div class="modal-content" style="background: white; border-radius: 30px;">
+            <div class="modal-header">
+              <h3>Account</h3>
+              <button id="close-profile" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <div id="profile-content" class="profile-content"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Default footer HTML
+    function getDefaultFooter() {
+      return `
+        <footer style="background: #fafafa; border-top: 1px solid #efefef; padding: 3rem 0 2rem; margin-top: 2rem;">
+          <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+              <div>
+                <h4 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem;">MyEssantia</h4>
+                <p style="color: #5f5b57;">Premium accessories & daily essentials.</p>
+              </div>
+              <div>
+                <h4>Shop</h4>
+                <ul style="list-style: none;">
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">New Arrivals</a></li>
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Bestsellers</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4>Support</h4>
+                <ul style="list-style: none;">
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Contact</a></li>
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Shipping</a></li>
+                </ul>
+              </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem; color: #a2a2a2;">
+              <p>&copy; 2025 MyEssantia. All rights reserved.</p>
+            </div>
+          </div>
+        </footer>
+      `;
+    }
+
+    function initializeApp() {
+      initializeCart();
+      initializeProfile();
+      
+      // Initialize enquiry functionality
+      initializeEnquiry();
+    }
+
+    // ==================== CART FUNCTIONS ====================
+    function initializeCart() {
+      updateCartCount();
+      setupCartEventListeners();
+    }
+
+    function setupCartEventListeners() {
+      const cartIcon = document.getElementById('cart-icon');
+      const closeCart = document.getElementById('close-cart');
+      const cartModal = document.getElementById('cart-modal');
+      const checkoutBtn = document.getElementById('checkout-btn');
+
+      if (cartIcon) {
+        cartIcon.addEventListener('click', (e) => {
+          e.preventDefault();
+          openCart();
+        });
+      }
+
+      if (closeCart) {
+        closeCart.addEventListener('click', () => {
+          closeModal('cart-modal');
+        });
+      }
+
+      window.addEventListener('click', (e) => {
+        if (e.target === cartModal) {
+          closeModal('cart-modal');
+        }
+      });
+
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+          if (cart.length === 0) {
+            alert('Your cart is empty!');
+          } else {
+            window.location.href = 'checkout.html';
+          }
+        });
+      }
+    }
+
+    function openCart() {
+      const cartModal = document.getElementById('cart-modal');
+      if (cartModal) {
+        renderCartItems();
+        cartModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    // ==================== PROFILE FUNCTIONS ====================
+    function initializeProfile() {
+      updateProfileIcon();
+      setupProfileEventListeners();
+    }
+
+    function setupProfileEventListeners() {
+      const profileIcon = document.getElementById('profile-icon');
+      const closeProfile = document.getElementById('close-profile');
+      const profileModal = document.getElementById('profile-modal');
+
+      if (profileIcon) {
+        profileIcon.addEventListener('click', (e) => {
+          e.preventDefault();
+          openProfile();
+        });
+      }
+
+      if (closeProfile) {
+        closeProfile.addEventListener('click', () => {
+          closeModal('profile-modal');
+        });
+      }
+
+      window.addEventListener('click', (e) => {
+        if (e.target === profileModal) {
+          closeModal('profile-modal');
+        }
+      });
+    }
+
+    function openProfile() {
+      const profileModal = document.getElementById('profile-modal');
+      if (profileModal) {
+        renderProfileContent();
+        profileModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function renderProfileContent() {
+      const profileContent = document.getElementById('profile-content');
+      if (!profileContent) return;
+
+      if (currentUser) {
+        profileContent.innerHTML = `
+          <div class="profile-info">
+            <div class="profile-avatar">
+              <i class="fa-regular fa-circle-user"></i>
+            </div>
+            <div class="profile-details">
+              <p><strong>Name:</strong> ${currentUser.name}</p>
+              <p><strong>Email:</strong> ${currentUser.email}</p>
+              <p><strong>Member since:</strong> ${currentUser.memberSince || '2025'}</p>
+            </div>
+            <button class="btn logout-btn" onclick="logout()">Logout</button>
+          </div>
+        `;
+      } else {
+        profileContent.innerHTML = `
+          <div class="login-form">
+            <h4>Welcome Back!</h4>
+            <p>Sign in to your account</p>
+            <div id="login-error" class="error-message"></div>
+            <form onsubmit="handleLogin(event)">
+              <div class="form-group">
+                <input type="email" id="email" placeholder="Email" required>
+              </div>
+              <div class="form-group">
+                <input type="password" id="password" placeholder="Password" required>
+              </div>
+              <button type="submit" class="btn login-btn">Sign In</button>
+            </form>
+            <p style="margin-top: 1rem;">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+          </div>
+        `;
+      }
+    }
+
+    window.handleLogin = function(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      const user = {
+        name: email.split('@')[0],
+        email: email,
+        memberSince: '2025'
+      };
+
+      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
+      currentUser = user;
+      updateProfileIcon();
+      renderProfileContent();
+      alert('Login successful!');
+    };
+
+    window.logout = function() {
+      localStorage.removeItem('MyEssantia_user');
+      currentUser = null;
+      updateProfileIcon();
+      renderProfileContent();
+      alert('Logged out successfully');
+    };
+
+    window.showSignup = function() {
+      alert('Sign up functionality - please use login form for demo');
+    };
+
+    function updateProfileIcon() {
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon && currentUser) {
+        profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
+      } else if (profileIcon) {
+        profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal('cart-modal');
+        closeModal('profile-modal');
+      }
+    });
+
+    // ==================== ENQUIRY FUNCTIONS ====================
+    function initializeEnquiry() {
+      // --- data handling: store only enquiries submitted during this session (in memory + localStorage for persistence) ---
+      window.enquiries = [];
+
+      // load from localStorage if available (only user-submitted ones)
+      function loadEnquiries() {
+        const stored = localStorage.getItem('essence_user_enquiries');
+        if (stored) {
+          try {
+            window.enquiries = JSON.parse(stored);
+          } catch (e) {
+            window.enquiries = [];
+          }
+        } else {
+          window.enquiries = []; // start completely empty - no samples
+        }
+        // ensure each enquiry has a valid status (default to 'received' if missing)
+        window.enquiries = window.enquiries.map(e => ({
+          ...e,
+          status: e.status || 'received'
+        }));
+      }
+
+      // save to localStorage
+      function saveEnquiries() {
+        localStorage.setItem('essence_user_enquiries', JSON.stringify(window.enquiries));
+      }
+
+      // render the enquiries list (only user's own)
+      function renderEnquiries() {
+        const grid = document.getElementById('enquiriesGrid');
+        if (!grid) return;
+
+        if (!window.enquiries || window.enquiries.length === 0) {
+          grid.innerHTML = `
+            <div class="empty-enquiries">
+              <i class="fa-regular fa-folder-open"></i>
+              <p>You haven't submitted any enquiries yet.</p>
+            </div>
+          `;
+          return;
+        }
+
+        // sort by newest first (timestamp descending)
+        const sorted = [...window.enquiries].sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+        let html = '';
+        sorted.forEach(e => {
+          // determine status class
+          let statusClass = 'status-received';
+          if (e.status === 'processing') statusClass = 'status-processing';
+          else if (e.status === 'completed') statusClass = 'status-completed';
+          else if (e.status === 'invalid') statusClass = 'status-invalid';
+
+          // format date
+          const date = e.timestamp ? new Date(e.timestamp).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : 'just now';
+
+          // images: array of strings (emoji/dataURL). For simplicity, we stored emoji placeholders.
+          let imagesHtml = '';
+          if (e.images && e.images.length > 0) {
+            imagesHtml = e.images.map(img => {
+              // if it's an emoji or short string, display as large emoji
+              if (typeof img === 'string' && img.length <= 8 && !img.startsWith('data:')) {
+                return `<div class="enquiry-image-thumb">${img}</div>`;
+              } else {
+                // fallback icon
+                return `<div class="enquiry-image-thumb"><i class="fa-regular fa-image" style="color:#aaa;"></i></div>`;
+              }
+            }).join('');
+          } else {
+            imagesHtml = `<div class="enquiry-image-thumb"><i class="fa-regular fa-image" style="color:#ccc;"></i></div>`;
+          }
+
+          html += `
+            <div class="enquiry-item">
+              <div class="enquiry-header">
+                <span class="enquiry-name">${e.name}</span>
+                <span class="status-badge ${statusClass}">${e.status}</span>
+              </div>
+              <div class="enquiry-contact">
+                <div><i class="fa-regular fa-envelope"></i> ${e.email}</div>
+                ${e.phone ? `<div><i class="fa-regular fa-phone"></i> ${e.phone}</div>` : ''}
+              </div>
+              <div class="enquiry-images">
+                ${imagesHtml}
+              </div>
+              <div class="enquiry-message">
+                <i class="fa-regular fa-note-sticky" style="color:#d4af37; margin-right:6px;"></i> ${e.message}
+              </div>
+              <div class="enquiry-footer">
+                <span><i class="fa-regular fa-clock"></i> ${date}</span>
+                <span><i class="fa-regular fa-id-card"></i> ${e.id.slice(0,8)}</span>
+              </div>
+            </div>
+          `;
+        });
+        grid.innerHTML = html;
+      }
+
+      // image preview handling
+      const fileInput = document.getElementById('imageUpload');
+      const previewDiv = document.getElementById('imagePreview');
+      const uploadArea = document.getElementById('fileUploadArea');
+      window.selectedFiles = [];
+
+      // trigger file input on area click
+      uploadArea.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', function(e) {
+        window.selectedFiles = Array.from(e.target.files || []);
+        previewDiv.innerHTML = '';
+        if (window.selectedFiles.length === 0) return;
+
+        window.selectedFiles.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = document.createElement('img');
+            img.src = event.target.result;
+            img.classList.add('preview-thumb');
+            img.alt = 'preview';
+            previewDiv.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+
+      // submit enquiry
+      const submitBtn = document.getElementById('submitEnquiry');
+      const successMsg = document.getElementById('successMessage');
+
+      submitBtn.addEventListener('click', function() {
+        const name = document.getElementById('enquiryName').value.trim();
+        const email = document.getElementById('enquiryEmail').value.trim();
+        const phone = document.getElementById('enquiryPhone').value.trim();
+        const message = document.getElementById('enquiryMessage').value.trim();
+
+        // basic validation
+        if (!name || !email || !message) {
+          alert('Please fill in name, email and message.');
+          return;
+        }
+
+        // generate simple image representation (store emoji placeholders based on file count)
+        const imageSymbols = [];
+        if (window.selectedFiles.length > 0) {
+          // for each file, store a camera emoji as placeholder
+          for (let i = 0; i < Math.min(window.selectedFiles.length, 5); i++) {
+            imageSymbols.push('📷');
+          }
+        } else {
+          imageSymbols.push('🖼️'); // default image icon
+        }
+
+        // create enquiry object with status 'received' (default for new)
+        const newEnquiry = {
+          id: 'ENQ' + Date.now() + Math.floor(Math.random()*1000),
+          name: name,
+          email: email,
+          phone: phone || '',
+          message: message,
+          images: imageSymbols,
+          status: 'received',
+          timestamp: Date.now()
+        };
+
+        window.enquiries.push(newEnquiry);
+        saveEnquiries();
+        renderEnquiries();
+
+        // show success message
+        successMsg.classList.add('show');
+
+        // reset form fields but keep name/email prefilled for convenience? we reset message and file
+        document.getElementById('enquiryMessage').value = '';
+        previewDiv.innerHTML = '';
+        window.selectedFiles = [];
+        fileInput.value = ''; // clear file input
+
+        // hide success message after 5 seconds
+        setTimeout(() => {
+          successMsg.classList.remove('show');
+        }, 5000);
+      });
+
+      // initial load & render (ensures no sample data)
+      loadEnquiries();
+      renderEnquiries();
+    }
+
+    // ==================== CART FUNCTIONS (continued) ====================
+    function renderCartItems() {
+      const cartItemsContainer = document.getElementById('cart-items');
+      const cartItemCount = document.getElementById('cart-item-count');
+      const cartTotalAmount = document.getElementById('cart-total-amount');
+
+      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+          <div class="empty-cart-message">
+            <i class="fa-regular fa-cart-shopping"></i>
+            <p>Your cart is empty</p>
+          </div>
+        `;
+        cartItemCount.textContent = '0';
+        cartTotalAmount.textContent = '₹0';
+        return;
+      }
+
+      let total = 0;
+      let totalItems = 0;
+
+      cartItemsContainer.innerHTML = cart.map(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        totalItems += item.quantity;
+
+        return `
+          <div class="cart-item">
+            <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+            <div class="cart-item-details">
+              <h4>${item.title}</h4>
+              <p>${item.category}</p>
+              <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
+              <div class="cart-item-actions">
+                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                <span>${item.quantity}</span>
+                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                <button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      cartItemCount.textContent = totalItems;
+      cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
+    }
+
+    function updateCartCount() {
+      const cartCount = document.getElementById('cart-count');
+      if (cartCount) {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+      }
+    }
+
+    window.updateQuantity = function(productId, change) {
+      const itemIndex = cart.findIndex(item => item.id === productId);
+      if (itemIndex === -1) return;
+
+      const item = cart[itemIndex];
+      const newQuantity = item.quantity + change;
+
+      if (newQuantity <= 0) {
+        cart.splice(itemIndex, 1);
+      } else {
+        item.quantity = newQuantity;
+      }
+
+      saveCart();
+      updateCartCount();
+      renderCartItems();
+    };
+
+    window.removeFromCart = function(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      saveCart();
+      updateCartCount();
+      renderCartItems();
+    };
+
+    function saveCart() {
+      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+    }
+  </script>
+
+  <style>
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    
+    .modal-content {
+      position: relative;
+      max-width: 500px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 30px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .modal-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+    }
+    
+    .modal-header button {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #666;
+    }
+    
+    .cart-items {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 1.5rem;
+    }
+    
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .cart-item-image {
+      width: 80px;
+      height: 80px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 12px;
+    }
+    
+    .cart-item-details {
+      flex: 1;
+    }
+    
+    .cart-item-details h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    .cart-item-details p {
+      font-size: 0.8rem;
+      color: #a2a2a2;
+      margin-bottom: 0.5rem;
+    }
+    
+    .cart-item-price {
+      font-weight: 600;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+    }
+    
+    .cart-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .quantity-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .quantity-btn:hover {
+      background: #f5f5f5;
+    }
+    
+    .remove-item {
+      background: none;
+      border: none;
+      color: #ff4444;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+    }
+    
+    .cart-footer {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 1.5rem;
+    }
+    
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-cart-message {
+      text-align: center;
+      padding: 2rem;
+      color: #a2a2a2;
+    }
+    
+    .empty-cart-message i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-info {
+      text-align: center;
+    }
+    
+    .profile-avatar {
+      font-size: 4rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-details {
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+    
+    .profile-details p {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .login-form {
+      text-align: center;
+    }
+    
+    .login-form h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .login-form p {
+      color: #5f5b57;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #d4af37;
+    }
+    
+    .login-btn {
+      width: 100%;
+      margin-top: 1rem;
+    }
+    
+    .error-message {
+      background: #ffe6e6;
+      color: #ff4444;
+      padding: 0.8rem;
+      border-radius: 30px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    
+    .error-message.show {
+      display: block;
+    }
+    
+    .logout-btn {
+      background: #ff4444 !important;
+      border-color: #ff4444 !important;
+      color: white !important;
+      width: 100%;
+    }
+  </style>
+</body>
+</html>
