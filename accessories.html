@@ -1126,40 +1126,25 @@
         return sorted;
       }
 
-      function renderProducts() {
-        const sortedProducts = getSortedProducts();
-        
-        let gridHtml = '';
-        sortedProducts.forEach((p, index) => {
-          const productId = index + 1;
-          gridHtml += `
-            <div class="product-card" data-product-id="${productId}" data-product-title="${p.title}" data-product-category="${p.category}" data-product-price="${p.price}" data-product-image="${p.primaryImg}">
-              <div class="image-frame">
-                <div class="primary-img" style="background-image: url('${p.primaryImg}');"></div>
-                <div class="secondary-img" style="background-image: url('${p.secondaryImg}');"></div>
-                <div class="image-actions">
-                  <button class="img-add" onclick="window.addToCart(${productId})">
-                    <i class="fa-solid fa-cart-plus"></i> add
-                  </button>
-                  <button class="img-buy" onclick="window.buyNow(${productId})">
-                    <i class="fa-solid fa-bolt"></i> buy
-                  </button>
-                </div>
-              </div>
-              <h3 class="product-title">${p.title}</h3>
-              <p class="product-category">${p.category}</p>
-              <div class="product-rating">${renderRating(p.rating)}</div>
-              <div class="product-price"><span class="inr-symbol">₹</span>${p.price.toLocaleString('en-IN')}</div>
-            </div>
-          `;
-        });
-        
-        gridContainer.innerHTML = gridHtml;
-      }
+     function renderProducts() {
+  const gridContainer = document.getElementById('product-grid-container');
+  if (!gridContainer) return;
 
-      renderProducts();
-      sortSelect.addEventListener('change', renderProducts);
-    }
+  // Get products that should show on accessories page AND are in accessories category
+  const accessoriesProducts = products.filter(p => 
+    p.showOnAccessories === true && p.category === 'accessories'
+  );
+
+  if (accessoriesProducts.length === 0) {
+    gridContainer.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
+        <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+        <h3>No accessories found</h3>
+        <p>Check back later for new arrivals!</p>
+      </div>
+    `;
+    return;
+  }
 
     // ==================== START THE APP ====================
     document.addEventListener('DOMContentLoaded', loadComponents);
