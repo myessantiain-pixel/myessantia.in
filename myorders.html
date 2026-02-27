@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Separate CSS Files (will be loaded dynamically) -->
+  <!-- CSS Files -->
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
   
@@ -42,7 +42,6 @@
       letter-spacing: -0.02em;
     }
 
-    /* fluid container */
     .container {
       width: 100%;
       max-width: 1200px;
@@ -55,7 +54,6 @@
       background-repeat: repeat;
     }
 
-    /* --- PAGE TITLE (responsive) --- */
     .page-title {
       text-align: center;
       padding: clamp(0.5rem, 3vw, 1rem) 0 clamp(1rem, 4vw, 2rem);
@@ -79,7 +77,6 @@
       padding: 0 1rem;
     }
 
-    /* --- TRACK ORDER FORM (premium card, responsive) --- */
     .track-card {
       background: #ffffff;
       border-radius: clamp(24px, 5vw, 32px);
@@ -175,7 +172,6 @@
       color: #8f8b85;
     }
 
-    /* --- ORDER RESULT CARD (fully responsive) --- */
     .result-section {
       max-width: 800px;
       margin: 2rem auto 4rem;
@@ -240,7 +236,6 @@
       margin: 2rem 0 1.8rem;
     }
 
-    /* product row - fully responsive */
     .product-row {
       display: flex;
       align-items: center;
@@ -406,14 +401,10 @@
       margin-top: auto;
     }
 
-    /* Touch targets */
     button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .track-btn, .action-btn {
       touch-action: manipulation;
     }
 
-    /* ---------- RESPONSIVE BREAKPOINTS ---------- */
-
-    /* tablets */
     @media (max-width: 768px) {
       .product-row {
         flex-direction: column;
@@ -434,7 +425,6 @@
       }
     }
 
-    /* mobile */
     @media (max-width: 480px) {
       .track-card {
         padding: 1.5rem;
@@ -458,7 +448,6 @@
       }
     }
 
-    /* extra small */
     @media (max-width: 360px) {
       .product-meta {
         flex-direction: column;
@@ -473,7 +462,6 @@
 </head>
 <body class="bg-noise">
   
-  <!-- Header loaded dynamically -->
   <div id="header"></div>
 
   <main>
@@ -482,7 +470,6 @@
       <p>Enter your details to track an order</p>
     </div>
 
-    <!-- track order form card (always visible) -->
     <div class="container">
       <div class="track-card">
         <h2><i class="fa-solid fa-magnifying-glass"></i> track your order</h2>
@@ -500,14 +487,10 @@
       </div>
     </div>
 
-    <!-- result container: order details appear here dynamically -->
     <div class="container result-section" id="resultContainer">
-      <div class="order-result-card" id="orderResultCard">
-        <!-- content filled by js -->
-      </div>
+      <div class="order-result-card" id="orderResultCard"></div>
     </div>
 
-    <!-- subtle need help? -->
     <div class="container" style="text-align: center; margin: 2rem auto 3rem;">
       <p style="color: #8f8b85; font-size: 0.9rem;">
         <i class="fa-regular fa-circle-question" style="color: #d4af37;"></i> 
@@ -516,508 +499,144 @@
     </div>
   </main>
 
-  <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
   <script>
-    // Cart state - initialize from localStorage
     let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-    
-    // User state - initialize from localStorage
     let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
 
-    // Load header and footer
-    Promise.all([
-      fetch('header.html').then(res => res.text()).catch(() => {
-        console.warn('header.html not found, using empty placeholder');
-        return '';
-      }),
-      fetch('footer.html').then(res => res.text()).catch(() => {
-        console.warn('footer.html not found, using empty placeholder');
-        return '';
-      })
-    ]).then(([headerData, footerData]) => {
-      document.getElementById('header').innerHTML = headerData || getDefaultHeader();
-      document.getElementById('footer').innerHTML = footerData || getDefaultFooter();
-      
-      // Initialize after components are loaded
-      setTimeout(() => {
-        initializeApp();
-      }, 100);
-    }).catch(error => {
-      console.error('Error loading components:', error);
-      // Use default header/footer if fetch fails
-      document.getElementById('header').innerHTML = getDefaultHeader();
-      document.getElementById('footer').innerHTML = getDefaultFooter();
-      setTimeout(() => {
-        initializeApp();
-      }, 100);
-    });
+    async function loadComponents() {
+      try {
+        const headerResponse = await fetch('header.html');
+        const headerData = await headerResponse.text();
+        document.getElementById('header').innerHTML = headerData;
 
-    // Default header HTML in case header.html is not available
-    function getDefaultHeader() {
-      return `
-        <header style="background: #ffffff; border-bottom: 1px solid #f0f0f0; padding: 0.8rem 0;">
-          <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <div class="logo">
-              <a href="/" style="text-decoration: none; color: #1a1a1a;">
-                <span style="font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 500;">MyEssantia</span>
-                <span style="font-size: 0.7rem; color: #d4af37; display: block; line-height: 1;">premium essentials</span>
-              </a>
-            </div>
-            <nav style="display: flex; gap: 2rem;">
-              <a href="#" style="text-decoration: none; color: #1a1a1a;">shop</a>
-              <a href="#" style="text-decoration: none; color: #1a1a1a;">new</a>
-              <a href="#" style="text-decoration: none; color: #1a1a1a;">editorial</a>
-            </nav>
-            <div class="header-icons" style="display: flex; gap: 1.2rem; align-items: center;">
-              <a href="#" id="profile-icon" style="font-size: 1.3rem; color: #1a1a1a;">
-                <i class="fa-regular fa-user"></i>
-              </a>
-              <a href="#" id="cart-icon" style="font-size: 1.3rem; color: #1a1a1a; position: relative;">
-                <i class="fa-regular fa-bag-shopping"></i>
-                <span id="cart-count" style="position: absolute; top: -8px; right: -8px; background: #d4af37; color: #0c0c0c; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center;">0</span>
-              </a>
-            </div>
-          </div>
-        </header>
+        const footerResponse = await fetch('footer.html');
+        const footerData = await footerResponse.text();
+        document.getElementById('footer').innerHTML = footerData;
 
-        <!-- Cart Modal -->
-        <div id="cart-modal" class="modal" style="display: none;">
-          <div class="modal-content" style="background: white; border-radius: 30px;">
-            <div class="modal-header">
-              <h3>Your Cart</h3>
-              <button id="close-cart" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
-            </div>
-            <div id="cart-items" class="cart-items"></div>
-            <div class="cart-footer">
-              <div class="cart-total">
-                <span>Total:</span>
-                <span id="cart-total-amount">₹0</span>
-              </div>
-              <button id="checkout-btn" class="btn" style="width: 100%;">Checkout</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Profile Modal -->
-        <div id="profile-modal" class="modal" style="display: none;">
-          <div class="modal-content" style="background: white; border-radius: 30px;">
-            <div class="modal-header">
-              <h3>Account</h3>
-              <button id="close-profile" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
-            </div>
-            <div id="profile-content" class="profile-content"></div>
-          </div>
-        </div>
-      `;
-    }
-
-    // Default footer HTML
-    function getDefaultFooter() {
-      return `
-        <footer style="background: #fafafa; border-top: 1px solid #efefef; padding: 3rem 0 2rem; margin-top: 2rem;">
-          <div class="container">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
-              <div>
-                <h4 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem;">MyEssantia</h4>
-                <p style="color: #5f5b57;">Premium accessories & daily essentials.</p>
-              </div>
-              <div>
-                <h4>Shop</h4>
-                <ul style="list-style: none;">
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">New Arrivals</a></li>
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Bestsellers</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4>Support</h4>
-                <ul style="list-style: none;">
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Contact</a></li>
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Shipping</a></li>
-                </ul>
-              </div>
-            </div>
-            <div style="text-align: center; margin-top: 3rem; color: #a2a2a2;">
-              <p>&copy; 2025 MyEssantia. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
-      `;
+        setTimeout(() => {
+          initializeApp();
+        }, 50);
+      } catch (error) {
+        console.error('Error loading components:', error);
+      }
     }
 
     function initializeApp() {
-      initializeCart();
-      initializeProfile();
-      
-      // Initialize order tracking functionality
+      updateCartCount();
+      updateProfileIcon();
+      setupEventListeners();
       initializeOrderTracking();
     }
 
-    // ==================== CART FUNCTIONS ====================
-    function initializeCart() {
-      updateCartCount();
-      setupCartEventListeners();
-    }
+    function setupEventListeners() {
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const navMenu = document.getElementById('nav-menu');
+      
+      if (mobileMenuToggle && navMenu) {
+        mobileMenuToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          navMenu.classList.toggle('show');
+        });
+      }
 
-    function setupCartEventListeners() {
       const cartIcon = document.getElementById('cart-icon');
-      const closeCart = document.getElementById('close-cart');
-      const cartModal = document.getElementById('cart-modal');
-      const checkoutBtn = document.getElementById('checkout-btn');
-
       if (cartIcon) {
-        cartIcon.addEventListener('click', (e) => {
+        cartIcon.addEventListener('click', function(e) {
           e.preventDefault();
           openCart();
         });
       }
 
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon) {
+        profileIcon.addEventListener('click', function(e) {
+          e.preventDefault();
+          openProfile();
+        });
+      }
+
+      const closeCart = document.getElementById('close-cart');
       if (closeCart) {
-        closeCart.addEventListener('click', () => {
+        closeCart.addEventListener('click', function() {
           closeModal('cart-modal');
         });
       }
 
-      window.addEventListener('click', (e) => {
-        if (e.target === cartModal) {
-          closeModal('cart-modal');
-        }
-      });
+      const closeProfile = document.getElementById('close-profile');
+      if (closeProfile) {
+        closeProfile.addEventListener('click', function() {
+          closeModal('profile-modal');
+        });
+      }
 
+      const checkoutBtn = document.getElementById('checkout-btn');
       if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
+        checkoutBtn.addEventListener('click', function() {
           if (cart.length === 0) {
             alert('Your cart is empty!');
           } else {
-            window.location.href = 'checkout.html';
+            alert('Proceeding to checkout...');
           }
         });
       }
+
+      window.addEventListener('click', function(e) {
+        const cartModal = document.getElementById('cart-modal');
+        const profileModal = document.getElementById('profile-modal');
+        
+        if (e.target === cartModal) {
+          closeModal('cart-modal');
+        }
+        if (e.target === profileModal) {
+          closeModal('profile-modal');
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeModal('cart-modal');
+          closeModal('profile-modal');
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (navMenu && navMenu.classList.contains('show')) {
+          if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+            navMenu.classList.remove('show');
+          }
+        }
+      });
     }
 
     function openCart() {
       const cartModal = document.getElementById('cart-modal');
       if (cartModal) {
         renderCartItems();
-        cartModal.style.display = 'block';
+        cartModal.classList.add('show');
         document.body.style.overflow = 'hidden';
       }
-    }
-
-    // ==================== PROFILE FUNCTIONS ====================
-    function initializeProfile() {
-      updateProfileIcon();
-      setupProfileEventListeners();
-    }
-
-    function setupProfileEventListeners() {
-      const profileIcon = document.getElementById('profile-icon');
-      const closeProfile = document.getElementById('close-profile');
-      const profileModal = document.getElementById('profile-modal');
-
-      if (profileIcon) {
-        profileIcon.addEventListener('click', (e) => {
-          e.preventDefault();
-          openProfile();
-        });
-      }
-
-      if (closeProfile) {
-        closeProfile.addEventListener('click', () => {
-          closeModal('profile-modal');
-        });
-      }
-
-      window.addEventListener('click', (e) => {
-        if (e.target === profileModal) {
-          closeModal('profile-modal');
-        }
-      });
     }
 
     function openProfile() {
       const profileModal = document.getElementById('profile-modal');
       if (profileModal) {
         renderProfileContent();
-        profileModal.style.display = 'block';
+        profileModal.classList.add('show');
         document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function renderProfileContent() {
-      const profileContent = document.getElementById('profile-content');
-      if (!profileContent) return;
-
-      if (currentUser) {
-        profileContent.innerHTML = `
-          <div class="profile-info">
-            <div class="profile-avatar">
-              <i class="fa-regular fa-circle-user"></i>
-            </div>
-            <div class="profile-details">
-              <p><strong>Name:</strong> ${currentUser.name}</p>
-              <p><strong>Email:</strong> ${currentUser.email}</p>
-              <p><strong>Member since:</strong> ${currentUser.memberSince || '2025'}</p>
-            </div>
-            <button class="btn logout-btn" onclick="logout()">Logout</button>
-          </div>
-        `;
-      } else {
-        profileContent.innerHTML = `
-          <div class="login-form">
-            <h4>Welcome Back!</h4>
-            <p>Sign in to your account</p>
-            <div id="login-error" class="error-message"></div>
-            <form onsubmit="handleLogin(event)">
-              <div class="form-group">
-                <input type="email" id="email" placeholder="Email" required>
-              </div>
-              <div class="form-group">
-                <input type="password" id="password" placeholder="Password" required>
-              </div>
-              <button type="submit" class="btn login-btn">Sign In</button>
-            </form>
-            <p style="margin-top: 1rem;">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
-          </div>
-        `;
-      }
-    }
-
-    window.handleLogin = function(event) {
-      event.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      
-      if (!email || !password) {
-        alert('Please fill in all fields');
-        return;
-      }
-
-      const user = {
-        name: email.split('@')[0],
-        email: email,
-        memberSince: '2025'
-      };
-
-      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
-      currentUser = user;
-      updateProfileIcon();
-      renderProfileContent();
-      alert('Login successful!');
-    };
-
-    window.logout = function() {
-      localStorage.removeItem('MyEssantia_user');
-      currentUser = null;
-      updateProfileIcon();
-      renderProfileContent();
-      alert('Logged out successfully');
-    };
-
-    window.showSignup = function() {
-      alert('Sign up functionality - please use login form for demo');
-    };
-
-    function updateProfileIcon() {
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon && currentUser) {
-        profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
-      } else if (profileIcon) {
-        profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
       }
     }
 
     function closeModal(modalId) {
       const modal = document.getElementById(modalId);
       if (modal) {
-        modal.style.display = 'none';
+        modal.classList.remove('show');
         document.body.style.overflow = '';
       }
     }
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal('cart-modal');
-        closeModal('profile-modal');
-      }
-    });
-
-    // ==================== ORDER TRACKING FUNCTIONS ====================
-    function initializeOrderTracking() {
-      // ---------- mock order database ----------
-      window.ordersDB = [
-        {
-          orderId: 'ESS-9876',
-          email: 'customer@essence.in',
-          date: '15 Mar 2025',
-          items: [
-            { name: 'leather cardholder', qty: 1, price: 1990, image: '👜' },
-            { name: 'minimal watch', qty: 1, price: 4490, image: '⌚' }
-          ],
-          total: 6480
-        },
-        {
-          orderId: 'ESS-5432',
-          email: 'alex@essence.in',
-          date: '10 Apr 2025',
-          items: [
-            { name: 'slim power bank', qty: 2, price: 7180, image: '🔋' },
-            { name: 'universal adapter', qty: 1, price: 3290, image: '🔌' }
-          ],
-          total: 10470
-        },
-        {
-          orderId: 'ESS-2468',
-          email: 'jordan@essence.in',
-          date: '18 Apr 2025',
-          items: [
-            { name: 'aviator sunglasses', qty: 1, price: 2990, image: '🕶️' },
-            { name: 'tech organizer', qty: 1, price: 2490, image: '🧳' }
-          ],
-          total: 5480
-        },
-        {
-          orderId: 'ESS-1357',
-          email: 'sam@essence.in',
-          date: '22 Apr 2025',
-          items: [
-            { name: 'leather backpack', qty: 1, price: 6490, image: '🎒' },
-            { name: 'wireless charger', qty: 1, price: 2190, image: '⚡' }
-          ],
-          total: 8680
-        }
-      ];
-
-      // DOM elements
-      window.trackBtn = document.getElementById('track-order-btn');
-      window.orderNumberInput = document.getElementById('order-number');
-      window.orderEmailInput = document.getElementById('order-email');
-      window.resultCard = document.getElementById('orderResultCard');
-      window.resultSection = document.getElementById('resultContainer');
-      window.errorDiv = document.getElementById('error-message');
-
-      // Initially hide result and error
-      if (window.errorDiv) window.errorDiv.classList.remove('show');
-      if (window.resultCard) window.resultCard.classList.remove('visible');
-
-      // Track button click
-      if (window.trackBtn) {
-        window.trackBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          findOrder();
-        });
-      }
-
-      // Enter key triggers search
-      if (window.orderNumberInput && window.orderEmailInput) {
-        [window.orderNumberInput, window.orderEmailInput].forEach(input => {
-          input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              findOrder();
-            }
-          });
-        });
-      }
-    }
-
-    function findOrder() {
-      const orderNumber = window.orderNumberInput.value.trim().toUpperCase();
-      const email = window.orderEmailInput.value.trim().toLowerCase();
-
-      // reset
-      if (window.errorDiv) window.errorDiv.classList.remove('show');
-      
-      if (!orderNumber || !email) {
-        if (window.errorDiv) {
-          window.errorDiv.textContent = 'Please enter both order number and email/phone.';
-          window.errorDiv.classList.add('show');
-        }
-        if (window.resultCard) window.resultCard.classList.remove('visible');
-        return;
-      }
-
-      // lookup in database
-      const foundOrder = window.ordersDB.find(o => o.orderId === orderNumber && o.email.toLowerCase() === email);
-      
-      if (foundOrder) {
-        renderOrder(foundOrder);
-        scrollToResult();
-      } else {
-        if (window.resultCard) window.resultCard.classList.remove('visible');
-        if (window.errorDiv) {
-          window.errorDiv.textContent = 'Order not found. Please check your order number and email.';
-          window.errorDiv.classList.add('show');
-        }
-      }
-    }
-
-    function renderOrder(order) {
-      const itemsHtml = order.items.map(item => {
-        return `
-          <div class="product-row">
-            <div class="product-image-placeholder">
-              <span>${item.image}</span>
-            </div>
-            <div class="product-info">
-              <span class="product-name">${item.name}</span>
-              <div class="product-meta">
-                <span class="product-qty">x${item.qty}</span>
-                <span class="product-price">₹${item.price.toLocaleString()}</span>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      const html = `
-        <div class="result-header">
-          <span class="order-id-large">${order.orderId}</span>
-          <span class="order-date-large">ordered ${order.date}</span>
-        </div>
-        <div class="order-items-container">
-          ${itemsHtml}
-        </div>
-        <div class="order-summary">
-          <div class="summary-left"><span>total amount</span></div>
-          <div class="summary-right">₹${order.total.toLocaleString()}</div>
-        </div>
-        <div class="tracking-actions">
-          <button class="action-btn primary" id="simulateTrackBtn"><i class="fa-solid fa-truck"></i> track shipment</button>
-          <a href="#" class="action-btn" id="homePageBtn"><i class="fa-solid fa-house"></i> home</a>
-        </div>
-      `;
-      
-      if (window.resultCard) {
-        window.resultCard.innerHTML = html;
-        window.resultCard.classList.add('visible');
-      }
-      
-      if (window.errorDiv) window.errorDiv.classList.remove('show');
-
-      // attach listener to track button
-      document.getElementById('simulateTrackBtn')?.addEventListener('click', function(e) {
-        e.preventDefault();
-        alert(`🚚 tracking simulation for order ${order.orderId} – your package is on its way!`);
-      });
-
-      // home link
-      document.getElementById('homePageBtn')?.addEventListener('click', function(e) {
-        e.preventDefault();
-        window.location.href = '/';
-      });
-    }
-
-    function scrollToResult() {
-      setTimeout(() => {
-        if (window.resultSection) {
-          window.resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    }
-
-    // ==================== CART FUNCTIONS (continued) ====================
     function renderCartItems() {
       const cartItemsContainer = document.getElementById('cart-items');
       const cartItemCount = document.getElementById('cart-item-count');
@@ -1030,10 +649,11 @@
           <div class="empty-cart-message">
             <i class="fa-regular fa-cart-shopping"></i>
             <p>Your cart is empty</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Start shopping to add items!</p>
           </div>
         `;
         cartItemCount.textContent = '0';
-        cartTotalAmount.textContent = '₹0';
+        cartTotalAmount.textContent = '₹0.00';
         return;
       }
 
@@ -1047,16 +667,22 @@
 
         return `
           <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+            <div class="cart-item-image" style="background-image: url('${item.primaryImg}')"></div>
             <div class="cart-item-details">
-              <h4>${item.title}</h4>
-              <p>${item.category}</p>
+              <h4 class="cart-item-title">${item.title}</h4>
+              <p class="cart-item-category">${item.category}</p>
               <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
               <div class="cart-item-actions">
-                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
-                <span>${item.quantity}</span>
-                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
-                <button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button>
+                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+                <span class="item-quantity">${item.quantity}</span>
+                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+                <button class="remove-item" onclick="window.removeFromCart(${item.id})">
+                  Remove
+                </button>
               </div>
             </div>
           </div>
@@ -1103,224 +729,508 @@
     function saveCart() {
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
     }
+
+    function renderProfileContent() {
+      const profileContent = document.getElementById('profile-content');
+      if (!profileContent) return;
+
+      if (currentUser) {
+        profileContent.innerHTML = `
+          <div class="profile-info">
+            <div class="profile-avatar">
+              <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">
+            </div>
+            <div class="profile-details">
+              <p>
+                <i class="fa-regular fa-user"></i>
+                <span class="label">Name:</span>
+                <span class="value">${currentUser.name}</span>
+              </p>
+              <p>
+                <i class="fa-regular fa-envelope"></i>
+                <span class="label">Email:</span>
+                <span class="value">${currentUser.email}</span>
+              </p>
+            </div>
+            <button class="btn logout-btn" onclick="window.logout()">
+              <i class="fa-solid fa-sign-out-alt"></i>
+              Logout
+            </button>
+          </div>
+        `;
+      } else {
+        profileContent.innerHTML = `
+          <div class="login-form">
+            <div class="login-header">
+              <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
+              <h4>Welcome Back!</h4>
+              <p>Sign in with Google to continue</p>
+            </div>
+            
+            <button class="btn google-login-btn" onclick="window.handleGoogleLogin()">
+              <i class="fa-brands fa-google"></i>
+              Sign in with Google
+            </button>
+            
+            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
+              By signing in, you agree to our Terms of Service and Privacy Policy.
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    function updateProfileIcon() {
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon) {
+        if (currentUser) {
+          profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
+        } else {
+          profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
+        }
+      }
+    }
+
+    window.handleGoogleLogin = function() {
+      const mockGoogleUser = {
+        name: 'John Doe',
+        email: 'john@gmail.com',
+        picture: 'https://via.placeholder.com/80',
+        provider: 'google',
+        memberSince: '2025'
+      };
+
+      localStorage.setItem('MyEssantia_user', JSON.stringify(mockGoogleUser));
+      currentUser = mockGoogleUser;
+      updateProfileIcon();
+      renderProfileContent();
+      closeModal('profile-modal');
+      alert('Successfully signed in with Google!');
+    };
+
+    window.logout = function() {
+      localStorage.removeItem('MyEssantia_user');
+      currentUser = null;
+      updateProfileIcon();
+      renderProfileContent();
+      alert('You have been logged out successfully');
+    };
+
+    function initializeOrderTracking() {
+      window.ordersDB = [
+        {
+          orderId: 'ESS-9876',
+          email: 'customer@essence.in',
+          date: '15 Mar 2025',
+          items: [
+            { name: 'leather cardholder', qty: 1, price: 1990, image: '👜' },
+            { name: 'minimal watch', qty: 1, price: 4490, image: '⌚' }
+          ],
+          total: 6480
+        },
+        {
+          orderId: 'ESS-5432',
+          email: 'alex@essence.in',
+          date: '10 Apr 2025',
+          items: [
+            { name: 'slim power bank', qty: 2, price: 7180, image: '🔋' },
+            { name: 'universal adapter', qty: 1, price: 3290, image: '🔌' }
+          ],
+          total: 10470
+        },
+        {
+          orderId: 'ESS-2468',
+          email: 'jordan@essence.in',
+          date: '18 Apr 2025',
+          items: [
+            { name: 'aviator sunglasses', qty: 1, price: 2990, image: '🕶️' },
+            { name: 'tech organizer', qty: 1, price: 2490, image: '🧳' }
+          ],
+          total: 5480
+        },
+        {
+          orderId: 'ESS-1357',
+          email: 'sam@essence.in',
+          date: '22 Apr 2025',
+          items: [
+            { name: 'leather backpack', qty: 1, price: 6490, image: '🎒' },
+            { name: 'wireless charger', qty: 1, price: 2190, image: '⚡' }
+          ],
+          total: 8680
+        }
+      ];
+
+      const trackBtn = document.getElementById('track-order-btn');
+      const orderNumberInput = document.getElementById('order-number');
+      const orderEmailInput = document.getElementById('order-email');
+      const resultCard = document.getElementById('orderResultCard');
+      const errorDiv = document.getElementById('error-message');
+
+      if (errorDiv) errorDiv.classList.remove('show');
+      if (resultCard) resultCard.classList.remove('visible');
+
+      if (trackBtn) {
+        trackBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          findOrder();
+        });
+      }
+
+      if (orderNumberInput && orderEmailInput) {
+        [orderNumberInput, orderEmailInput].forEach(input => {
+          input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              findOrder();
+            }
+          });
+        });
+      }
+    }
+
+    function findOrder() {
+      const orderNumberInput = document.getElementById('order-number');
+      const orderEmailInput = document.getElementById('order-email');
+      const errorDiv = document.getElementById('error-message');
+      const resultCard = document.getElementById('orderResultCard');
+
+      const orderNumber = orderNumberInput.value.trim().toUpperCase();
+      const email = orderEmailInput.value.trim().toLowerCase();
+
+      if (errorDiv) errorDiv.classList.remove('show');
+      
+      if (!orderNumber || !email) {
+        if (errorDiv) {
+          errorDiv.textContent = 'Please enter both order number and email/phone.';
+          errorDiv.classList.add('show');
+        }
+        if (resultCard) resultCard.classList.remove('visible');
+        return;
+      }
+
+      const foundOrder = window.ordersDB.find(o => o.orderId === orderNumber && o.email.toLowerCase() === email);
+      
+      if (foundOrder) {
+        renderOrder(foundOrder);
+        scrollToResult();
+      } else {
+        if (resultCard) resultCard.classList.remove('visible');
+        if (errorDiv) {
+          errorDiv.textContent = 'Order not found. Please check your order number and email.';
+          errorDiv.classList.add('show');
+        }
+      }
+    }
+
+    function renderOrder(order) {
+      const resultCard = document.getElementById('orderResultCard');
+      
+      const itemsHtml = order.items.map(item => {
+        return `
+          <div class="product-row">
+            <div class="product-image-placeholder">
+              <span>${item.image}</span>
+            </div>
+            <div class="product-info">
+              <span class="product-name">${item.name}</span>
+              <div class="product-meta">
+                <span class="product-qty">x${item.qty}</span>
+                <span class="product-price">₹${item.price.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const html = `
+        <div class="result-header">
+          <span class="order-id-large">${order.orderId}</span>
+          <span class="order-date-large">ordered ${order.date}</span>
+        </div>
+        <div class="order-items-container">
+          ${itemsHtml}
+        </div>
+        <div class="order-summary">
+          <div class="summary-left"><span>total amount</span></div>
+          <div class="summary-right">₹${order.total.toLocaleString()}</div>
+        </div>
+        <div class="tracking-actions">
+          <button class="action-btn primary" id="simulateTrackBtn"><i class="fa-solid fa-truck"></i> track shipment</button>
+          <a href="index.html" class="action-btn"><i class="fa-solid fa-house"></i> home</a>
+        </div>
+      `;
+      
+      if (resultCard) {
+        resultCard.innerHTML = html;
+        resultCard.classList.add('visible');
+      }
+      
+      const errorDiv = document.getElementById('error-message');
+      if (errorDiv) errorDiv.classList.remove('show');
+
+      document.getElementById('simulateTrackBtn')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        alert(`🚚 tracking simulation for order ${order.orderId} – your package is on its way!`);
+      });
+    }
+
+    function scrollToResult() {
+      const resultSection = document.getElementById('resultContainer');
+      setTimeout(() => {
+        if (resultSection) {
+          resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadComponents);
   </script>
 
   <style>
-    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
-      top: 0;
+      z-index: 1000;
       left: 0;
+      top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      overflow-y: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
     }
-    
+
+    .modal.show {
+      display: block;
+    }
+
     .modal-content {
-      position: relative;
-      max-width: 500px;
-      margin: 50px auto;
-      background: white;
-      border-radius: 30px;
+      background-color: #fff;
+      margin: 2rem auto;
       padding: 2rem;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 500px;
+      border-radius: 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      animation: slideDown 0.3s ease;
     }
-    
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #f0f0f0;
     }
-    
+
     .modal-header h3 {
       font-family: 'Playfair Display', serif;
       font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0;
     }
-    
-    .modal-header button {
+
+    .close-modal {
       background: none;
       border: none;
       font-size: 2rem;
       cursor: pointer;
-      color: #666;
+      color: #999;
+      transition: color 0.2s;
+      line-height: 1;
+      padding: 0 0.5rem;
     }
-    
-    .cart-items {
-      max-height: 400px;
-      overflow-y: auto;
-      margin-bottom: 1.5rem;
+
+    .close-modal:hover {
+      color: #1a1a1a;
     }
-    
-    .cart-item {
-      display: flex;
-      gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .cart-item-image {
-      width: 80px;
-      height: 80px;
-      background-size: cover;
-      background-position: center;
-      border-radius: 12px;
-    }
-    
-    .cart-item-details {
-      flex: 1;
-    }
-    
-    .cart-item-details h4 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1rem;
-      margin-bottom: 0.3rem;
-    }
-    
-    .cart-item-details p {
-      font-size: 0.8rem;
-      color: #a2a2a2;
-      margin-bottom: 0.5rem;
-    }
-    
-    .cart-item-price {
-      font-weight: 600;
-      color: #d4af37;
-      margin-bottom: 0.5rem;
-    }
-    
-    .cart-item-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .quantity-btn {
-      width: 30px;
-      height: 30px;
-      border: 1px solid #ddd;
-      background: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    
-    .quantity-btn:hover {
-      background: #f5f5f5;
-    }
-    
-    .remove-item {
-      background: none;
-      border: none;
-      color: #ff4444;
-      cursor: pointer;
-      font-size: 0.8rem;
-      margin-left: 0.5rem;
-    }
-    
-    .cart-footer {
+
+    .modal-footer {
       border-top: 1px solid #f0f0f0;
       padding-top: 1.5rem;
     }
-    
+
     .cart-total {
       display: flex;
       justify-content: space-between;
-      font-weight: 600;
+      align-items: center;
       font-size: 1.2rem;
-      margin-bottom: 1rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #1a1a1a;
+      font-family: 'Montserrat', sans-serif;
     }
-    
+
+    #cart-total-amount {
+      color: #d4af37;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: #d4af37;
+      border: 1px solid #d4af37;
+      color: #0c0c0c;
+      font-weight: 700;
+      padding: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .checkout-btn:hover {
+      background: #c4a030;
+      border-color: #c4a030;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    }
+
     .empty-cart-message {
       text-align: center;
-      padding: 2rem;
-      color: #a2a2a2;
+      padding: 3rem 1rem;
+      color: #999;
     }
-    
+
     .empty-cart-message i {
       font-size: 3rem;
       margin-bottom: 1rem;
+      color: #ddd;
     }
-    
-    .profile-info {
-      text-align: center;
-    }
-    
+
     .profile-avatar {
-      font-size: 4rem;
+      width: 80px;
+      height: 80px;
+      background: #f5f5f5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2.5rem;
+      color: #d4af37;
+      border: 2px solid #d4af37;
+      overflow: hidden;
+    }
+
+    .profile-details {
+      text-align: left;
+      background: #f9f9f9;
+      padding: 1.5rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-details p {
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #333;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+    }
+
+    .profile-details .label {
+      font-weight: 400;
+      color: #666;
+      min-width: 70px;
+    }
+
+    .profile-details .value {
+      font-weight: 600;
+      color: #1a1a1a;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .logout-btn {
+      width: 100%;
+      background: #fff;
+      border: 1px solid #d4af37;
+      color: #1a1a1a;
+      padding: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      transition: all 0.3s;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background: #d4af37;
+      color: #fff;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header i {
+      font-size: 3rem;
       color: #d4af37;
       margin-bottom: 1rem;
     }
-    
-    .profile-details {
-      text-align: left;
-      margin-bottom: 1.5rem;
-    }
-    
-    .profile-details p {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .login-form {
-      text-align: center;
-    }
-    
-    .login-form h4 {
+
+    .login-header h4 {
       font-family: 'Playfair Display', serif;
       font-size: 1.3rem;
+      font-weight: 600;
+      color: #1a1a1a;
       margin-bottom: 0.5rem;
     }
-    
-    .login-form p {
-      color: #5f5b57;
-      margin-bottom: 1.5rem;
-    }
-    
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    
-    .form-group input {
+
+    .google-login-btn {
+      background: #fff;
+      color: #333;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
       width: 100%;
       padding: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 30px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      border-radius: 40px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
     }
-    
-    .form-group input:focus {
-      outline: none;
+
+    .google-login-btn:hover {
+      background: #f8f8f8;
       border-color: #d4af37;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
     }
-    
-    .login-btn {
-      width: 100%;
-      margin-top: 1rem;
-    }
-    
-    .error-message {
-      background: #ffe6e6;
-      color: #ff4444;
-      padding: 0.8rem;
-      border-radius: 30px;
-      margin-bottom: 1rem;
-      display: none;
-    }
-    
-    .error-message.show {
-      display: block;
-    }
-    
-    .logout-btn {
-      background: #ff4444 !important;
-      border-color: #ff4444 !important;
-      color: white !important;
-      width: 100%;
+
+    .google-login-btn i {
+      color: #DB4437;
+      font-size: 1.2rem;
     }
   </style>
 </body>
