@@ -132,10 +132,13 @@
       display: flex;
       flex-direction: column;
       height: 100%;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
     }
     .product-card:hover {
       box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
-      border-color: #e0d9d0;
+      border-color: #d4af37;
       transform: translateY(-6px);
     }
 
@@ -302,6 +305,27 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
+    .stock-badge {
+      display: inline-block;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    .in-stock {
+      background: #e3f1e3;
+      color: #1e7a44;
+    }
+    .low-stock {
+      background: #fff0db;
+      color: #b85b1a;
+    }
+    .out-of-stock {
+      background: #ffebee;
+      color: #b71c1c;
+    }
+
     button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add, .img-buy, select {
       touch-action: manipulation;
     }
@@ -434,6 +458,10 @@
       }
     }
 
+    function getRandomReviewCount() {
+      return Math.floor(Math.random() * (500 - 50 + 1)) + 50;
+    }
+
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
       const sortSelect = document.getElementById('sort-select');
@@ -462,7 +490,13 @@
           else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
           else stars += '<i class="fa-regular fa-star"></i>';
         }
-        return stars + `<span>(${rating.toFixed(1)})</span>`;
+        return stars;
+      }
+
+      function getStockStatus(stock) {
+        if (stock > 10) return '<span class="stock-badge in-stock">In Stock</span>';
+        if (stock > 0) return '<span class="stock-badge low-stock">Low Stock</span>';
+        return '<span class="stock-badge out-of-stock">Out of Stock</span>';
       }
 
       function getSortedProducts() {
@@ -478,6 +512,8 @@
             sorted.sort((a, b) => b.rating - a.rating);
             break;
           default:
+            // Default sort by newest (by id or timestamp if available)
+            sorted.sort((a, b) => b.id - a.id);
             break;
         }
         return sorted;
@@ -485,29 +521,39 @@
 
       function renderAllProducts() {
         const sortedProducts = getSortedProducts();
+        const reviewCount = getRandomReviewCount();
         
         let gridHtml = '';
         sortedProducts.forEach(product => {
+          const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
+          const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
+          
           gridHtml += `
-            <div class="product-card" data-product-id="${product.id}" data-product-title="${product.title}" data-product-category="${product.category}" data-product-price="${product.price}" data-product-image="${product.primaryImg}">
+            <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}">
               <div class="image-frame">
                 <span class="new-badge"><i class="fa-regular fa-star"></i> just in</span>
-                <div class="primary-img" style="background-image: url('${product.primaryImg}');"></div>
-                <div class="secondary-img" style="background-image: url('${product.secondaryImg}');"></div>
-                <div class="image-actions">
-                  <button class="img-add" onclick="window.addToCart(${product.id})">
+                <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+                <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+                <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
+                  <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault(); event.stopPropagation();">
                     <i class="fa-solid fa-cart-plus"></i> add
                   </button>
-                  <button class="img-buy" onclick="window.buyNow(${product.id})">
+                  <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault(); event.stopPropagation();">
                     <i class="fa-solid fa-bolt"></i> buy
                   </button>
                 </div>
               </div>
               <h3 class="product-title">${product.title}</h3>
               <p class="product-category">${product.category}</p>
-              <div class="product-rating">${renderRating(product.rating)}</div>
-              <div class="product-price"><span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}</div>
-            </div>
+              <div class="product-rating">
+                ${renderRating(product.rating)}
+                <span>(${reviewCount})</span>
+              </div>
+              <div class="product-price">
+                <span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}
+              </div>
+              ${getStockStatus(product.stock || 10)}
+            </a>
           `;
         });
         
@@ -644,14 +690,33 @@
         existingItem.quantity += 1;
       } else {
         cart.push({
-          ...product,
+          id: productId,
+          title: product.title,
+          category: product.category,
+          price: product.price,
+          primaryImg: product.primaryImg || (product.images && product.images[0]),
           quantity: 1
         });
       }
 
       saveCart();
       updateCartCount();
-      alert(`${product.title} added to cart!`);
+
+      // Show visual feedback on the button
+      const btn = event?.target?.closest('button');
+      if (btn) {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+        btn.style.background = '#4CAF50';
+        btn.style.color = 'white';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          btn.style.color = '';
+        }, 1500);
+      } else {
+        alert(`${product.title} added to cart!`);
+      }
     };
 
     window.buyNow = function(productId) {
