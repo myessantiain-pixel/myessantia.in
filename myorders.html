@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>ESSENCE · track your order (responsive)</title>
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Separate CSS Files (will be loaded dynamically) -->
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="footer.css">
+  
+  <style>
+    /* -------------------- RESET & GLOBAL -------------------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #fafafa;
+      color: #1a1a1a;
+      line-height: 1.5;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    /* fluid container */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 4vw, 2rem);
+    }
+
+    .bg-noise {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+      background-repeat: repeat;
+    }
+
+    /* --- PAGE TITLE (responsive) --- */
+    .page-title {
+      text-align: center;
+      padding: clamp(0.5rem, 3vw, 1rem) 0 clamp(1rem, 4vw, 2rem);
+    }
+    .page-title h1 {
+      font-size: clamp(2.2rem, 6vw, 2.8rem);
+      font-weight: 400;
+      color: #1a1a1a;
+      line-height: 1.2;
+    }
+    .page-title h1 span {
+      color: #d4af37;
+      font-weight: 500;
+      font-style: italic;
+    }
+    .page-title p {
+      color: #5f5b57;
+      max-width: 500px;
+      margin: 0.5rem auto 0;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      padding: 0 1rem;
+    }
+
+    /* --- TRACK ORDER FORM (premium card, responsive) --- */
+    .track-card {
+      background: #ffffff;
+      border-radius: clamp(24px, 5vw, 32px);
+      padding: clamp(1.5rem, 5vw, 2.5rem);
+      box-shadow: 0 15px 35px -10px rgba(0,0,0,0.05);
+      border: 1px solid #f0f0f0;
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      width: 100%;
+    }
+
+    .track-card h2 {
+      font-size: clamp(1.5rem, 4vw, 1.8rem);
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .track-card h2 i {
+      color: #d4af37;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #5f5b57;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border: 1px solid #e5e5e5;
+      border-radius: 60px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      transition: all 0.2s;
+      background: #fcfcfc;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+      background: #ffffff;
+    }
+
+    .track-btn {
+      background: #1a1a1a;
+      color: white;
+      width: 100%;
+      padding: 1.1rem;
+      border: none;
+      border-radius: 60px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+
+    .track-btn:hover {
+      background: #d4af37;
+      color: #0c0c0c;
+      transform: scale(1.02);
+    }
+
+    .track-btn i {
+      font-size: 1rem;
+    }
+
+    .order-note {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: 0.85rem;
+      color: #8f8b85;
+    }
+
+    /* --- ORDER RESULT CARD (fully responsive) --- */
+    .result-section {
+      max-width: 800px;
+      margin: 2rem auto 4rem;
+      scroll-margin-top: 2rem;
+      width: 100%;
+      padding: 0 clamp(1rem, 3vw, 2rem);
+    }
+
+    .order-result-card {
+      background: #ffffff;
+      border-radius: clamp(24px, 5vw, 36px);
+      padding: clamp(1.5rem, 4vw, 2rem);
+      box-shadow: 0 20px 40px -14px rgba(0,0,0,0.08);
+      border: 1px solid #ece8e2;
+      transition: all 0.3s;
+      display: none;
+    }
+
+    .order-result-card.visible {
+      display: block;
+      animation: fadeSlide 0.4s ease;
+    }
+
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 2px solid #f6f4f0;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .order-id-large {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: clamp(1.3rem, 4vw, 1.6rem);
+      letter-spacing: -0.5px;
+      color: #1e1e1e;
+    }
+
+    .order-date-large {
+      background: #f4f2ef;
+      padding: 0.5rem 1.3rem;
+      border-radius: 60px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #4e4b47;
+      white-space: nowrap;
+    }
+
+    .order-items-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin: 2rem 0 1.8rem;
+    }
+
+    /* product row - fully responsive */
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #faf9f7;
+      border-radius: 28px;
+      padding: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .product-image-placeholder {
+      width: 70px;
+      height: 70px;
+      background: #eae4db;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b9aa97;
+      font-size: 2rem;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .product-image-placeholder span {
+      font-size: 2.2rem;
+      line-height: 1;
+    }
+
+    .product-info {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      min-width: 200px;
+    }
+
+    .product-name {
+      font-weight: 500;
+      font-size: 1.1rem;
+      color: #1e1e1e;
+    }
+
+    .product-meta {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .product-qty {
+      color: #7f7a74;
+      font-size: 0.95rem;
+    }
+
+    .product-price {
+      font-weight: 600;
+      font-family: 'Montserrat', sans-serif;
+      color: #1a1a1a;
+      min-width: 70px;
+      text-align: right;
+    }
+
+    .order-summary {
+      background: #f3f1ee;
+      border-radius: 28px;
+      padding: 1.5rem 2rem;
+      margin: 1.5rem 0 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Montserrat', sans-serif;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .summary-left span {
+      font-size: 1rem;
+      color: #5f5b57;
+    }
+
+    .summary-right {
+      font-size: clamp(1.5rem, 4vw, 1.8rem);
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .tracking-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      flex: 1;
+      background: transparent;
+      border: 1px solid #d4af37;
+      border-radius: 60px;
+      padding: 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #1a1a1a;
+      text-decoration: none;
+      font-family: inherit;
+      min-width: 140px;
+    }
+
+    .action-btn:hover {
+      background: #d4af37;
+      color: #0c0c0c;
+      border-color: #d4af37;
+    }
+
+    .action-btn.primary {
+      background: #1a1a1a;
+      border-color: #1a1a1a;
+      color: white;
+    }
+    .action-btn.primary:hover {
+      background: #d4af37;
+      border-color: #d4af37;
+      color: #0c0c0c;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .error-message {
+      text-align: center;
+      background: #fff2f0;
+      border-radius: 60px;
+      padding: 1rem;
+      margin: 1rem 0;
+      color: #b33c1f;
+      border: 1px solid #ffcdc2;
+      display: none;
+    }
+    .error-message.show {
+      display: block;
+    }
+
+    .info-note {
+      text-align: center;
+      color: #8f8b85;
+      font-size: 0.9rem;
+      margin: 2rem 0;
+    }
+    .info-note i {
+      color: #d4af37;
+    }
+
+    footer {
+      margin-top: auto;
+    }
+
+    /* Touch targets */
+    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .track-btn, .action-btn {
+      touch-action: manipulation;
+    }
+
+    /* ---------- RESPONSIVE BREAKPOINTS ---------- */
+
+    /* tablets */
+    @media (max-width: 768px) {
+      .product-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .product-info {
+        width: 100%;
+      }
+      .product-meta {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .tracking-actions {
+        flex-direction: column;
+      }
+      .action-btn {
+        width: 100%;
+      }
+    }
+
+    /* mobile */
+    @media (max-width: 480px) {
+      .track-card {
+        padding: 1.5rem;
+      }
+      .result-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .order-date-large {
+        align-self: flex-start;
+      }
+      .product-image-placeholder {
+        width: 60px;
+        height: 60px;
+      }
+      .product-name {
+        font-size: 1rem;
+      }
+      .order-summary {
+        padding: 1.2rem;
+      }
+    }
+
+    /* extra small */
+    @media (max-width: 360px) {
+      .product-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+      }
+      .product-price {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body class="bg-noise">
+  
+  <!-- Header loaded dynamically -->
+  <div id="header"></div>
+
+  <main>
+    <div class="container page-title">
+      <h1>my <span>orders</span></h1>
+      <p>Enter your details to track an order</p>
+    </div>
+
+    <!-- track order form card (always visible) -->
+    <div class="container">
+      <div class="track-card">
+        <h2><i class="fa-solid fa-magnifying-glass"></i> track your order</h2>
+        <div class="input-group">
+          <label>order number</label>
+          <input type="text" id="order-number" placeholder="e.g. ESS-9876" value="ESS-9876">
+        </div>
+        <div class="input-group">
+          <label>email / phone</label>
+          <input type="text" id="order-email" placeholder="you@example.com" value="customer@essence.in">
+        </div>
+        <button class="track-btn" id="track-order-btn"><i class="fa-solid fa-location-dot"></i> find order</button>
+        <p class="order-note">We'll display your order if the details match.</p>
+        <div class="error-message" id="error-message">Order not found. Please check your order number and email.</div>
+      </div>
+    </div>
+
+    <!-- result container: order details appear here dynamically -->
+    <div class="container result-section" id="resultContainer">
+      <div class="order-result-card" id="orderResultCard">
+        <!-- content filled by js -->
+      </div>
+    </div>
+
+    <!-- subtle need help? -->
+    <div class="container" style="text-align: center; margin: 2rem auto 3rem;">
+      <p style="color: #8f8b85; font-size: 0.9rem;">
+        <i class="fa-regular fa-circle-question" style="color: #d4af37;"></i> 
+        need help? <a href="#" style="color: #1a1a1a; font-weight: 500;" onclick="alert('Contact support: support@essence.in')">contact support</a>
+      </p>
+    </div>
+  </main>
+
+  <!-- Footer loaded dynamically -->
+  <div id="footer"></div>
+
+  <script>
+    // Cart state - initialize from localStorage
+    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
+    
+    // User state - initialize from localStorage
+    let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+
+    // Load header and footer
+    Promise.all([
+      fetch('header.html').then(res => res.text()).catch(() => {
+        console.warn('header.html not found, using empty placeholder');
+        return '';
+      }),
+      fetch('footer.html').then(res => res.text()).catch(() => {
+        console.warn('footer.html not found, using empty placeholder');
+        return '';
+      })
+    ]).then(([headerData, footerData]) => {
+      document.getElementById('header').innerHTML = headerData || getDefaultHeader();
+      document.getElementById('footer').innerHTML = footerData || getDefaultFooter();
+      
+      // Initialize after components are loaded
+      setTimeout(() => {
+        initializeApp();
+      }, 100);
+    }).catch(error => {
+      console.error('Error loading components:', error);
+      // Use default header/footer if fetch fails
+      document.getElementById('header').innerHTML = getDefaultHeader();
+      document.getElementById('footer').innerHTML = getDefaultFooter();
+      setTimeout(() => {
+        initializeApp();
+      }, 100);
+    });
+
+    // Default header HTML in case header.html is not available
+    function getDefaultHeader() {
+      return `
+        <header style="background: #ffffff; border-bottom: 1px solid #f0f0f0; padding: 0.8rem 0;">
+          <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="logo">
+              <a href="/" style="text-decoration: none; color: #1a1a1a;">
+                <span style="font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 500;">MyEssantia</span>
+                <span style="font-size: 0.7rem; color: #d4af37; display: block; line-height: 1;">premium essentials</span>
+              </a>
+            </div>
+            <nav style="display: flex; gap: 2rem;">
+              <a href="#" style="text-decoration: none; color: #1a1a1a;">shop</a>
+              <a href="#" style="text-decoration: none; color: #1a1a1a;">new</a>
+              <a href="#" style="text-decoration: none; color: #1a1a1a;">editorial</a>
+            </nav>
+            <div class="header-icons" style="display: flex; gap: 1.2rem; align-items: center;">
+              <a href="#" id="profile-icon" style="font-size: 1.3rem; color: #1a1a1a;">
+                <i class="fa-regular fa-user"></i>
+              </a>
+              <a href="#" id="cart-icon" style="font-size: 1.3rem; color: #1a1a1a; position: relative;">
+                <i class="fa-regular fa-bag-shopping"></i>
+                <span id="cart-count" style="position: absolute; top: -8px; right: -8px; background: #d4af37; color: #0c0c0c; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center;">0</span>
+              </a>
+            </div>
+          </div>
+        </header>
+
+        <!-- Cart Modal -->
+        <div id="cart-modal" class="modal" style="display: none;">
+          <div class="modal-content" style="background: white; border-radius: 30px;">
+            <div class="modal-header">
+              <h3>Your Cart</h3>
+              <button id="close-cart" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="cart-footer">
+              <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-amount">₹0</span>
+              </div>
+              <button id="checkout-btn" class="btn" style="width: 100%;">Checkout</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div id="profile-modal" class="modal" style="display: none;">
+          <div class="modal-content" style="background: white; border-radius: 30px;">
+            <div class="modal-header">
+              <h3>Account</h3>
+              <button id="close-profile" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <div id="profile-content" class="profile-content"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Default footer HTML
+    function getDefaultFooter() {
+      return `
+        <footer style="background: #fafafa; border-top: 1px solid #efefef; padding: 3rem 0 2rem; margin-top: 2rem;">
+          <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+              <div>
+                <h4 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem;">MyEssantia</h4>
+                <p style="color: #5f5b57;">Premium accessories & daily essentials.</p>
+              </div>
+              <div>
+                <h4>Shop</h4>
+                <ul style="list-style: none;">
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">New Arrivals</a></li>
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Bestsellers</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4>Support</h4>
+                <ul style="list-style: none;">
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Contact</a></li>
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Shipping</a></li>
+                </ul>
+              </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem; color: #a2a2a2;">
+              <p>&copy; 2025 MyEssantia. All rights reserved.</p>
+            </div>
+          </div>
+        </footer>
+      `;
+    }
+
+    function initializeApp() {
+      initializeCart();
+      initializeProfile();
+      
+      // Initialize order tracking functionality
+      initializeOrderTracking();
+    }
+
+    // ==================== CART FUNCTIONS ====================
+    function initializeCart() {
+      updateCartCount();
+      setupCartEventListeners();
+    }
+
+    function setupCartEventListeners() {
+      const cartIcon = document.getElementById('cart-icon');
+      const closeCart = document.getElementById('close-cart');
+      const cartModal = document.getElementById('cart-modal');
+      const checkoutBtn = document.getElementById('checkout-btn');
+
+      if (cartIcon) {
+        cartIcon.addEventListener('click', (e) => {
+          e.preventDefault();
+          openCart();
+        });
+      }
+
+      if (closeCart) {
+        closeCart.addEventListener('click', () => {
+          closeModal('cart-modal');
+        });
+      }
+
+      window.addEventListener('click', (e) => {
+        if (e.target === cartModal) {
+          closeModal('cart-modal');
+        }
+      });
+
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+          if (cart.length === 0) {
+            alert('Your cart is empty!');
+          } else {
+            window.location.href = 'checkout.html';
+          }
+        });
+      }
+    }
+
+    function openCart() {
+      const cartModal = document.getElementById('cart-modal');
+      if (cartModal) {
+        renderCartItems();
+        cartModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    // ==================== PROFILE FUNCTIONS ====================
+    function initializeProfile() {
+      updateProfileIcon();
+      setupProfileEventListeners();
+    }
+
+    function setupProfileEventListeners() {
+      const profileIcon = document.getElementById('profile-icon');
+      const closeProfile = document.getElementById('close-profile');
+      const profileModal = document.getElementById('profile-modal');
+
+      if (profileIcon) {
+        profileIcon.addEventListener('click', (e) => {
+          e.preventDefault();
+          openProfile();
+        });
+      }
+
+      if (closeProfile) {
+        closeProfile.addEventListener('click', () => {
+          closeModal('profile-modal');
+        });
+      }
+
+      window.addEventListener('click', (e) => {
+        if (e.target === profileModal) {
+          closeModal('profile-modal');
+        }
+      });
+    }
+
+    function openProfile() {
+      const profileModal = document.getElementById('profile-modal');
+      if (profileModal) {
+        renderProfileContent();
+        profileModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function renderProfileContent() {
+      const profileContent = document.getElementById('profile-content');
+      if (!profileContent) return;
+
+      if (currentUser) {
+        profileContent.innerHTML = `
+          <div class="profile-info">
+            <div class="profile-avatar">
+              <i class="fa-regular fa-circle-user"></i>
+            </div>
+            <div class="profile-details">
+              <p><strong>Name:</strong> ${currentUser.name}</p>
+              <p><strong>Email:</strong> ${currentUser.email}</p>
+              <p><strong>Member since:</strong> ${currentUser.memberSince || '2025'}</p>
+            </div>
+            <button class="btn logout-btn" onclick="logout()">Logout</button>
+          </div>
+        `;
+      } else {
+        profileContent.innerHTML = `
+          <div class="login-form">
+            <h4>Welcome Back!</h4>
+            <p>Sign in to your account</p>
+            <div id="login-error" class="error-message"></div>
+            <form onsubmit="handleLogin(event)">
+              <div class="form-group">
+                <input type="email" id="email" placeholder="Email" required>
+              </div>
+              <div class="form-group">
+                <input type="password" id="password" placeholder="Password" required>
+              </div>
+              <button type="submit" class="btn login-btn">Sign In</button>
+            </form>
+            <p style="margin-top: 1rem;">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+          </div>
+        `;
+      }
+    }
+
+    window.handleLogin = function(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      const user = {
+        name: email.split('@')[0],
+        email: email,
+        memberSince: '2025'
+      };
+
+      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
+      currentUser = user;
+      updateProfileIcon();
+      renderProfileContent();
+      alert('Login successful!');
+    };
+
+    window.logout = function() {
+      localStorage.removeItem('MyEssantia_user');
+      currentUser = null;
+      updateProfileIcon();
+      renderProfileContent();
+      alert('Logged out successfully');
+    };
+
+    window.showSignup = function() {
+      alert('Sign up functionality - please use login form for demo');
+    };
+
+    function updateProfileIcon() {
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon && currentUser) {
+        profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
+      } else if (profileIcon) {
+        profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal('cart-modal');
+        closeModal('profile-modal');
+      }
+    });
+
+    // ==================== ORDER TRACKING FUNCTIONS ====================
+    function initializeOrderTracking() {
+      // ---------- mock order database ----------
+      window.ordersDB = [
+        {
+          orderId: 'ESS-9876',
+          email: 'customer@essence.in',
+          date: '15 Mar 2025',
+          items: [
+            { name: 'leather cardholder', qty: 1, price: 1990, image: '👜' },
+            { name: 'minimal watch', qty: 1, price: 4490, image: '⌚' }
+          ],
+          total: 6480
+        },
+        {
+          orderId: 'ESS-5432',
+          email: 'alex@essence.in',
+          date: '10 Apr 2025',
+          items: [
+            { name: 'slim power bank', qty: 2, price: 7180, image: '🔋' },
+            { name: 'universal adapter', qty: 1, price: 3290, image: '🔌' }
+          ],
+          total: 10470
+        },
+        {
+          orderId: 'ESS-2468',
+          email: 'jordan@essence.in',
+          date: '18 Apr 2025',
+          items: [
+            { name: 'aviator sunglasses', qty: 1, price: 2990, image: '🕶️' },
+            { name: 'tech organizer', qty: 1, price: 2490, image: '🧳' }
+          ],
+          total: 5480
+        },
+        {
+          orderId: 'ESS-1357',
+          email: 'sam@essence.in',
+          date: '22 Apr 2025',
+          items: [
+            { name: 'leather backpack', qty: 1, price: 6490, image: '🎒' },
+            { name: 'wireless charger', qty: 1, price: 2190, image: '⚡' }
+          ],
+          total: 8680
+        }
+      ];
+
+      // DOM elements
+      window.trackBtn = document.getElementById('track-order-btn');
+      window.orderNumberInput = document.getElementById('order-number');
+      window.orderEmailInput = document.getElementById('order-email');
+      window.resultCard = document.getElementById('orderResultCard');
+      window.resultSection = document.getElementById('resultContainer');
+      window.errorDiv = document.getElementById('error-message');
+
+      // Initially hide result and error
+      if (window.errorDiv) window.errorDiv.classList.remove('show');
+      if (window.resultCard) window.resultCard.classList.remove('visible');
+
+      // Track button click
+      if (window.trackBtn) {
+        window.trackBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          findOrder();
+        });
+      }
+
+      // Enter key triggers search
+      if (window.orderNumberInput && window.orderEmailInput) {
+        [window.orderNumberInput, window.orderEmailInput].forEach(input => {
+          input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              findOrder();
+            }
+          });
+        });
+      }
+    }
+
+    function findOrder() {
+      const orderNumber = window.orderNumberInput.value.trim().toUpperCase();
+      const email = window.orderEmailInput.value.trim().toLowerCase();
+
+      // reset
+      if (window.errorDiv) window.errorDiv.classList.remove('show');
+      
+      if (!orderNumber || !email) {
+        if (window.errorDiv) {
+          window.errorDiv.textContent = 'Please enter both order number and email/phone.';
+          window.errorDiv.classList.add('show');
+        }
+        if (window.resultCard) window.resultCard.classList.remove('visible');
+        return;
+      }
+
+      // lookup in database
+      const foundOrder = window.ordersDB.find(o => o.orderId === orderNumber && o.email.toLowerCase() === email);
+      
+      if (foundOrder) {
+        renderOrder(foundOrder);
+        scrollToResult();
+      } else {
+        if (window.resultCard) window.resultCard.classList.remove('visible');
+        if (window.errorDiv) {
+          window.errorDiv.textContent = 'Order not found. Please check your order number and email.';
+          window.errorDiv.classList.add('show');
+        }
+      }
+    }
+
+    function renderOrder(order) {
+      const itemsHtml = order.items.map(item => {
+        return `
+          <div class="product-row">
+            <div class="product-image-placeholder">
+              <span>${item.image}</span>
+            </div>
+            <div class="product-info">
+              <span class="product-name">${item.name}</span>
+              <div class="product-meta">
+                <span class="product-qty">x${item.qty}</span>
+                <span class="product-price">₹${item.price.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const html = `
+        <div class="result-header">
+          <span class="order-id-large">${order.orderId}</span>
+          <span class="order-date-large">ordered ${order.date}</span>
+        </div>
+        <div class="order-items-container">
+          ${itemsHtml}
+        </div>
+        <div class="order-summary">
+          <div class="summary-left"><span>total amount</span></div>
+          <div class="summary-right">₹${order.total.toLocaleString()}</div>
+        </div>
+        <div class="tracking-actions">
+          <button class="action-btn primary" id="simulateTrackBtn"><i class="fa-solid fa-truck"></i> track shipment</button>
+          <a href="#" class="action-btn" id="homePageBtn"><i class="fa-solid fa-house"></i> home</a>
+        </div>
+      `;
+      
+      if (window.resultCard) {
+        window.resultCard.innerHTML = html;
+        window.resultCard.classList.add('visible');
+      }
+      
+      if (window.errorDiv) window.errorDiv.classList.remove('show');
+
+      // attach listener to track button
+      document.getElementById('simulateTrackBtn')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        alert(`🚚 tracking simulation for order ${order.orderId} – your package is on its way!`);
+      });
+
+      // home link
+      document.getElementById('homePageBtn')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = '/';
+      });
+    }
+
+    function scrollToResult() {
+      setTimeout(() => {
+        if (window.resultSection) {
+          window.resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+
+    // ==================== CART FUNCTIONS (continued) ====================
+    function renderCartItems() {
+      const cartItemsContainer = document.getElementById('cart-items');
+      const cartItemCount = document.getElementById('cart-item-count');
+      const cartTotalAmount = document.getElementById('cart-total-amount');
+
+      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+          <div class="empty-cart-message">
+            <i class="fa-regular fa-cart-shopping"></i>
+            <p>Your cart is empty</p>
+          </div>
+        `;
+        cartItemCount.textContent = '0';
+        cartTotalAmount.textContent = '₹0';
+        return;
+      }
+
+      let total = 0;
+      let totalItems = 0;
+
+      cartItemsContainer.innerHTML = cart.map(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        totalItems += item.quantity;
+
+        return `
+          <div class="cart-item">
+            <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+            <div class="cart-item-details">
+              <h4>${item.title}</h4>
+              <p>${item.category}</p>
+              <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
+              <div class="cart-item-actions">
+                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                <span>${item.quantity}</span>
+                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                <button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      cartItemCount.textContent = totalItems;
+      cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
+    }
+
+    function updateCartCount() {
+      const cartCount = document.getElementById('cart-count');
+      if (cartCount) {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+      }
+    }
+
+    window.updateQuantity = function(productId, change) {
+      const itemIndex = cart.findIndex(item => item.id === productId);
+      if (itemIndex === -1) return;
+
+      const item = cart[itemIndex];
+      const newQuantity = item.quantity + change;
+
+      if (newQuantity <= 0) {
+        cart.splice(itemIndex, 1);
+      } else {
+        item.quantity = newQuantity;
+      }
+
+      saveCart();
+      updateCartCount();
+      renderCartItems();
+    };
+
+    window.removeFromCart = function(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      saveCart();
+      updateCartCount();
+      renderCartItems();
+    };
+
+    function saveCart() {
+      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+    }
+  </script>
+
+  <style>
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    
+    .modal-content {
+      position: relative;
+      max-width: 500px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 30px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .modal-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+    }
+    
+    .modal-header button {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #666;
+    }
+    
+    .cart-items {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 1.5rem;
+    }
+    
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .cart-item-image {
+      width: 80px;
+      height: 80px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 12px;
+    }
+    
+    .cart-item-details {
+      flex: 1;
+    }
+    
+    .cart-item-details h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    .cart-item-details p {
+      font-size: 0.8rem;
+      color: #a2a2a2;
+      margin-bottom: 0.5rem;
+    }
+    
+    .cart-item-price {
+      font-weight: 600;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+    }
+    
+    .cart-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .quantity-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .quantity-btn:hover {
+      background: #f5f5f5;
+    }
+    
+    .remove-item {
+      background: none;
+      border: none;
+      color: #ff4444;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+    }
+    
+    .cart-footer {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 1.5rem;
+    }
+    
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-cart-message {
+      text-align: center;
+      padding: 2rem;
+      color: #a2a2a2;
+    }
+    
+    .empty-cart-message i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-info {
+      text-align: center;
+    }
+    
+    .profile-avatar {
+      font-size: 4rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-details {
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+    
+    .profile-details p {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .login-form {
+      text-align: center;
+    }
+    
+    .login-form h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .login-form p {
+      color: #5f5b57;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #d4af37;
+    }
+    
+    .login-btn {
+      width: 100%;
+      margin-top: 1rem;
+    }
+    
+    .error-message {
+      background: #ffe6e6;
+      color: #ff4444;
+      padding: 0.8rem;
+      border-radius: 30px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    
+    .error-message.show {
+      display: block;
+    }
+    
+    .logout-btn {
+      background: #ff4444 !important;
+      border-color: #ff4444 !important;
+      color: white !important;
+      width: 100%;
+    }
+  </style>
+</body>
+</html>
