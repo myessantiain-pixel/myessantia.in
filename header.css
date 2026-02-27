@@ -86,7 +86,7 @@
 .nav-menu {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem 0.8rem;
+  gap: 5rem 0.8rem;
   margin: 0;
   padding: 0.3rem 0;
   order: 3;
