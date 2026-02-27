@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>ESSENCE · checkout (responsive)</title>
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Separate CSS Files (will be loaded dynamically) -->
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="footer.css">
+  
+  <style>
+    /* -------------------- RESET & GLOBAL -------------------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #faf9f7;
+      color: #1a1a1a;
+      line-height: 1.5;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-weight: 300;
+    }
+
+    /* headings */
+    h1, h2, h3, .logo-style {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    /* fluid container */
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 clamp(0.8rem, 3vw, 1.5rem);
+    }
+
+    .bg-noise {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+      background-repeat: repeat;
+    }
+
+    /* --- checkout header (responsive) --- */
+    .checkout-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .checkout-header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.2rem);
+      font-weight: 400;
+      color: #1a1a1a;
+    }
+    .checkout-header h1 span {
+      color: #d4af37;
+      font-style: italic;
+      font-weight: 500;
+    }
+    .secure-badge {
+      background: #f2efea;
+      padding: 0.4rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 400;
+      white-space: nowrap;
+    }
+    .secure-badge i {
+      color: #2e7d32;
+      margin-right: 0.4rem;
+    }
+
+    /* --- main checkout grid (responsive) --- */
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: clamp(1.5rem, 3vw, 2.5rem);
+      align-items: start;
+    }
+
+    /* left cards - fully responsive */
+    .section-card {
+      background: #ffffff;
+      border-radius: clamp(24px, 4vw, 32px);
+      padding: clamp(1.5rem, 3vw, 2rem);
+      box-shadow: 0 10px 30px -12px rgba(0,0,0,0.1);
+      border: 1px solid #f2eee9;
+      margin-bottom: 1.8rem;
+    }
+    .section-title {
+      font-size: clamp(1.3rem, 3vw, 1.5rem);
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: 'Playfair Display', serif;
+      flex-wrap: wrap;
+    }
+    .section-title .step-number {
+      background: #d4af37;
+      color: #0c0c0c;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.2rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* form rows - responsive */
+    .form-row {
+      display: flex;
+      gap: 1.2rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .form-group {
+      flex: 1 1 calc(50% - 0.6rem);
+      min-width: 140px;
+    }
+    .form-group.full-width {
+      flex: 1 1 100%;
+    }
+    label {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #7d7d7d;
+      margin-bottom: 0.4rem;
+      font-weight: 400;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border: 1px solid #dad6d0;
+      border-radius: 60px;
+      background: #ffffff;
+      font-size: 0.95rem;
+      transition: 0.2s;
+      outline: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 300;
+    }
+    input:focus, select:focus {
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+    }
+
+    /* inline checkbox row */
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #d4af37;
+      margin: 0;
+    }
+    .checkbox-row label {
+      display: inline;
+      text-transform: none;
+      font-size: 0.9rem;
+      color: #2b2b2b;
+      margin: 0;
+    }
+
+    /* shipping method radio cards */
+    .radio-card {
+      border: 1px solid #e1dbd3;
+      border-radius: 40px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: 0.15s;
+      cursor: pointer;
+      flex-wrap: wrap;
+    }
+    .radio-card.selected {
+      border-color: #d4af37;
+      background: #fcf9f4;
+      box-shadow: 0 0 0 1px #d4af37;
+    }
+    .radio-card input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #d4af37;
+      margin: 0;
+      flex-shrink: 0;
+    }
+    .radio-content {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .radio-price {
+      font-weight: 600;
+      color: #1e1e1e;
+      white-space: nowrap;
+    }
+    .free-badge {
+      background: #2e7d32;
+      color: white;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      margin-left: 0.8rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* --- RIGHT PANEL (order summary) sticky but responsive --- */
+    .order-summary {
+      background: #ffffff;
+      border-radius: 40px;
+      padding: clamp(1.5rem, 4vw, 2rem);
+      border: 1px solid #f2eee9;
+      box-shadow: 0 18px 36px -18px rgba(0,0,0,0.12);
+      position: sticky;
+      top: 20px;
+    }
+    .summary-title {
+      font-size: clamp(1.5rem, 4vw, 1.8rem);
+      font-weight: 400;
+      border-bottom: 2px solid #efebe6;
+      padding-bottom: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-family: 'Playfair Display', serif;
+    }
+    .summary-title span {
+      font-weight: 600;
+      color: #d4af37;
+      font-style: italic;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .item-image {
+      width: 80px;
+      height: 80px;
+      background: #ece5dc;
+      border-radius: 24px;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+      border: 1px solid #e3dbd2;
+    }
+    .item-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 180px;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      width: 100%;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .item-details h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: #1e1e1e;
+    }
+    .item-price {
+      font-weight: 600;
+      color: #d4af37;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-family: 'Montserrat', sans-serif;
+      white-space: nowrap;
+    }
+    .item-price .inr-symbol {
+      font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+    .item-meta {
+      font-size: 0.7rem;
+      color: #8f8a84;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0.1rem 0 0.3rem;
+    }
+    .qty-control {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.3rem;
+      flex-wrap: wrap;
+    }
+    .qty-btn {
+      background: #f5f2ee;
+      border: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: 0.1s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qty-btn:hover {
+      background: #d4af37;
+      color: white;
+    }
+
+    /* promo section INSIDE order summary */
+    .promo-inside {
+      background: #f8f5f1;
+      border-radius: 28px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0 1.2rem;
+    }
+    .promo-inside p {
+      font-weight: 400;
+      margin-bottom: 0.8rem;
+      font-size: 0.9rem;
+    }
+    .promo-flex {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .promo-flex input {
+      flex: 1;
+      min-width: 160px;
+      background: white;
+      border: 1px solid #dad6d0;
+      padding: 0.8rem 1.2rem;
+      border-radius: 60px;
+    }
+    .promo-btn {
+      background: #1a1a1a;
+      border: none;
+      color: white;
+      padding: 0.8rem 1.8rem;
+      border-radius: 60px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      white-space: nowrap;
+    }
+    .promo-btn:hover {
+      background: #d4af37;
+      color: #0c0c0c;
+    }
+
+    /* price breakdown */
+    .price-line {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.6rem 0;
+      font-size: 0.95rem;
+      font-weight: 300;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .total-line {
+      font-weight: 700;
+      font-size: clamp(1.5rem, 4vw, 1.8rem);
+      border-top: 2px solid #ece8e2;
+      padding-top: 1.2rem;
+      margin: 1rem 0 1.5rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #000000;
+      letter-spacing: -0.01em;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .total-line span {
+      color: #000000;
+    }
+
+    .checkout-btn {
+      background: #d4af37;
+      border: none;
+      width: 100%;
+      padding: 1.4rem;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 1.1rem;
+      color: #0c0c0c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid #d4af37;
+      margin-bottom: 1.2rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .checkout-btn:hover {
+      background: #c5a231;
+      transform: scale(1.01);
+      box-shadow: 0 12px 24px -12px rgba(212,175,55,0.5);
+    }
+
+    .payment-icons-sm {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      color: #5f5b57;
+      font-size: 1.6rem;
+      flex-wrap: wrap;
+    }
+    .payment-icons-sm i {
+      transition: color 0.2s;
+    }
+    .payment-icons-sm i:hover {
+      color: #d4af37;
+    }
+
+    .notice {
+      font-size: 0.75rem;
+      text-align: center;
+      margin-top: 1rem;
+      color: #5f5b57;
+    }
+    .notice i {
+      color: #d4af37;
+      margin-right: 0.2rem;
+    }
+
+    /* Touch targets */
+    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add, .img-buy, select, .qty-btn, .promo-btn, .checkout-btn {
+      touch-action: manipulation;
+    }
+
+    /* ---------- RESPONSIVE BREAKPOINTS ---------- */
+
+    /* tablet landscape and below */
+    @media (max-width: 992px) {
+      .checkout-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .order-summary {
+        position: static;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+    }
+
+    /* tablet portrait */
+    @media (max-width: 768px) {
+      .form-group {
+        flex: 1 1 100%;
+      }
+      .radio-card {
+        padding: 1rem;
+      }
+      .radio-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .item-image {
+        width: 100%;
+        height: 180px;
+      }
+      .item-header {
+        width: 100%;
+      }
+      .promo-flex {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .promo-btn {
+        width: 100%;
+      }
+    }
+
+    /* mobile */
+    @media (max-width: 480px) {
+      .checkout-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .secure-badge {
+        align-self: flex-start;
+      }
+      .section-title {
+        gap: 0.8rem;
+      }
+      .section-title .step-number {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+      }
+      .item-image {
+        height: 160px;
+      }
+      .payment-icons-sm {
+        font-size: 1.4rem;
+        gap: 0.8rem;
+      }
+      .checkout-btn {
+        padding: 1.2rem;
+        font-size: 1rem;
+      }
+    }
+
+    /* extra small devices */
+    @media (max-width: 360px) {
+      .container {
+        padding: 0 0.5rem;
+      }
+      .item-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .qty-control {
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-noise">
+  
+  <!-- Header loaded dynamically -->
+  <div id="header"></div>
+
+  <main>
+    <div class="container">
+      <!-- checkout header -->
+      <div class="checkout-header">
+        <h1>checkout <span>· essence</span></h1>
+        <div class="secure-badge"><i class="fa-solid fa-lock"></i> secure checkout</div>
+      </div>
+
+      <!-- main grid -->
+      <div class="checkout-grid">
+        <!-- LEFT COLUMN: contact, shipping address, shipping method -->
+        <div>
+          <!-- contact information -->
+          <div class="section-card">
+            <div class="section-title"><span class="step-number">1</span> Contact</div>
+            <div class="form-group full-width">
+              <label>Email</label>
+              <input type="email" placeholder="your@email.com" value="customer@essence.in">
+            </div>
+            <div class="checkbox-row">
+              <input type="checkbox" id="offers" checked>
+              <label for="offers">keep me updated on new arrivals & offers</label>
+            </div>
+          </div>
+
+          <!-- shipping address -->
+          <div class="section-card">
+            <div class="section-title"><span class="step-number">2</span> Shipping address</div>
+            <div class="form-row">
+              <div class="form-group"><label>First name</label><input placeholder="First name" value="Alex"></div>
+              <div class="form-group"><label>Last name</label><input placeholder="Last name" value="River"></div>
+            </div>
+            <div class="form-group full-width"><label>Address</label><input placeholder="Street, building" value="123 Main Street"></div>
+            <div class="form-row">
+              <div class="form-group"><label>City</label><input placeholder="City" value="Kochi"></div>
+              <div class="form-group"><label>PIN code</label><input placeholder="PIN" value="682001"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>State</label>
+                <select>
+                  <option>Select state</option>
+                  <option selected>Kerala</option>
+                  <option>Tamil Nadu</option>
+                  <option>Karnataka</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Phone</label><input placeholder="+91 ..." value="9876543210"></div>
+            </div>
+          </div>
+
+          <!-- shipping method -->
+          <div class="section-card">
+            <div class="section-title"><span class="step-number">3</span> Shipping method</div>
+            
+            <label class="radio-card selected" id="radio-standard">
+              <input type="radio" name="shipping" value="standard" id="ship-standard" checked>
+              <div class="radio-content">
+                <span>Standard shipping (3–5 days) <span class="free-badge" id="freeBadge" style="display: none;">FREE</span></span>
+                <span class="radio-price" id="standard-price">₹40</span>
+              </div>
+            </label>
+
+            <label class="radio-card" id="radio-express">
+              <input type="radio" name="shipping" value="express">
+              <div class="radio-content">
+                <span>Express (1–2 days)</span>
+                <span class="radio-price">₹149</span>
+              </div>
+            </label>
+            <p style="font-size:0.75rem; margin-top:0.8rem; color:#8a7f75;"><i class="fa-solid fa-circle-info"></i> Standard shipping becomes FREE on orders above ₹499</p>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: order summary -->
+        <div>
+          <div class="order-summary">
+            <div class="summary-title">your <span>cart</span></div>
+            
+            <!-- product 1: leather cardholder -->
+            <div class="cart-item" id="product-1">
+              <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1594734417407-396c2f1bd4e5?q=80&w=1887&auto=format&fit=crop');"></div>
+              <div class="item-details">
+                <div class="item-header">
+                  <h4>leather cardholder</h4>
+                  <span class="item-price" id="price1-display">₹3,980</span>
+                </div>
+                <div class="item-meta">rfid blocking · cognac</div>
+                <div class="qty-control">
+                  <button class="qty-btn" data-product="1" data-delta="-1">−</button>
+                  <span style="font-size: 0.9rem;" id="qty1">2</span>
+                  <button class="qty-btn" data-product="1" data-delta="1">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- product 2: slim power bank -->
+            <div class="cart-item" id="product-2">
+              <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop');"></div>
+              <div class="item-details">
+                <div class="item-header">
+                  <h4>slim power bank</h4>
+                  <span class="item-price" id="price2-display">₹3,590</span>
+                </div>
+                <div class="item-meta">10.000 mAh · sand</div>
+                <div class="qty-control">
+                  <button class="qty-btn" data-product="2" data-delta="-1">−</button>
+                  <span style="font-size: 0.9rem;" id="qty2">1</span>
+                  <button class="qty-btn" data-product="2" data-delta="1">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- product 3: universal adapter -->
+            <div class="cart-item" id="product-3">
+              <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1583864697784-a0efc8379f70?q=80&w=1887&auto=format&fit=crop');"></div>
+              <div class="item-details">
+                <div class="item-header">
+                  <h4>universal adapter</h4>
+                  <span class="item-price" id="price3-display">₹3,290</span>
+                </div>
+                <div class="item-meta">4 usb · black</div>
+                <div class="qty-control">
+                  <button class="qty-btn" data-product="3" data-delta="-1">−</button>
+                  <span style="font-size: 0.9rem;" id="qty3">1</span>
+                  <button class="qty-btn" data-product="3" data-delta="1">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- PROMO CODE SECTION -->
+            <div class="promo-inside">
+              <p>Apply promo code</p>
+              <div class="promo-flex">
+                <input type="text" placeholder="Enter code" id="promo-code">
+                <button class="promo-btn" onclick="applyPromo()">Apply</button>
+              </div>
+            </div>
+
+            <div style="margin: 0.5rem 0 1rem; border-top: 1px dashed #ddd;"></div>
+
+            <!-- dynamic price lines -->
+            <div class="price-line"><span>Subtotal</span> <span id="subtotal-value">₹10,860</span></div>
+            <div class="price-line"><span>Shipping</span> <span id="shipping-value">₹0</span></div>
+            <div class="price-line" style="color:#2e7d32;" id="discount-line"><span>Discount</span> <span id="discount-value">-₹0</span></div>
+
+            <!-- total -->
+            <div class="total-line">
+              <span>Total</span> <span id="total-value">₹10,860</span>
+            </div>
+
+            <button class="checkout-btn" onclick="placeOrder()">
+              <i class="fa-solid fa-lock fa-fade"></i> place order
+            </button>
+
+            <div class="payment-icons-sm">
+              <i class="fa-brands fa-cc-visa"></i>
+              <i class="fa-brands fa-cc-mastercard"></i>
+              <i class="fa-brands fa-cc-amex"></i>
+              <i class="fa-brands fa-cc-paypal"></i>
+              <i class="fa-regular fa-credit-card"></i>
+            </div>
+            <div class="notice">
+              <i class="fa-regular fa-circle-check"></i> No-returns · secure checkout
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer loaded dynamically -->
+  <div id="footer"></div>
+
+  <script>
+    // Cart state - initialize from localStorage
+    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
+    
+    // User state - initialize from localStorage
+    let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+
+    // Load header and footer
+    Promise.all([
+      fetch('header.html').then(res => res.text()).catch(() => {
+        console.warn('header.html not found, using empty placeholder');
+        return '';
+      }),
+      fetch('footer.html').then(res => res.text()).catch(() => {
+        console.warn('footer.html not found, using empty placeholder');
+        return '';
+      })
+    ]).then(([headerData, footerData]) => {
+      document.getElementById('header').innerHTML = headerData || getDefaultHeader();
+      document.getElementById('footer').innerHTML = footerData || getDefaultFooter();
+      
+      // Initialize after components are loaded
+      setTimeout(() => {
+        initializeApp();
+      }, 100);
+    }).catch(error => {
+      console.error('Error loading components:', error);
+      // Use default header/footer if fetch fails
+      document.getElementById('header').innerHTML = getDefaultHeader();
+      document.getElementById('footer').innerHTML = getDefaultFooter();
+      setTimeout(() => {
+        initializeApp();
+      }, 100);
+    });
+
+    // Default header HTML in case header.html is not available
+    function getDefaultHeader() {
+      return `
+        <header style="background: #ffffff; border-bottom: 1px solid #f0f0f0; padding: 0.8rem 0;">
+          <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="logo">
+              <a href="/" style="text-decoration: none; color: #1a1a1a;">
+                <span style="font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 500;">MyEssantia</span>
+                <span style="font-size: 0.7rem; color: #d4af37; display: block; line-height: 1;">premium essentials</span>
+              </a>
+            </div>
+            <nav style="display: flex; gap: 2rem;">
+              <a href="#" style="text-decoration: none; color: #1a1a1a;">shop</a>
+              <a href="#" style="text-decoration: none; color: #1a1a1a;">new</a>
+              <a href="#" style="text-decoration: none; color: #1a1a1a;">editorial</a>
+            </nav>
+            <div class="header-icons" style="display: flex; gap: 1.2rem; align-items: center;">
+              <a href="#" id="profile-icon" style="font-size: 1.3rem; color: #1a1a1a;">
+                <i class="fa-regular fa-user"></i>
+              </a>
+              <a href="#" id="cart-icon" style="font-size: 1.3rem; color: #1a1a1a; position: relative;">
+                <i class="fa-regular fa-bag-shopping"></i>
+                <span id="cart-count" style="position: absolute; top: -8px; right: -8px; background: #d4af37; color: #0c0c0c; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center;">0</span>
+              </a>
+            </div>
+          </div>
+        </header>
+
+        <!-- Cart Modal -->
+        <div id="cart-modal" class="modal" style="display: none;">
+          <div class="modal-content" style="background: white; border-radius: 30px;">
+            <div class="modal-header">
+              <h3>Your Cart</h3>
+              <button id="close-cart" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <div id="cart-items" class="cart-items"></div>
+            <div class="cart-footer">
+              <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-amount">₹0</span>
+              </div>
+              <button id="checkout-btn" class="btn" style="width: 100%;">Checkout</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div id="profile-modal" class="modal" style="display: none;">
+          <div class="modal-content" style="background: white; border-radius: 30px;">
+            <div class="modal-header">
+              <h3>Account</h3>
+              <button id="close-profile" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <div id="profile-content" class="profile-content"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Default footer HTML
+    function getDefaultFooter() {
+      return `
+        <footer style="background: #fafafa; border-top: 1px solid #efefef; padding: 3rem 0 2rem; margin-top: 2rem;">
+          <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+              <div>
+                <h4 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem;">MyEssantia</h4>
+                <p style="color: #5f5b57;">Premium accessories & daily essentials.</p>
+              </div>
+              <div>
+                <h4>Shop</h4>
+                <ul style="list-style: none;">
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">New Arrivals</a></li>
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Bestsellers</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4>Support</h4>
+                <ul style="list-style: none;">
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Contact</a></li>
+                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Shipping</a></li>
+                </ul>
+              </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem; color: #a2a2a2;">
+              <p>&copy; 2025 MyEssantia. All rights reserved.</p>
+            </div>
+          </div>
+        </footer>
+      `;
+    }
+
+    function initializeApp() {
+      initializeCart();
+      initializeProfile();
+      
+      // Initialize checkout functionality
+      initializeCheckout();
+    }
+
+    // ==================== CART FUNCTIONS ====================
+    function initializeCart() {
+      updateCartCount();
+      setupCartEventListeners();
+    }
+
+    function setupCartEventListeners() {
+      const cartIcon = document.getElementById('cart-icon');
+      const closeCart = document.getElementById('close-cart');
+      const cartModal = document.getElementById('cart-modal');
+      const checkoutBtn = document.getElementById('checkout-btn');
+
+      if (cartIcon) {
+        cartIcon.addEventListener('click', (e) => {
+          e.preventDefault();
+          openCart();
+        });
+      }
+
+      if (closeCart) {
+        closeCart.addEventListener('click', () => {
+          closeModal('cart-modal');
+        });
+      }
+
+      window.addEventListener('click', (e) => {
+        if (e.target === cartModal) {
+          closeModal('cart-modal');
+        }
+      });
+
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+          if (cart.length === 0) {
+            alert('Your cart is empty!');
+          } else {
+            window.location.href = 'checkout.html';
+          }
+        });
+      }
+    }
+
+    function openCart() {
+      const cartModal = document.getElementById('cart-modal');
+      if (cartModal) {
+        renderCartItems();
+        cartModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    // ==================== PROFILE FUNCTIONS ====================
+    function initializeProfile() {
+      updateProfileIcon();
+      setupProfileEventListeners();
+    }
+
+    function setupProfileEventListeners() {
+      const profileIcon = document.getElementById('profile-icon');
+      const closeProfile = document.getElementById('close-profile');
+      const profileModal = document.getElementById('profile-modal');
+
+      if (profileIcon) {
+        profileIcon.addEventListener('click', (e) => {
+          e.preventDefault();
+          openProfile();
+        });
+      }
+
+      if (closeProfile) {
+        closeProfile.addEventListener('click', () => {
+          closeModal('profile-modal');
+        });
+      }
+
+      window.addEventListener('click', (e) => {
+        if (e.target === profileModal) {
+          closeModal('profile-modal');
+        }
+      });
+    }
+
+    function openProfile() {
+      const profileModal = document.getElementById('profile-modal');
+      if (profileModal) {
+        renderProfileContent();
+        profileModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function renderProfileContent() {
+      const profileContent = document.getElementById('profile-content');
+      if (!profileContent) return;
+
+      if (currentUser) {
+        profileContent.innerHTML = `
+          <div class="profile-info">
+            <div class="profile-avatar">
+              <i class="fa-regular fa-circle-user"></i>
+            </div>
+            <div class="profile-details">
+              <p><strong>Name:</strong> ${currentUser.name}</p>
+              <p><strong>Email:</strong> ${currentUser.email}</p>
+              <p><strong>Member since:</strong> ${currentUser.memberSince || '2025'}</p>
+            </div>
+            <button class="btn logout-btn" onclick="logout()">Logout</button>
+          </div>
+        `;
+      } else {
+        profileContent.innerHTML = `
+          <div class="login-form">
+            <h4>Welcome Back!</h4>
+            <p>Sign in to your account</p>
+            <div id="login-error" class="error-message"></div>
+            <form onsubmit="handleLogin(event)">
+              <div class="form-group">
+                <input type="email" id="email" placeholder="Email" required>
+              </div>
+              <div class="form-group">
+                <input type="password" id="password" placeholder="Password" required>
+              </div>
+              <button type="submit" class="btn login-btn">Sign In</button>
+            </form>
+            <p style="margin-top: 1rem;">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+          </div>
+        `;
+      }
+    }
+
+    window.handleLogin = function(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      if (!email || !password) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      const user = {
+        name: email.split('@')[0],
+        email: email,
+        memberSince: '2025'
+      };
+
+      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
+      currentUser = user;
+      updateProfileIcon();
+      renderProfileContent();
+      alert('Login successful!');
+    };
+
+    window.logout = function() {
+      localStorage.removeItem('MyEssantia_user');
+      currentUser = null;
+      updateProfileIcon();
+      renderProfileContent();
+      alert('Logged out successfully');
+    };
+
+    window.showSignup = function() {
+      alert('Sign up functionality - please use login form for demo');
+    };
+
+    function updateProfileIcon() {
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon && currentUser) {
+        profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
+      } else if (profileIcon) {
+        profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal('cart-modal');
+        closeModal('profile-modal');
+      }
+    });
+
+    // ==================== CHECKOUT FUNCTIONS ====================
+    function initializeCheckout() {
+      // Base prices (INR)
+      window.basePrices = [1990, 3590, 3290];
+      
+      // Get DOM elements
+      window.productContainers = [
+        document.getElementById('product-1'),
+        document.getElementById('product-2'),
+        document.getElementById('product-3')
+      ];
+      
+      window.qtySpans = [
+        document.getElementById('qty1'),
+        document.getElementById('qty2'),
+        document.getElementById('qty3')
+      ];
+      
+      window.priceDisplays = [
+        document.getElementById('price1-display'),
+        document.getElementById('price2-display'),
+        document.getElementById('price3-display')
+      ];
+      
+      window.subtotalSpan = document.getElementById('subtotal-value');
+      window.shippingSpan = document.getElementById('shipping-value');
+      window.discountSpan = document.getElementById('discount-value');
+      window.totalSpan = document.getElementById('total-value');
+      
+      window.standardRadio = document.getElementById('ship-standard');
+      window.expressRadio = document.querySelector('input[name="shipping"][value="express"]');
+      window.freeBadge = document.getElementById('freeBadge');
+      window.standardPriceSpan = document.getElementById('standard-price');
+      window.radioStandard = document.getElementById('radio-standard');
+      window.radioExpress = document.getElementById('radio-express');
+
+      // Quantity button handlers
+      document.querySelectorAll('.qty-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          const delta = parseInt(this.getAttribute('data-delta'));
+          const productId = this.getAttribute('data-product');
+          if (!productId) return;
+          
+          const idx = parseInt(productId) - 1;
+          if (!productExists(idx)) return;
+          
+          const span = qtySpans[idx];
+          let val = parseInt(span.innerText) || 1;
+          const newVal = val + delta;
+          
+          if (newVal < 1) {
+            removeProduct(idx);
+          } else {
+            span.innerText = newVal;
+          }
+          
+          updateAll();
+        });
+      });
+
+      // Radio change listeners
+      document.querySelectorAll('input[name="shipping"]').forEach(radio => {
+        radio.addEventListener('change', updateAll);
+      });
+
+      // Initial update
+      updateAll();
+    }
+
+    function productExists(idx) {
+      return window.productContainers[idx] && window.productContainers[idx].style.display !== 'none';
+    }
+
+    function removeProduct(idx) {
+      if (window.productContainers[idx]) {
+        window.productContainers[idx].style.display = 'none';
+      }
+    }
+
+    function updateAll() {
+      const qtys = window.qtySpans.map((span, idx) => {
+        if (!span || !productExists(idx)) return 0;
+        return parseInt(span.innerText) || 0;
+      });
+      
+      // Update individual product price displays
+      qtys.forEach((qty, idx) => {
+        if (productExists(idx) && qty > 0 && window.priceDisplays[idx]) {
+          const itemTotal = window.basePrices[idx] * qty;
+          window.priceDisplays[idx].innerText = '₹' + itemTotal.toLocaleString('en-IN');
+        }
+      });
+      
+      // Calculate subtotal
+      const subtotal = window.basePrices.reduce((sum, price, idx) => {
+        return sum + (qtys[idx] > 0 ? price * qtys[idx] : 0);
+      }, 0);
+      
+      // Determine shipping
+      let shippingCost = 40;
+      let shippingText = '₹40';
+      const isExpress = window.expressRadio ? window.expressRadio.checked : false;
+      
+      if (subtotal > 499) {
+        if (window.standardRadio && window.standardRadio.checked) {
+          shippingCost = 0;
+          shippingText = 'FREE';
+        } else if (isExpress) {
+          shippingCost = 149;
+          shippingText = '₹149';
+        }
+        if (window.standardPriceSpan) window.standardPriceSpan.innerText = 'FREE';
+        if (window.freeBadge) window.freeBadge.style.display = 'inline-block';
+      } else {
+        if (window.standardPriceSpan) window.standardPriceSpan.innerText = '₹40';
+        if (window.freeBadge) window.freeBadge.style.display = 'none';
+        if (window.standardRadio && window.standardRadio.checked) {
+          shippingCost = 40;
+          shippingText = '₹40';
+        } else if (isExpress) {
+          shippingCost = 149;
+          shippingText = '₹149';
+        }
+      }
+
+      if (isExpress) {
+        shippingCost = 149;
+        shippingText = '₹149';
+      }
+
+      window.shippingSpan.innerText = shippingText;
+
+      const discount = 0;
+      window.discountSpan.innerText = '-₹' + discount;
+
+      const total = subtotal - discount + shippingCost;
+      window.subtotalSpan.innerText = '₹' + subtotal.toLocaleString('en-IN');
+      window.totalSpan.innerText = '₹' + total.toLocaleString('en-IN');
+
+      // Highlight selected radio card
+      document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+      if (window.standardRadio && window.standardRadio.checked) {
+        window.radioStandard.classList.add('selected');
+      } else if (window.expressRadio && window.expressRadio.checked) {
+        window.radioExpress.classList.add('selected');
+      }
+    }
+
+    window.applyPromo = function() {
+      const promoInput = document.getElementById('promo-code');
+      if (promoInput && promoInput.value) {
+        alert(`Promo code "${promoInput.value}" applied (demo)`);
+      } else {
+        alert('Please enter a promo code');
+      }
+    };
+
+    window.placeOrder = function() {
+      alert('Order placed (demo) — thank you for shopping with MyEssantia!');
+    };
+
+    // ==================== CART FUNCTIONS (continued) ====================
+    function renderCartItems() {
+      const cartItemsContainer = document.getElementById('cart-items');
+      const cartItemCount = document.getElementById('cart-item-count');
+      const cartTotalAmount = document.getElementById('cart-total-amount');
+
+      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+          <div class="empty-cart-message">
+            <i class="fa-regular fa-cart-shopping"></i>
+            <p>Your cart is empty</p>
+          </div>
+        `;
+        cartItemCount.textContent = '0';
+        cartTotalAmount.textContent = '₹0';
+        return;
+      }
+
+      let total = 0;
+      let totalItems = 0;
+
+      cartItemsContainer.innerHTML = cart.map(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        totalItems += item.quantity;
+
+        return `
+          <div class="cart-item">
+            <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+            <div class="cart-item-details">
+              <h4>${item.title}</h4>
+              <p>${item.category}</p>
+              <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
+              <div class="cart-item-actions">
+                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                <span>${item.quantity}</span>
+                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                <button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      cartItemCount.textContent = totalItems;
+      cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
+    }
+
+    function updateCartCount() {
+      const cartCount = document.getElementById('cart-count');
+      if (cartCount) {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+      }
+    }
+
+    window.updateQuantity = function(productId, change) {
+      const itemIndex = cart.findIndex(item => item.id === productId);
+      if (itemIndex === -1) return;
+
+      const item = cart[itemIndex];
+      const newQuantity = item.quantity + change;
+
+      if (newQuantity <= 0) {
+        cart.splice(itemIndex, 1);
+      } else {
+        item.quantity = newQuantity;
+      }
+
+      saveCart();
+      updateCartCount();
+      renderCartItems();
+    };
+
+    window.removeFromCart = function(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      saveCart();
+      updateCartCount();
+      renderCartItems();
+    };
+
+    function saveCart() {
+      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+    }
+  </script>
+
+  <style>
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    
+    .modal-content {
+      position: relative;
+      max-width: 500px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 30px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .modal-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+    }
+    
+    .modal-header button {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #666;
+    }
+    
+    .cart-items {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 1.5rem;
+    }
+    
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .cart-item-image {
+      width: 80px;
+      height: 80px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 12px;
+    }
+    
+    .cart-item-details {
+      flex: 1;
+    }
+    
+    .cart-item-details h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    .cart-item-details p {
+      font-size: 0.8rem;
+      color: #a2a2a2;
+      margin-bottom: 0.5rem;
+    }
+    
+    .cart-item-price {
+      font-weight: 600;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+    }
+    
+    .cart-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .quantity-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    
+    .quantity-btn:hover {
+      background: #f5f5f5;
+    }
+    
+    .remove-item {
+      background: none;
+      border: none;
+      color: #ff4444;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+    }
+    
+    .cart-footer {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 1.5rem;
+    }
+    
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-cart-message {
+      text-align: center;
+      padding: 2rem;
+      color: #a2a2a2;
+    }
+    
+    .empty-cart-message i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-info {
+      text-align: center;
+    }
+    
+    .profile-avatar {
+      font-size: 4rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-details {
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+    
+    .profile-details p {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .login-form {
+      text-align: center;
+    }
+    
+    .login-form h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .login-form p {
+      color: #5f5b57;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #d4af37;
+    }
+    
+    .login-btn {
+      width: 100%;
+      margin-top: 1rem;
+    }
+    
+    .error-message {
+      background: #ffe6e6;
+      color: #ff4444;
+      padding: 0.8rem;
+      border-radius: 30px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    
+    .error-message.show {
+      display: block;
+    }
+    
+    .logout-btn {
+      background: #ff4444 !important;
+      border-color: #ff4444 !important;
+      color: white !important;
+      width: 100%;
+    }
+  </style>
+</body>
+</html>
