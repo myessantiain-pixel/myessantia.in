@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard · MyEssantia</title>
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #f8f6f2;
+      color: #1a1a1a;
+    }
+
+    .admin-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background: #0c0c0c;
+      color: white;
+      padding: 2rem 1.5rem;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+      color: #d4af37;
+    }
+
+    .sidebar h2 span {
+      font-size: 1rem;
+      display: block;
+      color: #888;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      color: #ddd;
+      text-decoration: none;
+      border-radius: 12px;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: #d4af37;
+      color: #0c0c0c;
+    }
+
+    .nav-item i {
+      width: 24px;
+      font-size: 1.2rem;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      padding: 2rem;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #1a1a1a;
+    }
+
+    .admin-badge {
+      background: #d4af37;
+      color: #0c0c0c;
+      padding: 0.5rem 1.5rem;
+      border-radius: 30px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      background: #f8f6f2;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #d4af37;
+    }
+
+    .stat-info h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-info p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    /* Product Form */
+    .product-form {
+      background: white;
+      padding: 2rem;
+      border-radius: 30px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .form-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #1a1a1a;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group.full-width {
+      grid-column: span 2;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .image-preview {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .preview-box {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      background: #f5f5f5;
+      background-size: cover;
+      background-position: center;
+      border: 2px dashed #ddd;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: #d4af37;
+      color: #0c0c0c;
+    }
+
+    .btn-primary:hover {
+      background: #c4a030;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-danger {
+      background: #ff4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #cc0000;
+    }
+
+    /* Products Table */
+    .products-table {
+      background: white;
+      border-radius: 30px;
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 1rem;
+      background: #f8f6f2;
+      font-weight: 600;
+      color: #333;
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .product-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .edit-btn, .delete-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .edit-btn {
+      background: #d4af37;
+      color: #0c0c0c;
+    }
+
+    .delete-btn {
+      background: #ff4444;
+      color: white;
+    }
+
+    .edit-btn:hover, .delete-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 80px;
+        padding: 1rem;
+      }
+      
+      .sidebar h2 span,
+      .nav-item span:not(.icon) {
+        display: none;
+      }
+      
+      .main-content {
+        margin-left: 80px;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-group.full-width {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>MyEssantia<span>admin</span></h2>
+      <div style="margin-top: 2rem;">
+        <a href="#" class="nav-item active">
+          <i class="fa-solid fa-box"></i>
+          <span>Products</span>
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fa-solid fa-tag"></i>
+          <span>Categories</span>
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fa-solid fa-truck"></i>
+          <span>Orders</span>
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fa-solid fa-users"></i>
+          <span>Customers</span>
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="header">
+        <h1>Product Management</h1>
+        <div class="admin-badge">
+          <i class="fa-solid fa-shield"></i>
+          Admin
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fa-solid fa-box"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="total-products">0</h3>
+            <p>Total Products</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="total-categories">2</h3>
+            <p>Categories</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="total-orders">0</h3>
+            <p>Active Orders</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add/Edit Product Form -->
+      <div class="product-form">
+        <div class="form-title">
+          <i class="fa-solid fa-plus-circle"></i>
+          <span id="form-title">Add New Product</span>
+        </div>
+        
+        <form id="product-form">
+          <input type="hidden" id="product-id" value="">
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Product Title</label>
+              <input type="text" id="product-title" placeholder="e.g. Leather Cardholder" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Category</label>
+              <select id="product-category" required>
+                <option value="">Select Category</option>
+                <option value="accessories">Accessories</option>
+                <option value="essentials">Essentials</option>
+                <option value="newarrival">New Arrivals</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Price (₹)</label>
+              <input type="number" id="product-price" placeholder="e.g. 1990" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Rating</label>
+              <input type="number" id="product-rating" step="0.1" min="0" max="5" placeholder="e.g. 4.5" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Primary Image URL</label>
+              <input type="url" id="product-primary-img" placeholder="https://..." required>
+            </div>
+            
+            <div class="form-group">
+              <label>Secondary Image URL</label>
+              <input type="url" id="product-secondary-img" placeholder="https://..." required>
+            </div>
+            
+            <div class="form-group full-width">
+              <label>Description (Optional)</label>
+              <textarea id="product-description" rows="3" placeholder="Product description..."></textarea>
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-save"></i>
+              Save Product
+            </button>
+            <button type="button" class="btn" id="cancel-edit" style="background: #f0f0f0;">
+              <i class="fa-solid fa-times"></i>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Products List -->
+      <div class="products-table">
+        <h3 style="margin-bottom: 1.5rem; font-family: 'Playfair Display', serif;">
+          <i class="fa-solid fa-list"></i> All Products
+        </h3>
+        
+        <table id="products-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Rating</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="products-list">
+            <!-- Products will be loaded here -->
+          </tbody>
+        </table>
+        
+        <div id="empty-products" style="text-align: center; padding: 3rem; color: #999; display: none;">
+          <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+          <p>No products yet. Add your first product above!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Product Management System
+    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+
+    // Initialize with sample products if empty
+    if (products.length === 0) {
+      products = [
+        {
+          id: 1,
+          title: "leather cardholder",
+          category: "accessories",
+          price: 1990,
+          rating: 4.7,
+          primaryImg: "https://images.unsplash.com/photo-1594734417407-396c2f1bd4e5?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1627123424574-7247585940ea?q=80&w=1887&auto=format&fit=crop",
+          description: "Premium leather cardholder with RFID blocking"
+        },
+        {
+          id: 2,
+          title: "slim power bank",
+          category: "essentials",
+          price: 3590,
+          rating: 5.0,
+          primaryImg: "https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1609592424741-2abf387c3745?q=80&w=1887&auto=format&fit=crop",
+          description: "10000mAh slim power bank with fast charging"
+        }
+      ];
+      saveProducts();
+    }
+
+    // DOM Elements
+    const productForm = document.getElementById('product-form');
+    const productId = document.getElementById('product-id');
+    const productTitle = document.getElementById('product-title');
+    const productCategory = document.getElementById('product-category');
+    const productPrice = document.getElementById('product-price');
+    const productRating = document.getElementById('product-rating');
+    const productPrimaryImg = document.getElementById('product-primary-img');
+    const productSecondaryImg = document.getElementById('product-secondary-img');
+    const productDescription = document.getElementById('product-description');
+    const productsList = document.getElementById('products-list');
+    const emptyProducts = document.getElementById('empty-products');
+    const totalProducts = document.getElementById('total-products');
+    const formTitle = document.getElementById('form-title');
+    const cancelEdit = document.getElementById('cancel-edit');
+
+    // Save products to localStorage
+    function saveProducts() {
+      localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+      updateStats();
+    }
+
+    // Update statistics
+    function updateStats() {
+      totalProducts.textContent = products.length;
+    }
+
+    // Render products table
+    function renderProducts() {
+      if (products.length === 0) {
+        productsList.innerHTML = '';
+        emptyProducts.style.display = 'block';
+        return;
+      }
+
+      emptyProducts.style.display = 'none';
+      
+      productsList.innerHTML = products.map(product => `
+        <tr>
+          <td>
+            <div class="product-thumb" style="background-image: url('${product.primaryImg}')"></div>
+          </td>
+          <td>${product.title}</td>
+          <td>${product.category}</td>
+          <td>₹${product.price.toLocaleString()}</td>
+          <td>
+            ${product.rating} <i class="fa-solid fa-star" style="color: #d4af37; font-size: 0.8rem;"></i>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="edit-btn" onclick="editProduct(${product.id})">
+                <i class="fa-solid fa-edit"></i> Edit
+              </button>
+              <button class="delete-btn" onclick="deleteProduct(${product.id})">
+                <i class="fa-solid fa-trash"></i> Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      
+      updateStats();
+    }
+
+    // Add or Update product
+    productForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const productData = {
+        title: productTitle.value.toLowerCase(),
+        category: productCategory.value,
+        price: parseInt(productPrice.value),
+        rating: parseFloat(productRating.value),
+        primaryImg: productPrimaryImg.value,
+        secondaryImg: productSecondaryImg.value,
+        description: productDescription.value || ''
+      };
+
+      if (productId.value) {
+        // Update existing product
+        const index = products.findIndex(p => p.id === parseInt(productId.value));
+        if (index !== -1) {
+          products[index] = { ...products[index], ...productData };
+        }
+      } else {
+        // Add new product
+        const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+        products.push({ id: newId, ...productData });
+      }
+
+      saveProducts();
+      renderProducts();
+      resetForm();
+    });
+
+    // Edit product
+    window.editProduct = function(id) {
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+
+      productId.value = product.id;
+      productTitle.value = product.title;
+      productCategory.value = product.category;
+      productPrice.value = product.price;
+      productRating.value = product.rating;
+      productPrimaryImg.value = product.primaryImg;
+      productSecondaryImg.value = product.secondaryImg;
+      productDescription.value = product.description || '';
+      
+      formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> Edit Product';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Delete product
+    window.deleteProduct = function(id) {
+      if (confirm('Are you sure you want to delete this product?')) {
+        products = products.filter(p => p.id !== id);
+        saveProducts();
+        renderProducts();
+        resetForm();
+      }
+    };
+
+    // Reset form
+    function resetForm() {
+      productForm.reset();
+      productId.value = '';
+      formTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add New Product';
+    }
+
+    cancelEdit.addEventListener('click', resetForm);
+
+    // Get products by category (for frontend pages)
+    window.getProductsByCategory = function(category) {
+      return products.filter(p => p.category === category);
+    };
+
+    // Get all products
+    window.getAllProducts = function() {
+      return products;
+    };
+
+    // Initial render
+    renderProducts();
+  </script>
+</body>
+</html>
