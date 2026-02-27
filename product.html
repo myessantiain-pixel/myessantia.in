@@ -982,9 +982,6 @@
       return parseInt(urlParams.get('id'));
     }
 
-    function getCurrentCartTotal() {
-      return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    }
 
     function loadProduct() {
       const productId = getProductId();
@@ -1018,7 +1015,6 @@
       const initialQuantity = cartItem ? cartItem.quantity : 1;
       
       // Calculate total cart value including current product with quantity
-      const currentCartTotal = getCurrentCartTotal();
       const thisProductTotal = product.price * initialQuantity;
       const totalWithProduct = currentCartTotal + thisProductTotal;
 
@@ -1104,9 +1100,6 @@
                   </span>
                 </div>
                 
-                <div class="cart-total-display" id="cart-total-display">
-                  Current Cart Total: <strong>₹${currentCartTotal.toLocaleString()}</strong> + This item: ₹${thisProductTotal.toLocaleString()} = <strong>₹${totalWithProduct.toLocaleString()}</strong>
-                </div>
               </div>
             </div>
 
@@ -1368,7 +1361,6 @@
       if (!quantityInput) return;
       
       const quantity = parseInt(quantityInput.value) || 1;
-      const currentCartTotal = getCurrentCartTotal();
       const thisProductTotal = product.price * quantity;
       const totalWithProduct = currentCartTotal + thisProductTotal;
       
@@ -1380,10 +1372,6 @@
       if (progressBar) {
         const percentage = Math.min(100, (totalWithProduct / 1299) * 100);
         progressBar.style.width = percentage + '%';
-      }
-
-      if (cartTotalDisplay) {
-        cartTotalDisplay.innerHTML = `Current Cart Total: <strong>₹${currentCartTotal.toLocaleString()}</strong> + This item: ₹${thisProductTotal.toLocaleString()} = <strong>₹${totalWithProduct.toLocaleString()}</strong>`;
       }
 
       if (deliveryMessage && deliveryText) {
