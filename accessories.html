@@ -406,173 +406,122 @@
   <div id="footer"></div>
 
   <script>
-    // ==================== GLOBAL APP STATE ====================
-    // Cart state - initialize from localStorage
     let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-    
-    // User state - initialize from localStorage
     let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
 
-    // ==================== LOAD HEADER AND FOOTER ====================
     async function loadComponents() {
       try {
-        // Load header
         const headerResponse = await fetch('header.html');
         const headerData = await headerResponse.text();
         document.getElementById('header').innerHTML = headerData;
 
-        // Load footer  
         const footerResponse = await fetch('footer.html');
         const footerData = await footerResponse.text();
         document.getElementById('footer').innerHTML = footerData;
 
-        // Initialize the app after components are loaded
         setTimeout(() => {
           initializeApp();
         }, 50);
       } catch (error) {
         console.error('Error loading components:', error);
-        // Use fallback header if fetch fails
-        document.getElementById('header').innerHTML = getFallbackHeader();
-        document.getElementById('footer').innerHTML = getFallbackFooter();
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
       }
     }
 
-    // ==================== FALLBACK HEADER/FOOTER ====================
-    function getFallbackHeader() {
-      return `
-        <header>
-          <div class="top-bar">
-            <div class="container">
-              <div class="top-bar-links">
-                <a href="#"><i class="fa-regular fa-circle-check"></i> No-returns</a>
-                <a href="#"><i class="fa-regular fa-clock"></i> worldwide express</a>
-                <a href="#"><i class="fa-regular fa-gem"></i> premium suppliers</a>
-              </div>
-              <div class="trust-badge">
-                <i class="fa-solid fa-star"></i> <span>4.8 trustpilot · 12k+ reviews</span>
-              </div>
-            </div>
-          </div>
+    function renderProducts() {
+      const gridContainer = document.getElementById('product-grid-container');
+      const sortSelect = document.getElementById('sort-select');
+      
+      if (!gridContainer) return;
 
-          <div class="main-header">
-            <div class="container">
-              <a href="#" class="logo">MyEssantia<span>.</span></a>
-              
-              <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
-                <i class="fa-solid fa-bars"></i>
-              </button>
-              
-              <ul class="nav-menu" id="nav-menu">
-                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="accessories.html" class="nav-link">Accessories</a></li>
-                <li class="nav-item"><a href="essentials.html" class="nav-link">Essentials</a></li>
-                <li class="nav-item"><a href="newarrival.html" class="nav-link">New-in</a></li>
-                <li class="nav-item"><a href="myorders.html" class="nav-link">My Orders</a></li>
-                <li class="nav-item"><a href="enquire.html" class="nav-link">Enquire</a></li>
-              </ul>
-              
-              <div class="header-icons">
-                <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
-                <a href="#" id="profile-icon">
-                  <i class="fa-regular fa-user"></i>
-                </a>
-                <a href="#" id="cart-icon" style="position: relative;">
-                  <i class="fa-solid fa-bag-shopping"></i>
-                  <span class="cart-count" id="cart-count">0</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </header>
+      const accessoriesProducts = products.filter(p => 
+        p.showOnAccessories === true && p.category === 'accessories'
+      );
 
-        <!-- Cart Modal -->
-        <div id="cart-modal" class="modal">
-          <div class="modal-content cart-modal-content">
-            <div class="modal-header">
-              <h3>Your Cart (<span id="cart-item-count">0</span> items)</h3>
-              <button class="close-modal" id="close-cart">&times;</button>
-            </div>
-            <div class="cart-items" id="cart-items">
-              <div class="empty-cart-message">
-                <i class="fa-regular fa-cart-shopping"></i>
-                <p>Your cart is empty</p>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <div class="cart-total">
-                <span>Total:</span>
-                <span id="cart-total-amount">₹0.00</span>
-              </div>
-              <button class="btn checkout-btn" id="checkout-btn">Proceed to Checkout</button>
-            </div>
+      if (accessoriesProducts.length === 0) {
+        gridContainer.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
+            <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+            <h3>No accessories found</h3>
+            <p>Check back later for new arrivals!</p>
           </div>
-        </div>
+        `;
+        return;
+      }
 
-        <!-- Profile Modal -->
-        <div id="profile-modal" class="modal">
-          <div class="modal-content profile-modal-content">
-            <div class="modal-header">
-              <h3>My Account</h3>
-              <button class="close-modal" id="close-profile">&times;</button>
+      function renderRating(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+          if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
+          else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+          else stars += '<i class="fa-regular fa-star"></i>';
+        }
+        return stars + `<span>(${rating.toFixed(1)})</span>`;
+      }
+
+      function getSortedProducts() {
+        let sorted = [...accessoriesProducts];
+        switch (sortSelect.value) {
+          case 'price-low':
+            sorted.sort((a, b) => a.price - b.price);
+            break;
+          case 'price-high':
+            sorted.sort((a, b) => b.price - a.price);
+            break;
+          case 'rating':
+            sorted.sort((a, b) => b.rating - a.rating);
+            break;
+          default:
+            break;
+        }
+        return sorted;
+      }
+
+      function renderAllProducts() {
+        const sortedProducts = getSortedProducts();
+        
+        let gridHtml = '';
+        sortedProducts.forEach(product => {
+          gridHtml += `
+            <div class="product-card" data-product-id="${product.id}" data-product-title="${product.title}" data-product-category="${product.category}" data-product-price="${product.price}" data-product-image="${product.primaryImg}">
+              <div class="image-frame">
+                <div class="primary-img" style="background-image: url('${product.primaryImg}');"></div>
+                <div class="secondary-img" style="background-image: url('${product.secondaryImg}');"></div>
+                <div class="image-actions">
+                  <button class="img-add" onclick="window.addToCart(${product.id})">
+                    <i class="fa-solid fa-cart-plus"></i> add
+                  </button>
+                  <button class="img-buy" onclick="window.buyNow(${product.id})">
+                    <i class="fa-solid fa-bolt"></i> buy
+                  </button>
+                </div>
+              </div>
+              <h3 class="product-title">${product.title}</h3>
+              <p class="product-category">${product.category}</p>
+              <div class="product-rating">${renderRating(product.rating)}</div>
+              <div class="product-price"><span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}</div>
             </div>
-            <div class="profile-content" id="profile-content"></div>
-          </div>
-        </div>
-      `;
+          `;
+        });
+        
+        gridContainer.innerHTML = gridHtml;
+      }
+
+      renderAllProducts();
+      
+      if (sortSelect) {
+        sortSelect.addEventListener('change', renderAllProducts);
+      }
     }
 
-    function getFallbackFooter() {
-      return `
-        <footer>
-          <div class="footer-content">
-            <div class="container">
-              <div class="footer-grid">
-                <div class="footer-col">
-                  <h4>MyEssantia</h4>
-                  <p>Premium accessories & daily essentials.</p>
-                </div>
-                <div class="footer-col">
-                  <h4>Shop</h4>
-                  <ul>
-                    <li><a href="#">New Arrivals</a></li>
-                    <li><a href="#">Bestsellers</a></li>
-                    <li><a href="#">Accessories</a></li>
-                  </ul>
-                </div>
-                <div class="footer-col">
-                  <h4>Support</h4>
-                  <ul>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Shipping</a></li>
-                    <li><a href="#">Returns</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="footer-bottom">
-                <p>&copy; 2025 MyEssantia. All rights reserved.</p>
-              </div>
-            </div>
-          </div>
-        </footer>
-      `;
-    }
-
-    // ==================== APP INITIALIZATION ====================
     function initializeApp() {
-      console.log('Initializing app...');
+      renderProducts();
       updateCartCount();
       updateProfileIcon();
       setupEventListeners();
-      initializeProductGrid();
     }
 
-    // ==================== EVENT LISTENERS ====================
     function setupEventListeners() {
-      // Mobile menu toggle
       const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
       const navMenu = document.getElementById('nav-menu');
       
@@ -583,7 +532,6 @@
         });
       }
 
-      // Cart icon
       const cartIcon = document.getElementById('cart-icon');
       if (cartIcon) {
         cartIcon.addEventListener('click', function(e) {
@@ -592,7 +540,6 @@
         });
       }
 
-      // Profile icon
       const profileIcon = document.getElementById('profile-icon');
       if (profileIcon) {
         profileIcon.addEventListener('click', function(e) {
@@ -601,7 +548,6 @@
         });
       }
 
-      // Close cart modal
       const closeCart = document.getElementById('close-cart');
       if (closeCart) {
         closeCart.addEventListener('click', function() {
@@ -609,7 +555,6 @@
         });
       }
 
-      // Close profile modal
       const closeProfile = document.getElementById('close-profile');
       if (closeProfile) {
         closeProfile.addEventListener('click', function() {
@@ -617,7 +562,6 @@
         });
       }
 
-      // Checkout button
       const checkoutBtn = document.getElementById('checkout-btn');
       if (checkoutBtn) {
         checkoutBtn.addEventListener('click', function() {
@@ -625,13 +569,10 @@
             alert('Your cart is empty!');
           } else {
             alert('Proceeding to checkout...');
-            // Here you would redirect to checkout page
-            // window.location.href = '/checkout';
           }
         });
       }
 
-      // Close modals when clicking outside
       window.addEventListener('click', function(e) {
         const cartModal = document.getElementById('cart-modal');
         const profileModal = document.getElementById('profile-modal');
@@ -644,7 +585,6 @@
         }
       });
 
-      // Close modals with Escape key
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
           closeModal('cart-modal');
@@ -652,7 +592,6 @@
         }
       });
 
-      // Close mobile menu when clicking outside
       document.addEventListener('click', function(e) {
         if (navMenu && navMenu.classList.contains('show')) {
           if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
@@ -662,7 +601,6 @@
       });
     }
 
-    // ==================== MODAL FUNCTIONS ====================
     function openCart() {
       const cartModal = document.getElementById('cart-modal');
       if (cartModal) {
@@ -689,22 +627,9 @@
       }
     }
 
-    // ==================== CART FUNCTIONS ====================
     window.addToCart = function(productId) {
-      const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
-      
-      if (!productCard) {
-        console.error('Product not found');
-        return;
-      }
-
-      const product = {
-        id: productId,
-        title: productCard.dataset.productTitle,
-        category: productCard.dataset.productCategory,
-        price: parseInt(productCard.dataset.productPrice),
-        image: productCard.dataset.productImage
-      };
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
 
       const existingItem = cart.find(item => item.id === productId);
 
@@ -782,7 +707,7 @@
 
         return `
           <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+            <div class="cart-item-image" style="background-image: url('${item.primaryImg}')"></div>
             <div class="cart-item-details">
               <h4 class="cart-item-title">${item.title}</h4>
               <p class="cart-item-category">${item.category}</p>
@@ -820,17 +745,15 @@
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
     }
 
-    // ==================== PROFILE FUNCTIONS ====================
     function renderProfileContent() {
       const profileContent = document.getElementById('profile-content');
       if (!profileContent) return;
 
       if (currentUser) {
-        // Logged in state
         profileContent.innerHTML = `
           <div class="profile-info">
             <div class="profile-avatar">
-              <i class="fa-regular fa-circle-user"></i>
+              <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">
             </div>
             <div class="profile-details">
               <p>
@@ -843,11 +766,6 @@
                 <span class="label">Email:</span>
                 <span class="value">${currentUser.email}</span>
               </p>
-              <p>
-                <i class="fa-regular fa-calendar"></i>
-                <span class="label">Member since:</span>
-                <span class="value">${currentUser.memberSince || '2025'}</span>
-              </p>
             </div>
             <button class="btn logout-btn" onclick="window.logout()">
               <i class="fa-solid fa-sign-out-alt"></i>
@@ -856,57 +774,22 @@
           </div>
         `;
       } else {
-        // Logged out state - show login form
         profileContent.innerHTML = `
           <div class="login-form">
             <div class="login-header">
-              <i class="fa-regular fa-circle-user"></i>
+              <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
               <h4>Welcome Back!</h4>
-              <p>Sign in to your account</p>
+              <p>Sign in with Google to continue</p>
             </div>
             
-            <div id="login-error" class="error-message"></div>
+            <button class="btn google-login-btn" onclick="window.handleGoogleLogin()">
+              <i class="fa-brands fa-google"></i>
+              Sign in with Google
+            </button>
             
-            <form onsubmit="window.handleLogin(event)">
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Enter your email" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter your password" required>
-              </div>
-              
-              <div class="remember-forgot">
-                <label class="remember-me">
-                  <input type="checkbox"> Remember me
-                </label>
-                <a href="#" class="forgot-password">Forgot Password?</a>
-              </div>
-              
-              <button type="submit" class="btn login-btn">
-                <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                Sign In
-              </button>
-            </form>
-            
-            <div class="login-divider">
-              <span>OR</span>
-            </div>
-            
-            <div class="social-login">
-              <button class="social-btn google" onclick="window.socialLogin('google')">
-                <i class="fa-brands fa-google"></i> Google
-              </button>
-              <button class="social-btn facebook" onclick="window.socialLogin('facebook')">
-                <i class="fa-brands fa-facebook-f"></i> Facebook
-              </button>
-            </div>
-            
-            <div class="signup-prompt">
-              Don't have an account? <a href="#" onclick="window.showSignup()">Sign up</a>
-            </div>
+            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
+              By signing in, you agree to our Terms of Service and Privacy Policy.
+            </p>
           </div>
         `;
       }
@@ -923,39 +806,21 @@
       }
     }
 
-    window.handleLogin = function(event) {
-      event.preventDefault();
-      
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const errorDiv = document.getElementById('login-error');
-
-      if (!email || !password) {
-        showError(errorDiv, 'Please fill in all fields');
-        return;
-      }
-
-      if (password.length < 6) {
-        showError(errorDiv, 'Password must be at least 6 characters');
-        return;
-      }
-
-      if (!email.includes('@') || !email.includes('.')) {
-        showError(errorDiv, 'Please enter a valid email address');
-        return;
-      }
-
-      const user = {
-        name: email.split('@')[0],
-        email: email,
+    window.handleGoogleLogin = function() {
+      const mockGoogleUser = {
+        name: 'John Doe',
+        email: 'john@gmail.com',
+        picture: 'https://via.placeholder.com/80',
+        provider: 'google',
         memberSince: '2025'
       };
 
-      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
-      currentUser = user;
+      localStorage.setItem('MyEssantia_user', JSON.stringify(mockGoogleUser));
+      currentUser = mockGoogleUser;
       updateProfileIcon();
       renderProfileContent();
-      alert('Login successful! Welcome back, ' + user.name);
+      closeModal('profile-modal');
+      alert('Successfully signed in with Google!');
     };
 
     window.logout = function() {
@@ -966,187 +831,6 @@
       alert('You have been logged out successfully');
     };
 
-    window.socialLogin = function(provider) {
-      alert(`${provider} login would open here. For demo, we'll create a test account.`);
-      
-      const user = {
-        name: `${provider}_user`,
-        email: `user@${provider}.com`,
-        memberSince: '2025'
-      };
-
-      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
-      currentUser = user;
-      updateProfileIcon();
-      renderProfileContent();
-    };
-
-    window.showSignup = function() {
-      alert('Sign up functionality would open here. For demo, please use the login form.');
-    };
-
-    function showError(element, message) {
-      element.textContent = message;
-      element.classList.add('show');
-      setTimeout(() => {
-        element.classList.remove('show');
-      }, 3000);
-    }
-
-    // ==================== PRODUCT GRID FUNCTIONS ====================
-    function initializeProductGrid() {
-      // ---------- PRODUCT DATA (12 items) ----------
-      const products = [
-        {
-          title: "leather cardholder",
-          category: "rfid blocking",
-          rating: 4.7,
-          price: 1990,
-          primaryImg: "https://images.unsplash.com/photo-1594734417407-396c2f1bd4e5?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1627123424574-7247585940ea?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "minimal mesh watch",
-          category: "stainless steel",
-          rating: 4.2,
-          price: 4490,
-          primaryImg: "https://images.unsplash.com/photo-1615655137840-7b7d8b8f93c7?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1888&auto=format&fit=crop"
-        },
-        {
-          title: "slim power bank",
-          category: "10.000 mAh",
-          rating: 5.0,
-          price: 3590,
-          primaryImg: "https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1609592424741-2abf387c3745?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "aviator sunglasses",
-          category: "uv400 / polarized",
-          rating: 4.3,
-          price: 2990,
-          primaryImg: "https://images.unsplash.com/photo-1509695507497-903c140c43b0?q=80&w=1973&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1880&auto=format&fit=crop"
-        },
-        {
-          title: "italian leather belt",
-          category: "35mm / cognac",
-          rating: 4.6,
-          price: 4990,
-          primaryImg: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?q=80&w=1897&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "65w GaN charger",
-          category: "3 ports · fast",
-          rating: 4.1,
-          price: 3790,
-          primaryImg: "https://images.unsplash.com/photo-1615525131611-9e1c98e2b8b9?q=80&w=1964&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1615525153961-3f6f6a5f23f3?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "tech organizer pouch",
-          category: "ballistic nylon",
-          rating: 4.0,
-          price: 2490,
-          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "universal adapter",
-          category: "4 usb · 100-240v",
-          rating: 4.5,
-          price: 3290,
-          primaryImg: "https://images.unsplash.com/photo-1583864697784-a0efc8379f70?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1583864697784-a0efc8379f70?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "leather backpack",
-          category: "vintage brown",
-          rating: 3.8,
-          price: 6490,
-          primaryImg: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "steel bracelet",
-          category: "adjustable",
-          rating: 3.5,
-          price: 1790,
-          primaryImg: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "woven elastic belt",
-          category: "canvas / brass",
-          rating: 4.0,
-          price: 2190,
-          primaryImg: "https://images.unsplash.com/photo-1624222247344-550fb60583dc?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1624222247344-550fb60583dc?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "cardholder set",
-          category: "pack of 2",
-          rating: 4.2,
-          price: 2990,
-          primaryImg: "https://images.unsplash.com/photo-1605901309584-818e25960a8f?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1605901309584-818e25960a8f?q=80&w=1887&auto=format&fit=crop"
-        }
-      ];
-
-      const gridContainer = document.getElementById('product-grid-container');
-      const sortSelect = document.getElementById('sort-select');
-
-      function renderRating(rating) {
-        let stars = '';
-        for (let i = 1; i <= 5; i++) {
-          if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
-          else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
-          else stars += '<i class="fa-regular fa-star"></i>';
-        }
-        return stars + `<span>(${rating.toFixed(1)})</span>`;
-      }
-
-      function getSortedProducts() {
-        let sorted = [...products];
-        switch (sortSelect.value) {
-          case 'price-low':
-            sorted.sort((a, b) => a.price - b.price);
-            break;
-          case 'price-high':
-            sorted.sort((a, b) => b.price - a.price);
-            break;
-          case 'rating':
-            sorted.sort((a, b) => b.rating - a.rating);
-            break;
-          default:
-            break;
-        }
-        return sorted;
-      }
-
-     function renderProducts() {
-  const gridContainer = document.getElementById('product-grid-container');
-  if (!gridContainer) return;
-
-  // Get products that should show on accessories page AND are in accessories category
-  const accessoriesProducts = products.filter(p => 
-    p.showOnAccessories === true && p.category === 'accessories'
-  );
-
-  if (accessoriesProducts.length === 0) {
-    gridContainer.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
-        <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-        <h3>No accessories found</h3>
-        <p>Check back later for new arrivals!</p>
-      </div>
-    `;
-    return;
-  }
-
-    // ==================== START THE APP ====================
     document.addEventListener('DOMContentLoaded', loadComponents);
   </script>
 
@@ -1293,6 +977,7 @@
       font-size: 2.5rem;
       color: #d4af37;
       border: 2px solid #d4af37;
+      overflow: hidden;
     }
 
     .profile-details {
@@ -1368,184 +1053,33 @@
       margin-bottom: 0.5rem;
     }
 
-    .form-group {
-      margin-bottom: 1.2rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
+    .google-login-btn {
+      background: #fff;
       color: #333;
-      font-weight: 600;
-      font-size: 0.9rem;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 1rem;
       border: 1px solid #ddd;
-      border-radius: 12px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.95rem;
-      transition: all 0.3s;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: #d4af37;
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-    }
-
-    .remember-forgot {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 1rem 0 1.5rem;
-      font-size: 0.9rem;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .remember-me {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: #666;
-    }
-
-    .remember-me input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-      accent-color: #d4af37;
-    }
-
-    .forgot-password {
-      color: #d4af37;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .login-btn {
-      width: 100%;
-      background: #d4af37;
-      border: 1px solid #d4af37;
-      color: #0c0c0c;
-      padding: 1rem;
-      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.8rem;
-      transition: all 0.3s;
-      margin-bottom: 1.5rem;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .login-divider {
-      position: relative;
-      text-align: center;
-      margin: 1.5rem 0;
-    }
-
-    .login-divider::before,
-    .login-divider::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      width: 45%;
-      height: 1px;
-      background: #eee;
-    }
-
-    .login-divider::before {
-      left: 0;
-    }
-
-    .login-divider::after {
-      right: 0;
-    }
-
-    .login-divider span {
-      background: #fff;
-      padding: 0 1rem;
-      color: #999;
-      font-size: 0.9rem;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 500;
-      position: relative;
-      z-index: 1;
-    }
-
-    .social-login {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .social-btn {
-      flex: 1;
-      padding: 0.8rem;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      background: #fff;
-      color: #333;
+      width: 100%;
+      padding: 1rem;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      cursor: pointer;
       transition: all 0.3s;
+      border-radius: 40px;
+      cursor: pointer;
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.9rem;
     }
 
-    .social-btn:hover {
-      background: #f5f5f5;
-      border-color: #ccc;
+    .google-login-btn:hover {
+      background: #f8f8f8;
+      border-color: #d4af37;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
     }
 
-    .social-btn.google {
+    .google-login-btn i {
       color: #DB4437;
-    }
-
-    .social-btn.facebook {
-      color: #4267B2;
-    }
-
-    .signup-prompt {
-      text-align: center;
-      font-size: 0.9rem;
-      color: #666;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .signup-prompt a {
-      color: #d4af37;
-      text-decoration: none;
-      font-weight: 700;
-    }
-
-    .error-message {
-      background: #fee;
-      color: #c00;
-      padding: 0.8rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-      display: none;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 500;
-      border-left: 3px solid #c00;
-    }
-
-    .error-message.show {
-      display: block;
+      font-size: 1.2rem;
     }
   </style>
 </body>
