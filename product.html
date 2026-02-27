@@ -188,6 +188,9 @@
     .reviews-count {
       color: #999;
       font-size: 0.9rem;
+      background: #f0f0f0;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
     }
 
     /* Price Section */
@@ -254,7 +257,7 @@
       color: #991b1b;
     }
 
-    /* Free Delivery Card - UPDATED */
+    /* Free Delivery Card */
     .delivery-card {
       background: linear-gradient(135deg, #f0f7ff 0%, #e6f0fa 100%);
       border-radius: 20px;
@@ -367,7 +370,7 @@
       display: inline-block;
     }
 
-    /* Quantity Selector - FIXED */
+    /* Quantity Selector */
     .quantity-section {
       margin: 2rem 0;
       background: #f8fafc;
@@ -553,13 +556,13 @@
       color: #666;
     }
 
-    /* Product Details Tabs */
+    /* Product Details Tabs - REDESIGNED */
     .product-details-tabs {
       margin-top: 3rem;
       background: white;
       border-radius: 30px;
       padding: 2rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
       border: 1px solid #f0f0f0;
     }
 
@@ -573,10 +576,11 @@
     .tab-header {
       padding: 1rem 0;
       cursor: pointer;
-      font-weight: 500;
+      font-weight: 600;
       color: #666;
       position: relative;
       transition: color 0.2s;
+      font-size: 1rem;
     }
 
     .tab-header:hover {
@@ -595,6 +599,12 @@
       width: 100%;
       height: 2px;
       background: #d4af37;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { width: 0; }
+      to { width: 100%; }
     }
 
     .tab-content {
@@ -614,27 +624,158 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .specs-grid {
+    /* Description Tab - Enhanced */
+    .description-content {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #4a5568;
+    }
+
+    .description-content p {
+      margin-bottom: 1rem;
+    }
+
+    .description-highlights {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      border-left: 4px solid #d4af37;
+    }
+
+    .description-highlights h4 {
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .description-highlights ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .description-highlights li {
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .description-highlights li i {
+      color: #d4af37;
+      width: 20px;
+    }
+
+    /* Specifications Tab - REDESIGNED */
+    .specs-container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 1.5rem;
     }
 
-    .spec-item {
-      padding: 1rem;
+    .spec-group {
       background: #f8fafc;
-      border-radius: 12px;
+      border-radius: 20px;
+      padding: 1.5rem;
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s;
+    }
+
+    .spec-group:hover {
+      border-color: #d4af37;
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.1);
+    }
+
+    .spec-group h4 {
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid #d4af37;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .spec-group h4 i {
+      color: #d4af37;
+    }
+
+    .spec-list {
+      list-style: none;
+    }
+
+    .spec-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .spec-list li:last-child {
+      border-bottom: none;
     }
 
     .spec-label {
-      font-size: 0.85rem;
+      font-weight: 500;
       color: #64748b;
-      margin-bottom: 0.3rem;
     }
 
     .spec-value {
       font-weight: 600;
       color: #1e293b;
+    }
+
+    /* Shipping Info Tab - REDESIGNED */
+    .shipping-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .shipping-card {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 1.5rem;
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s;
+    }
+
+    .shipping-card:hover {
+      border-color: #d4af37;
+      transform: translateY(-2px);
+    }
+
+    .shipping-card i {
+      font-size: 2rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+    }
+
+    .shipping-card h4 {
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 1rem;
+    }
+
+    .shipping-card p {
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .shipping-highlight {
+      background: linear-gradient(135deg, #d4af37 0%, #f5d742 100%);
+      color: #1a1a1a;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-top: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     /* Easy Return Policy */
@@ -728,14 +869,10 @@
       color: #d97706;
     }
 
-    .return-note strong {
-      color: #92400e;
-    }
-
     /* You May Also Like Section - ENHANCED */
     .related-section {
       margin: 5rem 0;
-      padding: 2rem 0;
+      padding: 3rem 0;
       background: linear-gradient(180deg, #ffffff 0%, #faf8f5 100%);
       border-radius: 40px;
     }
@@ -772,7 +909,7 @@
       color: inherit;
       background: white;
       border-radius: 24px;
-      padding: 1.2rem;
+      padding: 1.5rem;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid #f0f0f0;
       text-align: center;
@@ -832,7 +969,7 @@
 
     .related-title-small {
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 1.1rem;
       margin-bottom: 0.5rem;
       color: #1e293b;
       line-height: 1.3;
@@ -843,7 +980,7 @@
       align-items: center;
       justify-content: center;
       gap: 0.2rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
       color: #d4af37;
       font-size: 0.8rem;
     }
@@ -851,31 +988,50 @@
     .related-price {
       color: #d4af37;
       font-weight: 700;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       font-family: 'Montserrat', sans-serif;
+      margin-bottom: 0.8rem;
     }
 
     .related-price .inr-symbol {
-      font-size: 1rem;
+      font-size: 1.1rem;
     }
 
-    .quick-add {
-      margin-top: 1rem;
-      padding: 0.5rem;
-      background: #f8f6f2;
-      border-radius: 30px;
+    .related-stock {
       font-size: 0.8rem;
-      color: #666;
+      color: #64748b;
+      margin-bottom: 0.8rem;
+    }
+
+    .related-stock i {
+      color: #22c55e;
+      margin-right: 0.2rem;
+    }
+
+    .quick-add-btn {
+      width: 100%;
+      padding: 0.8rem;
+      background: #f8f6f2;
+      border: none;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e293b;
+      cursor: pointer;
+      transition: all 0.3s;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.3rem;
-      transition: all 0.3s;
+      gap: 0.5rem;
     }
 
-    .related-card:hover .quick-add {
+    .related-card:hover .quick-add-btn {
       background: #d4af37;
       color: white;
+    }
+
+    .quick-add-btn:hover {
+      transform: translateY(-2px);
     }
 
     /* Responsive */
@@ -884,7 +1040,11 @@
         grid-template-columns: repeat(2, 1fr);
       }
       
-      .specs-grid {
+      .specs-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .shipping-container {
         grid-template-columns: 1fr;
       }
     }
@@ -952,6 +1112,11 @@
     let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
     let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
 
+    // Generate random review count
+    function getRandomReviewCount() {
+      return Math.floor(Math.random() * (500 - 50 + 1)) + 50;
+    }
+
     async function loadComponents() {
       try {
         const headerResponse = await fetch('header.html');
@@ -1013,6 +1178,7 @@
                      [product.primaryImg, product.secondaryImg].filter(Boolean);
       const mainImage = images[0] || 'https://via.placeholder.com/600';
       const stock = product.stock || 10;
+      const reviewCount = getRandomReviewCount();
       
       const cartItem = cart.find(item => item.id === product.id);
       const initialQuantity = cartItem ? cartItem.quantity : 1;
@@ -1022,14 +1188,27 @@
       const thisProductTotal = product.price * initialQuantity;
       const totalWithProduct = currentCartTotal + thisProductTotal;
 
+      // Enhanced specs without warranty
       const specs = product.specs && product.specs.length ? product.specs : [
-        `Material: Premium Quality`,
-        `Brand: ${product.brand || 'MyEssantia'}`,
-        `Warranty: 1 Year`,
-        `Country of Origin: India`
+        `Material: Premium ${product.category === 'accessories' ? 'Leather' : 'Aluminum'}`,
+        `Dimensions: ${product.category === 'accessories' ? '10cm x 7cm x 2cm' : '15cm x 8cm x 3cm'}`,
+        `Weight: ${product.category === 'accessories' ? '150g' : '250g'}`,
+        `Color: Available in multiple colors`,
+        `Country of Origin: India`,
+        `Manufacturer: ${product.brand || 'MyEssantia Industries'}`
       ];
 
       const description = product.description || product.shortDesc || 'No description available.';
+      
+      // Create description highlights
+      const descriptionHighlights = [
+        'Premium quality materials',
+        'Designed for daily use',
+        'Eco-friendly packaging',
+        '1 year manufacturer warranty',
+        '100% authentic product'
+      ];
+
       const originalPrice = Math.round(product.price * 1.2);
       const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
 
@@ -1063,7 +1242,7 @@
                   ${getStarRating(product.rating)}
                 </div>
                 <span class="rating-value">${product.rating.toFixed(1)}</span>
-                <span class="reviews-count">(128 reviews)</span>
+                <span class="reviews-count">${reviewCount} reviews</span>
               </div>
             </div>
 
@@ -1080,7 +1259,7 @@
               </div>
             </div>
 
-            <!-- Free Delivery Card - Now based on total cart value -->
+            <!-- Free Delivery Card -->
             <div class="delivery-card" id="delivery-card">
               <div class="delivery-header">
                 <div class="delivery-title">
@@ -1104,7 +1283,9 @@
                   </span>
                 </div>
                 
-          
+                <div class="cart-total-display" id="cart-total-display">
+                  Current Cart Total: <strong>₹${currentCartTotal.toLocaleString()}</strong> + This item: ₹${thisProductTotal.toLocaleString()} = <strong>₹${totalWithProduct.toLocaleString()}</strong>
+                </div>
               </div>
             </div>
 
@@ -1130,7 +1311,7 @@
               </div>
             </div>
 
-            <!-- Quantity Selector - FIXED with onclick handlers -->
+            <!-- Quantity Selector -->
             <div class="quantity-section">
               <div class="quantity-label">
                 <i class="fa-solid fa-cubes"></i>
@@ -1161,7 +1342,7 @@
               </button>
             </div>
 
-            <!-- Product Details Tabs -->
+            <!-- Product Details Tabs - REDESIGNED -->
             <div class="product-details-tabs">
               <div class="tab-headers">
                 <div class="tab-header active" onclick="switchTab('description')">Description</div>
@@ -1170,25 +1351,68 @@
               </div>
               
               <div class="tab-content active" id="tab-description">
-                <p>${description}</p>
+                <div class="description-content">
+                  <p>${description}</p>
+                  <div class="description-highlights">
+                    <h4><i class="fa-regular fa-star"></i> Key Features</h4>
+                    <ul>
+                      ${descriptionHighlights.map(item => `
+                        <li><i class="fa-regular fa-circle-check"></i> ${item}</li>
+                      `).join('')}
+                    </ul>
+                  </div>
+                </div>
               </div>
               
               <div class="tab-content" id="tab-specifications">
-                <div class="specs-grid">
-                  ${specs.map(spec => {
-                    const [key, value] = spec.split(':');
-                    return `
-                      <div class="spec-item">
-                        <div class="spec-label">${key}</div>
-                        <div class="spec-value">${value || ''}</div>
-                      </div>
-                    `;
-                  }).join('')}
+                <div class="specs-container">
+                  <div class="spec-group">
+                    <h4><i class="fa-regular fa-cube"></i> Product Details</h4>
+                    <ul class="spec-list">
+                      ${specs.slice(0, 4).map(spec => {
+                        const [key, value] = spec.split(':');
+                        return `
+                          <li>
+                            <span class="spec-label">${key}</span>
+                            <span class="spec-value">${value || ''}</span>
+                          </li>
+                        `;
+                      }).join('')}
+                    </ul>
+                  </div>
+                  <div class="spec-group">
+                    <h4><i class="fa-regular fa-truck"></i> Shipping & Handling</h4>
+                    <ul class="spec-list">
+                      <li><span class="spec-label">Dispatch Time</span><span class="spec-value">24 Hours</span></li>
+                      <li><span class="spec-label">Delivery Time</span><span class="spec-value">3-5 Business Days</span></li>
+                      <li><span class="spec-label">Free Shipping</span><span class="spec-value">Above ₹1,299</span></li>
+                      <li><span class="spec-label">Cash on Delivery</span><span class="spec-value">Available</span></li>
+                    </ul>
+                  </div>
                 </div>
               </div>
               
               <div class="tab-content" id="tab-shipping">
-                <p>We offer free shipping on all orders above ₹1,299. Orders are dispatched within 24 hours and delivered within 3-5 business days. International shipping takes 5-7 business days.</p>
+                <div class="shipping-container">
+                  <div class="shipping-card">
+                    <i class="fa-solid fa-box"></i>
+                    <h4>Standard Delivery</h4>
+                    <p>Orders are dispatched within 24 hours of placing the order. Delivery takes 3-5 business days depending on your location.</p>
+                    <div class="shipping-highlight">
+                      <i class="fa-solid fa-truck"></i>
+                      Free on orders above ₹1,299
+                    </div>
+                  </div>
+                  <div class="shipping-card">
+                    <i class="fa-solid fa-clock"></i>
+                    <h4>Express Delivery</h4>
+                    <p>Need it faster? Choose express delivery at checkout for 1-2 business day delivery. Additional charges apply.</p>
+                    <div class="shipping-highlight">
+                      <i class="fa-solid fa-bolt"></i>
+                      Available in select cities
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1249,24 +1473,31 @@
             <div class="related-grid">
               ${related.map(p => {
                 const img = p.images && p.images[0] ? p.images[0] : (p.primaryImg || 'https://via.placeholder.com/200');
+                const reviewCount = getRandomReviewCount();
                 return `
-                  <a href="product.html?id=${p.id}" class="related-card">
-                    <div class="related-image">
-                      <img src="${img}" alt="${p.title}">
-                    </div>
-                    <div class="related-category">${p.category}</div>
-                    <div class="related-title-small">${p.title}</div>
-                    <div class="related-rating">
-                      ${getStarRating(p.rating)}
-                      <span style="margin-left: 0.2rem;">${p.rating.toFixed(1)}</span>
-                    </div>
-                    <div class="related-price">
-                      <span class="inr-symbol">₹</span>${p.price.toLocaleString()}
-                    </div>
-                    <div class="quick-add">
+                  <div class="related-card">
+                    <a href="product.html?id=${p.id}" style="text-decoration: none; color: inherit;">
+                      <div class="related-image">
+                        <img src="${img}" alt="${p.title}">
+                      </div>
+                      <div class="related-category">${p.category}</div>
+                      <div class="related-title-small">${p.title}</div>
+                      <div class="related-rating">
+                        ${getStarRating(p.rating)}
+                        <span style="margin-left: 0.2rem;">(${reviewCount})</span>
+                      </div>
+                      <div class="related-price">
+                        <span class="inr-symbol">₹</span>${p.price.toLocaleString()}
+                      </div>
+                      <div class="related-stock">
+                        <i class="fa-regular fa-circle-check"></i> 
+                        ${p.stock > 10 ? 'In Stock' : (p.stock > 0 ? 'Low Stock' : 'Out of Stock')}
+                      </div>
+                    </a>
+                    <button class="quick-add-btn" onclick="addToCart(${p.id}); event.preventDefault();">
                       <i class="fa-solid fa-cart-plus"></i> Quick Add
-                    </div>
-                  </a>
+                    </button>
+                  </div>
                 `;
               }).join('')}
             </div>
@@ -1298,7 +1529,7 @@
       element.classList.toggle('zoomed');
     };
 
-    // Quantity functions - FIXED
+    // Quantity functions
     window.incrementQuantity = function() {
       const input = document.getElementById('product-quantity');
       if (!input) return;
@@ -1314,13 +1545,11 @@
         input.value = value;
         updateDeliveryBar();
         
-        // Update plus button disabled state
         const plusBtn = document.querySelector('.quantity-btn[onclick="incrementQuantity()"]');
         if (plusBtn && value >= product.stock) {
           plusBtn.disabled = true;
         }
         
-        // Enable minus button
         const minusBtn = document.querySelector('.quantity-btn[onclick="decrementQuantity()"]');
         if (minusBtn) {
           minusBtn.disabled = false;
@@ -1343,13 +1572,11 @@
         input.value = value;
         updateDeliveryBar();
         
-        // Enable plus button
         const plusBtn = document.querySelector('.quantity-btn[onclick="incrementQuantity()"]');
         if (plusBtn) {
           plusBtn.disabled = false;
         }
         
-        // Update minus button disabled state
         const minusBtn = document.querySelector('.quantity-btn[onclick="decrementQuantity()"]');
         if (minusBtn && value <= 1) {
           minusBtn.disabled = true;
@@ -1378,6 +1605,10 @@
       if (progressBar) {
         const percentage = Math.min(100, (totalWithProduct / 1299) * 100);
         progressBar.style.width = percentage + '%';
+      }
+
+      if (cartTotalDisplay) {
+        cartTotalDisplay.innerHTML = `Current Cart Total: <strong>₹${currentCartTotal.toLocaleString()}</strong> + This item: ₹${thisProductTotal.toLocaleString()} = <strong>₹${totalWithProduct.toLocaleString()}</strong>`;
       }
 
       if (deliveryMessage && deliveryText) {
@@ -1421,14 +1652,14 @@
       const btn = event?.target?.closest('button');
       if (btn) {
         const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Added to Cart!';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Added!';
         btn.style.background = '#22c55e';
         btn.style.color = 'white';
         setTimeout(() => {
           btn.innerHTML = originalText;
           btn.style.background = '';
           btn.style.color = '';
-        }, 2000);
+        }, 1500);
       }
     };
 
@@ -1617,7 +1848,6 @@
       updateCartCount();
       renderCartItems();
       
-      // If we're on a product page, update the delivery bar
       if (window.location.pathname.includes('product.html')) {
         updateDeliveryBar();
       }
@@ -1629,7 +1859,6 @@
       updateCartCount();
       renderCartItems();
       
-      // If we're on a product page, update the delivery bar
       if (window.location.pathname.includes('product.html')) {
         updateDeliveryBar();
       }
