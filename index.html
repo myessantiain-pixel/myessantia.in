@@ -162,6 +162,33 @@
       border: 1px solid #1a1a1a;
     }
 
+    /* Google Sign-in Button */
+    .google-login-btn {
+      background: #fff;
+      color: #333;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      width: 100%;
+      padding: 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .google-login-btn:hover {
+      background: #f8f8f8;
+      border-color: #d4af37;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .google-login-btn i {
+      color: #DB4437;
+      font-size: 1.2rem;
+    }
+
     /* VALUE STRIP */
     .value-strip {
       background: #ffffff;
@@ -452,182 +479,8 @@
         <a href="#" class="view-all-link">view all products <i class="fa-solid fa-arrow-right"></i></a>
       </div>
 
-      <div class="product-grid">
-        <!-- Product 1 -->
-        <div class="product-card" data-product-id="1" data-product-title="leather cardholder" data-product-category="rfid blocking" data-product-price="1990" data-product-image="https://images.unsplash.com/photo-1594734417407-396c2f1bd4e5?q=80&w=1887&auto=format&fit=crop">
-          <div class="image-frame">
-            <div class="primary-img" style="background-image: url('https://images.unsplash.com/photo-1594734417407-396c2f1bd4e5?q=80&w=1887&auto=format&fit=crop');"></div>
-            <div class="secondary-img" style="background-image: url('https://images.unsplash.com/photo-1627123424574-7247585940ea?q=80&w=1887&auto=format&fit=crop');"></div>
-            <div class="image-actions">
-              <button class="img-add" onclick="window.addToCart(1)">
-                <i class="fa-solid fa-cart-plus"></i> add
-              </button>
-              <button class="img-buy" onclick="window.buyNow(1)">
-                <i class="fa-solid fa-bolt"></i> buy
-              </button>
-            </div>
-          </div>
-          <h3 class="product-title">leather cardholder</h3>
-          <p class="product-category">rfid blocking</p>
-          <div class="product-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-alt"></i><span>(4.7)</span>
-          </div>
-          <div class="product-price"><span class="inr-symbol">₹</span><span class="amount">1,990</span></div>
-        </div>
-
-        <!-- Product 2 -->
-        <div class="product-card" data-product-id="2" data-product-title="minimal mesh watch" data-product-category="stainless steel" data-product-price="4490" data-product-image="https://images.unsplash.com/photo-1615655137840-7b7d8b8f93c7?q=80&w=1887&auto=format&fit=crop">
-          <div class="image-frame">
-            <div class="primary-img" style="background-image: url('https://images.unsplash.com/photo-1615655137840-7b7d8b8f93c7?q=80&w=1887&auto=format&fit=crop');"></div>
-            <div class="secondary-img" style="background-image: url('https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1888&auto=format&fit=crop');"></div>
-            <div class="image-actions">
-              <button class="img-add" onclick="window.addToCart(2)">
-                <i class="fa-solid fa-cart-plus"></i> add
-              </button>
-              <button class="img-buy" onclick="window.buyNow(2)">
-                <i class="fa-solid fa-bolt"></i> buy
-              </button>
-            </div>
-          </div>
-          <h3 class="product-title">minimal mesh watch</h3>
-          <p class="product-category">stainless steel</p>
-          <div class="product-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><span>(4.2)</span>
-          </div>
-          <div class="product-price"><span class="inr-symbol">₹</span><span class="amount">4,490</span></div>
-        </div>
-
-        <!-- Product 3 -->
-        <div class="product-card" data-product-id="3" data-product-title="slim power bank" data-product-category="10.000 mAh" data-product-price="3590" data-product-image="https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop">
-          <div class="image-frame">
-            <div class="primary-img" style="background-image: url('https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop');"></div>
-            <div class="secondary-img" style="background-image: url('https://images.unsplash.com/photo-1609592424741-2abf387c3745?q=80&w=1887&auto=format&fit=crop');"></div>
-            <div class="image-actions">
-              <button class="img-add" onclick="window.addToCart(3)">
-                <i class="fa-solid fa-cart-plus"></i> add
-              </button>
-              <button class="img-buy" onclick="window.buyNow(3)">
-                <i class="fa-solid fa-bolt"></i> buy
-              </button>
-            </div>
-          </div>
-          <h3 class="product-title">slim power bank</h3>
-          <p class="product-category">10.000 mAh</p>
-          <div class="product-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><span>(5.0)</span>
-          </div>
-          <div class="product-price"><span class="inr-symbol">₹</span><span class="amount">3,590</span></div>
-        </div>
-
-        <!-- Product 4 -->
-        <div class="product-card" data-product-id="4" data-product-title="aviator sunglasses" data-product-category="uv400 / polarized" data-product-price="2990" data-product-image="https://images.unsplash.com/photo-1509695507497-903c140c43b0?q=80&w=1973&auto=format&fit=crop">
-          <div class="image-frame">
-            <div class="primary-img" style="background-image: url('https://images.unsplash.com/photo-1509695507497-903c140c43b0?q=80&w=1973&auto=format&fit=crop');"></div>
-            <div class="secondary-img" style="background-image: url('https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1880&auto=format&fit=crop');"></div>
-            <div class="image-actions">
-              <button class="img-add" onclick="window.addToCart(4)">
-                <i class="fa-solid fa-cart-plus"></i> add
-              </button>
-              <button class="img-buy" onclick="window.buyNow(4)">
-                <i class="fa-solid fa-bolt"></i> buy
-              </button>
-            </div>
-          </div>
-          <h3 class="product-title">aviator sunglasses</h3>
-          <p class="product-category">uv400 / polarized</p>
-          <div class="product-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><span>(4.3)</span>
-          </div>
-          <div class="product-price"><span class="inr-symbol">₹</span><span class="amount">2,990</span></div>
-        </div>
-
-        <!-- Product 5 -->
-        <div class="product-card" data-product-id="5" data-product-title="italian leather belt" data-product-category="35mm / cognac" data-product-price="4990" data-product-image="https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?q=80&w=1897&auto=format&fit=crop">
-          <div class="image-frame">
-            <div class="primary-img" style="background-image: url('https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?q=80&w=1897&auto=format&fit=crop');"></div>
-            <div class="secondary-img" style="background-image: url('https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?q=80&w=1887&auto=format&fit=crop');"></div>
-            <div class="image-actions">
-              <button class="img-add" onclick="window.addToCart(5)">
-                <i class="fa-solid fa-cart-plus"></i> add
-              </button>
-              <button class="img-buy" onclick="window.buyNow(5)">
-                <i class="fa-solid fa-bolt"></i> buy
-              </button>
-            </div>
-          </div>
-          <h3 class="product-title">italian leather belt</h3>
-          <p class="product-category">35mm / cognac</p>
-          <div class="product-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-alt"></i><span>(4.6)</span>
-          </div>
-          <div class="product-price"><span class="inr-symbol">₹</span><span class="amount">4,990</span></div>
-        </div>
-
-        <!-- Product 6 -->
-        <div class="product-card" data-product-id="6" data-product-title="65w gaN charger" data-product-category="3 ports · fast" data-product-price="3790" data-product-image="https://images.unsplash.com/photo-1615525131611-9e1c98e2b8b9?q=80&w=1964&auto=format&fit=crop">
-          <div class="image-frame">
-            <div class="primary-img" style="background-image: url('https://images.unsplash.com/photo-1615525131611-9e1c98e2b8b9?q=80&w=1964&auto=format&fit=crop');"></div>
-            <div class="secondary-img" style="background-image: url('https://images.unsplash.com/photo-1615525153961-3f6f6a5f23f3?q=80&w=1887&auto=format&fit=crop');"></div>
-            <div class="image-actions">
-              <button class="img-add" onclick="window.addToCart(6)">
-                <i class="fa-solid fa-cart-plus"></i> add
-              </button>
-              <button class="img-buy" onclick="window.buyNow(6)">
-                <i class="fa-solid fa-bolt"></i> buy
-              </button>
-            </div>
-          </div>
-          <h3 class="product-title">65w gaN charger</h3>
-          <p class="product-category">3 ports · fast</p>
-          <div class="product-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><span>(4.1)</span>
-          </div>
-          <div class="product-price"><span class="inr-symbol">₹</span><span class="amount">3,790</span></div>
-        </div>
-
-        <!-- Product 7 -->
-        <div class="product-card" data-product-id="7" data-product-title="tech organizer pouch" data-product-category="ballistic nylon" data-product-price="2490" data-product-image="https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop">
-          <div class="image-frame">
-            <div class="primary-img" style="background-image: url('https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop');"></div>
-            <div class="secondary-img" style="background-image: url('https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop');"></div>
-            <div class="image-actions">
-              <button class="img-add" onclick="window.addToCart(7)">
-                <i class="fa-solid fa-cart-plus"></i> add
-              </button>
-              <button class="img-buy" onclick="window.buyNow(7)">
-                <i class="fa-solid fa-bolt"></i> buy
-              </button>
-            </div>
-          </div>
-          <h3 class="product-title">tech organizer pouch</h3>
-          <p class="product-category">ballistic nylon</p>
-          <div class="product-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><span>(4.0)</span>
-          </div>
-          <div class="product-price"><span class="inr-symbol">₹</span><span class="amount">2,490</span></div>
-        </div>
-
-        <!-- Product 8 -->
-        <div class="product-card" data-product-id="8" data-product-title="universal adapter" data-product-category="4 usb · 100-240v" data-product-price="3290" data-product-image="https://images.unsplash.com/photo-1583864697784-a0efc8379f70?q=80&w=1887&auto=format&fit=crop">
-          <div class="image-frame">
-            <div class="primary-img" style="background-image: url('https://images.unsplash.com/photo-1583864697784-a0efc8379f70?q=80&w=1887&auto=format&fit=crop');"></div>
-            <div class="secondary-img" style="background-image: url('https://images.unsplash.com/photo-1583864697784-a0efc8379f70?q=80&w=1887&auto=format&fit=crop');"></div>
-            <div class="image-actions">
-              <button class="img-add" onclick="window.addToCart(8)">
-                <i class="fa-solid fa-cart-plus"></i> add
-              </button>
-              <button class="img-buy" onclick="window.buyNow(8)">
-                <i class="fa-solid fa-bolt"></i> buy
-              </button>
-            </div>
-          </div>
-          <h3 class="product-title">universal adapter</h3>
-          <p class="product-category">4 usb · 100-240v</p>
-          <div class="product-rating">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-alt"></i><span>(4.5)</span>
-          </div>
-          <div class="product-price"><span class="inr-symbol">₹</span><span class="amount">3,290</span></div>
-        </div>
+      <div class="product-grid" id="product-grid-container">
+        <!-- Products will be loaded dynamically -->
       </div>
     </div>
 
@@ -677,6 +530,88 @@
     // User state - initialize from localStorage
     let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
 
+    // Products data - from admin system
+    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+
+    // Initialize with sample products if empty
+    if (products.length === 0) {
+      products = [
+        {
+          id: 1,
+          title: "leather cardholder",
+          category: "accessories",
+          price: 1990,
+          rating: 4.7,
+          primaryImg: "https://images.unsplash.com/photo-1594734417407-396c2f1bd4e5?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1627123424574-7247585940ea?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 2,
+          title: "minimal mesh watch",
+          category: "accessories",
+          price: 4490,
+          rating: 4.2,
+          primaryImg: "https://images.unsplash.com/photo-1615655137840-7b7d8b8f93c7?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1888&auto=format&fit=crop"
+        },
+        {
+          id: 3,
+          title: "slim power bank",
+          category: "essentials",
+          price: 3590,
+          rating: 5.0,
+          primaryImg: "https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1609592424741-2abf387c3745?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 4,
+          title: "aviator sunglasses",
+          category: "accessories",
+          price: 2990,
+          rating: 4.3,
+          primaryImg: "https://images.unsplash.com/photo-1509695507497-903c140c43b0?q=80&w=1973&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1880&auto=format&fit=crop"
+        },
+        {
+          id: 5,
+          title: "italian leather belt",
+          category: "accessories",
+          price: 4990,
+          rating: 4.6,
+          primaryImg: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?q=80&w=1897&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 6,
+          title: "65w gaN charger",
+          category: "essentials",
+          price: 3790,
+          rating: 4.1,
+          primaryImg: "https://images.unsplash.com/photo-1615525131611-9e1c98e2b8b9?q=80&w=1964&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1615525153961-3f6f6a5f23f3?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 7,
+          title: "tech organizer pouch",
+          category: "essentials",
+          price: 2490,
+          rating: 4.0,
+          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 8,
+          title: "universal adapter",
+          category: "essentials",
+          price: 3290,
+          rating: 4.5,
+          primaryImg: "https://images.unsplash.com/photo-1583864697784-a0efc8379f70?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1583864697784-a0efc8379f70?q=80&w=1887&auto=format&fit=crop"
+        }
+      ];
+      localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+    }
+
     // ==================== LOAD HEADER AND FOOTER ====================
     async function loadComponents() {
       try {
@@ -693,22 +628,187 @@
         // Initialize the app after components are loaded
         setTimeout(() => {
           initializeApp();
-        }, 50); // Small delay to ensure DOM is ready
+        }, 50);
       } catch (error) {
         console.error('Error loading components:', error);
-        // Try to initialize anyway after a delay
+        // Use fallback header
+        document.getElementById('header').innerHTML = getFallbackHeader();
+        document.getElementById('footer').innerHTML = getFallbackFooter();
         setTimeout(() => {
           initializeApp();
-        }, 100);
+        }, 50);
       }
+    }
+
+    // ==================== FALLBACK HEADER ====================
+    function getFallbackHeader() {
+      return `
+        <header>
+          <div class="top-bar">
+            <div class="container">
+              <div class="top-bar-links">
+                <a href="#"><i class="fa-regular fa-circle-check"></i> No-returns</a>
+                <a href="#"><i class="fa-regular fa-clock"></i> worldwide express</a>
+                <a href="#"><i class="fa-regular fa-gem"></i> premium suppliers</a>
+              </div>
+              <div class="trust-badge">
+                <i class="fa-solid fa-star"></i> <span>4.8 trustpilot · 12k+ reviews</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="main-header">
+            <div class="container">
+              <a href="#" class="logo">MyEssantia<span>.</span></a>
+              
+              <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                <i class="fa-solid fa-bars"></i>
+              </button>
+              
+              <ul class="nav-menu" id="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="accessories.html" class="nav-link">Accessories</a></li>
+                <li class="nav-item"><a href="essentials.html" class="nav-link">Essentials</a></li>
+                <li class="nav-item"><a href="newarrival.html" class="nav-link">New-in</a></li>
+                <li class="nav-item"><a href="myorders.html" class="nav-link">My Orders</a></li>
+                <li class="nav-item"><a href="enquire.html" class="nav-link">Enquire</a></li>
+              </ul>
+              
+              <div class="header-icons">
+                <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                <a href="#" id="profile-icon">
+                  <i class="fa-regular fa-user"></i>
+                </a>
+                <a href="#" id="cart-icon" style="position: relative;">
+                  <i class="fa-solid fa-bag-shopping"></i>
+                  <span class="cart-count" id="cart-count">0</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Cart Modal -->
+        <div id="cart-modal" class="modal">
+          <div class="modal-content cart-modal-content">
+            <div class="modal-header">
+              <h3>Your Cart (<span id="cart-item-count">0</span> items)</h3>
+              <button class="close-modal" id="close-cart">&times;</button>
+            </div>
+            <div class="cart-items" id="cart-items">
+              <div class="empty-cart-message">
+                <i class="fa-regular fa-cart-shopping"></i>
+                <p>Your cart is empty</p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-amount">₹0.00</span>
+              </div>
+              <button class="btn checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div id="profile-modal" class="modal">
+          <div class="modal-content profile-modal-content">
+            <div class="modal-header">
+              <h3>My Account</h3>
+              <button class="close-modal" id="close-profile">&times;</button>
+            </div>
+            <div class="profile-content" id="profile-content"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getFallbackFooter() {
+      return `
+        <footer>
+          <div class="footer-content">
+            <div class="container">
+              <div class="footer-grid">
+                <div class="footer-col">
+                  <h4>MyEssantia</h4>
+                  <p>Premium accessories & daily essentials.</p>
+                </div>
+                <div class="footer-col">
+                  <h4>Shop</h4>
+                  <ul>
+                    <li><a href="#">New Arrivals</a></li>
+                    <li><a href="#">Bestsellers</a></li>
+                    <li><a href="#">Accessories</a></li>
+                  </ul>
+                </div>
+                <div class="footer-col">
+                  <h4>Support</h4>
+                  <ul>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Shipping</a></li>
+                    <li><a href="#">Returns</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="footer-bottom">
+                <p>&copy; 2025 MyEssantia. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </footer>
+      `;
     }
 
     // ==================== APP INITIALIZATION ====================
     function initializeApp() {
       console.log('Initializing app...');
+      renderProducts();
       updateCartCount();
       updateProfileIcon();
       setupEventListeners();
+    }
+
+    // ==================== PRODUCT RENDERING ====================
+    function renderProducts() {
+      const gridContainer = document.getElementById('product-grid-container');
+      if (!gridContainer) return;
+
+      function renderRating(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+          if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
+          else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+          else stars += '<i class="fa-regular fa-star"></i>';
+        }
+        return stars + `<span>(${rating.toFixed(1)})</span>`;
+      }
+
+      let gridHtml = '';
+      products.forEach(product => {
+        gridHtml += `
+          <div class="product-card" data-product-id="${product.id}" data-product-title="${product.title}" data-product-category="${product.category}" data-product-price="${product.price}" data-product-image="${product.primaryImg}">
+            <div class="image-frame">
+              <div class="primary-img" style="background-image: url('${product.primaryImg}');"></div>
+              <div class="secondary-img" style="background-image: url('${product.secondaryImg}');"></div>
+              <div class="image-actions">
+                <button class="img-add" onclick="window.addToCart(${product.id})">
+                  <i class="fa-solid fa-cart-plus"></i> add
+                </button>
+                <button class="img-buy" onclick="window.buyNow(${product.id})">
+                  <i class="fa-solid fa-bolt"></i> buy
+                </button>
+              </div>
+            </div>
+            <h3 class="product-title">${product.title}</h3>
+            <p class="product-category">${product.category}</p>
+            <div class="product-rating">${renderRating(product.rating)}</div>
+            <div class="product-price"><span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}</div>
+          </div>
+        `;
+      });
+      
+      gridContainer.innerHTML = gridHtml;
     }
 
     // ==================== EVENT LISTENERS ====================
@@ -766,7 +866,6 @@
             alert('Your cart is empty!');
           } else {
             alert('Proceeding to checkout...');
-            // window.location.href = '/checkout';
           }
         });
       }
@@ -831,21 +930,8 @@
 
     // ==================== CART FUNCTIONS ====================
     window.addToCart = function(productId) {
-      const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
-      
-      if (!productCard) {
-        console.error('Product not found');
-        return;
-      }
-
-      // Extract product data from data attributes
-      const product = {
-        id: productId,
-        title: productCard.dataset.productTitle,
-        category: productCard.dataset.productCategory,
-        price: parseInt(productCard.dataset.productPrice),
-        image: productCard.dataset.productImage
-      };
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
 
       const existingItem = cart.find(item => item.id === productId);
 
@@ -860,8 +946,6 @@
 
       saveCart();
       updateCartCount();
-      
-      // Simple feedback
       alert(`${product.title} added to cart!`);
     };
 
@@ -925,7 +1009,7 @@
 
         return `
           <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+            <div class="cart-item-image" style="background-image: url('${item.primaryImg}')"></div>
             <div class="cart-item-details">
               <h4 class="cart-item-title">${item.title}</h4>
               <p class="cart-item-category">${item.category}</p>
@@ -963,7 +1047,7 @@
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
     }
 
-    // ==================== PROFILE FUNCTIONS ====================
+    // ==================== PROFILE FUNCTIONS - GOOGLE ONLY ====================
     function renderProfileContent() {
       const profileContent = document.getElementById('profile-content');
       if (!profileContent) return;
@@ -973,7 +1057,7 @@
         profileContent.innerHTML = `
           <div class="profile-info">
             <div class="profile-avatar">
-              <i class="fa-regular fa-circle-user"></i>
+              <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">
             </div>
             <div class="profile-details">
               <p>
@@ -986,11 +1070,6 @@
                 <span class="label">Email:</span>
                 <span class="value">${currentUser.email}</span>
               </p>
-              <p>
-                <i class="fa-regular fa-calendar"></i>
-                <span class="label">Member since:</span>
-                <span class="value">${currentUser.memberSince || '2025'}</span>
-              </p>
             </div>
             <button class="btn logout-btn" onclick="window.logout()">
               <i class="fa-solid fa-sign-out-alt"></i>
@@ -999,57 +1078,23 @@
           </div>
         `;
       } else {
-        // Logged out state - show login form
+        // Logged out state - Google Only Sign In
         profileContent.innerHTML = `
           <div class="login-form">
             <div class="login-header">
-              <i class="fa-regular fa-circle-user"></i>
+              <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
               <h4>Welcome Back!</h4>
-              <p>Sign in to your account</p>
+              <p>Sign in with Google to continue</p>
             </div>
             
-            <div id="login-error" class="error-message"></div>
+            <button class="btn google-login-btn" onclick="window.handleGoogleLogin()">
+              <i class="fa-brands fa-google"></i>
+              Sign in with Google
+            </button>
             
-            <form onsubmit="window.handleLogin(event)">
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Enter your email" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter your password" required>
-              </div>
-              
-              <div class="remember-forgot">
-                <label class="remember-me">
-                  <input type="checkbox"> Remember me
-                </label>
-                <a href="#" class="forgot-password">Forgot Password?</a>
-              </div>
-              
-              <button type="submit" class="btn login-btn">
-                <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                Sign In
-              </button>
-            </form>
-            
-            <div class="login-divider">
-              <span>OR</span>
-            </div>
-            
-            <div class="social-login">
-              <button class="social-btn google" onclick="window.socialLogin('google')">
-                <i class="fa-brands fa-google"></i> Google
-              </button>
-              <button class="social-btn facebook" onclick="window.socialLogin('facebook')">
-                <i class="fa-brands fa-facebook-f"></i> Facebook
-              </button>
-            </div>
-            
-            <div class="signup-prompt">
-              Don't have an account? <a href="#" onclick="window.showSignup()">Sign up</a>
-            </div>
+            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
+              By signing in, you agree to our Terms of Service and Privacy Policy.
+            </p>
           </div>
         `;
       }
@@ -1066,47 +1111,24 @@
       }
     }
 
-    // Login handler
-    window.handleLogin = function(event) {
-      event.preventDefault();
-      
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const errorDiv = document.getElementById('login-error');
-
-      // Simple validation
-      if (!email || !password) {
-        showError(errorDiv, 'Please fill in all fields');
-        return;
-      }
-
-      if (password.length < 6) {
-        showError(errorDiv, 'Password must be at least 6 characters');
-        return;
-      }
-
-      if (!email.includes('@') || !email.includes('.')) {
-        showError(errorDiv, 'Please enter a valid email address');
-        return;
-      }
-
-      // Mock successful login
-      const user = {
-        name: email.split('@')[0],
-        email: email,
+    // Google Login Handler
+    window.handleGoogleLogin = function() {
+      // Simulate Google OAuth login
+      // In production, this would redirect to actual Google OAuth
+      const mockGoogleUser = {
+        name: 'John Doe',
+        email: 'john@gmail.com',
+        picture: 'https://via.placeholder.com/80',
+        provider: 'google',
         memberSince: '2025'
       };
 
-      // Save user to localStorage
-      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
-      currentUser = user;
-
-      // Update UI
+      localStorage.setItem('MyEssantia_user', JSON.stringify(mockGoogleUser));
+      currentUser = mockGoogleUser;
       updateProfileIcon();
       renderProfileContent();
-      
-      // Show success message
-      alert('Login successful! Welcome back, ' + user.name);
+      closeModal('profile-modal');
+      alert('Successfully signed in with Google!');
     };
 
     // Logout function
@@ -1118,38 +1140,257 @@
       alert('You have been logged out successfully');
     };
 
-    // Social login
-    window.socialLogin = function(provider) {
-      alert(`${provider} login would open here. For demo, we'll create a test account.`);
-      
-      const user = {
-        name: `${provider}_user`,
-        email: `user@${provider}.com`,
-        memberSince: '2025'
-      };
-
-      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
-      currentUser = user;
-      updateProfileIcon();
-      renderProfileContent();
-    };
-
-    // Show signup
-    window.showSignup = function() {
-      alert('Sign up functionality would open here. For demo, please use the login form.');
-    };
-
-    function showError(element, message) {
-      element.textContent = message;
-      element.classList.add('show');
-      setTimeout(() => {
-        element.classList.remove('show');
-      }, 3000);
-    }
-
     // ==================== START THE APP ====================
-    // Load components when page loads
     document.addEventListener('DOMContentLoaded', loadComponents);
   </script>
+
+  <style>
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal.show {
+      display: block;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 2rem auto;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .modal-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #999;
+      transition: color 0.2s;
+      line-height: 1;
+      padding: 0 0.5rem;
+    }
+
+    .close-modal:hover {
+      color: #1a1a1a;
+    }
+
+    .modal-footer {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 1.5rem;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #1a1a1a;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    #cart-total-amount {
+      color: #d4af37;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: #d4af37;
+      border: 1px solid #d4af37;
+      color: #0c0c0c;
+      font-weight: 700;
+      padding: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .checkout-btn:hover {
+      background: #c4a030;
+      border-color: #c4a030;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .empty-cart-message {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #999;
+    }
+
+    .empty-cart-message i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #ddd;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      background: #f5f5f5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2.5rem;
+      color: #d4af37;
+      border: 2px solid #d4af37;
+      overflow: hidden;
+    }
+
+    .profile-details {
+      text-align: left;
+      background: #f9f9f9;
+      padding: 1.5rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-details p {
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #333;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+    }
+
+    .profile-details .label {
+      font-weight: 400;
+      color: #666;
+      min-width: 70px;
+    }
+
+    .profile-details .value {
+      font-weight: 600;
+      color: #1a1a1a;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .logout-btn {
+      width: 100%;
+      background: #fff;
+      border: 1px solid #d4af37;
+      color: #1a1a1a;
+      padding: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      transition: all 0.3s;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background: #d4af37;
+      color: #fff;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header i {
+      font-size: 3rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+    }
+
+    .login-header h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+    }
+
+    .google-login-btn {
+      background: #fff;
+      color: #333;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      width: 100%;
+      padding: 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      border-radius: 40px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .google-login-btn:hover {
+      background: #f8f8f8;
+      border-color: #d4af37;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .google-login-btn i {
+      color: #DB4437;
+      font-size: 1.2rem;
+    }
+  </style>
 </body>
 </html>
