@@ -100,7 +100,7 @@
   border-radius: 50%;
 }
 
-/* ===== MOBILE MENU - 3 BUTTONS PER LINE ===== */
+/* ===== UPDATED MOBILE MENU - 3 BUTTONS PER LINE ===== */
 .nav-menu {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -678,54 +678,37 @@
   display: block;
 }
 
-/* ===== TABLET/DESKTOP STYLES (CENTERED MENU) ===== */
+/* Tablet/Desktop adjustments */
 @media (min-width: 640px) {
   .top-bar .container {
     flex-direction: row;
     justify-content: space-between;
   }
   
-  /* Desktop header layout with centered menu */
-  .main-header .container {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-  
-  /* Reset mobile menu styles for desktop */
+  /* Reset mobile menu styles for tablet/desktop */
   .nav-menu {
     display: flex;
-    flex-wrap: nowrap;
-    gap: 1.5rem 2rem;
+    flex-wrap: wrap;
+    gap: 1rem 0.8rem;
     margin: 0;
-    padding: 0;
+    padding: 0.3rem 0;
     width: auto;
     order: 0;
-    justify-content: center;
+    justify-content: flex-start;
     background: transparent;
     border-radius: 0;
-    grid-template-columns: none; /* Remove grid */
-    flex: 1; /* Allow menu to grow */
-  }
-  
-  .nav-item {
-    width: auto;
   }
   
   .nav-link {
     background: transparent;
-    padding: 0.5rem 0;
+    padding: 0.3rem 0;
     border-radius: 0;
-    border-bottom: 2px solid transparent;
-    font-weight: 500;
-    font-size: 0.95rem;
+    border-bottom: 1px solid transparent;
+    font-weight: 400;
+    font-size: 0.9rem;
     min-height: auto;
     box-shadow: none;
     color: #1e1e1e;
-    white-space: nowrap;
-    transition: all 0.3s;
   }
   
   .nav-link:hover,
@@ -742,9 +725,9 @@
   .nav-item:nth-child(5) .nav-link {
     background: transparent;
     border: none;
-    border-bottom: 2px solid transparent;
+    border-bottom: 1px solid transparent;
     color: #1e1e1e;
-    font-weight: 500;
+    font-weight: 400;
   }
   
   .nav-item:nth-child(4) .nav-link:hover,
@@ -753,42 +736,21 @@
     border-bottom-color: #d4af37;
   }
   
-  .header-icons { 
-    order: 1;
-    flex-shrink: 0; /* Prevent icons from shrinking */
-  }
-  
-  .logo {
-    flex-shrink: 0; /* Prevent logo from shrinking */
-  }
-  
+  .header-icons { order: 1; }
   .modal-content {
     margin: 5rem auto;
   }
 }
 
-/* Larger desktop adjustments */
-@media (min-width: 1024px) {
-  .main-header .container {
-    gap: 2rem;
-  }
-  
-  .nav-menu {
-    gap: 2rem 3rem;
-  }
-  
-  .nav-link {
-    font-size: 1rem;
-  }
-  
+@media (min-width: 768px) {
   .logo {
     font-size: 2.2rem;
   }
 }
 
-@media (min-width: 1200px) {
-  .nav-menu {
-    gap: 3rem;
+@media (min-width: 1024px) {
+  .logo {
+    font-size: 2.5rem;
   }
 }
 
