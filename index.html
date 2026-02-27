@@ -574,30 +574,41 @@ function renderProducts() {
       else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
       else stars += '<i class="fa-regular fa-star"></i>';
     }
-    return stars + `<span>(${rating.toFixed(1)})</span>`;
+    return stars;
   }
 
   let gridHtml = '';
   homeProducts.forEach(product => {
+    const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
+    const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
+    
     gridHtml += `
-      <div class="product-card" data-product-id="${product.id}" data-product-title="${product.title}" data-product-category="${product.category}" data-product-price="${product.price}" data-product-image="${product.primaryImg}">
+      <a href="product.html?id=${product.id}" class="product-card" style="text-decoration: none; color: inherit;">
         <div class="image-frame">
-          <div class="primary-img" style="background-image: url('${product.primaryImg}');"></div>
-          <div class="secondary-img" style="background-image: url('${product.secondaryImg}');"></div>
-          <div class="image-actions">
-            <button class="img-add" onclick="window.addToCart(${product.id})">
+          <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+          <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+          <div class="image-actions" onclick="event.stopPropagation()">
+            <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault();">
               <i class="fa-solid fa-cart-plus"></i> add
             </button>
-            <button class="img-buy" onclick="window.buyNow(${product.id})">
+            <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault();">
               <i class="fa-solid fa-bolt"></i> buy
             </button>
           </div>
         </div>
         <h3 class="product-title">${product.title}</h3>
         <p class="product-category">${product.category}</p>
-        <div class="product-rating">${renderRating(product.rating)}</div>
-        <div class="product-price"><span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}</div>
-      </div>
+        <div class="product-rating">
+          ${renderRating(product.rating)}
+          <span>(${product.rating.toFixed(1)})</span>
+        </div>
+        <div class="product-price">
+          <span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}
+        </div>
+        <div class="stock-badge ${product.stock > 10 ? 'in-stock' : (product.stock > 0 ? 'low-stock' : 'out-of-stock')}">
+          ${product.stock > 10 ? 'In Stock' : (product.stock > 0 ? `Only ${product.stock} left` : 'Out of Stock')}
+        </div>
+      </a>
     `;
   });
   
@@ -727,14 +738,32 @@ window.addToCart = function(productId) {
     existingItem.quantity += 1;
   } else {
     cart.push({
-      ...product,
+      id: productId,
+      title: product.title,
+      category: product.category,
+      price: product.price,
+      primaryImg: product.primaryImg || (product.images && product.images[0]),
       quantity: 1
     });
   }
 
   saveCart();
   updateCartCount();
-  alert(`${product.title} added to cart!`);
+  
+  const btn = event?.target?.closest('button');
+  if (btn) {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+    btn.style.background = '#4CAF50';
+    btn.style.color = 'white';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 1500);
+  } else {
+    alert(`${product.title} added to cart!`);
+  }
 };
 
 window.buyNow = function(productId) {
@@ -918,6 +947,7 @@ window.logout = function() {
   currentUser = null;
   updateProfileIcon();
   renderProfileContent();
+  closeModal('profile-modal');
   alert('You have been logged out successfully');
 };
 
