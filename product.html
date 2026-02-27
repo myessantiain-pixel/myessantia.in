@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Product Details · MyEssantia</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="footer.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #ffffff;
+      color: #1a1a1a;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 300;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .product-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      padding: 3rem 0;
+    }
+
+    /* Gallery Section */
+    .gallery-section {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+    }
+
+    .main-image {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 30px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      background: #f4f2ef;
+    }
+
+    .main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .thumbnail-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .thumbnail {
+      aspect-ratio: 1;
+      border-radius: 15px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .thumbnail:hover,
+    .thumbnail.active {
+      border-color: #d4af37;
+    }
+
+    .thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Product Info Section */
+    .product-info {
+      padding: 1rem 0;
+    }
+
+    .product-category {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: #a2a2a2;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .product-brand {
+      color: #666;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .product-brand i {
+      color: #d4af37;
+      margin-right: 0.3rem;
+    }
+
+    .rating-reviews {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stars {
+      color: #d4af37;
+      display: flex;
+      gap: 2px;
+    }
+
+    .rating-value {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .reviews-count {
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    .price-section {
+      margin-bottom: 2rem;
+    }
+
+    .current-price {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: #d4af37;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .inr-symbol {
+      font-size: 2rem;
+      font-weight: 500;
+    }
+
+    .stock-status {
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    .in-stock {
+      background: #e3f1e3;
+      color: #1e7a44;
+    }
+
+    .low-stock {
+      background: #fff0db;
+      color: #b85b1a;
+    }
+
+    .out-of-stock {
+      background: #ffebee;
+      color: #b71c1c;
+    }
+
+    /* Free Delivery Bar */
+    .delivery-bar {
+      background: #f8f6f2;
+      border-radius: 60px;
+      padding: 1rem 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .delivery-text {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .delivery-text span {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .delivery-text i {
+      color: #d4af37;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #d4af37;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .delivery-message {
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .delivery-message i {
+      color: #4CAF50;
+      margin-right: 0.3rem;
+    }
+
+    /* Quantity Selector */
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .quantity-label {
+      font-weight: 500;
+      color: #333;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd;
+      border-radius: 40px;
+      overflow: hidden;
+    }
+
+    .quantity-btn {
+      width: 45px;
+      height: 45px;
+      border: none;
+      background: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .quantity-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .quantity-input {
+      width: 60px;
+      height: 45px;
+      border: none;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 1.2rem;
+      border: none;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-add-to-cart {
+      background: #1a1a1a;
+      color: white;
+    }
+
+    .btn-add-to-cart:hover {
+      background: #d4af37;
+      color: #0c0c0c;
+    }
+
+    .btn-buy-now {
+      background: #d4af37;
+      color: #0c0c0c;
+    }
+
+    .btn-buy-now:hover {
+      background: #c4a030;
+      transform: translateY(-2px);
+    }
+
+    /* Product Details Tabs */
+    .product-details-tabs {
+      margin-top: 3rem;
+    }
+
+    .tab-headers {
+      display: flex;
+      gap: 2rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .tab-header {
+      padding: 1rem 0;
+      cursor: pointer;
+      font-weight: 500;
+      color: #666;
+      position: relative;
+    }
+
+    .tab-header.active {
+      color: #d4af37;
+    }
+
+    .tab-header.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #d4af37;
+    }
+
+    .tab-content {
+      padding: 2rem 0;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .specs-list {
+      list-style: none;
+    }
+
+    .specs-list li {
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .specs-list li strong {
+      min-width: 120px;
+      color: #333;
+    }
+
+    /* Return Policy Section */
+    .return-policy {
+      background: #f8f6f2;
+      border-radius: 30px;
+      padding: 2rem;
+      margin: 3rem 0;
+    }
+
+    .policy-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .policy-title i {
+      font-size: 2rem;
+      color: #d4af37;
+    }
+
+    .policy-title h3 {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+
+    .policy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .policy-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+    }
+
+    .policy-card i {
+      font-size: 2rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+    }
+
+    .policy-card h4 {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .policy-card p {
+      color: #666;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .policy-note {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #ffebee;
+      border-radius: 15px;
+      color: #b71c1c;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .product-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .gallery-section {
+        position: static;
+      }
+
+      .product-title {
+        font-size: 2rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .policy-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+
+  <main>
+    <div class="container" id="product-container"></div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script>
+    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+
+    async function loadComponents() {
+      try {
+        const headerResponse = await fetch('header.html');
+        const headerData = await headerResponse.text();
+        document.getElementById('header').innerHTML = headerData;
+
+        const footerResponse = await fetch('footer.html');
+        const footerData = await footerResponse.text();
+        document.getElementById('footer').innerHTML = footerData;
+
+        setTimeout(() => {
+          initializeApp();
+        }, 50);
+      } catch (error) {
+        console.error('Error loading components:', error);
+      }
+    }
+
+    function initializeApp() {
+      updateCartCount();
+      updateProfileIcon();
+      setupEventListeners();
+      loadProduct();
+    }
+
+    function getProductId() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return parseInt(urlParams.get('id'));
+    }
+
+    function loadProduct() {
+      const productId = getProductId();
+      const product = products.find(p => p.id === productId);
+
+      if (!product) {
+        document.getElementById('product-container').innerHTML = `
+          <div style="text-align: center; padding: 4rem;">
+            <i class="fa-solid fa-box-open" style="font-size: 4rem; color: #ccc;"></i>
+            <h2 style="margin: 1rem 0;">Product Not Found</h2>
+            <p>The product you're looking for doesn't exist or has been removed.</p>
+            <a href="collection.html" class="btn" style="display: inline-block; margin-top: 2rem; padding: 1rem 2rem; background: #d4af37; color: #0c0c0c; text-decoration: none; border-radius: 40px;">Browse Collection</a>
+          </div>
+        `;
+        return;
+      }
+
+      renderProduct(product);
+    }
+
+    function renderProduct(product) {
+      const container = document.getElementById('product-container');
+      const images = product.images && product.images.length ? product.images : [product.primaryImg, product.secondaryImg].filter(Boolean);
+      const mainImage = images[0] || 'https://via.placeholder.com/600';
+      const stock = product.stock || 10;
+      const cartItem = cart.find(item => item.id === product.id);
+      const quantity = cartItem ? cartItem.quantity : 1;
+
+      const specs = product.specs && product.specs.length ? product.specs : [
+        `Material: Premium Quality`,
+        `Brand: ${product.brand || 'MyEssantia'}`,
+        `Warranty: 1 Year`,
+        `Country of Origin: India`
+      ];
+
+      const description = product.description || product.shortDesc || 'No description available.';
+
+      container.innerHTML = `
+        <div class="product-container">
+          <div class="gallery-section">
+            <div class="main-image">
+              <img src="${mainImage}" alt="${product.title}" id="main-product-image">
+            </div>
+            <div class="thumbnail-grid" id="thumbnail-grid">
+              ${images.map((img, index) => `
+                <div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMainImage('${img}', this)">
+                  <img src="${img}" alt="Thumbnail ${index + 1}">
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="product-info">
+            <div class="product-category">${product.category}</div>
+            <h1 class="product-title">${product.title}</h1>
+            <div class="product-brand"><i class="fa-regular fa-building"></i> ${product.brand || 'MyEssantia'}</div>
+            
+            <div class="rating-reviews">
+              <div class="stars">
+                ${getStarRating(product.rating)}
+              </div>
+              <span class="rating-value">${product.rating.toFixed(1)}</span>
+              <span class="reviews-count">(128 reviews)</span>
+            </div>
+
+            <div class="price-section">
+              <span class="current-price"><span class="inr-symbol">₹</span>${product.price.toLocaleString()}</span>
+              <div class="stock-status ${stock > 0 ? (stock > 10 ? 'in-stock' : 'low-stock') : 'out-of-stock'}">
+                ${stock > 10 ? 'In Stock' : (stock > 0 ? `Only ${stock} left in stock` : 'Out of Stock')}
+              </div>
+            </div>
+
+            <div class="delivery-bar" id="delivery-bar">
+              <div class="delivery-text">
+                <span><i class="fa-solid fa-truck"></i> Free Delivery</span>
+                <span>on orders above ₹1,299</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="delivery-progress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div>
+              </div>
+              <div class="delivery-message" id="delivery-message">
+                ${product.price >= 1299 
+                  ? '<i class="fa-solid fa-circle-check"></i> You are eligible for FREE delivery!' 
+                  : `<i class="fa-solid fa-circle-info"></i> Add ₹${(1299 - product.price).toLocaleString()} more for FREE delivery`}
+              </div>
+            </div>
+
+            <div class="quantity-selector">
+              <span class="quantity-label">Quantity:</span>
+              <div class="quantity-controls">
+                <button class="quantity-btn" onclick="updateQuantityInput(-1)" ${stock === 0 ? 'disabled' : ''}>−</button>
+                <input type="text" class="quantity-input" id="product-quantity" value="${quantity}" readonly>
+                <button class="quantity-btn" onclick="updateQuantityInput(1)" ${stock === 0 ? 'disabled' : ''}>+</button>
+              </div>
+            </div>
+
+            <div class="action-buttons">
+              <button class="btn btn-add-to-cart" onclick="addToCart(${product.id})" ${stock === 0 ? 'disabled' : ''}>
+                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+              </button>
+              <button class="btn btn-buy-now" onclick="buyNow(${product.id})" ${stock === 0 ? 'disabled' : ''}>
+                <i class="fa-solid fa-bolt"></i> Buy Now
+              </button>
+            </div>
+
+            <div class="product-details-tabs">
+              <div class="tab-headers">
+                <div class="tab-header active" onclick="switchTab('description')">Description</div>
+                <div class="tab-header" onclick="switchTab('specifications')">Specifications</div>
+                <div class="tab-header" onclick="switchTab('reviews')">Reviews</div>
+              </div>
+              
+              <div class="tab-content active" id="tab-description">
+                <p>${description}</p>
+              </div>
+              
+              <div class="tab-content" id="tab-specifications">
+                <ul class="specs-list">
+                  ${specs.map(spec => {
+                    const [key, value] = spec.split(':');
+                    return `<li><strong>${key}:</strong> ${value || ''}</li>`;
+                  }).join('')}
+                </ul>
+              </div>
+              
+              <div class="tab-content" id="tab-reviews">
+                <p>Customer reviews coming soon.</p>
+              </div>
+            </div>
+
+            <div class="return-policy">
+              <div class="policy-title">
+                <i class="fa-solid fa-shield-halved"></i>
+                <h3>Easy Return Policy</h3>
+              </div>
+              
+              <div class="policy-grid">
+                <div class="policy-card">
+                  <i class="fa-regular fa-clock"></i>
+                  <h4>48 Hours Return</h4>
+                  <p>Return within 48 hours of delivery if product is damaged</p>
+                </div>
+                <div class="policy-card">
+                  <i class="fa-solid fa-video"></i>
+                  <h4>Video Proof Required</h4>
+                  <p>Keep unboxing video ready for damage claims</p>
+                </div>
+                <div class="policy-card">
+                  <i class="fa-solid fa-rotate-left"></i>
+                  <h4>Full Refund</h4>
+                  <p>Get 100% money back for damaged products</p>
+                </div>
+              </div>
+
+              <div class="policy-note">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <strong>Important:</strong> Always record an unboxing video. Returns without video proof cannot be processed.
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getStarRating(rating) {
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
+        else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+        else stars += '<i class="fa-regular fa-star"></i>';
+      }
+      return stars;
+    }
+
+    window.changeMainImage = function(src, element) {
+      document.getElementById('main-product-image').src = src;
+      document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
+      element.classList.add('active');
+    };
+
+    window.updateQuantityInput = function(change) {
+      const input = document.getElementById('product-quantity');
+      let value = parseInt(input.value) || 1;
+      value = Math.max(1, value + change);
+      input.value = value;
+    };
+
+    window.addToCart = function(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      const quantity = parseInt(document.getElementById('product-quantity')?.value || 1);
+      const existingItem = cart.find(item => item.id === productId);
+
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        cart.push({
+          id: productId,
+          title: product.title,
+          category: product.category,
+          price: product.price,
+          primaryImg: product.primaryImg || (product.images && product.images[0]),
+          quantity: quantity
+        });
+      }
+
+      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+      updateCartCount();
+      alert(`${product.title} added to cart!`);
+    };
+
+    window.buyNow = function(productId) {
+      addToCart(productId);
+      openCart();
+    };
+
+    window.switchTab = function(tab) {
+      document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      document.querySelector(`.tab-header[onclick="switchTab('${tab}')"]`).classList.add('active');
+      document.getElementById(`tab-${tab}`).classList.add('active');
+    };
+
+    function updateCartCount() {
+      const cartCount = document.getElementById('cart-count');
+      if (cartCount) {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+      }
+    }
+
+    function updateProfileIcon() {
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon) {
+        if (currentUser) {
+          profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
+        } else {
+          profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
+        }
+      }
+    }
+
+    function setupEventListeners() {
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const navMenu = document.getElementById('nav-menu');
+      
+      if (mobileMenuToggle && navMenu) {
+        mobileMenuToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          navMenu.classList.toggle('show');
+        });
+      }
+
+      const cartIcon = document.getElementById('cart-icon');
+      if (cartIcon) {
+        cartIcon.addEventListener('click', function(e) {
+          e.preventDefault();
+          openCart();
+        });
+      }
+
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon) {
+        profileIcon.addEventListener('click', function(e) {
+          e.preventDefault();
+          openProfile();
+        });
+      }
+
+      const closeCart = document.getElementById('close-cart');
+      if (closeCart) {
+        closeCart.addEventListener('click', function() {
+          closeModal('cart-modal');
+        });
+      }
+
+      const closeProfile = document.getElementById('close-profile');
+      if (closeProfile) {
+        closeProfile.addEventListener('click', function() {
+          closeModal('profile-modal');
+        });
+      }
+
+      window.addEventListener('click', function(e) {
+        const cartModal = document.getElementById('cart-modal');
+        const profileModal = document.getElementById('profile-modal');
+        
+        if (e.target === cartModal) {
+          closeModal('cart-modal');
+        }
+        if (e.target === profileModal) {
+          closeModal('profile-modal');
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeModal('cart-modal');
+          closeModal('profile-modal');
+        }
+      });
+    }
+
+    function openCart() {
+      const cartModal = document.getElementById('cart-modal');
+      if (cartModal) {
+        renderCartItems();
+        cartModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function openProfile() {
+      const profileModal = document.getElementById('profile-modal');
+      if (profileModal) {
+        renderProfileContent();
+        profileModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function renderCartItems() {
+      const cartItemsContainer = document.getElementById('cart-items');
+      const cartItemCount = document.getElementById('cart-item-count');
+      const cartTotalAmount = document.getElementById('cart-total-amount');
+
+      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+          <div class="empty-cart-message">
+            <i class="fa-regular fa-cart-shopping"></i>
+            <p>Your cart is empty</p>
+          </div>
+        `;
+        cartItemCount.textContent = '0';
+        cartTotalAmount.textContent = '₹0.00';
+        return;
+      }
+
+      let total = 0;
+      let totalItems = 0;
+
+      cartItemsContainer.innerHTML = cart.map(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        totalItems += item.quantity;
+
+        return `
+          <div class="cart-item">
+            <div class="cart-item-image" style="background-image: url('${item.primaryImg}')"></div>
+            <div class="cart-item-details">
+              <h4>${item.title}</h4>
+              <p>${item.category}</p>
+              <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
+              <div class="cart-item-actions">
+                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">-</button>
+                <span>${item.quantity}</span>
+                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">+</button>
+                <button class="remove-item" onclick="window.removeFromCart(${item.id})">Remove</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      cartItemCount.textContent = totalItems;
+      cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
+    }
+
+    window.updateQuantity = function(productId, change) {
+      const itemIndex = cart.findIndex(item => item.id === productId);
+      if (itemIndex === -1) return;
+
+      const item = cart[itemIndex];
+      const newQuantity = item.quantity + change;
+
+      if (newQuantity <= 0) {
+        cart.splice(itemIndex, 1);
+      } else {
+        item.quantity = newQuantity;
+      }
+
+      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCartItems();
+    };
+
+    window.removeFromCart = function(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCartItems();
+    };
+
+    function renderProfileContent() {
+      const profileContent = document.getElementById('profile-content');
+      if (!profileContent) return;
+
+      if (currentUser) {
+        profileContent.innerHTML = `
+          <div class="profile-info">
+            <div class="profile-avatar">
+              <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+            </div>
+            <div class="profile-details">
+              <p><strong>Name:</strong> ${currentUser.name}</p>
+              <p><strong>Email:</strong> ${currentUser.email}</p>
+            </div>
+            <button class="btn logout-btn" onclick="window.logout()">Logout</button>
+          </div>
+        `;
+      } else {
+        profileContent.innerHTML = `
+          <div class="login-form">
+            <div class="login-header">
+              <i class="fa-brands fa-google"></i>
+              <h4>Welcome Back!</h4>
+              <p>Sign in with Google</p>
+            </div>
+            <button class="btn google-login-btn" onclick="window.handleGoogleLogin()">
+              <i class="fa-brands fa-google"></i> Sign in with Google
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    window.handleGoogleLogin = function() {
+      const mockGoogleUser = {
+        name: 'John Doe',
+        email: 'john@gmail.com',
+        picture: 'https://via.placeholder.com/80'
+      };
+      localStorage.setItem('MyEssantia_user', JSON.stringify(mockGoogleUser));
+      currentUser = mockGoogleUser;
+      updateProfileIcon();
+      renderProfileContent();
+      closeModal('profile-modal');
+    };
+
+    window.logout = function() {
+      localStorage.removeItem('MyEssantia_user');
+      currentUser = null;
+      updateProfileIcon();
+      renderProfileContent();
+      closeModal('profile-modal');
+    };
+
+    document.addEventListener('DOMContentLoaded', loadComponents);
+  </script>
+
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal.show { display: block; }
+
+    .modal-content {
+      background: white;
+      margin: 2rem auto;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 30px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      overflow: hidden;
+    }
+
+    .profile-details {
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 12px;
+      margin: 1rem 0;
+    }
+
+    .google-login-btn {
+      background: white;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 1rem;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .google-login-btn i { color: #DB4437; }
+  </style>
+</body>
+</html>
