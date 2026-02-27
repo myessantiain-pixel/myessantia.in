@@ -106,7 +106,6 @@
   transition: 0.2s;
   padding: 0.3rem 0;
   display: inline-block;
-  text-transform: lowercase;
   letter-spacing: 0.5px;
 }
 
