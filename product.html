@@ -1025,8 +1025,6 @@
       const specs = product.specs && product.specs.length ? product.specs : [
         `Material: Premium Quality`,
         `Brand: ${product.brand || 'MyEssantia'}`,
-        `Warranty: 1 Year`,
-        `Country of Origin: India`
       ];
 
       const description = product.description || product.shortDesc || 'No description available.';
@@ -1104,9 +1102,6 @@
                   </span>
                 </div>
                 
-                <div class="cart-total-display" id="cart-total-display">
-                  Current Cart Total: <strong>₹${currentCartTotal.toLocaleString()}</strong> + This item: ₹${thisProductTotal.toLocaleString()} = <strong>₹${totalWithProduct.toLocaleString()}</strong>
-                </div>
               </div>
             </div>
 
