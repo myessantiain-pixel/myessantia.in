@@ -15,10 +15,12 @@
 
   <div class="main-header">
     <div class="container">
-      <a href="index.html" class="logo">MyEssantia<span>.</span></a>
+      <a href="#" class="logo">MyEssantia<span>.</span></a>
       <div class="header-icons">
         <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
-        <a href="#"><i class="fa-regular fa-user"></i></a>
+        <a href="#" id="profile-icon">
+          <i class="fa-regular fa-user"></i>
+        </a>
         <a href="#" id="cart-icon" style="position: relative;">
           <i class="fa-solid fa-bag-shopping"></i>
           <span class="cart-count" id="cart-count">0</span>
@@ -36,21 +38,34 @@
 </header>
 
 <!-- Cart Modal -->
-<div id="cart-modal" class="cart-modal">
-  <div class="cart-modal-content">
-    <div class="cart-modal-header">
+<div id="cart-modal" class="modal">
+  <div class="modal-content cart-modal-content">
+    <div class="modal-header">
       <h3>Your Cart (<span id="cart-item-count">0</span> items)</h3>
-      <button class="close-cart" id="close-cart">&times;</button>
+      <button class="close-modal" id="close-cart">&times;</button>
     </div>
     <div class="cart-items" id="cart-items">
       <!-- Cart items will be dynamically inserted here -->
     </div>
-    <div class="cart-footer">
+    <div class="modal-footer">
       <div class="cart-total">
         <span>Total:</span>
         <span id="cart-total-amount">₹0</span>
       </div>
       <button class="btn checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Modal -->
+<div id="profile-modal" class="modal">
+  <div class="modal-content profile-modal-content">
+    <div class="modal-header">
+      <h3>My Account</h3>
+      <button class="close-modal" id="close-profile">&times;</button>
+    </div>
+    <div class="profile-content" id="profile-content">
+      <!-- Profile content will be dynamically inserted here -->
     </div>
   </div>
 </div>
