@@ -69,30 +69,6 @@
   font-style: italic;
 }
 
-.nav-menu {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 0.8rem;
-  margin: 0;
-  padding: 0.3rem 0;
-  order: 3;
-  width: 100%;
-  justify-content: center;
-}
-
-.nav-item { list-style: none; }
-
-.nav-link {
-  text-decoration: none;
-  color: #1e1e1e;
-  font-weight: 400;
-  font-size: 0.9rem;
-  border-bottom: 1px solid transparent;
-  transition: 0.2s;
-  padding: 0.3rem 0;
-  display: inline-block;
-}
-
 .header-icons {
   display: flex;
   gap: 1.2rem;
@@ -122,6 +98,71 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+}
+
+/* ===== UPDATED MOBILE MENU - 3 BUTTONS PER LINE ===== */
+.nav-menu {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin: 0.8rem 0 0.2rem;
+  padding: 0;
+  order: 3;
+  width: 100%;
+  list-style: none;
+}
+
+.nav-item {
+  list-style: none;
+  width: 100%;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #1e1e1e;
+  font-weight: 500;
+  font-size: 0.85rem;
+  background: #f8f6f2;
+  padding: 0.7rem 0.3rem;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid #f0f0f0;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  width: 100%;
+  line-height: 1.2;
+  min-height: 44px; /* Better touch target */
+}
+
+.nav-link:hover,
+.nav-link:active {
+  background: #d4af37;
+  color: #0c0c0c;
+  border-color: #d4af37;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
+}
+
+/* Special styling for the last item if odd number (Enquire) */
+.nav-item:last-child {
+  grid-column: auto; /* Let it flow naturally */
+}
+
+/* Optional: Different button styles for different actions */
+.nav-item:nth-child(4) .nav-link { /* My Orders */
+  background: #fff;
+  border: 1px solid #d4af37;
+  color: #1a1a1a;
+}
+
+.nav-item:nth-child(5) .nav-link { /* Enquire */
+  background: #d4af37;
+  border-color: #d4af37;
+  color: #0c0c0c;
+  font-weight: 600;
 }
 
 /* Modal Base Styles */
@@ -643,11 +684,58 @@
     flex-direction: row;
     justify-content: space-between;
   }
+  
+  /* Reset mobile menu styles for tablet/desktop */
   .nav-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 0.8rem;
+    margin: 0;
+    padding: 0.3rem 0;
     width: auto;
     order: 0;
     justify-content: flex-start;
+    background: transparent;
+    border-radius: 0;
   }
+  
+  .nav-link {
+    background: transparent;
+    padding: 0.3rem 0;
+    border-radius: 0;
+    border-bottom: 1px solid transparent;
+    font-weight: 400;
+    font-size: 0.9rem;
+    min-height: auto;
+    box-shadow: none;
+    color: #1e1e1e;
+  }
+  
+  .nav-link:hover,
+  .nav-link:active {
+    background: transparent;
+    color: #d4af37;
+    border-bottom-color: #d4af37;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  /* Reset special styles for desktop */
+  .nav-item:nth-child(4) .nav-link,
+  .nav-item:nth-child(5) .nav-link {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid transparent;
+    color: #1e1e1e;
+    font-weight: 400;
+  }
+  
+  .nav-item:nth-child(4) .nav-link:hover,
+  .nav-item:nth-child(5) .nav-link:hover {
+    color: #d4af37;
+    border-bottom-color: #d4af37;
+  }
+  
   .header-icons { order: 1; }
   .modal-content {
     margin: 5rem auto;
@@ -663,5 +751,13 @@
 @media (min-width: 1024px) {
   .logo {
     font-size: 2.5rem;
+  }
+}
+
+/* Small mobile adjustments (below 360px) */
+@media (max-width: 359px) {
+  .nav-link {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.2rem;
   }
 }
