@@ -441,759 +441,439 @@
   <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
-  <script>
-    // ==================== GLOBAL APP STATE ====================
-    // Cart state - initialize from localStorage
-    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
+<script>
+let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
+let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+
+async function loadComponents() {
+  try {
+    const headerResponse = await fetch('header.html');
+    const headerData = await headerResponse.text();
+    document.getElementById('header').innerHTML = headerData;
+
+    const footerResponse = await fetch('footer.html');
+    const footerData = await footerResponse.text();
+    document.getElementById('footer').innerHTML = footerData;
+
+    setTimeout(() => {
+      initializeApp();
+    }, 50);
+  } catch (error) {
+    console.error('Error loading components:', error);
+    document.getElementById('header').innerHTML = getFallbackHeader();
+    document.getElementById('footer').innerHTML = getFallbackFooter();
+    setTimeout(() => {
+      initializeApp();
+    }, 50);
+  }
+}
+
+function renderProducts() {
+  const gridContainer = document.getElementById('product-grid-container');
+  const sortSelect = document.getElementById('sort-select');
+  
+  if (!gridContainer) return;
+
+  const essentialsProducts = products.filter(p => 
+    p.showOnEssentials === true && p.category === 'essentials'
+  );
+
+  if (essentialsProducts.length === 0) {
+    gridContainer.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
+        <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+        <h3>No essentials found</h3>
+        <p>Check back later for new arrivals!</p>
+      </div>
+    `;
+    return;
+  }
+
+  function renderRating(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+      if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
+      else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+      else stars += '<i class="fa-regular fa-star"></i>';
+    }
+    return stars + `<span>(${rating.toFixed(1)})</span>`;
+  }
+
+  function getSortedProducts() {
+    let sorted = [...essentialsProducts];
+    switch (sortSelect.value) {
+      case 'price-low':
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-high':
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      case 'rating':
+        sorted.sort((a, b) => b.rating - a.rating);
+        break;
+      default:
+        break;
+    }
+    return sorted;
+  }
+
+  function renderAllProducts() {
+    const sortedProducts = getSortedProducts();
     
-    // User state - initialize from localStorage
-    let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
-
-    // ==================== LOAD HEADER AND FOOTER ====================
-    async function loadComponents() {
-      try {
-        // Load header
-        const headerResponse = await fetch('header.html');
-        const headerData = await headerResponse.text();
-        document.getElementById('header').innerHTML = headerData;
-
-        // Load footer  
-        const footerResponse = await fetch('footer.html');
-        const footerData = await footerResponse.text();
-        document.getElementById('footer').innerHTML = footerData;
-
-        // Initialize the app after components are loaded
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
-      } catch (error) {
-        console.error('Error loading components:', error);
-        // Use fallback header if fetch fails
-        document.getElementById('header').innerHTML = getFallbackHeader();
-        document.getElementById('footer').innerHTML = getFallbackFooter();
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
-      }
-    }
-
-    // ==================== FALLBACK HEADER/FOOTER ====================
-    function getFallbackHeader() {
-      return `
-        <header>
-          <div class="top-bar">
-            <div class="container">
-              <div class="top-bar-links">
-                <a href="#"><i class="fa-regular fa-circle-check"></i> No-returns</a>
-                <a href="#"><i class="fa-regular fa-clock"></i> worldwide express</a>
-                <a href="#"><i class="fa-regular fa-gem"></i> premium suppliers</a>
-              </div>
-              <div class="trust-badge">
-                <i class="fa-solid fa-star"></i> <span>4.8 trustpilot · 12k+ reviews</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="main-header">
-            <div class="container">
-              <a href="#" class="logo">MyEssantia<span>.</span></a>
-              
-              <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
-                <i class="fa-solid fa-bars"></i>
+    let gridHtml = '';
+    sortedProducts.forEach(product => {
+      gridHtml += `
+        <div class="product-card" data-product-id="${product.id}" data-product-title="${product.title}" data-product-category="${product.category}" data-product-price="${product.price}" data-product-image="${product.primaryImg}">
+          <div class="image-frame">
+            <div class="primary-img" style="background-image: url('${product.primaryImg}');"></div>
+            <div class="secondary-img" style="background-image: url('${product.secondaryImg}');"></div>
+            <div class="image-actions">
+              <button class="img-add" onclick="window.addToCart(${product.id})">
+                <i class="fa-solid fa-cart-plus"></i> add
               </button>
-              
-              <ul class="nav-menu" id="nav-menu">
-                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="accessories.html" class="nav-link">Accessories</a></li>
-                <li class="nav-item"><a href="essentials.html" class="nav-link">Essentials</a></li>
-                <li class="nav-item"><a href="newarrival.html" class="nav-link">New-in</a></li>
-                <li class="nav-item"><a href="myorders.html" class="nav-link">My Orders</a></li>
-                <li class="nav-item"><a href="enquire.html" class="nav-link">Enquire</a></li>
-              </ul>
-              
-              <div class="header-icons">
-                <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
-                <a href="#" id="profile-icon">
-                  <i class="fa-regular fa-user"></i>
-                </a>
-                <a href="#" id="cart-icon" style="position: relative;">
-                  <i class="fa-solid fa-bag-shopping"></i>
-                  <span class="cart-count" id="cart-count">0</span>
-                </a>
-              </div>
+              <button class="img-buy" onclick="window.buyNow(${product.id})">
+                <i class="fa-solid fa-bolt"></i> buy
+              </button>
             </div>
           </div>
-        </header>
-
-        <!-- Cart Modal -->
-        <div id="cart-modal" class="modal">
-          <div class="modal-content cart-modal-content">
-            <div class="modal-header">
-              <h3>Your Cart (<span id="cart-item-count">0</span> items)</h3>
-              <button class="close-modal" id="close-cart">&times;</button>
-            </div>
-            <div class="cart-items" id="cart-items">
-              <div class="empty-cart-message">
-                <i class="fa-regular fa-cart-shopping"></i>
-                <p>Your cart is empty</p>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <div class="cart-total">
-                <span>Total:</span>
-                <span id="cart-total-amount">₹0.00</span>
-              </div>
-              <button class="btn checkout-btn" id="checkout-btn">Proceed to Checkout</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Profile Modal -->
-        <div id="profile-modal" class="modal">
-          <div class="modal-content profile-modal-content">
-            <div class="modal-header">
-              <h3>My Account</h3>
-              <button class="close-modal" id="close-profile">&times;</button>
-            </div>
-            <div class="profile-content" id="profile-content"></div>
-          </div>
+          <h3 class="product-title">${product.title}</h3>
+          <p class="product-category">${product.category}</p>
+          <div class="product-rating">${renderRating(product.rating)}</div>
+          <div class="product-price"><span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}</div>
         </div>
       `;
-    }
+    });
+    
+    gridContainer.innerHTML = gridHtml;
+  }
 
-    function getFallbackFooter() {
-      return `
-        <footer>
-          <div class="footer-content">
-            <div class="container">
-              <div class="footer-grid">
-                <div class="footer-col">
-                  <h4>MyEssantia</h4>
-                  <p>Premium accessories & daily essentials.</p>
-                </div>
-                <div class="footer-col">
-                  <h4>Shop</h4>
-                  <ul>
-                    <li><a href="#">New Arrivals</a></li>
-                    <li><a href="#">Bestsellers</a></li>
-                    <li><a href="#">Accessories</a></li>
-                  </ul>
-                </div>
-                <div class="footer-col">
-                  <h4>Support</h4>
-                  <ul>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Shipping</a></li>
-                    <li><a href="#">Returns</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="footer-bottom">
-                <p>&copy; 2025 MyEssantia. All rights reserved.</p>
-              </div>
-            </div>
-          </div>
-        </footer>
-      `;
-    }
+  renderAllProducts();
+  
+  if (sortSelect) {
+    sortSelect.addEventListener('change', renderAllProducts);
+  }
+}
 
-    // ==================== APP INITIALIZATION ====================
-    function initializeApp() {
-      console.log('Initializing app...');
-      updateCartCount();
-      updateProfileIcon();
-      setupEventListeners();
-      initializeProductGrid();
-    }
+function initializeApp() {
+  renderProducts();
+  updateCartCount();
+  updateProfileIcon();
+  setupEventListeners();
+}
 
-    // ==================== EVENT LISTENERS ====================
-    function setupEventListeners() {
-      // Mobile menu toggle
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const navMenu = document.getElementById('nav-menu');
-      
-      if (mobileMenuToggle && navMenu) {
-        mobileMenuToggle.addEventListener('click', function(e) {
-          e.stopPropagation();
-          navMenu.classList.toggle('show');
-        });
-      }
+function setupEventListeners() {
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const navMenu = document.getElementById('nav-menu');
+  
+  if (mobileMenuToggle && navMenu) {
+    mobileMenuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      navMenu.classList.toggle('show');
+    });
+  }
 
-      // Cart icon
-      const cartIcon = document.getElementById('cart-icon');
-      if (cartIcon) {
-        cartIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openCart();
-        });
-      }
-
-      // Profile icon
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        profileIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openProfile();
-        });
-      }
-
-      // Close cart modal
-      const closeCart = document.getElementById('close-cart');
-      if (closeCart) {
-        closeCart.addEventListener('click', function() {
-          closeModal('cart-modal');
-        });
-      }
-
-      // Close profile modal
-      const closeProfile = document.getElementById('close-profile');
-      if (closeProfile) {
-        closeProfile.addEventListener('click', function() {
-          closeModal('profile-modal');
-        });
-      }
-
-      // Checkout button
-      const checkoutBtn = document.getElementById('checkout-btn');
-      if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', function() {
-          if (cart.length === 0) {
-            alert('Your cart is empty!');
-          } else {
-            alert('Proceeding to checkout...');
-          }
-        });
-      }
-
-      // Close modals when clicking outside
-      window.addEventListener('click', function(e) {
-        const cartModal = document.getElementById('cart-modal');
-        const profileModal = document.getElementById('profile-modal');
-        
-        if (e.target === cartModal) {
-          closeModal('cart-modal');
-        }
-        if (e.target === profileModal) {
-          closeModal('profile-modal');
-        }
-      });
-
-      // Close modals with Escape key
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeModal('cart-modal');
-          closeModal('profile-modal');
-        }
-      });
-
-      // Close mobile menu when clicking outside
-      document.addEventListener('click', function(e) {
-        if (navMenu && navMenu.classList.contains('show')) {
-          if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-            navMenu.classList.remove('show');
-          }
-        }
-      });
-    }
-
-    // ==================== MODAL FUNCTIONS ====================
-    function openCart() {
-      const cartModal = document.getElementById('cart-modal');
-      if (cartModal) {
-        renderCartItems();
-        cartModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function openProfile() {
-      const profileModal = document.getElementById('profile-modal');
-      if (profileModal) {
-        renderProfileContent();
-        profileModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-      }
-    }
-
-    // ==================== CART FUNCTIONS ====================
-    window.addToCart = function(productId) {
-      const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
-      
-      if (!productCard) {
-        console.error('Product not found');
-        return;
-      }
-
-      const product = {
-        id: productId,
-        title: productCard.dataset.productTitle,
-        category: productCard.dataset.productCategory,
-        price: parseInt(productCard.dataset.productPrice),
-        image: productCard.dataset.productImage
-      };
-
-      const existingItem = cart.find(item => item.id === productId);
-
-      if (existingItem) {
-        existingItem.quantity += 1;
-      } else {
-        cart.push({
-          ...product,
-          quantity: 1
-        });
-      }
-
-      saveCart();
-      updateCartCount();
-      alert(`${product.title} added to cart!`);
-    };
-
-    window.buyNow = function(productId) {
-      addToCart(productId);
+  const cartIcon = document.getElementById('cart-icon');
+  if (cartIcon) {
+    cartIcon.addEventListener('click', function(e) {
+      e.preventDefault();
       openCart();
-    };
+    });
+  }
 
-    window.updateQuantity = function(productId, change) {
-      const itemIndex = cart.findIndex(item => item.id === productId);
-      if (itemIndex === -1) return;
+  const profileIcon = document.getElementById('profile-icon');
+  if (profileIcon) {
+    profileIcon.addEventListener('click', function(e) {
+      e.preventDefault();
+      openProfile();
+    });
+  }
 
-      const item = cart[itemIndex];
-      const newQuantity = item.quantity + change;
+  const closeCart = document.getElementById('close-cart');
+  if (closeCart) {
+    closeCart.addEventListener('click', function() {
+      closeModal('cart-modal');
+    });
+  }
 
-      if (newQuantity <= 0) {
-        cart.splice(itemIndex, 1);
-      } else {
-        item.quantity = newQuantity;
-      }
+  const closeProfile = document.getElementById('close-profile');
+  if (closeProfile) {
+    closeProfile.addEventListener('click', function() {
+      closeModal('profile-modal');
+    });
+  }
 
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-    };
-
-    window.removeFromCart = function(productId) {
-      cart = cart.filter(item => item.id !== productId);
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-    };
-
-    function renderCartItems() {
-      const cartItemsContainer = document.getElementById('cart-items');
-      const cartItemCount = document.getElementById('cart-item-count');
-      const cartTotalAmount = document.getElementById('cart-total-amount');
-
-      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
-
+  const checkoutBtn = document.getElementById('checkout-btn');
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', function() {
       if (cart.length === 0) {
-        cartItemsContainer.innerHTML = `
-          <div class="empty-cart-message">
-            <i class="fa-regular fa-cart-shopping"></i>
-            <p>Your cart is empty</p>
-          </div>
-        `;
-        cartItemCount.textContent = '0';
-        cartTotalAmount.textContent = '₹0.00';
-        return;
+        alert('Your cart is empty!');
+      } else {
+        alert('Proceeding to checkout...');
       }
+    });
+  }
 
-      let total = 0;
-      let totalItems = 0;
-
-      cartItemsContainer.innerHTML = cart.map(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        totalItems += item.quantity;
-
-        return `
-          <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
-            <div class="cart-item-details">
-              <h4 class="cart-item-title">${item.title}</h4>
-              <p class="cart-item-category">${item.category}</p>
-              <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
-              <div class="cart-item-actions">
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">
-                  <i class="fa-solid fa-minus"></i>
-                </button>
-                <span class="item-quantity">${item.quantity}</span>
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">
-                  <i class="fa-solid fa-plus"></i>
-                </button>
-                <button class="remove-item" onclick="window.removeFromCart(${item.id})">
-                  Remove
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      cartItemCount.textContent = totalItems;
-      cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
+  window.addEventListener('click', function(e) {
+    const cartModal = document.getElementById('cart-modal');
+    const profileModal = document.getElementById('profile-modal');
+    
+    if (e.target === cartModal) {
+      closeModal('cart-modal');
     }
+    if (e.target === profileModal) {
+      closeModal('profile-modal');
+    }
+  });
 
-    function updateCartCount() {
-      const cartCount = document.getElementById('cart-count');
-      if (cartCount) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCount.textContent = totalItems;
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeModal('cart-modal');
+      closeModal('profile-modal');
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (navMenu && navMenu.classList.contains('show')) {
+      if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        navMenu.classList.remove('show');
       }
     }
+  });
+}
 
-    function saveCart() {
-      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-    }
+function openCart() {
+  const cartModal = document.getElementById('cart-modal');
+  if (cartModal) {
+    renderCartItems();
+    cartModal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+}
 
-    // ==================== PROFILE FUNCTIONS ====================
-    function renderProfileContent() {
-      const profileContent = document.getElementById('profile-content');
-      if (!profileContent) return;
+function openProfile() {
+  const profileModal = document.getElementById('profile-modal');
+  if (profileModal) {
+    renderProfileContent();
+    profileModal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+}
 
-      if (currentUser) {
-        profileContent.innerHTML = `
-          <div class="profile-info">
-            <div class="profile-avatar">
-              <i class="fa-regular fa-circle-user"></i>
-            </div>
-            <div class="profile-details">
-              <p>
-                <i class="fa-regular fa-user"></i>
-                <span class="label">Name:</span>
-                <span class="value">${currentUser.name}</span>
-              </p>
-              <p>
-                <i class="fa-regular fa-envelope"></i>
-                <span class="label">Email:</span>
-                <span class="value">${currentUser.email}</span>
-              </p>
-              <p>
-                <i class="fa-regular fa-calendar"></i>
-                <span class="label">Member since:</span>
-                <span class="value">${currentUser.memberSince || '2025'}</span>
-              </p>
-            </div>
-            <button class="btn logout-btn" onclick="window.logout()">
-              <i class="fa-solid fa-sign-out-alt"></i>
-              Logout
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+}
+
+window.addToCart = function(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+
+  const existingItem = cart.find(item => item.id === productId);
+
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cart.push({
+      ...product,
+      quantity: 1
+    });
+  }
+
+  saveCart();
+  updateCartCount();
+  alert(`${product.title} added to cart!`);
+};
+
+window.buyNow = function(productId) {
+  addToCart(productId);
+  openCart();
+};
+
+window.updateQuantity = function(productId, change) {
+  const itemIndex = cart.findIndex(item => item.id === productId);
+  if (itemIndex === -1) return;
+
+  const item = cart[itemIndex];
+  const newQuantity = item.quantity + change;
+
+  if (newQuantity <= 0) {
+    cart.splice(itemIndex, 1);
+  } else {
+    item.quantity = newQuantity;
+  }
+
+  saveCart();
+  updateCartCount();
+  renderCartItems();
+};
+
+window.removeFromCart = function(productId) {
+  cart = cart.filter(item => item.id !== productId);
+  saveCart();
+  updateCartCount();
+  renderCartItems();
+};
+
+function renderCartItems() {
+  const cartItemsContainer = document.getElementById('cart-items');
+  const cartItemCount = document.getElementById('cart-item-count');
+  const cartTotalAmount = document.getElementById('cart-total-amount');
+
+  if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
+
+  if (cart.length === 0) {
+    cartItemsContainer.innerHTML = `
+      <div class="empty-cart-message">
+        <i class="fa-regular fa-cart-shopping"></i>
+        <p>Your cart is empty</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Start shopping to add items!</p>
+      </div>
+    `;
+    cartItemCount.textContent = '0';
+    cartTotalAmount.textContent = '₹0.00';
+    return;
+  }
+
+  let total = 0;
+  let totalItems = 0;
+
+  cartItemsContainer.innerHTML = cart.map(item => {
+    const itemTotal = item.price * item.quantity;
+    total += itemTotal;
+    totalItems += item.quantity;
+
+    return `
+      <div class="cart-item">
+        <div class="cart-item-image" style="background-image: url('${item.primaryImg}')"></div>
+        <div class="cart-item-details">
+          <h4 class="cart-item-title">${item.title}</h4>
+          <p class="cart-item-category">${item.category}</p>
+          <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
+          <div class="cart-item-actions">
+            <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">
+              <i class="fa-solid fa-minus"></i>
+            </button>
+            <span class="item-quantity">${item.quantity}</span>
+            <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <button class="remove-item" onclick="window.removeFromCart(${item.id})">
+              Remove
             </button>
           </div>
-        `;
-      } else {
-        profileContent.innerHTML = `
-          <div class="login-form">
-            <div class="login-header">
-              <i class="fa-regular fa-circle-user"></i>
-              <h4>Welcome Back!</h4>
-              <p>Sign in to your account</p>
-            </div>
-            
-            <div id="login-error" class="error-message"></div>
-            
-            <form onsubmit="window.handleLogin(event)">
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Enter your email" required>
-              </div>
-              
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter your password" required>
-              </div>
-              
-              <div class="remember-forgot">
-                <label class="remember-me">
-                  <input type="checkbox"> Remember me
-                </label>
-                <a href="#" class="forgot-password">Forgot Password?</a>
-              </div>
-              
-              <button type="submit" class="btn login-btn">
-                <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                Sign In
-              </button>
-            </form>
-            
-            <div class="login-divider">
-              <span>OR</span>
-            </div>
-            
-            <div class="social-login">
-              <button class="social-btn google" onclick="window.socialLogin('google')">
-                <i class="fa-brands fa-google"></i> Google
-              </button>
-              <button class="social-btn facebook" onclick="window.socialLogin('facebook')">
-                <i class="fa-brands fa-facebook-f"></i> Facebook
-              </button>
-            </div>
-            
-            <div class="signup-prompt">
-              Don't have an account? <a href="#" onclick="window.showSignup()">Sign up</a>
-            </div>
-          </div>
-        `;
-      }
-    }
+        </div>
+      </div>
+    `;
+  }).join('');
 
-    function updateProfileIcon() {
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        if (currentUser) {
-          profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
-        } else {
-          profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
-        }
-      }
-    }
+  cartItemCount.textContent = totalItems;
+  cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
+}
 
-    window.handleLogin = function(event) {
-      event.preventDefault();
-      
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const errorDiv = document.getElementById('login-error');
+function updateCartCount() {
+  const cartCount = document.getElementById('cart-count');
+  if (cartCount) {
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = totalItems;
+  }
+}
 
-      if (!email || !password) {
-        showError(errorDiv, 'Please fill in all fields');
-        return;
-      }
+function saveCart() {
+  localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+}
 
-      if (password.length < 6) {
-        showError(errorDiv, 'Password must be at least 6 characters');
-        return;
-      }
+function renderProfileContent() {
+  const profileContent = document.getElementById('profile-content');
+  if (!profileContent) return;
 
-      if (!email.includes('@') || !email.includes('.')) {
-        showError(errorDiv, 'Please enter a valid email address');
-        return;
-      }
-
-      const user = {
-        name: email.split('@')[0],
-        email: email,
-        memberSince: '2025'
-      };
-
-      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
-      currentUser = user;
-      updateProfileIcon();
-      renderProfileContent();
-      alert('Login successful! Welcome back, ' + user.name);
-    };
-
-    window.logout = function() {
-      localStorage.removeItem('MyEssantia_user');
-      currentUser = null;
-      updateProfileIcon();
-      renderProfileContent();
-      alert('You have been logged out successfully');
-    };
-
-    window.socialLogin = function(provider) {
-      alert(`${provider} login would open here. For demo, we'll create a test account.`);
-      
-      const user = {
-        name: `${provider}_user`,
-        email: `user@${provider}.com`,
-        memberSince: '2025'
-      };
-
-      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
-      currentUser = user;
-      updateProfileIcon();
-      renderProfileContent();
-    };
-
-    window.showSignup = function() {
-      alert('Sign up functionality would open here. For demo, please use the login form.');
-    };
-
-    function showError(element, message) {
-      element.textContent = message;
-      element.classList.add('show');
-      setTimeout(() => {
-        element.classList.remove('show');
-      }, 3000);
-    }
-
-    // ==================== PRODUCT GRID FUNCTIONS ====================
-    function initializeProductGrid() {
-      const products = [
-        {
-          title: "slim power bank",
-          category: "10.000 mAh · fast charge",
-          rating: 4.9,
-          price: 3590,
-          primaryImg: "https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1609592424741-2abf387c3745?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "65w GaN charger",
-          category: "3 ports · ultra compact",
-          rating: 4.8,
-          price: 3790,
-          primaryImg: "https://images.unsplash.com/photo-1615525131611-9e1c98e2b8b9?q=80&w=1964&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1615525153961-3f6f6a5f23f3?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "universal travel adapter",
-          category: "4 usb · 100-240v",
-          rating: 4.7,
-          price: 3290,
-          primaryImg: "https://images.unsplash.com/photo-1583864697784-a0efc8379f70?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1583864697784-a0efc8379f70?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "tech organizer pouch",
-          category: "ballistic nylon",
-          rating: 4.6,
-          price: 2490,
-          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "cable organizer kit",
-          category: "3 pcs · silicone",
-          rating: 4.4,
-          price: 990,
-          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "wireless charging pad",
-          category: "15w · fast charge",
-          rating: 4.5,
-          price: 2190,
-          primaryImg: "https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "self-care kit",
-          category: "face mask, mist, oil",
-          rating: 4.3,
-          price: 1490,
-          primaryImg: "https://images.unsplash.com/photo-1608571423902-eed4a5ad5278?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1608571423902-eed4a5ad5278?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "travel bottle set",
-          category: "4 pcs · TSA approved",
-          rating: 4.2,
-          price: 1290,
-          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "passport holder",
-          category: "rfid blocking",
-          rating: 4.5,
-          price: 1890,
-          primaryImg: "https://images.unsplash.com/photo-1605901309584-818e25960a8f?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1605901309584-818e25960a8f?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "luggage scale",
-          category: "digital · 50kg",
-          rating: 4.1,
-          price: 990,
-          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "compression socks",
-          category: "2 pairs · travel",
-          rating: 4.0,
-          price: 890,
-          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          title: "sleep mask",
-          category: "silk · adjustable",
-          rating: 4.6,
-          price: 1490,
-          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop"
-        }
-      ];
-
-      const gridContainer = document.getElementById('product-grid-container');
-      const sortSelect = document.getElementById('sort-select');
-
-      function renderRating(rating) {
-        let stars = '';
-        for (let i = 1; i <= 5; i++) {
-          if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
-          else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
-          else stars += '<i class="fa-regular fa-star"></i>';
-        }
-        return stars + `<span>(${rating.toFixed(1)})</span>`;
-      }
-
-      function getSortedProducts() {
-        let sorted = [...products];
-        switch (sortSelect.value) {
-          case 'price-low':
-            sorted.sort((a, b) => a.price - b.price);
-            break;
-          case 'price-high':
-            sorted.sort((a, b) => b.price - a.price);
-            break;
-          case 'rating':
-            sorted.sort((a, b) => b.rating - a.rating);
-            break;
-          default:
-            break;
-        }
-        return sorted;
-      }
-
-      function renderAllProducts() {
-        const sortedProducts = getSortedProducts();
+  if (currentUser) {
+    profileContent.innerHTML = `
+      <div class="profile-info">
+        <div class="profile-avatar">
+          <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">
+        </div>
+        <div class="profile-details">
+          <p>
+            <i class="fa-regular fa-user"></i>
+            <span class="label">Name:</span>
+            <span class="value">${currentUser.name}</span>
+          </p>
+          <p>
+            <i class="fa-regular fa-envelope"></i>
+            <span class="label">Email:</span>
+            <span class="value">${currentUser.email}</span>
+          </p>
+        </div>
+        <button class="btn logout-btn" onclick="window.logout()">
+          <i class="fa-solid fa-sign-out-alt"></i>
+          Logout
+        </button>
+      </div>
+    `;
+  } else {
+    profileContent.innerHTML = `
+      <div class="login-form">
+        <div class="login-header">
+          <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
+          <h4>Welcome Back!</h4>
+          <p>Sign in with Google to continue</p>
+        </div>
         
-        let gridHtml = '';
-        sortedProducts.forEach((p, index) => {
-          const productId = index + 1;
-          gridHtml += `
-            <div class="product-card" data-product-id="${productId}" data-product-title="${p.title}" data-product-category="${p.category}" data-product-price="${p.price}" data-product-image="${p.primaryImg}">
-              <div class="image-frame">
-                <div class="primary-img" style="background-image: url('${p.primaryImg}');"></div>
-                <div class="secondary-img" style="background-image: url('${p.secondaryImg}');"></div>
-                <div class="image-actions">
-                  <button class="img-add" onclick="addToCart(${productId})">
-                    <i class="fa-solid fa-cart-plus"></i> add
-                  </button>
-                  <button class="img-buy" onclick="buyNow(${productId})">
-                    <i class="fa-solid fa-bolt"></i> buy
-                  </button>
-                </div>
-              </div>
-              <h3 class="product-title">${p.title}</h3>
-              <p class="product-category">${p.category}</p>
-              <div class="product-rating">${renderRating(p.rating)}</div>
-              <div class="product-price"><span class="inr-symbol">₹</span>${p.price.toLocaleString('en-IN')}</div>
-            </div>
-          `;
-        });
+        <button class="btn google-login-btn" onclick="window.handleGoogleLogin()">
+          <i class="fa-brands fa-google"></i>
+          Sign in with Google
+        </button>
         
-        gridContainer.innerHTML = gridHtml;
-      }
+        <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
+          By signing in, you agree to our Terms of Service and Privacy Policy.
+        </p>
+      </div>
+    `;
+  }
+}
 
-      renderAllProducts();
-      sortSelect.addEventListener('change', renderAllProducts);
+function updateProfileIcon() {
+  const profileIcon = document.getElementById('profile-icon');
+  if (profileIcon) {
+    if (currentUser) {
+      profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
+    } else {
+      profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
     }
+  }
+}
 
-    // ==================== START THE APP ====================
-    document.addEventListener('DOMContentLoaded', loadComponents);
-  </script>
+window.handleGoogleLogin = function() {
+  const mockGoogleUser = {
+    name: 'John Doe',
+    email: 'john@gmail.com',
+    picture: 'https://via.placeholder.com/80',
+    provider: 'google',
+    memberSince: '2025'
+  };
+
+  localStorage.setItem('MyEssantia_user', JSON.stringify(mockGoogleUser));
+  currentUser = mockGoogleUser;
+  updateProfileIcon();
+  renderProfileContent();
+  closeModal('profile-modal');
+  alert('Successfully signed in with Google!');
+};
+
+window.logout = function() {
+  localStorage.removeItem('MyEssantia_user');
+  currentUser = null;
+  updateProfileIcon();
+  renderProfileContent();
+  alert('You have been logged out successfully');
+};
+
+document.addEventListener('DOMContentLoaded', loadComponents);
+</script>
 
   <style>
     /* Additional modal styles to match header.css */
