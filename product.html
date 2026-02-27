@@ -190,6 +190,209 @@
       font-size: 0.9rem;
     }
 
+    /* Share Button Styles */
+    .share-container {
+      position: relative;
+      display: inline-block;
+      margin: 1rem 0 2rem;
+    }
+
+    .share-main-btn {
+      background: white;
+      border: 2px solid #f0f0f0;
+      padding: 0.8rem 1.5rem;
+      border-radius: 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #4b5563;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .share-main-btn i {
+      color: #d4af37;
+      font-size: 1.2rem;
+    }
+
+    .share-main-btn:hover {
+      border-color: #d4af37;
+      background: #fef9e7;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -10px rgba(212, 175, 55, 0.3);
+    }
+
+    .share-menu {
+      position: absolute;
+      top: 120%;
+      left: 0;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.2);
+      padding: 1.2rem;
+      width: 320px;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid #f0f0f0;
+    }
+
+    .share-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .share-menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .share-menu-header span {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .share-menu-header button {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #999;
+      transition: color 0.2s;
+    }
+
+    .share-menu-header button:hover {
+      color: #d4af37;
+    }
+
+    .share-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .share-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.8rem 0.5rem;
+      border: none;
+      background: #f8fafc;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.75rem;
+      color: #4b5563;
+    }
+
+    .share-option i {
+      font-size: 1.3rem;
+    }
+
+    .share-option.facebook:hover {
+      background: #1877f2;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .share-option.twitter:hover {
+      background: #000000;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .share-option.whatsapp:hover {
+      background: #25d366;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .share-option.telegram:hover {
+      background: #0088cc;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .share-option.email:hover {
+      background: #ea4335;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .share-option.pinterest:hover {
+      background: #bd081c;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .share-link-container {
+      background: #f8fafc;
+      padding: 1rem;
+      border-radius: 16px;
+    }
+
+    .share-link-label {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-bottom: 0.5rem;
+    }
+
+    .share-link-box {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .share-link-box input {
+      flex: 1;
+      padding: 0.8rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      color: #1e293b;
+      background: white;
+    }
+
+    .share-link-box input:focus {
+      outline: none;
+      border-color: #d4af37;
+    }
+
+    .copy-link-btn {
+      padding: 0.8rem 1.2rem;
+      background: #d4af37;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .copy-link-btn:hover {
+      background: #c4a030;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .copy-link-btn.copied {
+      background: #22c55e;
+    }
+
     /* Price Section */
     .price-section {
       margin-bottom: 2rem;
@@ -254,7 +457,7 @@
       color: #991b1b;
     }
 
-    /* Free Delivery Card - UPDATED */
+    /* Free Delivery Card */
     .delivery-card {
       background: linear-gradient(135deg, #f0f7ff 0%, #e6f0fa 100%);
       border-radius: 20px;
@@ -358,16 +561,7 @@
       color: #2563eb;
     }
 
-    .cart-total-display {
-      background: rgba(37, 99, 235, 0.1);
-      padding: 0.5rem 1rem;
-      border-radius: 30px;
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-      display: inline-block;
-    }
-
-    /* Quantity Selector - FIXED */
+    /* Quantity Selector */
     .quantity-section {
       margin: 2rem 0;
       background: #f8fafc;
@@ -732,7 +926,7 @@
       color: #92400e;
     }
 
-    /* You May Also Like Section - ENHANCED */
+    /* You May Also Like Section */
     .related-section {
       margin: 5rem 0;
       padding: 2rem 0;
@@ -777,7 +971,7 @@
       border: 1px solid #f0f0f0;
       text-align: center;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .related-card::before {
@@ -878,6 +1072,121 @@
       color: white;
     }
 
+    /* Related Product Share Button */
+    .related-share {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 32px;
+      height: 32px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      opacity: 0;
+      transform: translateY(-5px);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: #d4af37;
+      z-index: 5;
+    }
+
+    .related-card:hover .related-share {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .related-share:hover {
+      background: #d4af37;
+      color: white;
+      transform: scale(1.1) !important;
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal.show { display: block; }
+
+    .modal-content {
+      background: white;
+      margin: 2rem auto;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 30px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .cart-item-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      overflow: hidden;
+    }
+
+    .google-login-btn {
+      background: white;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 1rem;
+      border-radius: 40px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .google-login-btn i { color: #DB4437; }
+
     /* Responsive */
     @media (max-width: 1024px) {
       .related-grid {
@@ -918,6 +1227,32 @@
       .quantity-controls {
         justify-content: center;
       }
+
+      .share-menu {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 30px 30px 0 0;
+        transform: translateY(100%);
+        padding-bottom: 2rem;
+      }
+      
+      .share-menu.show {
+        transform: translateY(0);
+      }
+      
+      .share-options {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .related-share {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @media (max-width: 480px) {
@@ -947,10 +1282,79 @@
 
   <div id="footer"></div>
 
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Your Cart</h2>
+        <button class="close-modal" id="close-cart">&times;</button>
+      </div>
+      <div id="cart-items"></div>
+      <div class="cart-total">
+        <h3>Total: <span id="cart-total-amount">₹0</span></h3>
+      </div>
+      <button class="btn btn-buy-now" style="width: 100%;">Checkout</button>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profile-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Profile</h2>
+        <button class="close-modal" id="close-profile">&times;</button>
+      </div>
+      <div id="profile-content"></div>
+    </div>
+  </div>
+
   <script>
     let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
     let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
     let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+
+    // Sample products if none exist
+    if (products.length === 0) {
+      products = [
+        {
+          id: 1,
+          title: "Handcrafted Ceramic Vase",
+          category: "Home Decor",
+          price: 2499,
+          rating: 4.5,
+          stock: 15,
+          brand: "Artisan House",
+          description: "Beautiful handcrafted ceramic vase with unique glaze patterns. Perfect for your living room decor.",
+          shortDesc: "Handcrafted ceramic vase with unique design",
+          primaryImg: "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600",
+          images: [
+            "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600",
+            "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600",
+            "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600",
+            "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600"
+          ]
+        },
+        {
+          id: 2,
+          title: "Premium Cotton Bedsheet",
+          category: "Bedding",
+          price: 3999,
+          rating: 4.8,
+          stock: 8,
+          brand: "Essentia Home",
+          description: "Luxury cotton bedsheet with high thread count for ultimate comfort.",
+          shortDesc: "Premium quality cotton bedsheet",
+          primaryImg: "https://images.unsplash.com/photo-1584102272773-3b0a58a3cfb5?w=600",
+          images: [
+            "https://images.unsplash.com/photo-1584102272773-3b0a58a3cfb5?w=600",
+            "https://images.unsplash.com/photo-1584102272773-3b0a58a3cfb5?w=600",
+            "https://images.unsplash.com/photo-1584102272773-3b0a58a3cfb5?w=600",
+            "https://images.unsplash.com/photo-1584102272773-3b0a58a3cfb5?w=600"
+          ]
+        }
+      ];
+      localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+    }
 
     async function loadComponents() {
       try {
@@ -967,6 +1371,8 @@
         }, 50);
       } catch (error) {
         console.error('Error loading components:', error);
+        // Continue without header/footer if files not found
+        initializeApp();
       }
     }
 
@@ -979,7 +1385,7 @@
 
     function getProductId() {
       const urlParams = new URLSearchParams(window.location.search);
-      return parseInt(urlParams.get('id'));
+      return parseInt(urlParams.get('id')) || 1; // Default to first product if no ID
     }
 
     function getCurrentCartTotal() {
@@ -1011,13 +1417,12 @@
       const container = document.getElementById('product-container');
       const images = product.images && product.images.length ? product.images : 
                      [product.primaryImg, product.secondaryImg].filter(Boolean);
-      const mainImage = images[0] || 'https://via.placeholder.com/600';
+      const mainImage = images[0] || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600';
       const stock = product.stock || 10;
       
       const cartItem = cart.find(item => item.id === product.id);
       const initialQuantity = cartItem ? cartItem.quantity : 1;
       
-      // Calculate total cart value including current product with quantity
       const currentCartTotal = getCurrentCartTotal();
       const thisProductTotal = product.price * initialQuantity;
       const totalWithProduct = currentCartTotal + thisProductTotal;
@@ -1025,6 +1430,8 @@
       const specs = product.specs && product.specs.length ? product.specs : [
         `Material: Premium Quality`,
         `Brand: ${product.brand || 'MyEssantia'}`,
+        `Care: Dry Clean Only`,
+        `Origin: Made in India`
       ];
 
       const description = product.description || product.shortDesc || 'No description available.';
@@ -1065,6 +1472,58 @@
               </div>
             </div>
 
+            <!-- Share Button -->
+            <div class="share-container">
+              <button class="share-main-btn" onclick="toggleShareMenu(event)">
+                <i class="fa-solid fa-share-alt"></i>
+                <span>Share</span>
+              </button>
+              
+              <div class="share-menu" id="share-menu">
+                <div class="share-menu-header">
+                  <span>Share this product</span>
+                  <button onclick="closeShareMenu()"><i class="fa-solid fa-times"></i></button>
+                </div>
+                <div class="share-options">
+                  <button onclick="shareOnPlatform('facebook')" class="share-option facebook">
+                    <i class="fa-brands fa-facebook-f"></i>
+                    <span>Facebook</span>
+                  </button>
+                  <button onclick="shareOnPlatform('twitter')" class="share-option twitter">
+                    <i class="fa-brands fa-x-twitter"></i>
+                    <span>Twitter</span>
+                  </button>
+                  <button onclick="shareOnPlatform('whatsapp')" class="share-option whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                  </button>
+                  <button onclick="shareOnPlatform('telegram')" class="share-option telegram">
+                    <i class="fa-brands fa-telegram"></i>
+                    <span>Telegram</span>
+                  </button>
+                  <button onclick="shareOnPlatform('email')" class="share-option email">
+                    <i class="fa-regular fa-envelope"></i>
+                    <span>Email</span>
+                  </button>
+                  <button onclick="shareOnPlatform('pinterest')" class="share-option pinterest">
+                    <i class="fa-brands fa-pinterest"></i>
+                    <span>Pinterest</span>
+                  </button>
+                </div>
+                
+                <div class="share-link-container">
+                  <p class="share-link-label">Or copy link</p>
+                  <div class="share-link-box">
+                    <input type="text" id="product-share-link" value="" readonly>
+                    <button onclick="copyShareLink()" class="copy-link-btn" id="copy-link-btn">
+                      <i class="fa-regular fa-copy"></i>
+                      <span>Copy</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="price-section">
               <span class="current-price">
                 <span class="inr-symbol">₹</span>${product.price.toLocaleString()}
@@ -1078,7 +1537,7 @@
               </div>
             </div>
 
-            <!-- Free Delivery Card - Now based on total cart value -->
+            <!-- Free Delivery Card -->
             <div class="delivery-card" id="delivery-card">
               <div class="delivery-header">
                 <div class="delivery-title">
@@ -1101,7 +1560,6 @@
                       : `Add <span class="cart-value">₹${(1299 - totalWithProduct).toLocaleString()}</span> more for free delivery`}
                   </span>
                 </div>
-                
               </div>
             </div>
 
@@ -1127,7 +1585,7 @@
               </div>
             </div>
 
-            <!-- Quantity Selector - FIXED with onclick handlers -->
+            <!-- Quantity Selector -->
             <div class="quantity-section">
               <div class="quantity-label">
                 <i class="fa-solid fa-cubes"></i>
@@ -1230,6 +1688,11 @@
           </div>
         </div>
       `;
+
+      // Set the share link
+      const shareLink = `${window.location.origin}/product.html?id=${product.id}`;
+      const shareInput = document.getElementById('product-share-link');
+      if (shareInput) shareInput.value = shareLink;
     }
 
     function renderRelatedProducts(currentProduct) {
@@ -1245,9 +1708,12 @@
             <h2 class="related-title">You May Also Like</h2>
             <div class="related-grid">
               ${related.map(p => {
-                const img = p.images && p.images[0] ? p.images[0] : (p.primaryImg || 'https://via.placeholder.com/200');
+                const img = p.images && p.images[0] ? p.images[0] : (p.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200');
                 return `
-                  <a href="product.html?id=${p.id}" class="related-card">
+                  <div class="related-card" onclick="window.location='product.html?id=${p.id}'">
+                    <div class="related-share" onclick="shareRelatedProduct(event, ${p.id})">
+                      <i class="fa-regular fa-share-from-square"></i>
+                    </div>
                     <div class="related-image">
                       <img src="${img}" alt="${p.title}">
                     </div>
@@ -1260,10 +1726,10 @@
                     <div class="related-price">
                       <span class="inr-symbol">₹</span>${p.price.toLocaleString()}
                     </div>
-                    <div class="quick-add">
+                    <div class="quick-add" onclick="event.stopPropagation(); addToCart(${p.id})">
                       <i class="fa-solid fa-cart-plus"></i> Quick Add
                     </div>
-                  </a>
+                  </div>
                 `;
               }).join('')}
             </div>
@@ -1295,7 +1761,116 @@
       element.classList.toggle('zoomed');
     };
 
-    // Quantity functions - FIXED
+    // Share functionality
+    window.toggleShareMenu = function(event) {
+      event.stopPropagation();
+      const shareMenu = document.getElementById('share-menu');
+      shareMenu.classList.toggle('show');
+      
+      if (shareMenu.classList.contains('show')) {
+        setTimeout(() => {
+          document.addEventListener('click', closeShareMenuOutside);
+        }, 100);
+      }
+    };
+
+    window.closeShareMenu = function() {
+      const shareMenu = document.getElementById('share-menu');
+      shareMenu.classList.remove('show');
+      document.removeEventListener('click', closeShareMenuOutside);
+      
+      const copyBtn = document.getElementById('copy-link-btn');
+      if (copyBtn) {
+        copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i><span>Copy</span>';
+        copyBtn.classList.remove('copied');
+      }
+    };
+
+    function closeShareMenuOutside(event) {
+      const shareMenu = document.getElementById('share-menu');
+      const shareBtn = document.querySelector('.share-main-btn');
+      
+      if (!shareMenu.contains(event.target) && !shareBtn.contains(event.target)) {
+        closeShareMenu();
+      }
+    }
+
+    window.shareOnPlatform = function(platform) {
+      const productId = getProductId();
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      
+      const url = encodeURIComponent(`${window.location.origin}/product.html?id=${productId}`);
+      const title = encodeURIComponent(product.title);
+      const description = encodeURIComponent(product.shortDesc || product.description || 'Check out this product on MyEssantia');
+      const image = encodeURIComponent(product.primaryImg || (product.images && product.images[0]) || '');
+      
+      let shareUrl = '';
+      
+      switch(platform) {
+        case 'facebook':
+          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+          break;
+        case 'twitter':
+          shareUrl = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
+          break;
+        case 'whatsapp':
+          shareUrl = `https://wa.me/?text=${title}%20${url}`;
+          break;
+        case 'telegram':
+          shareUrl = `https://t.me/share/url?url=${url}&text=${title}`;
+          break;
+        case 'email':
+          shareUrl = `mailto:?subject=${title}&body=${description}%0A%0A${url}`;
+          break;
+        case 'pinterest':
+          shareUrl = `https://pinterest.com/pin/create/button/?url=${url}&media=${image}&description=${title}`;
+          break;
+      }
+      
+      window.open(shareUrl, '_blank', 'width=600,height=400');
+      closeShareMenu();
+    };
+
+    window.copyShareLink = function() {
+      const linkInput = document.getElementById('product-share-link');
+      linkInput.select();
+      linkInput.setSelectionRange(0, 99999);
+      
+      navigator.clipboard.writeText(linkInput.value).then(() => {
+        const copyBtn = document.getElementById('copy-link-btn');
+        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
+        copyBtn.classList.add('copied');
+        
+        setTimeout(() => {
+          copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i><span>Copy</span>';
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      });
+    };
+
+    window.shareRelatedProduct = function(event, productId) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      
+      const url = encodeURIComponent(`${window.location.origin}/product.html?id=${productId}`);
+      const title = encodeURIComponent(product.title);
+      
+      if (navigator.share) {
+        navigator.share({
+          title: product.title,
+          text: product.shortDesc || 'Check out this product on MyEssantia',
+          url: `${window.location.origin}/product.html?id=${productId}`
+        }).catch(console.error);
+      } else {
+        window.open(`https://wa.me/?text=${title}%20${url}`, '_blank');
+      }
+    };
+
+    // Quantity functions
     window.incrementQuantity = function() {
       const input = document.getElementById('product-quantity');
       if (!input) return;
@@ -1311,13 +1886,11 @@
         input.value = value;
         updateDeliveryBar();
         
-        // Update plus button disabled state
         const plusBtn = document.querySelector('.quantity-btn[onclick="incrementQuantity()"]');
         if (plusBtn && value >= product.stock) {
           plusBtn.disabled = true;
         }
         
-        // Enable minus button
         const minusBtn = document.querySelector('.quantity-btn[onclick="decrementQuantity()"]');
         if (minusBtn) {
           minusBtn.disabled = false;
@@ -1340,13 +1913,11 @@
         input.value = value;
         updateDeliveryBar();
         
-        // Enable plus button
         const plusBtn = document.querySelector('.quantity-btn[onclick="incrementQuantity()"]');
         if (plusBtn) {
           plusBtn.disabled = false;
         }
         
-        // Update minus button disabled state
         const minusBtn = document.querySelector('.quantity-btn[onclick="decrementQuantity()"]');
         if (minusBtn && value <= 1) {
           minusBtn.disabled = true;
@@ -1370,15 +1941,10 @@
       const progressBar = document.getElementById('delivery-progress');
       const deliveryMessage = document.getElementById('delivery-message');
       const deliveryText = document.getElementById('delivery-text');
-      const cartTotalDisplay = document.getElementById('cart-total-display');
 
       if (progressBar) {
         const percentage = Math.min(100, (totalWithProduct / 1299) * 100);
         progressBar.style.width = percentage + '%';
-      }
-
-      if (cartTotalDisplay) {
-        cartTotalDisplay.innerHTML = `Current Cart Total: <strong>₹${currentCartTotal.toLocaleString()}</strong> + This item: ₹${thisProductTotal.toLocaleString()} = <strong>₹${totalWithProduct.toLocaleString()}</strong>`;
       }
 
       if (deliveryMessage && deliveryText) {
@@ -1522,6 +2088,7 @@
         if (e.key === 'Escape') {
           closeModal('cart-modal');
           closeModal('profile-modal');
+          closeShareMenu();
         }
       });
     }
@@ -1561,13 +2128,13 @@
 
       if (cart.length === 0) {
         cartItemsContainer.innerHTML = `
-          <div class="empty-cart-message">
-            <i class="fa-regular fa-cart-shopping"></i>
-            <p>Your cart is empty</p>
+          <div class="empty-cart-message" style="text-align: center; padding: 2rem;">
+            <i class="fa-regular fa-cart-shopping" style="font-size: 3rem; color: #ccc;"></i>
+            <p style="margin-top: 1rem; color: #666;">Your cart is empty</p>
           </div>
         `;
         cartItemCount.textContent = '0';
-        cartTotalAmount.textContent = '₹0.00';
+        cartTotalAmount.textContent = '₹0';
         return;
       }
 
@@ -1581,16 +2148,18 @@
 
         return `
           <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.primaryImg}')"></div>
-            <div class="cart-item-details">
-              <h4>${item.title}</h4>
-              <p>${item.category}</p>
-              <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
-              <div class="cart-item-actions">
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">-</button>
-                <span>${item.quantity}</span>
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">+</button>
-                <button class="remove-item" onclick="window.removeFromCart(${item.id})">Remove</button>
+            <div class="cart-item-image" style="background-image: url('${item.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=80'}')"></div>
+            <div class="cart-item-details" style="flex: 1;">
+              <h4 style="margin-bottom: 0.3rem;">${item.title}</h4>
+              <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">${item.category}</p>
+              <div class="cart-item-price" style="font-weight: 600; color: #d4af37; margin-bottom: 0.5rem;">₹${item.price.toLocaleString()}</div>
+              <div class="cart-item-actions" style="display: flex; align-items: center; gap: 0.8rem;">
+                <button class="quantity-btn" style="width: 30px; height: 30px; font-size: 1rem;" onclick="updateQuantity(${item.id}, -1)">-</button>
+                <span style="font-weight: 600;">${item.quantity}</span>
+                <button class="quantity-btn" style="width: 30px; height: 30px; font-size: 1rem;" onclick="updateQuantity(${item.id}, 1)">+</button>
+                <button class="remove-item" style="background: none; border: none; color: #ef4444; cursor: pointer; margin-left: auto;" onclick="removeFromCart(${item.id})">
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
               </div>
             </div>
           </div>
@@ -1618,7 +2187,6 @@
       updateCartCount();
       renderCartItems();
       
-      // If we're on a product page, update the delivery bar
       if (window.location.pathname.includes('product.html')) {
         updateDeliveryBar();
       }
@@ -1630,7 +2198,6 @@
       updateCartCount();
       renderCartItems();
       
-      // If we're on a product page, update the delivery bar
       if (window.location.pathname.includes('product.html')) {
         updateDeliveryBar();
       }
@@ -1646,22 +2213,22 @@
             <div class="profile-avatar">
               <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
             </div>
-            <div class="profile-details">
-              <p><strong>Name:</strong> ${currentUser.name}</p>
+            <div class="profile-details" style="text-align: center; margin: 1rem 0;">
+              <p style="margin-bottom: 0.5rem;"><strong>Name:</strong> ${currentUser.name}</p>
               <p><strong>Email:</strong> ${currentUser.email}</p>
             </div>
-            <button class="btn logout-btn" onclick="window.logout()">Logout</button>
+            <button class="btn logout-btn" onclick="logout()" style="background: #ef4444; color: white; width: 100%;">Logout</button>
           </div>
         `;
       } else {
         profileContent.innerHTML = `
           <div class="login-form">
-            <div class="login-header">
-              <i class="fa-brands fa-google"></i>
-              <h4>Welcome Back!</h4>
-              <p>Sign in with Google</p>
+            <div class="login-header" style="text-align: center; margin-bottom: 2rem;">
+              <i class="fa-brands fa-google" style="font-size: 3rem; color: #DB4437; margin-bottom: 1rem;"></i>
+              <h4 style="margin-bottom: 0.5rem;">Welcome Back!</h4>
+              <p style="color: #666;">Sign in with Google</p>
             </div>
-            <button class="btn google-login-btn" onclick="window.handleGoogleLogin()">
+            <button class="btn google-login-btn" onclick="handleGoogleLogin()">
               <i class="fa-brands fa-google"></i> Sign in with Google
             </button>
           </div>
@@ -1692,88 +2259,5 @@
 
     document.addEventListener('DOMContentLoaded', loadComponents);
   </script>
-
-  <style>
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
-    }
-
-    .modal.show { display: block; }
-
-    .modal-content {
-      background: white;
-      margin: 2rem auto;
-      padding: 2rem;
-      width: 90%;
-      max-width: 500px;
-      border-radius: 30px;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .close-modal {
-      background: none;
-      border: none;
-      font-size: 2rem;
-      cursor: pointer;
-      color: #999;
-    }
-
-    .cart-item {
-      display: flex;
-      gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .cart-item-image {
-      width: 80px;
-      height: 80px;
-      border-radius: 12px;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .profile-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin: 0 auto 1rem;
-      overflow: hidden;
-    }
-
-    .google-login-btn {
-      background: white;
-      border: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      width: 100%;
-      padding: 1rem;
-      border-radius: 40px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .google-login-btn i { color: #DB4437; }
-  </style>
 </body>
 </html>
