@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Separate CSS Files (will be loaded dynamically) -->
+  <!-- CSS Files -->
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
   
@@ -39,7 +39,6 @@
       letter-spacing: -0.02em;
     }
 
-    /* fluid container */
     .container {
       width: 100%;
       max-width: 1440px;
@@ -52,7 +51,6 @@
       background-repeat: repeat;
     }
 
-    /* --- PAGE TITLE (responsive typography) --- */
     .page-title {
       text-align: center;
       padding: clamp(1.5rem, 4vw, 2rem) 0 clamp(0.5rem, 2vw, 1rem);
@@ -76,7 +74,6 @@
       padding: 0 1rem;
     }
 
-    /* --- SORT BAR (flex, no absolute) --- */
     .sort-bar {
       display: flex;
       justify-content: flex-end;
@@ -117,7 +114,6 @@
       cursor: pointer;
     }
 
-    /* --- PRODUCT GRID (responsive grid) --- */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -291,32 +287,6 @@
       margin-right: 2px;
     }
 
-    /* --- PAGINATION (flexible, but hidden because we show all) --- */
-    .pagination {
-      display: flex;
-      justify-content: center;
-      gap: clamp(0.5rem, 2vw, 1rem);
-      margin: 3rem 0 4rem;
-      flex-wrap: wrap;
-    }
-    .pagination a {
-      text-decoration: none;
-      color: #1a1a1a;
-      padding: 0.5rem 1rem;
-      border-radius: 30px;
-      border: 1px solid #e0e0e0;
-      transition: 0.2s;
-      font-weight: 400;
-      min-width: 40px;
-      text-align: center;
-    }
-    .pagination a:hover, .pagination a.active-page {
-      background: #d4af37;
-      border-color: #d4af37;
-      color: #0c0c0c;
-    }
-
-    /* New arrival badge */
     .new-badge {
       position: absolute;
       top: 12px;
@@ -332,12 +302,10 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
-    /* Touch targets */
     button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add, .img-buy, select {
       touch-action: manipulation;
     }
 
-    /* ---------- RESPONSIVE BREAKPOINTS ---------- */
     @media (min-width: 1200px) {
       .container {
         padding: 0 3rem;
@@ -391,10 +359,6 @@
       .product-card {
         padding: 1rem 0.8rem 1.5rem;
       }
-      .pagination a {
-        padding: 0.6rem 1rem;
-        min-width: 44px;
-      }
     }
 
     @media (max-width: 360px) {
@@ -418,17 +382,14 @@
 </head>
 <body class="bg-noise">
   
-  <!-- Header loaded dynamically -->
   <div id="header"></div>
 
   <main>
-    <!-- page title -->
     <div class="container page-title">
       <h1>new <span>arrivals</span></h1>
       <p>Fresh drops — discover the latest accessories & essentials.</p>
     </div>
 
-    <!-- sort bar -->
     <div class="container">
       <div class="sort-bar">
         <div class="sort-select">
@@ -443,461 +404,56 @@
       </div>
     </div>
 
-    <!-- product grid container -->
     <div class="container">
-      <div id="product-grid-container" class="product-grid">
-        <!-- products injected via JS -->
-      </div>
-
-      <!-- pagination container (empty, as we show all products) -->
-      <div id="pagination-container" class="pagination"></div>
+      <div id="product-grid-container" class="product-grid"></div>
     </div>
   </main>
 
-  <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
   <script>
-    // Cart state - initialize from localStorage
     let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-    
-    // User state - initialize from localStorage
     let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
 
-    // Load header and footer
-    Promise.all([
-      fetch('header.html').then(res => res.text()).catch(() => {
-        console.warn('header.html not found, using empty placeholder');
-        return '';
-      }),
-      fetch('footer.html').then(res => res.text()).catch(() => {
-        console.warn('footer.html not found, using empty placeholder');
-        return '';
-      })
-    ]).then(([headerData, footerData]) => {
-      document.getElementById('header').innerHTML = headerData || getDefaultHeader();
-      document.getElementById('footer').innerHTML = footerData || getDefaultFooter();
+    async function loadComponents() {
+      try {
+        const headerResponse = await fetch('header.html');
+        const headerData = await headerResponse.text();
+        document.getElementById('header').innerHTML = headerData;
+
+        const footerResponse = await fetch('footer.html');
+        const footerData = await footerResponse.text();
+        document.getElementById('footer').innerHTML = footerData;
+
+        setTimeout(() => {
+          initializeApp();
+        }, 50);
+      } catch (error) {
+        console.error('Error loading components:', error);
+      }
+    }
+
+    function renderProducts() {
+      const gridContainer = document.getElementById('product-grid-container');
+      const sortSelect = document.getElementById('sort-select');
       
-      // Initialize after components are loaded
-      setTimeout(() => {
-        initializeApp();
-      }, 100);
-    }).catch(error => {
-      console.error('Error loading components:', error);
-      // Use default header/footer if fetch fails
-      document.getElementById('header').innerHTML = getDefaultHeader();
-      document.getElementById('footer').innerHTML = getDefaultFooter();
-      setTimeout(() => {
-        initializeApp();
-      }, 100);
-    });
+      if (!gridContainer) return;
 
-    // Default header HTML in case header.html is not available
-    function getDefaultHeader() {
-      return `
-        <header style="background: #ffffff; border-bottom: 1px solid #f0f0f0; padding: 0.8rem 0;">
-          <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <div class="logo">
-              <a href="/" style="text-decoration: none; color: #1a1a1a;">
-                <span style="font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 500;">MyEssantia</span>
-                <span style="font-size: 0.7rem; color: #d4af37; display: block; line-height: 1;">premium essentials</span>
-              </a>
-            </div>
-            <nav style="display: flex; gap: 2rem;">
-              <a href="#" style="text-decoration: none; color: #1a1a1a;">shop</a>
-              <a href="#" style="text-decoration: none; color: #1a1a1a;">new</a>
-              <a href="#" style="text-decoration: none; color: #1a1a1a;">editorial</a>
-            </nav>
-            <div class="header-icons" style="display: flex; gap: 1.2rem; align-items: center;">
-              <a href="#" id="profile-icon" style="font-size: 1.3rem; color: #1a1a1a;">
-                <i class="fa-regular fa-user"></i>
-              </a>
-              <a href="#" id="cart-icon" style="font-size: 1.3rem; color: #1a1a1a; position: relative;">
-                <i class="fa-regular fa-bag-shopping"></i>
-                <span id="cart-count" style="position: absolute; top: -8px; right: -8px; background: #d4af37; color: #0c0c0c; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center;">0</span>
-              </a>
-            </div>
-          </div>
-        </header>
+      const newProducts = products.filter(p => 
+        p.showOnNew === true && p.category === 'newarrival'
+      );
 
-        <!-- Cart Modal -->
-        <div id="cart-modal" class="modal" style="display: none;">
-          <div class="modal-content" style="background: white; border-radius: 30px;">
-            <div class="modal-header">
-              <h3>Your Cart</h3>
-              <button id="close-cart" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
-            </div>
-            <div id="cart-items" class="cart-items"></div>
-            <div class="cart-footer">
-              <div class="cart-total">
-                <span>Total:</span>
-                <span id="cart-total-amount">₹0</span>
-              </div>
-              <button id="checkout-btn" class="btn" style="width: 100%;">Checkout</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Profile Modal -->
-        <div id="profile-modal" class="modal" style="display: none;">
-          <div class="modal-content" style="background: white; border-radius: 30px;">
-            <div class="modal-header">
-              <h3>Account</h3>
-              <button id="close-profile" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
-            </div>
-            <div id="profile-content" class="profile-content"></div>
-          </div>
-        </div>
-      `;
-    }
-
-    // Default footer HTML
-    function getDefaultFooter() {
-      return `
-        <footer style="background: #fafafa; border-top: 1px solid #efefef; padding: 3rem 0 2rem; margin-top: 2rem;">
-          <div class="container">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
-              <div>
-                <h4 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem;">MyEssantia</h4>
-                <p style="color: #5f5b57;">Premium accessories & daily essentials.</p>
-              </div>
-              <div>
-                <h4>Shop</h4>
-                <ul style="list-style: none;">
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">New Arrivals</a></li>
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Bestsellers</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4>Support</h4>
-                <ul style="list-style: none;">
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Contact</a></li>
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Shipping</a></li>
-                </ul>
-              </div>
-            </div>
-            <div style="text-align: center; margin-top: 3rem; color: #a2a2a2;">
-              <p>&copy; 2025 MyEssantia. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
-      `;
-    }
-
-    function initializeApp() {
-      initializeCart();
-      initializeProfile();
-      
-      // Initialize product grid after header/footer are loaded
-      initializeProductGrid();
-    }
-
-    // ==================== CART FUNCTIONS ====================
-    function initializeCart() {
-      updateCartCount();
-      setupCartEventListeners();
-    }
-
-    function setupCartEventListeners() {
-      const cartIcon = document.getElementById('cart-icon');
-      const closeCart = document.getElementById('close-cart');
-      const cartModal = document.getElementById('cart-modal');
-      const checkoutBtn = document.getElementById('checkout-btn');
-
-      if (cartIcon) {
-        cartIcon.addEventListener('click', (e) => {
-          e.preventDefault();
-          openCart();
-        });
-      }
-
-      if (closeCart) {
-        closeCart.addEventListener('click', () => {
-          closeModal('cart-modal');
-        });
-      }
-
-      window.addEventListener('click', (e) => {
-        if (e.target === cartModal) {
-          closeModal('cart-modal');
-        }
-      });
-
-      if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
-          if (cart.length === 0) {
-            alert('Your cart is empty!');
-          } else {
-            alert('Proceeding to checkout...');
-          }
-        });
-      }
-    }
-
-    function openCart() {
-      const cartModal = document.getElementById('cart-modal');
-      if (cartModal) {
-        renderCartItems();
-        cartModal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    // ==================== PROFILE FUNCTIONS ====================
-    function initializeProfile() {
-      updateProfileIcon();
-      setupProfileEventListeners();
-    }
-
-    function setupProfileEventListeners() {
-      const profileIcon = document.getElementById('profile-icon');
-      const closeProfile = document.getElementById('close-profile');
-      const profileModal = document.getElementById('profile-modal');
-
-      if (profileIcon) {
-        profileIcon.addEventListener('click', (e) => {
-          e.preventDefault();
-          openProfile();
-        });
-      }
-
-      if (closeProfile) {
-        closeProfile.addEventListener('click', () => {
-          closeModal('profile-modal');
-        });
-      }
-
-      window.addEventListener('click', (e) => {
-        if (e.target === profileModal) {
-          closeModal('profile-modal');
-        }
-      });
-    }
-
-    function openProfile() {
-      const profileModal = document.getElementById('profile-modal');
-      if (profileModal) {
-        renderProfileContent();
-        profileModal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function renderProfileContent() {
-      const profileContent = document.getElementById('profile-content');
-      if (!profileContent) return;
-
-      if (currentUser) {
-        profileContent.innerHTML = `
-          <div class="profile-info">
-            <div class="profile-avatar">
-              <i class="fa-regular fa-circle-user"></i>
-            </div>
-            <div class="profile-details">
-              <p><strong>Name:</strong> ${currentUser.name}</p>
-              <p><strong>Email:</strong> ${currentUser.email}</p>
-              <p><strong>Member since:</strong> ${currentUser.memberSince || '2025'}</p>
-            </div>
-            <button class="btn logout-btn" onclick="logout()">Logout</button>
+      if (newProducts.length === 0) {
+        gridContainer.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
+            <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+            <h3>No new arrivals found</h3>
+            <p>Check back later for new products!</p>
           </div>
         `;
-      } else {
-        profileContent.innerHTML = `
-          <div class="login-form">
-            <h4>Welcome Back!</h4>
-            <p>Sign in to your account</p>
-            <div id="login-error" class="error-message"></div>
-            <form onsubmit="handleLogin(event)">
-              <div class="form-group">
-                <input type="email" id="email" placeholder="Email" required>
-              </div>
-              <div class="form-group">
-                <input type="password" id="password" placeholder="Password" required>
-              </div>
-              <button type="submit" class="btn login-btn">Sign In</button>
-            </form>
-            <p style="margin-top: 1rem;">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
-          </div>
-        `;
-      }
-    }
-
-    window.handleLogin = function(event) {
-      event.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      
-      if (!email || !password) {
-        alert('Please fill in all fields');
         return;
       }
-
-      const user = {
-        name: email.split('@')[0],
-        email: email,
-        memberSince: '2025'
-      };
-
-      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
-      currentUser = user;
-      updateProfileIcon();
-      renderProfileContent();
-      alert('Login successful!');
-    };
-
-    window.logout = function() {
-      localStorage.removeItem('MyEssantia_user');
-      currentUser = null;
-      updateProfileIcon();
-      renderProfileContent();
-      alert('Logged out successfully');
-    };
-
-    window.showSignup = function() {
-      alert('Sign up functionality - please use login form for demo');
-    };
-
-    function updateProfileIcon() {
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon && currentUser) {
-        profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
-      } else if (profileIcon) {
-        profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
-      }
-    }
-
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-      }
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal('cart-modal');
-        closeModal('profile-modal');
-      }
-    });
-
-    // ==================== PRODUCT GRID FUNCTIONS ====================
-    function initializeProductGrid() {
-      // ---------- NEW-IN PRODUCT DATA (12 fresh items with improved images) ----------
-      const products = [
-        {
-          title: "vegan leather tote",
-          category: "spacious · cognac",
-          rating: 4.9,
-          price: 5490,
-          primaryImg: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=1935&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1591561954557-26941169b49e?q=80&w=1887&auto=format&fit=crop",
-          isNew: true
-        },
-        {
-          title: "solar power bank",
-          category: "25.000 mAh · outdoor",
-          rating: 4.8,
-          price: 4990,
-          primaryImg: "https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?q=80&w=1887&auto=format&fit=crop",
-          isNew: true
-        },
-        {
-          title: "bamboo sunglasses",
-          category: "polarized · eco",
-          rating: 4.7,
-          price: 3290,
-          primaryImg: "https://images.unsplash.com/photo-1509695507497-903c140c43b0?q=80&w=1973&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=1880&auto=format&fit=crop",
-          isNew: true
-        },
-        {
-          title: "magnetic phone mount",
-          category: "MagSafe · car vent",
-          rating: 4.6,
-          price: 1890,
-          primaryImg: "https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1585060544812-6b45742d762f?q=80&w=1887&auto=format&fit=crop",
-          isNew: false
-        },
-        {
-          title: "recycled nylon belt",
-          category: "35mm · ocean waste",
-          rating: 4.5,
-          price: 2290,
-          primaryImg: "https://images.unsplash.com/photo-1624222247344-550fb60583dc?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1887&auto=format&fit=crop",
-          isNew: true
-        },
-        {
-          title: "smart water bottle",
-          category: "temp display · 1L",
-          rating: 4.4,
-          price: 2790,
-          primaryImg: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1523362628745-0c100150b504?q=80&w=1887&auto=format&fit=crop",
-          isNew: true
-        },
-        {
-          title: "leather airpod case",
-          category: "gen 2/pro · rustic",
-          rating: 4.3,
-          price: 1290,
-          primaryImg: "https://images.unsplash.com/photo-1605901309584-818e25960a8f?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1605450645950-068fa09b2e79?q=80&w=1887&auto=format&fit=crop",
-          isNew: false
-        },
-        {
-          title: "travel jewelry case",
-          category: "vegan leather · 3 compartments",
-          rating: 4.8,
-          price: 2190,
-          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?q=80&w=1887&auto=format&fit=crop",
-          isNew: true
-        },
-        {
-          title: "foldable travel bag",
-          category: "30L · waterproof",
-          rating: 4.7,
-          price: 3490,
-          primaryImg: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?q=80&w=1887&auto=format&fit=crop",
-          isNew: true
-        },
-        {
-          title: "digital luggage scale",
-          category: "bright LCD · 50kg",
-          rating: 4.2,
-          price: 990,
-          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1623869675781-80aa31029a8a?q=80&w=1887&auto=format&fit=crop",
-          isNew: false
-        },
-        {
-          title: "compression packing cubes",
-          category: "set of 4 · nylon",
-          rating: 4.6,
-          price: 2990,
-          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1887&auto=format&fit=crop",
-          isNew: true
-        },
-        {
-          title: "inflatable neck pillow",
-          category: "memory foam · velvet",
-          rating: 4.3,
-          price: 1490,
-          primaryImg: "https://images.unsplash.com/photo-1626885932639-33f9e06b6e5b?q=80&w=1887&auto=format&fit=crop",
-          secondaryImg: "https://images.unsplash.com/photo-1598301257982-0cf014dabbcd?q=80&w=1887&auto=format&fit=crop",
-          isNew: false
-        }
-      ];
-
-      const gridContainer = document.getElementById('product-grid-container');
-      const paginationContainer = document.getElementById('pagination-container');
-      const sortSelect = document.getElementById('sort-select');
 
       function renderRating(rating) {
         let stars = '';
@@ -910,7 +466,7 @@
       }
 
       function getSortedProducts() {
-        let sorted = [...products];
+        let sorted = [...newProducts];
         switch (sortSelect.value) {
           case 'price-low':
             sorted.sort((a, b) => a.price - b.price);
@@ -922,7 +478,6 @@
             sorted.sort((a, b) => b.rating - a.rating);
             break;
           default:
-            sorted.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
             break;
         }
         return sorted;
@@ -932,57 +487,156 @@
         const sortedProducts = getSortedProducts();
         
         let gridHtml = '';
-        sortedProducts.forEach((p, index) => {
-          const productId = index + 1;
-          const newBadge = p.isNew ? '<span class="new-badge"><i class="fa-regular fa-star"></i> just in</span>' : '';
-          
+        sortedProducts.forEach(product => {
           gridHtml += `
-            <div class="product-card" data-product-id="${productId}" data-product-title="${p.title}" data-product-category="${p.category}" data-product-price="${p.price}" data-product-image="${p.primaryImg}">
+            <div class="product-card" data-product-id="${product.id}" data-product-title="${product.title}" data-product-category="${product.category}" data-product-price="${product.price}" data-product-image="${product.primaryImg}">
               <div class="image-frame">
-                ${newBadge}
-                <div class="primary-img" style="background-image: url('${p.primaryImg}');"></div>
-                <div class="secondary-img" style="background-image: url('${p.secondaryImg}');"></div>
+                <span class="new-badge"><i class="fa-regular fa-star"></i> just in</span>
+                <div class="primary-img" style="background-image: url('${product.primaryImg}');"></div>
+                <div class="secondary-img" style="background-image: url('${product.secondaryImg}');"></div>
                 <div class="image-actions">
-                  <button class="img-add" onclick="addToCart(${productId})">
+                  <button class="img-add" onclick="window.addToCart(${product.id})">
                     <i class="fa-solid fa-cart-plus"></i> add
                   </button>
-                  <button class="img-buy" onclick="buyNow(${productId})">
+                  <button class="img-buy" onclick="window.buyNow(${product.id})">
                     <i class="fa-solid fa-bolt"></i> buy
                   </button>
                 </div>
               </div>
-              <h3 class="product-title">${p.title}</h3>
-              <p class="product-category">${p.category}</p>
-              <div class="product-rating">${renderRating(p.rating)}</div>
-              <div class="product-price"><span class="inr-symbol">₹</span>${p.price.toLocaleString('en-IN')}</div>
+              <h3 class="product-title">${product.title}</h3>
+              <p class="product-category">${product.category}</p>
+              <div class="product-rating">${renderRating(product.rating)}</div>
+              <div class="product-price"><span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}</div>
             </div>
           `;
         });
         
         gridContainer.innerHTML = gridHtml;
-        paginationContainer.innerHTML = '';
       }
 
       renderAllProducts();
-      sortSelect.addEventListener('change', renderAllProducts);
+      
+      if (sortSelect) {
+        sortSelect.addEventListener('change', renderAllProducts);
+      }
     }
 
-    // ==================== CART FUNCTIONS (continued) ====================
-    window.addToCart = function(productId) {
-      const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+    function initializeApp() {
+      renderProducts();
+      updateCartCount();
+      updateProfileIcon();
+      setupEventListeners();
+    }
+
+    function setupEventListeners() {
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const navMenu = document.getElementById('nav-menu');
       
-      if (!productCard) {
-        console.error('Product not found');
-        return;
+      if (mobileMenuToggle && navMenu) {
+        mobileMenuToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          navMenu.classList.toggle('show');
+        });
       }
 
-      const product = {
-        id: productId,
-        title: productCard.dataset.productTitle,
-        category: productCard.dataset.productCategory,
-        price: parseInt(productCard.dataset.productPrice),
-        image: productCard.dataset.productImage
-      };
+      const cartIcon = document.getElementById('cart-icon');
+      if (cartIcon) {
+        cartIcon.addEventListener('click', function(e) {
+          e.preventDefault();
+          openCart();
+        });
+      }
+
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon) {
+        profileIcon.addEventListener('click', function(e) {
+          e.preventDefault();
+          openProfile();
+        });
+      }
+
+      const closeCart = document.getElementById('close-cart');
+      if (closeCart) {
+        closeCart.addEventListener('click', function() {
+          closeModal('cart-modal');
+        });
+      }
+
+      const closeProfile = document.getElementById('close-profile');
+      if (closeProfile) {
+        closeProfile.addEventListener('click', function() {
+          closeModal('profile-modal');
+        });
+      }
+
+      const checkoutBtn = document.getElementById('checkout-btn');
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
+          if (cart.length === 0) {
+            alert('Your cart is empty!');
+          } else {
+            alert('Proceeding to checkout...');
+          }
+        });
+      }
+
+      window.addEventListener('click', function(e) {
+        const cartModal = document.getElementById('cart-modal');
+        const profileModal = document.getElementById('profile-modal');
+        
+        if (e.target === cartModal) {
+          closeModal('cart-modal');
+        }
+        if (e.target === profileModal) {
+          closeModal('profile-modal');
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeModal('cart-modal');
+          closeModal('profile-modal');
+        }
+      });
+
+      document.addEventListener('click', function(e) {
+        if (navMenu && navMenu.classList.contains('show')) {
+          if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+            navMenu.classList.remove('show');
+          }
+        }
+      });
+    }
+
+    function openCart() {
+      const cartModal = document.getElementById('cart-modal');
+      if (cartModal) {
+        renderCartItems();
+        cartModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function openProfile() {
+      const profileModal = document.getElementById('profile-modal');
+      if (profileModal) {
+        renderProfileContent();
+        profileModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    }
+
+    window.addToCart = function(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
 
       const existingItem = cart.find(item => item.id === productId);
 
@@ -1042,10 +696,11 @@
           <div class="empty-cart-message">
             <i class="fa-regular fa-cart-shopping"></i>
             <p>Your cart is empty</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Start shopping to add items!</p>
           </div>
         `;
         cartItemCount.textContent = '0';
-        cartTotalAmount.textContent = '₹0';
+        cartTotalAmount.textContent = '₹0.00';
         return;
       }
 
@@ -1059,16 +714,22 @@
 
         return `
           <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+            <div class="cart-item-image" style="background-image: url('${item.primaryImg}')"></div>
             <div class="cart-item-details">
-              <h4>${item.title}</h4>
-              <p>${item.category}</p>
+              <h4 class="cart-item-title">${item.title}</h4>
+              <p class="cart-item-category">${item.category}</p>
               <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
               <div class="cart-item-actions">
-                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
-                <span>${item.quantity}</span>
-                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
-                <button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button>
+                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+                <span class="item-quantity">${item.quantity}</span>
+                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+                <button class="remove-item" onclick="window.removeFromCart(${item.id})">
+                  Remove
+                </button>
               </div>
             </div>
           </div>
@@ -1090,224 +751,341 @@
     function saveCart() {
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
     }
+
+    function renderProfileContent() {
+      const profileContent = document.getElementById('profile-content');
+      if (!profileContent) return;
+
+      if (currentUser) {
+        profileContent.innerHTML = `
+          <div class="profile-info">
+            <div class="profile-avatar">
+              <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">
+            </div>
+            <div class="profile-details">
+              <p>
+                <i class="fa-regular fa-user"></i>
+                <span class="label">Name:</span>
+                <span class="value">${currentUser.name}</span>
+              </p>
+              <p>
+                <i class="fa-regular fa-envelope"></i>
+                <span class="label">Email:</span>
+                <span class="value">${currentUser.email}</span>
+              </p>
+            </div>
+            <button class="btn logout-btn" onclick="window.logout()">
+              <i class="fa-solid fa-sign-out-alt"></i>
+              Logout
+            </button>
+          </div>
+        `;
+      } else {
+        profileContent.innerHTML = `
+          <div class="login-form">
+            <div class="login-header">
+              <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
+              <h4>Welcome Back!</h4>
+              <p>Sign in with Google to continue</p>
+            </div>
+            
+            <button class="btn google-login-btn" onclick="window.handleGoogleLogin()">
+              <i class="fa-brands fa-google"></i>
+              Sign in with Google
+            </button>
+            
+            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
+              By signing in, you agree to our Terms of Service and Privacy Policy.
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    function updateProfileIcon() {
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon) {
+        if (currentUser) {
+          profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
+        } else {
+          profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
+        }
+      }
+    }
+
+    window.handleGoogleLogin = function() {
+      const mockGoogleUser = {
+        name: 'John Doe',
+        email: 'john@gmail.com',
+        picture: 'https://via.placeholder.com/80',
+        provider: 'google',
+        memberSince: '2025'
+      };
+
+      localStorage.setItem('MyEssantia_user', JSON.stringify(mockGoogleUser));
+      currentUser = mockGoogleUser;
+      updateProfileIcon();
+      renderProfileContent();
+      closeModal('profile-modal');
+      alert('Successfully signed in with Google!');
+    };
+
+    window.logout = function() {
+      localStorage.removeItem('MyEssantia_user');
+      currentUser = null;
+      updateProfileIcon();
+      renderProfileContent();
+      alert('You have been logged out successfully');
+    };
+
+    document.addEventListener('DOMContentLoaded', loadComponents);
   </script>
 
   <style>
-    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
-      top: 0;
+      z-index: 1000;
       left: 0;
+      top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      overflow-y: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
     }
-    
+
+    .modal.show {
+      display: block;
+    }
+
     .modal-content {
-      position: relative;
-      max-width: 500px;
-      margin: 50px auto;
-      background: white;
-      border-radius: 30px;
+      background-color: #fff;
+      margin: 2rem auto;
       padding: 2rem;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 500px;
+      border-radius: 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      animation: slideDown 0.3s ease;
     }
-    
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #f0f0f0;
     }
-    
+
     .modal-header h3 {
       font-family: 'Playfair Display', serif;
       font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0;
     }
-    
-    .modal-header button {
+
+    .close-modal {
       background: none;
       border: none;
       font-size: 2rem;
       cursor: pointer;
-      color: #666;
+      color: #999;
+      transition: color 0.2s;
+      line-height: 1;
+      padding: 0 0.5rem;
     }
-    
-    .cart-items {
-      max-height: 400px;
-      overflow-y: auto;
-      margin-bottom: 1.5rem;
+
+    .close-modal:hover {
+      color: #1a1a1a;
     }
-    
-    .cart-item {
-      display: flex;
-      gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .cart-item-image {
-      width: 80px;
-      height: 80px;
-      background-size: cover;
-      background-position: center;
-      border-radius: 12px;
-    }
-    
-    .cart-item-details {
-      flex: 1;
-    }
-    
-    .cart-item-details h4 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1rem;
-      margin-bottom: 0.3rem;
-    }
-    
-    .cart-item-details p {
-      font-size: 0.8rem;
-      color: #a2a2a2;
-      margin-bottom: 0.5rem;
-    }
-    
-    .cart-item-price {
-      font-weight: 600;
-      color: #d4af37;
-      margin-bottom: 0.5rem;
-    }
-    
-    .cart-item-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .quantity-btn {
-      width: 30px;
-      height: 30px;
-      border: 1px solid #ddd;
-      background: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    
-    .quantity-btn:hover {
-      background: #f5f5f5;
-    }
-    
-    .remove-item {
-      background: none;
-      border: none;
-      color: #ff4444;
-      cursor: pointer;
-      font-size: 0.8rem;
-      margin-left: 0.5rem;
-    }
-    
-    .cart-footer {
+
+    .modal-footer {
       border-top: 1px solid #f0f0f0;
       padding-top: 1.5rem;
     }
-    
+
     .cart-total {
       display: flex;
       justify-content: space-between;
-      font-weight: 600;
+      align-items: center;
       font-size: 1.2rem;
-      margin-bottom: 1rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #1a1a1a;
+      font-family: 'Montserrat', sans-serif;
     }
-    
+
+    #cart-total-amount {
+      color: #d4af37;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: #d4af37;
+      border: 1px solid #d4af37;
+      color: #0c0c0c;
+      font-weight: 700;
+      padding: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .checkout-btn:hover {
+      background: #c4a030;
+      border-color: #c4a030;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    }
+
     .empty-cart-message {
       text-align: center;
-      padding: 2rem;
-      color: #a2a2a2;
+      padding: 3rem 1rem;
+      color: #999;
     }
-    
+
     .empty-cart-message i {
       font-size: 3rem;
       margin-bottom: 1rem;
+      color: #ddd;
     }
-    
-    .profile-info {
-      text-align: center;
-    }
-    
+
     .profile-avatar {
-      font-size: 4rem;
+      width: 80px;
+      height: 80px;
+      background: #f5f5f5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2.5rem;
+      color: #d4af37;
+      border: 2px solid #d4af37;
+      overflow: hidden;
+    }
+
+    .profile-details {
+      text-align: left;
+      background: #f9f9f9;
+      padding: 1.5rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-details p {
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #333;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+    }
+
+    .profile-details .label {
+      font-weight: 400;
+      color: #666;
+      min-width: 70px;
+    }
+
+    .profile-details .value {
+      font-weight: 600;
+      color: #1a1a1a;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .logout-btn {
+      width: 100%;
+      background: #fff;
+      border: 1px solid #d4af37;
+      color: #1a1a1a;
+      padding: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      transition: all 0.3s;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background: #d4af37;
+      color: #fff;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header i {
+      font-size: 3rem;
       color: #d4af37;
       margin-bottom: 1rem;
     }
-    
-    .profile-details {
-      text-align: left;
-      margin-bottom: 1.5rem;
-    }
-    
-    .profile-details p {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .login-form {
-      text-align: center;
-    }
-    
-    .login-form h4 {
+
+    .login-header h4 {
       font-family: 'Playfair Display', serif;
       font-size: 1.3rem;
+      font-weight: 600;
+      color: #1a1a1a;
       margin-bottom: 0.5rem;
     }
-    
-    .login-form p {
-      color: #5f5b57;
-      margin-bottom: 1.5rem;
-    }
-    
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    
-    .form-group input {
+
+    .google-login-btn {
+      background: #fff;
+      color: #333;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
       width: 100%;
       padding: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 30px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      border-radius: 40px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
     }
-    
-    .form-group input:focus {
-      outline: none;
+
+    .google-login-btn:hover {
+      background: #f8f8f8;
       border-color: #d4af37;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
     }
-    
-    .login-btn {
-      width: 100%;
-      margin-top: 1rem;
-    }
-    
-    .error-message {
-      background: #ffe6e6;
-      color: #ff4444;
-      padding: 0.8rem;
-      border-radius: 30px;
-      margin-bottom: 1rem;
-      display: none;
-    }
-    
-    .error-message.show {
-      display: block;
-    }
-    
-    .logout-btn {
-      background: #ff4444 !important;
-      border-color: #ff4444 !important;
-      color: white !important;
-      width: 100%;
+
+    .google-login-btn i {
+      color: #DB4437;
+      font-size: 1.2rem;
     }
   </style>
 </body>
