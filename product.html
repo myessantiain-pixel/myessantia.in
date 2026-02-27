@@ -254,7 +254,7 @@
       color: #991b1b;
     }
 
-    /* Free Delivery Card */
+    /* Free Delivery Card - UPDATED */
     .delivery-card {
       background: linear-gradient(135deg, #f0f7ff 0%, #e6f0fa 100%);
       border-radius: 20px;
@@ -356,6 +356,15 @@
     .cart-value {
       font-weight: 700;
       color: #2563eb;
+    }
+
+    .cart-total-display {
+      background: rgba(37, 99, 235, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: inline-block;
     }
 
     /* Quantity Selector - FIXED */
@@ -973,6 +982,10 @@
       return parseInt(urlParams.get('id'));
     }
 
+    function getCurrentCartTotal() {
+      return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    }
+
     function loadProduct() {
       const productId = getProductId();
       const product = products.find(p => p.id === productId);
@@ -1003,6 +1016,11 @@
       
       const cartItem = cart.find(item => item.id === product.id);
       const initialQuantity = cartItem ? cartItem.quantity : 1;
+      
+      // Calculate total cart value including current product with quantity
+      const currentCartTotal = getCurrentCartTotal();
+      const thisProductTotal = product.price * initialQuantity;
+      const totalWithProduct = currentCartTotal + thisProductTotal;
 
       const specs = product.specs && product.specs.length ? product.specs : [
         `Material: Premium Quality`,
@@ -1062,7 +1080,7 @@
               </div>
             </div>
 
-            <!-- Free Delivery Card -->
+            <!-- Free Delivery Card - Now based on total cart value -->
             <div class="delivery-card" id="delivery-card">
               <div class="delivery-header">
                 <div class="delivery-title">
@@ -1074,16 +1092,20 @@
               
               <div class="progress-container">
                 <div class="progress-bar">
-                  <div class="progress-fill" id="delivery-progress" style="width: ${Math.min(100, (product.price * initialQuantity / 1299) * 100)}%"></div>
+                  <div class="progress-fill" id="delivery-progress" style="width: ${Math.min(100, (totalWithProduct / 1299) * 100)}%"></div>
                 </div>
                 
-                <div class="delivery-message ${product.price * initialQuantity >= 1299 ? 'eligible' : 'not-eligible'}" id="delivery-message">
-                  <i class="fa-solid ${product.price * initialQuantity >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}"></i>
+                <div class="delivery-message ${totalWithProduct >= 1299 ? 'eligible' : 'not-eligible'}" id="delivery-message">
+                  <i class="fa-solid ${totalWithProduct >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}"></i>
                   <span id="delivery-text">
-                    ${product.price * initialQuantity >= 1299 
+                    ${totalWithProduct >= 1299 
                       ? 'Congratulations! You get FREE delivery' 
-                      : `Add <span class="cart-value">₹${(1299 - (product.price * initialQuantity)).toLocaleString()}</span> more for free delivery`}
+                      : `Add <span class="cart-value">₹${(1299 - totalWithProduct).toLocaleString()}</span> more for free delivery`}
                   </span>
+                </div>
+                
+                <div class="cart-total-display" id="cart-total-display">
+                  Current Cart Total: <strong>₹${currentCartTotal.toLocaleString()}</strong> + This item: ₹${thisProductTotal.toLocaleString()} = <strong>₹${totalWithProduct.toLocaleString()}</strong>
                 </div>
               </div>
             </div>
@@ -1346,26 +1368,34 @@
       if (!quantityInput) return;
       
       const quantity = parseInt(quantityInput.value) || 1;
-      const totalPrice = product.price * quantity;
+      const currentCartTotal = getCurrentCartTotal();
+      const thisProductTotal = product.price * quantity;
+      const totalWithProduct = currentCartTotal + thisProductTotal;
+      
       const progressBar = document.getElementById('delivery-progress');
       const deliveryMessage = document.getElementById('delivery-message');
       const deliveryText = document.getElementById('delivery-text');
+      const cartTotalDisplay = document.getElementById('cart-total-display');
 
       if (progressBar) {
-        const percentage = Math.min(100, (totalPrice / 1299) * 100);
+        const percentage = Math.min(100, (totalWithProduct / 1299) * 100);
         progressBar.style.width = percentage + '%';
+      }
+
+      if (cartTotalDisplay) {
+        cartTotalDisplay.innerHTML = `Current Cart Total: <strong>₹${currentCartTotal.toLocaleString()}</strong> + This item: ₹${thisProductTotal.toLocaleString()} = <strong>₹${totalWithProduct.toLocaleString()}</strong>`;
       }
 
       if (deliveryMessage && deliveryText) {
         const icon = deliveryMessage.querySelector('i');
-        if (totalPrice >= 1299) {
+        if (totalWithProduct >= 1299) {
           deliveryMessage.className = 'delivery-message eligible';
           icon.className = 'fa-solid fa-circle-check';
           deliveryText.innerHTML = 'Congratulations! You get FREE delivery';
         } else {
           deliveryMessage.className = 'delivery-message not-eligible';
           icon.className = 'fa-solid fa-circle-info';
-          deliveryText.innerHTML = `Add <span class="cart-value">₹${(1299 - totalPrice).toLocaleString()}</span> more for free delivery`;
+          deliveryText.innerHTML = `Add <span class="cart-value">₹${(1299 - totalWithProduct).toLocaleString()}</span> more for free delivery`;
         }
       }
     }
@@ -1592,6 +1622,11 @@
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
       updateCartCount();
       renderCartItems();
+      
+      // If we're on a product page, update the delivery bar
+      if (window.location.pathname.includes('product.html')) {
+        updateDeliveryBar();
+      }
     };
 
     window.removeFromCart = function(productId) {
@@ -1599,6 +1634,11 @@
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
       updateCartCount();
       renderCartItems();
+      
+      // If we're on a product page, update the delivery bar
+      if (window.location.pathname.includes('product.html')) {
+        updateDeliveryBar();
+      }
     };
 
     function renderProfileContent() {
