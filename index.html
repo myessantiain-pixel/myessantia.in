@@ -1229,17 +1229,15 @@ function saveCart() {
   localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
 }
 
-// ========== AUTH FUNCTIONS ==========
 function renderProfileContent() {
   const profileContent = document.getElementById('profile-content');
   if (!profileContent) return;
 
   if (currentUser) {
-    // Logged in view
     profileContent.innerHTML = `
       <div class="profile-info">
         <div class="profile-avatar">
-          <img src="${currentUser.picture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile" onerror="this.src='https://via.placeholder.com/80'">
+          <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile" onerror="this.src='https://via.placeholder.com/80'">
         </div>
         <div class="profile-details">
           <p>
@@ -1252,11 +1250,6 @@ function renderProfileContent() {
             <span class="label">Email:</span>
             <span class="value">${currentUser.email}</span>
           </p>
-          <p>
-            <i class="fa-regular fa-calendar"></i>
-            <span class="label">Member since:</span>
-            <span class="value">${new Date(currentUser.memberSince).toLocaleDateString()}</span>
-          </p>
         </div>
         <button class="btn logout-btn" onclick="window.logout()">
           <i class="fa-solid fa-sign-out-alt"></i>
@@ -1265,76 +1258,22 @@ function renderProfileContent() {
       </div>
     `;
   } else {
-    // Not logged in view with auth tabs
     profileContent.innerHTML = `
-      <div class="auth-container">
-        <div class="auth-tabs">
-          <button class="auth-tab active" onclick="window.switchAuthTab('login')" id="login-tab">Login</button>
-          <button class="auth-tab" onclick="window.switchAuthTab('signup')" id="signup-tab">Sign Up</button>
+      <div class="login-form">
+        <div class="login-header">
+          <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
+          <h4>Welcome to MyEssantia</h4>
+          <p>Sign in with Google to continue</p>
         </div>
         
-        <div id="login-form" class="auth-form">
-          <div class="form-group">
-            <label for="login-email">Email</label>
-            <input type="email" id="login-email" placeholder="Enter your email">
-          </div>
-          <div class="form-group">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" placeholder="Enter your password">
-          </div>
-          <div class="forgot-password">
-            <a href="#" onclick="window.showForgotPassword()">Forgot Password?</a>
-          </div>
-          <button class="btn" onclick="window.loginWithEmail()" id="login-btn">
-            <i class="fa-regular fa-envelope"></i> Login with Email
-          </button>
-        </div>
-        
-        <div id="signup-form" class="auth-form" style="display: none;">
-          <div class="form-group">
-            <label for="signup-name">Full Name</label>
-            <input type="text" id="signup-name" placeholder="Enter your full name">
-          </div>
-          <div class="form-group">
-            <label for="signup-email">Email</label>
-            <input type="email" id="signup-email" placeholder="Enter your email">
-          </div>
-          <div class="form-group">
-            <label for="signup-password">Password</label>
-            <input type="password" id="signup-password" placeholder="Choose a password (min. 6 characters)">
-          </div>
-          <div class="form-group">
-            <label for="signup-confirm">Confirm Password</label>
-            <input type="password" id="signup-confirm" placeholder="Confirm your password">
-          </div>
-          <button class="btn" onclick="window.signUpWithEmail()" id="signup-btn">
-            <i class="fa-regular fa-user-plus"></i> Create Account
-          </button>
-        </div>
-        
-        <div id="forgot-password-form" class="auth-form" style="display: none;">
-          <div class="form-group">
-            <label for="reset-email">Email</label>
-            <input type="email" id="reset-email" placeholder="Enter your email">
-          </div>
-          <button class="btn" onclick="window.resetPassword()" id="reset-btn">
-            <i class="fa-regular fa-paper-plane"></i> Send Reset Link
-          </button>
-          <button class="btn btn-outline" onclick="window.backToLogin()" style="margin-top: 1rem;">
-            <i class="fa-regular fa-arrow-left"></i> Back to Login
-          </button>
-        </div>
-        
-        <div class="auth-divider">
-          <span>OR</span>
-        </div>
-        
-        <button class="google-login-btn" onclick="window.loginWithGoogle()" id="google-login-btn">
+        <button class="btn google-login-btn" onclick="window.loginWithGoogle()">
           <i class="fa-brands fa-google"></i>
-          Continue with Google
+          Sign in with Google
         </button>
         
-        <div id="auth-message" class="auth-message"></div>
+        <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
+          By signing in, you agree to our Terms of Service and Privacy Policy.
+        </p>
       </div>
     `;
   }
@@ -1532,15 +1471,6 @@ window.signUpWithEmail = async function() {
 
 window.loginWithGoogle = async function() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  provider.addScope('profile');
-  provider.addScope('email');
-  
-  const googleBtn = document.getElementById('google-login-btn');
-  const originalHtml = googleBtn.innerHTML;
-  googleBtn.setAttribute('data-original-html', originalHtml);
-  
-  setLoading('google-login-btn', true);
-  clearAuthMessage();
   
   try {
     const result = await auth.signInWithPopup(provider);
@@ -1559,10 +1489,7 @@ window.loginWithGoogle = async function() {
       });
     }
     
-    showAuthMessage('Login successful!', false);
-    setTimeout(() => {
-      closeModal('profile-modal');
-    }, 1500);
+    closeModal('profile-modal');
   } catch (error) {
     console.error('Google login error:', error);
     let errorMessage = 'Google login failed. Please try again.';
@@ -1571,9 +1498,7 @@ window.loginWithGoogle = async function() {
     } else if (error.code === 'auth/popup-blocked') {
       errorMessage = 'Popup was blocked by your browser.';
     }
-    showAuthMessage(errorMessage);
-  } finally {
-    setLoading('google-login-btn', false);
+    alert(errorMessage);
   }
 };
 
