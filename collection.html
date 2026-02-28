@@ -18,7 +18,13 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
+  <!-- Common CSS -->
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="footer.css">
+  
   <style>
+    /* -------------------- ALL PRODUCTS PAGE SPECIFIC STYLES -------------------- */
     * {
       margin: 0;
       padding: 0;
@@ -27,15 +33,6 @@
 
     body {
       background-color: #fafafa;
-      color: #1a1a1a;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 300;
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 2rem;
     }
 
     .page-header {
@@ -255,6 +252,7 @@
       border: 1px solid rgba(0,0,0,0.1);
       color: #1a1a1a;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      pointer-events: auto;
     }
 
     .quick-buy {
@@ -360,10 +358,16 @@
     }
 
     @media (max-width: 768px) {
-      .container { padding: 0 1rem; }
-      .filter-bar { flex-direction: column; align-items: stretch; }
-      .filter-group { justify-content: center; }
-      .filter-select input { width: 100%; }
+      .filter-bar { 
+        flex-direction: column; 
+        align-items: stretch; 
+      }
+      .filter-group { 
+        justify-content: center; 
+      }
+      .filter-select input { 
+        width: 100%; 
+      }
     }
 
     @media (max-width: 480px) {
@@ -374,7 +378,7 @@
     }
   </style>
 </head>
-<body>
+<body class="bg-noise">
   <div id="header"></div>
 
   <main>
@@ -428,333 +432,15 @@
 
   <div id="footer"></div>
 
-  <!-- Cart Modal -->
-  <div id="cart-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Shopping Cart</h3>
-        <button class="close-modal" id="close-cart">&times;</button>
-      </div>
-      <div id="cart-items" class="cart-items"></div>
-      <div class="modal-footer">
-        <div class="cart-total">
-          <span>Total:</span>
-          <span id="cart-total-amount">₹0.00</span>
-        </div>
-        <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
-      </div>
-    </div>
-  </div>
+  <!-- Common Modals -->
+  <div id="common-modals"></div>
 
-  <!-- Profile Modal -->
-  <div id="profile-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>My Account</h3>
-        <button class="close-modal" id="close-profile">&times;</button>
-      </div>
-      <div id="profile-content"></div>
-    </div>
-  </div>
+  <!-- Common JavaScript -->
+  <script src="common.js"></script>
 
   <script>
-    // ========== FIREBASE CONFIGURATION ==========
-    const firebaseConfig = {
-      apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
-      authDomain: "myessantia.firebaseapp.com",
-      projectId: "myessantia",
-      storageBucket: "myessantia.firebasestorage.app",
-      messagingSenderId: "701726517205",
-      appId: "1:701726517205:web:f6ab79efdffeab6dbbbf5c",
-      measurementId: "G-SZF11SHZBH"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // ========== GLOBAL VARIABLES ==========
-    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-    let currentUser = null;
-    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
-
-    // Sample products if none exist (expanded for all products page)
-    if (products.length === 0) {
-      products = [
-        // Accessories
-        {
-          id: 1,
-          title: "Premium Leather Wallet",
-          category: "accessories",
-          price: 2499.99,
-          originalPrice: 2999.99,
-          rating: 4.5,
-          stock: 25,
-          showOnHome: true,
-          showOnAccessories: true,
-          showOnEssentials: false,
-          onSale: true,
-          salePercentage: 17,
-          creationDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days old
-          brand: "Artisan Leather",
-          images: [
-            "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=1887&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1606503825008-909a67e63c3d?q=80&w=1887&auto=format&fit=crop"
-          ],
-          primaryImg: "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          id: 2,
-          title: "Minimalist Watch",
-          category: "accessories",
-          price: 3999.50,
-          originalPrice: 4499.00,
-          rating: 4.8,
-          stock: 12,
-          showOnHome: true,
-          showOnAccessories: true,
-          showOnEssentials: false,
-          onSale: true,
-          salePercentage: 11,
-          creationDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days old
-          brand: "Nordic Time",
-          images: [
-            "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1888&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1888&auto=format&fit=crop"
-          ],
-          primaryImg: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1888&auto=format&fit=crop"
-        },
-        {
-          id: 4,
-          title: "Sunglasses",
-          category: "accessories",
-          price: 1999.99,
-          rating: 4.6,
-          stock: 30,
-          showOnHome: true,
-          showOnAccessories: true,
-          showOnEssentials: false,
-          onSale: false,
-          creationDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 days old
-          brand: "Urban Shades",
-          images: [
-            "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1780&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1577803645770-f5b7f4c09bf3?q=80&w=1780&auto=format&fit=crop"
-          ],
-          primaryImg: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1780&auto=format&fit=crop"
-        },
-        {
-          id: 7,
-          title: "Silk Scarf",
-          category: "accessories",
-          price: 1299.50,
-          rating: 4.7,
-          stock: 10,
-          showOnAccessories: true,
-          showOnEssentials: false,
-          onSale: false,
-          creationDate: new Date().toISOString(), // Today - NEW!
-          brand: "Luxe Silks",
-          images: [
-            "https://images.unsplash.com/photo-1584036553516-bf932ce5a0e6?q=80&w=1932&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1602810320073-1230c46df89d?q=80&w=1887&auto=format&fit=crop"
-          ],
-          primaryImg: "https://images.unsplash.com/photo-1584036553516-bf932ce5a0e6?q=80&w=1932&auto=format&fit=crop"
-        },
-        {
-          id: 8,
-          title: "Leather Gloves",
-          category: "accessories",
-          price: 2199.00,
-          rating: 4.5,
-          stock: 7,
-          showOnAccessories: true,
-          showOnEssentials: false,
-          onSale: false,
-          creationDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-          brand: "Winter Luxe",
-          images: [
-            "https://images.unsplash.com/photo-1604909052743-94e838986d24?q=80&w=1888&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1516476853904-1d209bf2cf68?q=80&w=1887&auto=format&fit=crop"
-          ],
-          primaryImg: "https://images.unsplash.com/photo-1604909052743-94e838986d24?q=80&w=1888&auto=format&fit=crop"
-        },
-
-        // Essentials
-        {
-          id: 101,
-          title: "Wireless Power Bank",
-          category: "essentials",
-          price: 2999.99,
-          originalPrice: 3499.99,
-          rating: 4.7,
-          stock: 18,
-          showOnHome: true,
-          showOnAccessories: false,
-          showOnEssentials: true,
-          onSale: true,
-          salePercentage: 14,
-          creationDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-          brand: "ChargeTech",
-          images: [
-            "https://images.unsplash.com/photo-1609592424839-35a7c8a2bb18?q=80&w=1887&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1583394838336-acd977736f90?q=80&w=1887&auto=format&fit=crop"
-          ],
-          primaryImg: "https://images.unsplash.com/photo-1609592424839-35a7c8a2bb18?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          id: 102,
-          title: "Travel Adapter Kit",
-          category: "essentials",
-          price: 1499.50,
-          rating: 4.5,
-          stock: 25,
-          showOnHome: true,
-          showOnAccessories: false,
-          showOnEssentials: true,
-          onSale: false,
-          creationDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
-          brand: "TravelGear",
-          images: [
-            "https://images.unsplash.com/photo-1623869675781-80aa31012a70?q=80&w=1887&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=1887&auto=format&fit=crop"
-          ],
-          primaryImg: "https://images.unsplash.com/photo-1623869675781-80aa31012a70?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          id: 103,
-          title: "Noise Cancelling Earbuds",
-          category: "essentials",
-          price: 5999.00,
-          originalPrice: 6999.00,
-          rating: 4.8,
-          stock: 7,
-          showOnHome: true,
-          showOnAccessories: false,
-          showOnEssentials: true,
-          onSale: true,
-          salePercentage: 14,
-          creationDate: new Date().toISOString(), // Today - NEW!
-          brand: "AudioPro",
-          images: [
-            "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=1770&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=1932&auto=format&fit=crop"
-          ],
-          primaryImg: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=1770&auto=format&fit=crop"
-        },
-        {
-          id: 104,
-          title: "Smart Water Bottle",
-          category: "essentials",
-          price: 2199.75,
-          rating: 4.3,
-          stock: 12,
-          showOnHome: true,
-          showOnAccessories: false,
-          showOnEssentials: true,
-          onSale: false,
-          creationDate: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
-          brand: "HydroSmart",
-          images: [
-            "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=1887&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1523362628745-0c100150b504?q=80&w=1887&auto=format&fit=crop"
-          ],
-          primaryImg: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          id: 105,
-          title: "Packing Cubes Set",
-          category: "essentials",
-          price: 1799.25,
-          rating: 4.6,
-          stock: 22,
-          showOnAccessories: false,
-          showOnEssentials: true,
-          onSale: false,
-          creationDate: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
-          brand: "TravelWise",
-          images: [
-            "https://images.unsplash.com/photo-1586348943529-beaae6c28db9?q=80&w=1887&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1557772611-78d8d8d3b3c5?q=80&w=1887&auto=format&fit=crop"
-          ],
-          primaryImg: "https://images.unsplash.com/photo-1586348943529-beaae6c28db9?q=80&w=1887&auto=format&fit=crop"
-        },
-        {
-          id: 108,
-          title: "Sleep Mask & Earplugs",
-          category: "essentials",
-          price: 799.00,
-          rating: 4.5,
-          stock: 42,
-          showOnEssentials: true,
-          onSale: false,
-          creationDate: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
-          brand: "SleepWell",
-          images: [
-            "https://images.unsplash.com/photo-1617791160536-598cf32026fb?q=80&w=1887&auto=format&fit=crop"
-          ],
-          primaryImg: "https://images.unsplash.com/photo-1617791160536-598cf32026fb?q=80&w=1887&auto=format&fit=crop"
-        }
-      ];
-      localStorage.setItem('MyEssantia_products', JSON.stringify(products));
-    }
-
-    // ========== FIREBASE AUTH STATE OBSERVER ==========
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        currentUser = {
-          uid: user.uid,
-          name: user.displayName || user.email.split('@')[0],
-          email: user.email,
-          picture: user.photoURL || 'https://via.placeholder.com/80',
-          provider: user.providerData[0]?.providerId || 'email',
-          memberSince: user.metadata.creationTime
-        };
-        localStorage.setItem('MyEssantia_user', JSON.stringify(currentUser));
-        updateProfileIcon();
-        if (document.getElementById('profile-content')) {
-          renderProfileContent();
-        }
-      } else {
-        currentUser = null;
-        localStorage.removeItem('MyEssantia_user');
-        updateProfileIcon();
-        if (document.getElementById('profile-content')) {
-          renderProfileContent();
-        }
-      }
-    });
-
-    // ========== LOAD COMPONENTS ==========
-    async function loadComponents() {
-      try {
-        const headerResponse = await fetch('header.html');
-        const headerData = await headerResponse.text();
-        document.getElementById('header').innerHTML = headerData;
-
-        const footerResponse = await fetch('footer.html');
-        const footerData = await footerResponse.text();
-        document.getElementById('footer').innerHTML = footerData;
-
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
-      } catch (error) {
-        console.error('Error loading components:', error);
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
-      }
-    }
-
-    function initializeApp() {
-      updateCartCount();
-      updateProfileIcon();
-      setupEventListeners();
-      setupCategoryChips();
-      renderProducts();
-    }
+    // ========== ALL PRODUCTS PAGE SPECIFIC FUNCTIONS ==========
+    
 
     function setupCategoryChips() {
       const chips = document.querySelectorAll('.category-chip');
@@ -762,20 +448,16 @@
       
       chips.forEach(chip => {
         chip.addEventListener('click', function() {
-          // Update active state
           chips.forEach(c => c.classList.remove('active'));
           this.classList.add('active');
           
-          // Update select dropdown
           const category = this.dataset.category;
           categoryFilter.value = category;
           
-          // Trigger filter change
           renderProducts();
         });
       });
 
-      // Sync select with chips
       categoryFilter.addEventListener('change', function() {
         const category = this.value;
         chips.forEach(chip => {
@@ -786,81 +468,6 @@
           }
         });
         renderProducts();
-      });
-    }
-
-    function setupEventListeners() {
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const navMenu = document.getElementById('nav-menu');
-      
-      if (mobileMenuToggle && navMenu) {
-        mobileMenuToggle.addEventListener('click', function(e) {
-          e.stopPropagation();
-          navMenu.classList.toggle('show');
-        });
-      }
-
-      const cartIcon = document.getElementById('cart-icon');
-      if (cartIcon) {
-        cartIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openCart();
-        });
-      }
-
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        profileIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openProfile();
-        });
-      }
-
-      const closeCart = document.getElementById('close-cart');
-      if (closeCart) {
-        closeCart.addEventListener('click', () => closeModal('cart-modal'));
-      }
-
-      const closeProfile = document.getElementById('close-profile');
-      if (closeProfile) {
-        closeProfile.addEventListener('click', () => closeModal('profile-modal'));
-      }
-
-      const checkoutBtn = document.getElementById('checkout-btn');
-      if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', function() {
-          if (!currentUser) {
-            alert('Please login to checkout');
-            closeModal('cart-modal');
-            openProfile();
-            return;
-          }
-          if (cart.length === 0) {
-            alert('Your cart is empty!');
-          } else {
-            alert('Proceeding to checkout...');
-          }
-        });
-      }
-
-      // Filter listeners
-      document.getElementById('category-filter')?.addEventListener('change', renderProducts);
-      document.getElementById('sort-filter')?.addEventListener('change', renderProducts);
-      document.getElementById('search-input')?.addEventListener('input', debounce(renderProducts, 300));
-
-      window.addEventListener('click', function(e) {
-        const cartModal = document.getElementById('cart-modal');
-        const profileModal = document.getElementById('profile-modal');
-        
-        if (e.target === cartModal) closeModal('cart-modal');
-        if (e.target === profileModal) closeModal('profile-modal');
-      });
-
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeModal('cart-modal');
-          closeModal('profile-modal');
-        }
       });
     }
 
@@ -876,498 +483,6 @@
       };
     }
 
-    // ========== MODAL FUNCTIONS ==========
-    function openCart() {
-      const cartModal = document.getElementById('cart-modal');
-      if (cartModal) {
-        renderCartItems();
-        cartModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function openProfile() {
-      const profileModal = document.getElementById('profile-modal');
-      if (profileModal) {
-        renderProfileContent();
-        profileModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-      }
-    }
-
-    // ========== CART FUNCTIONS ==========
-    window.addToCart = function(productId, event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
-
-      if (product.stock <= 0) {
-        alert('Sorry, this product is out of stock!');
-        return;
-      }
-
-      const existingItem = cart.find(item => item.id === productId);
-
-      if (existingItem) {
-        if (existingItem.quantity >= product.stock) {
-          alert('Sorry, not enough stock available!');
-          return;
-        }
-        existingItem.quantity += 1;
-      } else {
-        cart.push({
-          id: productId,
-          title: product.title,
-          category: product.category,
-          price: product.price,
-          primaryImg: product.primaryImg || (product.images && product.images[0]),
-          quantity: 1
-        });
-      }
-
-      saveCart();
-      updateCartCount();
-      
-      const btn = event?.target?.closest('button');
-      if (btn) {
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Added';
-        btn.style.background = '#4CAF50';
-        btn.style.color = 'white';
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.style.background = '';
-          btn.style.color = '';
-        }, 1500);
-      }
-    };
-
-    window.buyNow = function(productId, event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      window.addToCart(productId, event);
-      openCart();
-    };
-
-    window.updateQuantity = function(productId, change) {
-      const itemIndex = cart.findIndex(item => item.id === productId);
-      if (itemIndex === -1) return;
-
-      const product = products.find(p => p.id === productId);
-      const item = cart[itemIndex];
-      const newQuantity = item.quantity + change;
-
-      if (newQuantity <= 0) {
-        cart.splice(itemIndex, 1);
-      } else if (product && newQuantity > product.stock) {
-        alert('Sorry, not enough stock available!');
-        return;
-      } else {
-        item.quantity = newQuantity;
-      }
-
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-    };
-
-    window.removeFromCart = function(productId) {
-      cart = cart.filter(item => item.id !== productId);
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-    };
-
-    function renderCartItems() {
-      const cartItemsContainer = document.getElementById('cart-items');
-      const cartItemCount = document.getElementById('cart-item-count');
-      const cartTotalAmount = document.getElementById('cart-total-amount');
-
-      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
-
-      function formatPrice(price) {
-        return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-      }
-
-      if (cart.length === 0) {
-        cartItemsContainer.innerHTML = `
-          <div class="empty-cart-message">
-            <i class="fa-regular fa-cart-shopping"></i>
-            <p>Your cart is empty</p>
-          </div>
-        `;
-        cartItemCount.textContent = '0';
-        cartTotalAmount.textContent = '₹0.00';
-        return;
-      }
-
-      let total = 0;
-      let totalItems = 0;
-
-      cartItemsContainer.innerHTML = cart.map(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        totalItems += item.quantity;
-
-        return `
-          <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.primaryImg || 'https://via.placeholder.com/80'}')"></div>
-            <div class="cart-item-details">
-              <h4>${item.title}</h4>
-              <p>${item.category}</p>
-              <div class="cart-item-price">₹${formatPrice(item.price)}</div>
-              <div class="cart-item-actions">
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">-</button>
-                <span>${item.quantity}</span>
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">+</button>
-                <button class="remove-item" onclick="window.removeFromCart(${item.id})">Remove</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      cartItemCount.textContent = totalItems;
-      cartTotalAmount.textContent = `₹${formatPrice(total)}`;
-    }
-
-    function updateCartCount() {
-      const cartCount = document.getElementById('cart-count');
-      if (cartCount) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCount.textContent = totalItems;
-      }
-    }
-
-    function saveCart() {
-      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-    }
-
-    // ========== AUTH FUNCTIONS ==========
-    function renderProfileContent() {
-      const profileContent = document.getElementById('profile-content');
-      if (!profileContent) return;
-
-      if (currentUser) {
-        profileContent.innerHTML = `
-          <div class="profile-info">
-            <div class="profile-avatar">
-              <img src="${currentUser.picture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/80'">
-            </div>
-            <div class="profile-details">
-              <p><i class="fa-regular fa-user"></i> <strong>Name:</strong> ${currentUser.name}</p>
-              <p><i class="fa-regular fa-envelope"></i> <strong>Email:</strong> ${currentUser.email}</p>
-              <p><i class="fa-regular fa-calendar"></i> <strong>Member since:</strong> ${new Date(currentUser.memberSince).toLocaleDateString()}</p>
-            </div>
-            <button class="btn logout-btn" onclick="window.logout()">
-              <i class="fa-solid fa-sign-out-alt"></i> Logout
-            </button>
-          </div>
-        `;
-      } else {
-        profileContent.innerHTML = `
-          <div class="login-form">
-            <div class="login-header">
-              <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
-              <h4>Welcome Back!</h4>
-              <p>Sign in to continue</p>
-            </div>
-            <button class="btn google-login-btn" onclick="window.loginWithGoogle()">
-              <i class="fa-brands fa-google"></i> Sign in with Google
-            </button>
-            <div style="margin: 1rem 0; text-align: center; color: #999;">or</div>
-            <button class="btn" onclick="window.showEmailLogin()" style="background: #1a1a1a; color: white;">
-              <i class="fa-regular fa-envelope"></i> Sign in with Email
-            </button>
-          </div>
-        `;
-      }
-    }
-
-    window.loginWithGoogle = async function() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      try {
-        await auth.signInWithPopup(provider);
-        closeModal('profile-modal');
-      } catch (error) {
-        console.error('Google login error:', error);
-        alert('Google login failed. Please try again.');
-      }
-    };
-
-    window.showEmailLogin = function() {
-      const profileContent = document.getElementById('profile-content');
-      profileContent.innerHTML = `
-        <div class="auth-container">
-          <div class="auth-tabs">
-            <button class="auth-tab active" onclick="window.switchAuthTab('login')" id="login-tab">Login</button>
-            <button class="auth-tab" onclick="window.switchAuthTab('signup')" id="signup-tab">Sign Up</button>
-          </div>
-          
-          <div id="login-form" class="auth-form">
-            <div class="form-group">
-              <label for="login-email">Email</label>
-              <input type="email" id="login-email" placeholder="Enter your email">
-            </div>
-            <div class="form-group">
-              <label for="login-password">Password</label>
-              <input type="password" id="login-password" placeholder="Enter your password">
-            </div>
-            <div class="forgot-password">
-              <a href="#" onclick="window.showForgotPassword()">Forgot Password?</a>
-            </div>
-            <button class="btn" onclick="window.loginWithEmail()" id="login-btn">
-              <i class="fa-regular fa-envelope"></i> Login
-            </button>
-          </div>
-          
-          <div id="signup-form" class="auth-form" style="display: none;">
-            <div class="form-group">
-              <label for="signup-name">Full Name</label>
-              <input type="text" id="signup-name" placeholder="Enter your full name">
-            </div>
-            <div class="form-group">
-              <label for="signup-email">Email</label>
-              <input type="email" id="signup-email" placeholder="Enter your email">
-            </div>
-            <div class="form-group">
-              <label for="signup-password">Password</label>
-              <input type="password" id="signup-password" placeholder="Choose a password (min. 6 characters)">
-            </div>
-            <div class="form-group">
-              <label for="signup-confirm">Confirm Password</label>
-              <input type="password" id="signup-confirm" placeholder="Confirm your password">
-            </div>
-            <button class="btn" onclick="window.signUpWithEmail()" id="signup-btn">
-              <i class="fa-regular fa-user-plus"></i> Create Account
-            </button>
-          </div>
-          
-          <div id="forgot-password-form" class="auth-form" style="display: none;">
-            <div class="form-group">
-              <label for="reset-email">Email</label>
-              <input type="email" id="reset-email" placeholder="Enter your email">
-            </div>
-            <button class="btn" onclick="window.resetPassword()" id="reset-btn">
-              <i class="fa-regular fa-paper-plane"></i> Send Reset Link
-            </button>
-            <button class="btn btn-outline" onclick="window.backToLogin()" style="margin-top: 1rem;">
-              <i class="fa-regular fa-arrow-left"></i> Back to Login
-            </button>
-          </div>
-          
-          <div id="auth-message" class="auth-message"></div>
-          
-          <div style="margin-top: 1rem; text-align: center;">
-            <a href="#" onclick="window.backToMain()" style="color: #999; text-decoration: none;">
-              <i class="fa-regular fa-arrow-left"></i> Back to sign in options
-            </a>
-          </div>
-        </div>
-      `;
-    };
-
-    window.switchAuthTab = function(tab) {
-      const loginTab = document.getElementById('login-tab');
-      const signupTab = document.getElementById('signup-tab');
-      const loginForm = document.getElementById('login-form');
-      const signupForm = document.getElementById('signup-form');
-      const forgotForm = document.getElementById('forgot-password-form');
-      
-      if (forgotForm) forgotForm.style.display = 'none';
-      
-      if (tab === 'login') {
-        loginTab?.classList.add('active');
-        signupTab?.classList.remove('active');
-        if (loginForm) loginForm.style.display = 'block';
-        if (signupForm) signupForm.style.display = 'none';
-      } else {
-        loginTab?.classList.remove('active');
-        signupTab?.classList.add('active');
-        if (loginForm) loginForm.style.display = 'none';
-        if (signupForm) signupForm.style.display = 'block';
-      }
-      
-      clearAuthMessage();
-    };
-
-    window.showForgotPassword = function() {
-      const loginForm = document.getElementById('login-form');
-      const signupForm = document.getElementById('signup-form');
-      const forgotForm = document.getElementById('forgot-password-form');
-      const authTabs = document.querySelector('.auth-tabs');
-      
-      if (authTabs) authTabs.style.display = 'none';
-      if (loginForm) loginForm.style.display = 'none';
-      if (signupForm) signupForm.style.display = 'none';
-      if (forgotForm) forgotForm.style.display = 'block';
-      
-      clearAuthMessage();
-    };
-
-    window.backToLogin = function() {
-      const authTabs = document.querySelector('.auth-tabs');
-      const loginForm = document.getElementById('login-form');
-      const signupForm = document.getElementById('signup-form');
-      const forgotForm = document.getElementById('forgot-password-form');
-      
-      if (authTabs) authTabs.style.display = 'flex';
-      if (loginForm) loginForm.style.display = 'block';
-      if (signupForm) signupForm.style.display = 'none';
-      if (forgotForm) forgotForm.style.display = 'none';
-      
-      window.switchAuthTab('login');
-      clearAuthMessage();
-    };
-
-    window.backToMain = function() {
-      renderProfileContent();
-    };
-
-    function showAuthMessage(message, isError = true) {
-      const messageDiv = document.getElementById('auth-message');
-      if (messageDiv) {
-        messageDiv.className = isError ? 'auth-error' : 'auth-success';
-        messageDiv.textContent = message;
-      }
-    }
-
-    function clearAuthMessage() {
-      const messageDiv = document.getElementById('auth-message');
-      if (messageDiv) {
-        messageDiv.className = '';
-        messageDiv.textContent = '';
-      }
-    }
-
-    window.loginWithEmail = async function() {
-      const email = document.getElementById('login-email')?.value;
-      const password = document.getElementById('login-password')?.value;
-      
-      if (!email || !password) {
-        showAuthMessage('Please fill in all fields');
-        return;
-      }
-      
-      try {
-        await auth.signInWithEmailAndPassword(email, password);
-        showAuthMessage('Login successful!', false);
-        setTimeout(() => closeModal('profile-modal'), 1500);
-      } catch (error) {
-        let errorMessage = 'Login failed. Please try again.';
-        switch (error.code) {
-          case 'auth/user-not-found':
-            errorMessage = 'No account found with this email.';
-            break;
-          case 'auth/wrong-password':
-            errorMessage = 'Incorrect password.';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Invalid email address.';
-            break;
-        }
-        showAuthMessage(errorMessage);
-      }
-    };
-
-    window.signUpWithEmail = async function() {
-      const name = document.getElementById('signup-name')?.value;
-      const email = document.getElementById('signup-email')?.value;
-      const password = document.getElementById('signup-password')?.value;
-      const confirm = document.getElementById('signup-confirm')?.value;
-      
-      if (!name || !email || !password || !confirm) {
-        showAuthMessage('Please fill in all fields');
-        return;
-      }
-      
-      if (password.length < 6) {
-        showAuthMessage('Password must be at least 6 characters');
-        return;
-      }
-      
-      if (password !== confirm) {
-        showAuthMessage('Passwords do not match');
-        return;
-      }
-      
-      try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        await userCredential.user.updateProfile({ displayName: name });
-        await db.collection('users').doc(userCredential.user.uid).set({
-          name, email,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showAuthMessage('Account created successfully!', false);
-        setTimeout(() => closeModal('profile-modal'), 1500);
-      } catch (error) {
-        let errorMessage = 'Sign up failed. Please try again.';
-        if (error.code === 'auth/email-already-in-use') {
-          errorMessage = 'An account already exists with this email.';
-        } else if (error.code === 'auth/invalid-email') {
-          errorMessage = 'Invalid email address.';
-        } else if (error.code === 'auth/weak-password') {
-          errorMessage = 'Password is too weak.';
-        }
-        showAuthMessage(errorMessage);
-      }
-    };
-
-    window.resetPassword = async function() {
-      const email = document.getElementById('reset-email')?.value;
-      if (!email) {
-        showAuthMessage('Please enter your email address');
-        return;
-      }
-      
-      try {
-        await auth.sendPasswordResetEmail(email);
-        showAuthMessage('Password reset email sent! Check your inbox.', false);
-      } catch (error) {
-        let errorMessage = 'Failed to send reset email.';
-        if (error.code === 'auth/user-not-found') {
-          errorMessage = 'No account found with this email.';
-        } else if (error.code === 'auth/invalid-email') {
-          errorMessage = 'Invalid email address.';
-        }
-        showAuthMessage(errorMessage);
-      }
-    };
-
-    window.logout = async function() {
-      try {
-        await auth.signOut();
-        closeModal('profile-modal');
-      } catch (error) {
-        console.error('Logout error:', error);
-        alert('Failed to logout. Please try again.');
-      }
-    };
-
-    function updateProfileIcon() {
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        profileIcon.innerHTML = currentUser ? 
-          '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>' : 
-          '<i class="fa-regular fa-user"></i>';
-      }
-    }
-
-    // ========== PRODUCT RENDERING ==========
     function renderProducts() {
       const grid = document.getElementById('product-grid');
       const categoryFilter = document.getElementById('category-filter').value;
@@ -1376,25 +491,20 @@
 
       const now = new Date();
 
-      // Filter products
       let filteredProducts = products.filter(product => {
-        // Category filter
         if (categoryFilter !== 'all') {
           if (categoryFilter === 'accessories' && product.category !== 'accessories') return false;
           if (categoryFilter === 'essentials' && product.category !== 'essentials') return false;
           
-          // New arrivals (within last 7 days)
           if (categoryFilter === 'newarrival') {
             const creationDate = product.creationDate ? new Date(product.creationDate) : null;
             const isNew = creationDate && (now - creationDate) < (7 * 24 * 60 * 60 * 1000);
             if (!isNew) return false;
           }
           
-          // On sale
           if (categoryFilter === 'sale' && !product.onSale) return false;
         }
 
-        // Search filter
         if (searchTerm) {
           const searchable = `${product.title} ${product.category} ${product.brand || ''}`.toLowerCase();
           if (!searchable.includes(searchTerm)) return false;
@@ -1403,7 +513,6 @@
         return true;
       });
 
-      // Apply sorting
       switch(sortFilter) {
         case 'price-low':
           filteredProducts.sort((a, b) => a.price - b.price);
@@ -1423,11 +532,9 @@
           break;
       }
 
-      // Update results count
       document.getElementById('results-count').innerHTML = 
         `Showing ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''}`;
 
-      // Handle empty results
       if (filteredProducts.length === 0) {
         grid.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 4rem;">
@@ -1439,7 +546,6 @@
         return;
       }
 
-      // Helper functions
       function renderRating(rating) {
         let stars = '';
         for (let i = 1; i <= 5; i++) {
@@ -1463,10 +569,9 @@
       function isProductNew(creationDate) {
         if (!creationDate) return false;
         const productDate = new Date(creationDate);
-        return (now - productDate) < (24 * 60 * 60 * 1000); // Within 24 hours
+        return (now - productDate) < (24 * 60 * 60 * 1000);
       }
 
-      // Render grid
       grid.innerHTML = filteredProducts.map(product => {
         const mainImage = product.primaryImg || 
                          (product.images?.[0]) || 
@@ -1506,345 +611,30 @@
       }).join('');
     }
 
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', loadComponents);
+    function initializeApp() {
+      updateCartCount();
+      updateProfileIcon();
+      setupCategoryChips();
+      renderProducts();
+      
+      document.getElementById('sort-filter')?.addEventListener('change', renderProducts);
+      document.getElementById('search-input')?.addEventListener('input', debounce(renderProducts, 300));
+    }
+
+    async function loadCommonModals() {
+      try {
+        const response = await fetch('common.html');
+        const data = await response.text();
+        document.getElementById('common-modals').innerHTML = data;
+      } catch (error) {
+        console.error('Error loading common modals:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCommonModals();
+      loadComponents();
+    });
   </script>
-
-  <style>
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
-    }
-
-    .modal.show { display: block; }
-
-    .modal-content {
-      background: white;
-      margin: 2rem auto;
-      padding: 2rem;
-      width: 90%;
-      max-width: 500px;
-      border-radius: 30px;
-      max-height: 80vh;
-      overflow-y: auto;
-      animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-      from {
-        transform: translateY(-20px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .modal-header h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-    }
-
-    .close-modal {
-      background: none;
-      border: none;
-      font-size: 2rem;
-      cursor: pointer;
-      color: #999;
-    }
-
-    .close-modal:hover {
-      color: #1a1a1a;
-    }
-
-    .cart-item {
-      display: flex;
-      gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .cart-item-image {
-      width: 80px;
-      height: 80px;
-      border-radius: 12px;
-      background-size: cover;
-      background-position: center;
-      flex-shrink: 0;
-    }
-
-    .cart-item-details {
-      flex: 1;
-    }
-
-    .cart-item-details h4 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1rem;
-      margin-bottom: 0.2rem;
-    }
-
-    .cart-item-details p {
-      font-size: 0.8rem;
-      color: #666;
-      margin-bottom: 0.3rem;
-    }
-
-    .cart-item-price {
-      color: #d4af37;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .cart-item-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .quantity-btn {
-      width: 30px;
-      height: 30px;
-      border: 1px solid #ddd;
-      background: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .quantity-btn:hover {
-      background: #f5f5f5;
-      border-color: #d4af37;
-    }
-
-    .remove-item {
-      background: none;
-      border: none;
-      color: #ff4444;
-      cursor: pointer;
-      margin-left: 0.5rem;
-      font-size: 0.9rem;
-      text-decoration: underline;
-    }
-
-    .cart-total {
-      display: flex;
-      justify-content: space-between;
-      font-weight: 600;
-      font-size: 1.2rem;
-      margin: 1rem 0;
-    }
-
-    .profile-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin: 0 auto 1rem;
-      overflow: hidden;
-    }
-
-    .profile-details {
-      background: #f9f9f9;
-      padding: 1rem;
-      border-radius: 12px;
-      margin: 1rem 0;
-    }
-
-    .profile-details p {
-      margin: 0.5rem 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .google-login-btn {
-      background: white;
-      border: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      width: 100%;
-      padding: 1rem;
-      border-radius: 40px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-
-    .google-login-btn i { color: #DB4437; }
-    .google-login-btn:hover { 
-      border-color: #d4af37;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(212,175,55,0.2);
-    }
-
-    .logout-btn {
-      width: 100%;
-      padding: 1rem;
-      background: white;
-      border: 1px solid #d4af37;
-      border-radius: 40px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .logout-btn:hover {
-      background: #d4af37;
-      color: white;
-    }
-
-    .auth-tabs {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      border-bottom: 2px solid #f0f0f0;
-      padding-bottom: 1rem;
-    }
-
-    .auth-tab {
-      background: none;
-      border: none;
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: #999;
-      cursor: pointer;
-      padding: 0.5rem 1rem;
-      transition: all 0.3s;
-    }
-
-    .auth-tab.active {
-      color: #d4af37;
-      position: relative;
-    }
-
-    .auth-tab.active::after {
-      content: '';
-      position: absolute;
-      bottom: -1rem;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: #d4af37;
-    }
-
-    .auth-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .form-group label {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #666;
-    }
-
-    .form-group input {
-      padding: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: #d4af37;
-      box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
-    }
-
-    .forgot-password {
-      text-align: right;
-      margin-top: 0.5rem;
-    }
-
-    .forgot-password a {
-      color: #666;
-      text-decoration: none;
-      font-size: 0.9rem;
-      border-bottom: 1px solid #d4af37;
-      padding-bottom: 2px;
-    }
-
-    .forgot-password a:hover {
-      color: #d4af37;
-    }
-
-    .auth-error {
-      background: #fee;
-      color: #c00;
-      padding: 0.8rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .auth-success {
-      background: #e8f5e9;
-      color: #2e7d32;
-      padding: 0.8rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: #1a1a1a;
-      border: 1px solid #1a1a1a;
-    }
-
-    .btn-outline:hover {
-      background: #1a1a1a;
-      color: #fff;
-    }
-
-    .empty-cart-message {
-      text-align: center;
-      padding: 3rem;
-      color: #999;
-    }
-
-    .empty-cart-message i {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: #ddd;
-    }
-
-    .login-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-  </style>
 </body>
 </html>
