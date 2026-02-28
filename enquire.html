@@ -506,26 +506,66 @@
     let enquiries = [];
 
     // ========== ENQUIRY FUNCTIONS ==========
-    function loadUserEnquiries() {
+    async function loadUserEnquiries() {
       if (!currentUser) return;
       
-      const storageKey = `enquiries_${currentUser.uid}`;
-      const stored = localStorage.getItem(storageKey);
-      
-      if (stored) {
-        try {
-          enquiries = JSON.parse(stored);
-        } catch (e) {
-          enquiries = [];
-        }
-      } else {
+      try {
+        // Load from Firebase first
+        const enquiriesSnapshot = await db.collection('enquiries')
+          .where('userId', '==', currentUser.uid)
+          .orderBy('timestamp', 'desc')
+          .get();
+        
+        enquiries = enquiriesSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        // Cache to localStorage for offline access
+        localStorage.setItem(`enquiries_${currentUser.uid}`, JSON.stringify(enquiries));
+        
         // Migrate guest enquiries if any
         const guestEnquiries = localStorage.getItem('essence_guest_enquiries');
-        if (guestEnquiries) {
+        if (guestEnquiries && enquiries.length === 0) {
           try {
             const guest = JSON.parse(guestEnquiries);
-            enquiries = guest.filter(e => e.email === currentUser.email);
+            const userGuestEnquiries = guest.filter(e => e.email === currentUser.email);
+            
+            // Save migrated enquiries to Firebase
+            for (const enquiry of userGuestEnquiries) {
+              await db.collection('enquiries').add({
+                ...enquiry,
+                userId: currentUser.uid,
+                migratedFromGuest: true,
+                migratedAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            }
+            
+            // Reload from Firebase after migration
+            const newSnapshot = await db.collection('enquiries')
+              .where('userId', '==', currentUser.uid)
+              .orderBy('timestamp', 'desc')
+              .get();
+            
+            enquiries = newSnapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data()
+            }));
+            
             localStorage.removeItem('essence_guest_enquiries');
+          } catch (e) {
+            console.error('Error migrating guest enquiries:', e);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading enquiries from Firebase:', error);
+        // Fallback to localStorage
+        const storageKey = `enquiries_${currentUser.uid}`;
+        const stored = localStorage.getItem(storageKey);
+        
+        if (stored) {
+          try {
+            enquiries = JSON.parse(stored);
           } catch (e) {
             enquiries = [];
           }
@@ -551,17 +591,62 @@
       renderEnquiries();
     }
 
-    function saveEnquiries() {
+    async function saveEnquiries() {
       if (currentUser) {
-        localStorage.setItem(`enquiries_${currentUser.uid}`, JSON.stringify(enquiries));
+        // Save to Firebase
+        try {
+          // For existing enquiries, we need to update them in Firebase
+          for (const enquiry of enquiries) {
+            if (!enquiry.firebaseSynced) {
+              // Check if this enquiry already exists in Firebase
+              const existingQuery = await db.collection('enquiries')
+                .where('userId', '==', currentUser.uid)
+                .where('timestamp', '==', enquiry.timestamp)
+                .where('message', '==', enquiry.message)
+                .get();
+              
+              if (existingQuery.empty) {
+                // New enquiry, add to Firebase
+                await db.collection('enquiries').add({
+                  ...enquiry,
+                  userId: currentUser.uid,
+                  createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                enquiry.firebaseSynced = true;
+              }
+            }
+          }
+          
+          // Update localStorage cache
+          localStorage.setItem(`enquiries_${currentUser.uid}`, JSON.stringify(enquiries));
+        } catch (error) {
+          console.error('Error saving enquiries to Firebase:', error);
+          // Fallback to localStorage only
+          localStorage.setItem(`enquiries_${currentUser.uid}`, JSON.stringify(enquiries));
+        }
       } else {
+        // Guest - save to localStorage only
         localStorage.setItem('essence_guest_enquiries', JSON.stringify(enquiries));
       }
     }
 
-    window.deleteEnquiry = function(enquiryId) {
+    window.deleteEnquiry = async function(enquiryId) {
       if (confirm('Are you sure you want to delete this enquiry?')) {
+        const enquiryToDelete = enquiries.find(e => e.id === enquiryId);
+        
+        // Remove from local array
         enquiries = enquiries.filter(e => e.id !== enquiryId);
+        
+        if (currentUser && enquiryToDelete && !enquiryToDelete.id.startsWith('ENQ')) {
+          // If it's a Firebase document (not a temp ENQ ID), delete from Firebase
+          try {
+            await db.collection('enquiries').doc(enquiryId).delete();
+          } catch (error) {
+            console.error('Error deleting from Firebase:', error);
+          }
+        }
+        
+        // Save to localStorage
         saveEnquiries();
         renderEnquiries();
       }
@@ -596,7 +681,7 @@
         if (e.images && e.images.length > 0) {
           imagesHtml = e.images.map(img => {
             if (typeof img === 'string' && img.startsWith('data:')) {
-              return `<img src="${img}" class="enquiry-image-thumb" alt="upload">`;
+              return `<img src="${img}" class="enquiry-image-thumb" alt="upload" onclick="window.open('${img}', '_blank')">`;
             } else {
               return `<div class="enquiry-image-thumb"><i class="fa-regular fa-image"></i></div>`;
             }
@@ -659,79 +744,87 @@
       const uploadArea = document.getElementById('fileUploadArea');
       let selectedFiles = [];
 
-      uploadArea.addEventListener('click', () => fileInput.click());
+      if (uploadArea) {
+        uploadArea.addEventListener('click', () => fileInput.click());
+      }
 
-      fileInput.addEventListener('change', function(e) {
-        selectedFiles = Array.from(e.target.files || []);
-        previewDiv.innerHTML = '';
-        if (selectedFiles.length === 0) return;
+      if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+          selectedFiles = Array.from(e.target.files || []);
+          previewDiv.innerHTML = '';
+          if (selectedFiles.length === 0) return;
 
-        selectedFiles.forEach((file) => {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            const img = document.createElement('img');
-            img.src = event.target.result;
-            img.classList.add('preview-thumb');
-            img.alt = 'preview';
-            previewDiv.appendChild(img);
-          };
-          reader.readAsDataURL(file);
+          selectedFiles.forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              const img = document.createElement('img');
+              img.src = event.target.result;
+              img.classList.add('preview-thumb');
+              img.alt = 'preview';
+              previewDiv.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+          });
         });
-      });
+      }
 
       const submitBtn = document.getElementById('submitEnquiry');
       const successMsg = document.getElementById('successMessage');
 
-      submitBtn.addEventListener('click', async function() {
-        const name = document.getElementById('enquiryName').value.trim();
-        const email = document.getElementById('enquiryEmail').value.trim();
-        const phone = document.getElementById('enquiryPhone').value.trim();
-        const message = document.getElementById('enquiryMessage').value.trim();
+      if (submitBtn) {
+        submitBtn.addEventListener('click', async function() {
+          const name = document.getElementById('enquiryName')?.value.trim();
+          const email = document.getElementById('enquiryEmail')?.value.trim();
+          const phone = document.getElementById('enquiryPhone')?.value.trim();
+          const message = document.getElementById('enquiryMessage')?.value.trim();
 
-        if (!name || !email || !message) {
-          alert('Please fill in name, email and message.');
-          return;
-        }
+          if (!name || !email || !message) {
+            alert('Please fill in name, email and message.');
+            return;
+          }
 
-        // Convert images to data URLs for storage (max 3 images)
-        const imageDataUrls = [];
-        for (const file of selectedFiles) {
-          if (imageDataUrls.length >= 3) break;
-          const dataUrl = await readFileAsDataURL(file);
-          imageDataUrls.push(dataUrl);
-        }
+          // Convert images to data URLs for storage (max 3 images)
+          const imageDataUrls = [];
+          for (const file of selectedFiles) {
+            if (imageDataUrls.length >= 3) break;
+            const dataUrl = await readFileAsDataURL(file);
+            imageDataUrls.push(dataUrl);
+          }
 
-        const newEnquiry = {
-          id: 'ENQ' + Date.now() + Math.floor(Math.random()*1000),
-          name: name,
-          email: email,
-          phone: phone || '',
-          message: message,
-          images: imageDataUrls,
-          status: 'received',
-          timestamp: Date.now(),
-          userId: currentUser?.uid || 'guest'
-        };
+          const newEnquiry = {
+            id: 'ENQ' + Date.now() + Math.floor(Math.random()*1000),
+            name: name,
+            email: email,
+            phone: phone || '',
+            message: message,
+            images: imageDataUrls,
+            status: 'received',
+            timestamp: Date.now(),
+            userId: currentUser?.uid || 'guest'
+          };
 
-        enquiries.push(newEnquiry);
-        saveEnquiries();
-        renderEnquiries();
+          enquiries.push(newEnquiry);
+          await saveEnquiries();
+          renderEnquiries();
 
-        successMsg.classList.add('show');
+          if (successMsg) {
+            successMsg.classList.add('show');
+          }
 
-        // Clear all fields
-        document.getElementById('enquiryName').value = '';
-        document.getElementById('enquiryEmail').value = '';
-        document.getElementById('enquiryPhone').value = '';
-        document.getElementById('enquiryMessage').value = '';
-        previewDiv.innerHTML = '';
-        selectedFiles = [];
-        fileInput.value = '';
+          // Clear all fields
+          if (document.getElementById('enquiryName')) document.getElementById('enquiryName').value = '';
+          if (document.getElementById('enquiryEmail')) document.getElementById('enquiryEmail').value = '';
+          if (document.getElementById('enquiryPhone')) document.getElementById('enquiryPhone').value = '';
+          if (document.getElementById('enquiryMessage')) document.getElementById('enquiryMessage').value = '';
+          if (previewDiv) previewDiv.innerHTML = '';
+          selectedFiles = [];
+          if (fileInput) fileInput.value = '';
 
-        setTimeout(() => {
-          successMsg.classList.remove('show');
-        }, 5000);
-      });
+          setTimeout(() => {
+            if (successMsg) successMsg.classList.remove('show');
+          }, 5000);
+        });
+      }
 
       // Load initial enquiries
       if (currentUser) {
@@ -743,8 +836,8 @@
 
     // ========== OVERRIDE PROFILE ICON UPDATE ==========
     // Keep the original updateProfileIcon but add login prompt update
-    const originalUpdateProfileIcon = updateProfileIcon;
-    updateProfileIcon = function() {
+    const originalUpdateProfileIcon = window.updateProfileIcon;
+    window.updateProfileIcon = function() {
       if (originalUpdateProfileIcon) {
         originalUpdateProfileIcon();
       }
@@ -758,11 +851,8 @@
       updateLoginPrompt();
       initializeEnquiry();
       
-      const savedUser = localStorage.getItem('MyEssantia_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateProfileIcon();
-      }
+      // currentUser is now managed by Firebase in common.js
+      // No need to load from localStorage
     }
 
     // Load common modals
@@ -775,6 +865,17 @@
         console.error('Error loading common modals:', error);
       }
     }
+
+    // Listen for auth state changes to reload enquiries
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        loadUserEnquiries();
+      } else {
+        enquiries = [];
+        loadGuestEnquiries();
+      }
+      updateLoginPrompt();
+    });
 
     document.addEventListener('DOMContentLoaded', () => {
       loadCommonModals();
