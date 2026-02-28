@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Admin Dashboard · MyEssantia</title>
+  <title>Product Manager · MyEssantia</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -11,15 +11,9 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Chart.js for analytics -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
-    /* -------------------- */
-    /* CSS RESET & VARIABLES */
-    /* -------------------- */
     * {
       margin: 0;
       padding: 0;
@@ -48,217 +42,81 @@
       --color-warning: #ffbb33;
       --color-warning-light: #FFF3E0;
       
-      --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
-      --spacing-sm: clamp(0.5rem, 2vw, 0.75rem);
-      --spacing-md: clamp(1rem, 3vw, 1.25rem);
-      --spacing-lg: clamp(1.5rem, 4vw, 2rem);
-      --spacing-xl: clamp(2rem, 5vw, 2.5rem);
+      --spacing-xs: 0.5rem;
+      --spacing-sm: 0.75rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 2.5rem;
       
-      --font-size-xs: clamp(0.7rem, 2vw, 0.75rem);
-      --font-size-sm: clamp(0.8rem, 2.5vw, 0.875rem);
-      --font-size-base: clamp(0.9rem, 3vw, 1rem);
-      --font-size-md: clamp(1rem, 3.5vw, 1.125rem);
-      --font-size-lg: clamp(1.125rem, 4vw, 1.25rem);
-      --font-size-xl: clamp(1.25rem, 5vw, 1.5rem);
-      --font-size-2xl: clamp(1.5rem, 6vw, 2rem);
-      --font-size-3xl: clamp(2rem, 7vw, 2.5rem);
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-md: 1.125rem;
+      --font-size-lg: 1.25rem;
+      --font-size-xl: 1.5rem;
+      --font-size-2xl: 2rem;
       
-      --border-radius-sm: clamp(0.375rem, 2vw, 0.5rem);
-      --border-radius-md: clamp(0.5rem, 2.5vw, 0.75rem);
-      --border-radius-lg: clamp(0.75rem, 3vw, 1rem);
-      --border-radius-xl: clamp(1rem, 4vw, 1.5rem);
-      --border-radius-2xl: clamp(1.25rem, 5vw, 2rem);
+      --border-radius-sm: 0.5rem;
+      --border-radius-md: 0.75rem;
+      --border-radius-lg: 1rem;
+      --border-radius-xl: 1.5rem;
+      --border-radius-2xl: 2rem;
       
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
       --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
       --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
       --shadow-xl: 0 16px 32px rgba(0,0,0,0.15);
       
-      --transition-fast: 0.2s ease;
       --transition-base: 0.3s ease;
-      --transition-slow: 0.5s ease;
       
-      --container-max-width: 1440px;
-      --sidebar-width: min(280px, 80vw);
+      --container-max-width: 1600px;
     }
 
     body {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       background: var(--color-background);
       color: var(--color-text);
-      line-height: 1.6;
+      line-height: 1.5;
       font-size: var(--font-size-base);
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    /* -------------------- */
-    /* LAYOUT - MOBILE FIRST */
-    /* -------------------- */
-    .admin-container {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    /* Mobile Sidebar */
-    .sidebar {
-      width: 100%;
-      background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-light) 100%);
-      color: white;
-      padding: var(--spacing-md);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: var(--shadow-lg);
-    }
-
-    .sidebar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: var(--spacing-sm);
-    }
-
-    .brand {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .brand h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: var(--font-size-xl);
-      color: var(--color-primary);
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      line-height: 1.2;
-    }
-
-    .brand span {
-      font-size: var(--font-size-xs);
-      color: var(--color-text-lighter);
-      font-weight: 300;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .menu-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-      border: 2px solid var(--color-primary);
-      color: var(--color-primary);
-      width: 44px;
-      height: 44px;
-      border-radius: var(--border-radius-md);
-      font-size: var(--font-size-lg);
-      cursor: pointer;
-      transition: all var(--transition-base);
-    }
-
-    .menu-toggle:hover,
-    .menu-toggle.active {
-      background: var(--color-primary);
-      color: var(--color-secondary);
-      transform: rotate(90deg);
-    }
-
-    .nav-menu {
-      display: none;
-      flex-direction: column;
-      gap: var(--spacing-xs);
-      margin-top: var(--spacing-lg);
-      animation: slideDown var(--transition-base);
-    }
-
-    .nav-menu.active {
-      display: flex;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      padding: var(--spacing-md) var(--spacing-lg);
-      color: #ddd;
-      text-decoration: none;
-      border-radius: var(--border-radius-lg);
-      transition: all var(--transition-base);
-      position: relative;
-      overflow: hidden;
-      min-height: 56px;
-      font-weight: 500;
-    }
-
-    .nav-item::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 0;
-      background: var(--color-primary);
-      transition: width var(--transition-base);
-      z-index: 0;
-      opacity: 0.15;
-    }
-
-    .nav-item:hover::before,
-    .nav-item.active::before {
-      width: 100%;
-    }
-
-    .nav-item:hover,
-    .nav-item.active {
-      color: var(--color-primary);
-      transform: translateX(5px);
-    }
-
-    .nav-item i, 
-    .nav-item span {
-      position: relative;
-      z-index: 1;
-    }
-
-    .nav-item i {
-      width: 24px;
-      font-size: var(--font-size-lg);
-    }
-
-    /* Main Content */
-    .main-content {
-      flex: 1;
       padding: var(--spacing-lg);
+    }
+
+    .admin-container {
       max-width: var(--container-max-width);
       margin: 0 auto;
-      width: 100%;
-    }
-
-    /* -------------------- */
-    /* HEADER */
-    /* -------------------- */
-    .header {
       display: flex;
       flex-direction: column;
+      gap: var(--spacing-xl);
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
       gap: var(--spacing-md);
-      margin-bottom: var(--spacing-xl);
-      padding: var(--spacing-xl);
       background: var(--color-surface);
+      padding: var(--spacing-lg) var(--spacing-xl);
       border-radius: var(--border-radius-2xl);
       box-shadow: var(--shadow-md);
       border: 1px solid var(--color-border);
     }
 
-    .header h1 {
+    .brand h1 {
       font-family: 'Playfair Display', serif;
       font-size: var(--font-size-2xl);
-      color: var(--color-text);
-      margin: 0;
       background: linear-gradient(135deg, var(--color-secondary), var(--color-primary-dark));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
+    }
+
+    .brand span {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-light);
+      letter-spacing: 1px;
     }
 
     .admin-badge {
@@ -271,140 +129,53 @@
       align-items: center;
       gap: var(--spacing-sm);
       box-shadow: var(--shadow-md);
-      width: fit-content;
-      border: 1px solid rgba(255,255,255,0.2);
-      backdrop-filter: blur(5px);
       font-size: var(--font-size-sm);
     }
 
-    .admin-badge i {
-      font-size: var(--font-size-base);
-    }
-
-    /* -------------------- */
-    /* STATS GRID */
-    /* -------------------- */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
-      gap: var(--spacing-lg);
-      margin-bottom: var(--spacing-xl);
-    }
-
-    .stat-card {
-      background: var(--color-surface);
-      padding: var(--spacing-lg);
-      border-radius: var(--border-radius-xl);
-      box-shadow: var(--shadow-md);
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-lg);
-      transition: all var(--transition-base);
-      border: 2px solid transparent;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100px;
-      height: 100px;
-      background: linear-gradient(135deg, transparent, var(--color-primary-light));
-      opacity: 0.1;
-      border-radius: 50%;
-      transform: translate(30px, -30px);
-    }
-
-    .stat-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      border-color: var(--color-primary);
-      box-shadow: var(--shadow-xl);
-    }
-
-    .stat-icon {
-      width: clamp(60px, 8vw, 70px);
-      height: clamp(60px, 8vw, 70px);
-      background: linear-gradient(135deg, var(--color-background), var(--color-primary-light));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: clamp(1.75rem, 4vw, 2rem);
-      color: var(--color-primary);
-      flex-shrink: 0;
-      border: 3px solid var(--color-surface);
-      box-shadow: var(--shadow-md);
-    }
-
-    .stat-info h3 {
-      font-size: var(--font-size-2xl);
-      font-weight: 700;
-      margin-bottom: var(--spacing-xs);
-      color: var(--color-text);
-      line-height: 1.2;
-      background: linear-gradient(135deg, var(--color-secondary), var(--color-primary-dark));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .stat-info p {
-      color: var(--color-text-light);
-      font-size: var(--font-size-sm);
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* -------------------- */
-    /* QUICK ACTIONS */
-    /* -------------------- */
+    /* Quick Actions */
     .quick-actions {
       display: flex;
       flex-direction: column;
       gap: var(--spacing-md);
-      margin-bottom: var(--spacing-xl);
+      background: var(--color-surface);
+      padding: var(--spacing-xl);
+      border-radius: var(--border-radius-2xl);
+      box-shadow: var(--shadow-md);
+    }
+
+    @media (min-width: 600px) {
+      .quick-actions {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
     }
 
     .search-bar {
       display: flex;
       align-items: center;
       gap: var(--spacing-sm);
-      background: var(--color-surface);
+      background: var(--color-background);
       padding: var(--spacing-sm) var(--spacing-lg);
       border-radius: 60px;
       border: 2px solid var(--color-border);
-      width: 100%;
       min-height: 56px;
       transition: all var(--transition-base);
-      box-shadow: var(--shadow-sm);
+      flex: 1;
+      max-width: 500px;
     }
 
     .search-bar:focus-within {
       border-color: var(--color-primary);
       box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
-      transform: scale(1.02);
-    }
-
-    .search-bar i {
-      color: var(--color-text-lighter);
-      font-size: var(--font-size-base);
-      transition: color var(--transition-base);
-    }
-
-    .search-bar:focus-within i {
-      color: var(--color-primary);
     }
 
     .search-bar input {
       border: none;
       outline: none;
       width: 100%;
-      font-size: var(--font-size-base);
       background: transparent;
+      font-size: var(--font-size-base);
     }
 
     .action-buttons {
@@ -422,255 +193,269 @@
       align-items: center;
       gap: var(--spacing-sm);
       cursor: pointer;
-      transition: all var(--transition-base);
       font-weight: 600;
       font-size: var(--font-size-sm);
       min-height: 48px;
-      flex: 1 1 auto;
+      transition: all var(--transition-base);
       color: var(--color-text);
-      box-shadow: var(--shadow-sm);
     }
 
-    .quick-action-btn:hover,
-    .quick-action-btn:focus {
+    .quick-action-btn:hover {
       border-color: var(--color-primary);
-      background: linear-gradient(135deg, var(--color-surface), var(--color-primary-light));
+      background: var(--color-primary-light);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-      color: var(--color-secondary);
     }
 
     .quick-action-btn i {
       color: var(--color-primary);
-      font-size: var(--font-size-base);
-      transition: transform var(--transition-base);
     }
 
-    .quick-action-btn:hover i {
-      transform: scale(1.1);
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+      gap: var(--spacing-lg);
     }
 
-    /* -------------------- */
-    /* PRODUCT FORM */
-    /* -------------------- */
+    .stat-card {
+      background: var(--color-surface);
+      padding: var(--spacing-lg);
+      border-radius: var(--border-radius-xl);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+      transition: all var(--transition-base);
+      border: 2px solid transparent;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-xl);
+    }
+
+    .stat-icon {
+      width: clamp(50px, 8vw, 70px);
+      height: clamp(50px, 8vw, 70px);
+      background: var(--color-primary-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      color: var(--color-primary);
+      flex-shrink: 0;
+    }
+
+    .stat-info h3 {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--color-text);
+    }
+
+    .stat-info p {
+      color: var(--color-text-light);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+    }
+
+    /* ========== IMPROVED PRODUCT FORM ========== */
     .product-form {
       background: var(--color-surface);
-      padding: var(--spacing-xl);
       border-radius: var(--border-radius-2xl);
-      margin-bottom: var(--spacing-xl);
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--color-border);
-      backdrop-filter: blur(10px);
+      overflow: hidden;
     }
 
-    .form-title {
+    .form-header {
+      background: linear-gradient(135deg, var(--color-primary-light), transparent);
+      padding: var(--spacing-xl) var(--spacing-2xl);
+      border-bottom: 2px solid var(--color-primary);
+    }
+
+    .form-header .form-title {
       font-family: 'Playfair Display', serif;
-      font-size: var(--font-size-xl);
-      margin-bottom: var(--spacing-xl);
+      font-size: var(--font-size-2xl);
       display: flex;
       align-items: center;
       gap: var(--spacing-md);
-      color: var(--color-text);
-      padding-bottom: var(--spacing-lg);
-      border-bottom: 2px solid var(--color-border);
-      flex-wrap: wrap;
+      color: var(--color-secondary);
     }
 
-    .form-title i {
+    .form-header .form-title i {
       color: var(--color-primary);
-      font-size: var(--font-size-2xl);
-      background: var(--color-primary-light);
+      background: var(--color-surface);
       padding: var(--spacing-sm);
       border-radius: 50%;
+      box-shadow: var(--shadow-md);
     }
 
-    .form-grid {
+    .form-header .form-subtitle {
+      color: var(--color-text-light);
+      margin-top: var(--spacing-xs);
+      font-size: var(--font-size-sm);
+    }
+
+    .form-body {
+      padding: var(--spacing-2xl);
+    }
+
+    /* Card-like sections inside form */
+    .form-section {
+      background: var(--color-background);
+      border-radius: var(--border-radius-xl);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      border: 1px solid var(--color-border);
+      transition: all var(--transition-base);
+    }
+
+    .form-section:hover {
+      border-color: var(--color-primary-light);
+      box-shadow: var(--shadow-md);
+    }
+
+    .form-section-title {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      margin-bottom: var(--spacing-lg);
+      color: var(--color-secondary);
+      padding-bottom: var(--spacing-sm);
+      border-bottom: 2px solid var(--color-primary-light);
+    }
+
+    .form-section-title i {
+      color: var(--color-primary);
+      font-size: var(--font-size-xl);
+    }
+
+    .form-row {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: var(--spacing-xl);
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
     }
 
     .form-group {
-      margin-bottom: var(--spacing-md);
-    }
-
-    .form-group.full-width {
-      grid-column: auto;
+      position: relative;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: var(--spacing-sm);
+      margin-bottom: var(--spacing-xs);
       font-weight: 600;
       font-size: var(--font-size-sm);
       color: var(--color-text);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
     }
 
     .form-group label i {
       color: var(--color-primary);
       margin-right: var(--spacing-xs);
-      font-size: var(--font-size-base);
+      width: 20px;
     }
 
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i.input-icon {
+      position: absolute;
+      left: var(--spacing-md);
+      color: var(--color-primary);
+      font-size: var(--font-size-base);
+      z-index: 2;
+    }
+
+    .input-wrapper input,
+    .input-wrapper select,
+    .input-wrapper textarea {
       width: 100%;
       padding: var(--spacing-md) var(--spacing-lg);
+      padding-left: calc(var(--spacing-lg) + 24px); /* space for icon */
       border: 2px solid var(--color-border);
       border-radius: var(--border-radius-lg);
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: var(--font-size-base);
+      background: var(--color-surface);
       transition: all var(--transition-base);
-      background: var(--color-background);
-      min-height: 56px;
     }
 
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
+    .input-wrapper textarea {
+      padding-left: var(--spacing-lg);
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .input-wrapper input:focus,
+    .input-wrapper select:focus,
+    .input-wrapper textarea:focus {
       outline: none;
       border-color: var(--color-primary);
-      background: var(--color-surface);
       box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
-      transform: scale(1.01);
     }
 
-    /* -------------------- */
-    /* ENHANCED PAGE SELECTOR */
-    /* -------------------- */
-    .page-selector {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--spacing-md);
-      margin-top: var(--spacing-sm);
+    /* special handling for selects without icon */
+    .input-wrapper select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--spacing-md) center;
+      background-size: 16px;
     }
 
-    .page-option {
-      position: relative;
-    }
-
-    .page-option input[type="checkbox"] {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .page-option label {
+    /* hint / helper text */
+    .field-hint {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-lighter);
+      margin-top: var(--spacing-xs);
       display: flex;
       align-items: center;
-      gap: var(--spacing-md);
-      padding: var(--spacing-md) var(--spacing-lg);
-      background: var(--color-background);
-      border-radius: var(--border-radius-lg);
-      cursor: pointer;
-      transition: all var(--transition-base);
-      font-weight: 500;
-      font-size: var(--font-size-sm);
-      border: 2px solid transparent;
-      position: relative;
-      overflow: hidden;
+      gap: var(--spacing-xs);
     }
 
-    .page-option label::before {
-      content: '\f00c';
-      font-family: 'Font Awesome 6 Free';
-      font-weight: 900;
-      position: absolute;
-      right: -30px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--color-success);
-      opacity: 0;
-      transition: all var(--transition-base);
-      font-size: var(--font-size-sm);
+    .field-hint i {
+      color: var(--color-info);
+      font-size: 12px;
     }
 
-    .page-option input[type="checkbox"]:checked + label {
-      background: linear-gradient(135deg, var(--color-primary-light), var(--color-background));
-      border-color: var(--color-primary);
-      padding-right: calc(var(--spacing-lg) * 2);
-    }
-
-    .page-option input[type="checkbox"]:checked + label::before {
-      right: var(--spacing-md);
-      opacity: 1;
-    }
-
-    .page-option label i {
-      font-size: var(--font-size-lg);
-      color: var(--color-primary);
-      width: 24px;
-      text-align: center;
-    }
-
-    .page-option label:hover {
-      background: linear-gradient(135deg, var(--color-surface), var(--color-primary-light));
-      border-color: var(--color-primary);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .page-option.home-option label {
-      background: linear-gradient(135deg, #fff9e6, var(--color-background));
-      border-left: 4px solid var(--color-primary);
-    }
-
-    .page-badge-category {
-      display: inline-block;
-      padding: var(--spacing-xs) var(--spacing-sm);
-      background: var(--color-primary-light);
-      color: var(--color-secondary);
-      border-radius: var(--border-radius-sm);
-      font-size: var(--font-size-xs);
-      margin-left: var(--spacing-sm);
-      font-weight: 600;
-    }
-
-    /* Auto-assign indicator */
-    .auto-assign-note {
-      display: flex;
+    /* New In status badge */
+    .newin-status-badge {
+      display: inline-flex;
       align-items: center;
       gap: var(--spacing-sm);
-      padding: var(--spacing-md) var(--spacing-lg);
-      background: var(--color-info-light);
-      border-radius: var(--border-radius-lg);
-      margin-top: var(--spacing-md);
-      font-size: var(--font-size-sm);
-      color: var(--color-info);
-      border: 1px solid var(--color-info);
+      background: var(--color-warning-light);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border-radius: 60px;
+      color: var(--color-warning);
+      font-weight: 600;
+      border: 1px solid var(--color-warning);
     }
 
-    .auto-assign-note i {
-      font-size: var(--font-size-lg);
+    .newin-status-badge i {
+      color: var(--color-warning);
     }
 
-    /* -------------------- */
-    /* MEDIA UPLOAD SECTION */
-    /* -------------------- */
+    /* Media upload refined */
     .media-upload-section {
-      background: linear-gradient(135deg, var(--color-background), var(--color-surface));
+      background: var(--color-surface);
       border-radius: var(--border-radius-xl);
-      padding: var(--spacing-xl);
-      border: 2px solid var(--color-border);
+      padding: var(--spacing-lg);
     }
 
     .media-tabs {
       display: flex;
       gap: var(--spacing-sm);
-      margin-bottom: var(--spacing-xl);
-      border-bottom: 2px solid var(--color-border);
-      padding-bottom: var(--spacing-sm);
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-
-    .media-tabs::-webkit-scrollbar {
-      display: none;
+      margin-bottom: var(--spacing-lg);
     }
 
     .media-tab {
@@ -679,30 +464,19 @@
       border-radius: 40px;
       font-weight: 600;
       transition: all var(--transition-base);
-      font-size: var(--font-size-sm);
-      white-space: nowrap;
-      background: var(--color-surface);
+      background: var(--color-background);
       border: 2px solid transparent;
-      color: var(--color-text-light);
     }
 
     .media-tab.active {
       background: var(--color-primary);
       color: var(--color-secondary);
-      border-color: var(--color-primary-dark);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .media-tab i {
-      margin-right: var(--spacing-xs);
     }
 
     .media-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
-      gap: var(--spacing-lg);
-      margin-top: var(--spacing-lg);
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: var(--spacing-md);
     }
 
     .upload-box {
@@ -714,55 +488,33 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      background: var(--color-background);
       transition: all var(--transition-base);
-      background: var(--color-surface);
-      position: relative;
-      overflow: hidden;
-      min-height: 140px;
       padding: var(--spacing-md);
     }
 
-    .upload-box:hover,
-    .upload-box:focus {
-      background: linear-gradient(135deg, var(--color-surface), var(--color-primary-light));
-      transform: scale(1.05) rotate(1deg);
-      border-style: solid;
-      box-shadow: var(--shadow-lg);
+    .upload-box:hover {
+      background: var(--color-primary-light);
+      transform: scale(1.02);
     }
 
     .upload-box i {
-      font-size: clamp(1.75rem, 5vw, 2.25rem);
+      font-size: 2rem;
       color: var(--color-primary);
-      margin-bottom: var(--spacing-sm);
-      transition: transform var(--transition-base);
-    }
-
-    .upload-box:hover i {
-      transform: scale(1.1) rotate(-5deg);
     }
 
     .upload-box span {
       font-size: var(--font-size-xs);
-      color: var(--color-text-light);
       text-align: center;
-      font-weight: 500;
-    }
-
-    .upload-box.video-box {
-      border-color: var(--color-success);
-    }
-
-    .upload-box.video-box i {
-      color: var(--color-success);
     }
 
     .media-preview {
       aspect-ratio: 1;
       border-radius: var(--border-radius-lg);
       position: relative;
-      box-shadow: var(--shadow-lg);
       overflow: hidden;
       border: 3px solid var(--color-surface);
+      box-shadow: var(--shadow-md);
     }
 
     .media-preview img,
@@ -770,375 +522,132 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform var(--transition-base);
-    }
-
-    .media-preview:hover img,
-    .media-preview:hover video {
-      transform: scale(1.1);
     }
 
     .media-position {
       position: absolute;
-      top: var(--spacing-sm);
-      left: var(--spacing-sm);
+      top: var(--spacing-xs);
+      left: var(--spacing-xs);
       background: var(--color-primary);
       color: var(--color-secondary);
       padding: var(--spacing-xs) var(--spacing-sm);
       border-radius: var(--border-radius-md);
       font-size: var(--font-size-xs);
       font-weight: 700;
-      z-index: 10;
-      box-shadow: var(--shadow-sm);
-      border: 2px solid var(--color-surface);
     }
 
     .position-controls {
       position: absolute;
-      bottom: var(--spacing-sm);
+      bottom: var(--spacing-xs);
       left: 50%;
       transform: translateX(-50%);
       display: flex;
       gap: var(--spacing-xs);
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.7);
       padding: var(--spacing-xs);
       border-radius: var(--border-radius-lg);
-      z-index: 10;
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(4px);
     }
 
     .position-controls button {
-      width: clamp(28px, 5vw, 32px);
-      height: clamp(28px, 5vw, 32px);
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       border: none;
-      background: var(--color-surface);
+      background: white;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       transition: all var(--transition-base);
-      color: var(--color-text);
-      font-size: var(--font-size-xs);
     }
 
     .position-controls button:hover:not(:disabled) {
       background: var(--color-primary);
-      transform: scale(1.1);
-    }
-
-    .position-controls button:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
+      color: white;
     }
 
     .remove-media {
       position: absolute;
-      top: var(--spacing-sm);
-      right: var(--spacing-sm);
-      width: clamp(32px, 6vw, 36px);
-      height: clamp(32px, 6vw, 36px);
-      background: var(--color-danger);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: var(--font-size-sm);
-      transition: all var(--transition-base);
-      z-index: 10;
-      border: 2px solid var(--color-surface);
-      box-shadow: var(--shadow-md);
-    }
-
-    .remove-media:hover,
-    .remove-media:focus {
-      background: #cc0000;
-      transform: scale(1.1) rotate(90deg);
-    }
-
-    .video-indicator {
-      position: absolute;
-      bottom: var(--spacing-sm);
-      right: var(--spacing-sm);
-      background: rgba(0,0,0,0.8);
-      color: white;
-      padding: var(--spacing-xs) var(--spacing-sm);
-      border-radius: var(--border-radius-md);
-      font-size: var(--font-size-xs);
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    /* -------------------- */
-    /* RICH IMPORT SECTION */
-    /* -------------------- */
-    .import-section {
-      background: var(--color-surface);
-      border-radius: var(--border-radius-2xl);
-      padding: var(--spacing-xl);
-      margin-bottom: var(--spacing-xl);
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--color-border);
-    }
-
-    .import-header {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-lg);
-      margin-bottom: var(--spacing-xl);
-    }
-
-    .import-header h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: var(--font-size-xl);
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      color: var(--color-text);
-    }
-
-    .import-header h3 i {
-      color: var(--color-primary);
-      background: var(--color-primary-light);
-      padding: var(--spacing-sm);
-      border-radius: 50%;
-    }
-
-    .import-controls {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-md);
-    }
-
-    .import-controls select,
-    .import-controls input {
-      padding: var(--spacing-md) var(--spacing-lg);
-      border: 2px solid var(--color-border);
-      border-radius: var(--border-radius-lg);
-      font-size: var(--font-size-base);
-      width: 100%;
-      min-height: 56px;
-      background: var(--color-background);
-      transition: all var(--transition-base);
-    }
-
-    .import-controls select:focus,
-    .import-controls input:focus {
-      border-color: var(--color-primary);
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
-    }
-
-    .rich-paste-area {
-      background: var(--color-background);
-      border: 3px dashed var(--color-primary);
-      border-radius: var(--border-radius-xl);
-      padding: var(--spacing-xl);
-      margin: var(--spacing-lg) 0;
-      min-height: 250px;
-      position: relative;
-      transition: all var(--transition-base);
-    }
-
-    .rich-paste-area:hover,
-    .rich-paste-area.dragover {
-      background: linear-gradient(135deg, var(--color-primary-light), var(--color-background));
-      border-color: var(--color-primary-dark);
-      transform: scale(1.02);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .rich-paste-area [contenteditable="true"] {
-      min-height: 200px;
-      outline: none;
-      font-size: var(--font-size-base);
-      line-height: 1.8;
-      color: var(--color-text);
-      position: relative;
-      z-index: 2;
-    }
-
-    .rich-paste-placeholder {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: var(--color-text-lighter);
-      text-align: center;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .rich-paste-placeholder i {
-      font-size: clamp(3rem, 8vw, 4rem);
-      margin-bottom: var(--spacing-lg);
-      color: var(--color-primary);
-      opacity: 0.5;
-    }
-
-    .rich-paste-placeholder p {
-      font-size: var(--font-size-base);
-      font-weight: 500;
-    }
-
-    .rich-paste-placeholder small {
-      font-size: var(--font-size-xs);
-      opacity: 0.7;
-    }
-
-    .paste-preview-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr));
-      gap: var(--spacing-lg);
-      margin-top: var(--spacing-xl);
-    }
-
-    .paste-preview-item {
-      position: relative;
-      border-radius: var(--border-radius-lg);
-      overflow: hidden;
-      aspect-ratio: 1;
-      box-shadow: var(--shadow-md);
-      cursor: move;
-      transition: all var(--transition-base);
-      border: 3px solid transparent;
-    }
-
-    .paste-preview-item:hover {
-      transform: scale(1.05) rotate(1deg);
-      box-shadow: var(--shadow-xl);
-      border-color: var(--color-primary);
-      z-index: 10;
-    }
-
-    .paste-preview-item.dragging {
-      opacity: 0.5;
-      transform: scale(0.95);
-    }
-
-    .paste-preview-item img,
-    .paste-preview-item video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .paste-preview-item .item-type {
-      position: absolute;
       top: var(--spacing-xs);
-      left: var(--spacing-xs);
-      background: rgba(0,0,0,0.8);
-      color: white;
-      padding: var(--spacing-xs) var(--spacing-sm);
-      border-radius: var(--border-radius-md);
-      font-size: var(--font-size-xs);
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .paste-preview-item .item-position {
-      position: absolute;
-      bottom: var(--spacing-xs);
-      left: var(--spacing-xs);
-      background: var(--color-primary);
-      color: var(--color-secondary);
-      padding: var(--spacing-xs) var(--spacing-md);
-      border-radius: var(--border-radius-md);
-      font-weight: 700;
-      font-size: var(--font-size-xs);
-      box-shadow: var(--shadow-sm);
-      border: 2px solid var(--color-surface);
-    }
-
-    .item-actions {
-      position: absolute;
-      bottom: var(--spacing-xs);
       right: var(--spacing-xs);
-      display: flex;
-      gap: var(--spacing-xs);
-      z-index: 20;
-    }
-
-    .item-actions button {
-      width: clamp(32px, 6vw, 36px);
-      height: clamp(32px, 6vw, 36px);
+      width: 32px;
+      height: 32px;
+      background: var(--color-danger);
+      color: white;
       border-radius: 50%;
-      border: none;
-      background: var(--color-surface);
-      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      font-size: var(--font-size-sm);
       transition: all var(--transition-base);
-      color: var(--color-text);
-      font-size: var(--font-size-sm);
-      box-shadow: var(--shadow-md);
-      border: 2px solid transparent;
+      border: 2px solid white;
     }
 
-    .item-actions button:hover {
-      background: var(--color-primary);
-      transform: scale(1.1);
-      border-color: var(--color-surface);
-    }
-
-    .item-actions button.delete-btn:hover {
-      background: var(--color-danger);
-      color: white;
-    }
-
-    .position-order-list {
+    /* Page selector as chips */
+    .page-selector {
       display: flex;
-      gap: var(--spacing-sm);
       flex-wrap: wrap;
-      margin: var(--spacing-lg) 0;
-      padding: var(--spacing-lg);
-      background: linear-gradient(135deg, var(--color-background), var(--color-surface));
-      border-radius: var(--border-radius-xl);
-      border: 2px solid var(--color-border);
+      gap: var(--spacing-md);
     }
 
-    .order-badge {
-      background: var(--color-surface);
-      padding: var(--spacing-sm) var(--spacing-lg);
-      border-radius: 60px;
-      font-size: var(--font-size-sm);
-      display: inline-flex;
+    .page-chip {
+      position: relative;
+      flex: 1 1 150px;
+    }
+
+    .page-chip input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .page-chip label {
+      display: flex;
       align-items: center;
       gap: var(--spacing-sm);
-      border: 2px solid var(--color-border);
-      cursor: move;
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: var(--color-background);
+      border-radius: 60px;
+      cursor: pointer;
       transition: all var(--transition-base);
-      box-shadow: var(--shadow-sm);
+      border: 2px solid var(--color-border);
       font-weight: 500;
+      justify-content: center;
     }
 
-    .order-badge:hover {
+    .page-chip input[type="checkbox"]:checked + label {
+      background: var(--color-primary);
       border-color: var(--color-primary);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .order-badge.active {
-      border-color: var(--color-primary);
-      background: linear-gradient(135deg, var(--color-primary-light), var(--color-surface));
       color: var(--color-secondary);
     }
 
-    .order-badge i {
+    .page-chip label i {
       color: var(--color-primary);
-      font-size: var(--font-size-xs);
+      font-size: var(--font-size-base);
     }
 
-    /* -------------------- */
-    /* BUTTONS */
-    /* -------------------- */
+    .page-chip input[type="checkbox"]:checked + label i {
+      color: var(--color-secondary);
+    }
+
+    .auto-assign-note {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: var(--color-info-light);
+      border-radius: var(--border-radius-lg);
+      margin-top: var(--spacing-lg);
+      font-size: var(--font-size-sm);
+      color: var(--color-info);
+    }
+
+    /* Form actions */
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+      margin-top: var(--spacing-2xl);
+    }
+
     .btn {
       padding: var(--spacing-md) var(--spacing-xl);
       border: none;
@@ -1152,61 +661,24 @@
       justify-content: center;
       gap: var(--spacing-sm);
       min-height: 56px;
-      width: 100%;
-      position: relative;
-      overflow: hidden;
+      flex: 1 1 auto;
       border: 2px solid transparent;
-    }
-
-    .btn::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.3);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-
-    .btn:hover::after {
-      width: 300px;
-      height: 300px;
     }
 
     .btn-primary {
       background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
       color: var(--color-secondary);
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
     }
 
-    .btn-primary:hover,
-    .btn-primary:focus {
+    .btn-primary:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, var(--color-success), #45a049);
-      color: white;
-    }
-
-    .btn-success:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
-    }
-
-    .btn-danger {
-      background: linear-gradient(135deg, var(--color-danger), #cc0000);
-      color: white;
     }
 
     .btn-outline {
       background: transparent;
       border: 2px solid var(--color-border);
-      color: var(--color-text);
     }
 
     .btn-outline:hover {
@@ -1214,22 +686,20 @@
       background: var(--color-primary-light);
     }
 
-    /* -------------------- */
-    /* PRODUCTS TABLE */
-    /* -------------------- */
+    /* Products Table (unchanged, but consistent) */
     .products-table {
       background: var(--color-surface);
       border-radius: var(--border-radius-2xl);
       padding: var(--spacing-xl);
-      overflow-x: auto;
       box-shadow: var(--shadow-lg);
-      border: 1px solid var(--color-border);
+      overflow-x: auto;
     }
 
     .table-header {
       display: flex;
-      flex-direction: column;
-      gap: var(--spacing-md);
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: var(--spacing-xl);
     }
 
@@ -1241,18 +711,11 @@
       gap: var(--spacing-md);
     }
 
-    .table-header h3 i {
-      color: var(--color-primary);
-    }
-
     #product-count {
-      background: linear-gradient(135deg, var(--color-primary-light), var(--color-background));
+      background: var(--color-primary-light);
       padding: var(--spacing-sm) var(--spacing-xl);
       border-radius: 60px;
-      font-size: var(--font-size-sm);
-      width: fit-content;
       font-weight: 600;
-      border: 2px solid var(--color-primary);
     }
 
     table {
@@ -1264,15 +727,9 @@
     th {
       text-align: left;
       padding: var(--spacing-lg);
-      background: linear-gradient(135deg, var(--color-background), var(--color-surface));
+      background: var(--color-background);
       font-weight: 700;
-      color: var(--color-text);
       font-size: var(--font-size-sm);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
       border-bottom: 3px solid var(--color-primary);
     }
 
@@ -1282,93 +739,51 @@
       vertical-align: middle;
     }
 
-    tr {
-      transition: all var(--transition-base);
-    }
-
     tr:hover {
-      background: linear-gradient(135deg, var(--color-primary-light), transparent);
-      transform: scale(1.01);
-      box-shadow: var(--shadow-md);
+      background: var(--color-primary-light);
     }
 
     .product-thumb {
-      width: clamp(60px, 8vw, 70px);
-      height: clamp(60px, 8vw, 70px);
+      width: 60px;
+      height: 60px;
       border-radius: var(--border-radius-lg);
       background-size: cover;
       background-position: center;
+      border: 3px solid var(--color-surface);
+      box-shadow: var(--shadow-md);
       cursor: pointer;
       transition: all var(--transition-base);
-      box-shadow: var(--shadow-md);
-      position: relative;
-      flex-shrink: 0;
-      border: 3px solid var(--color-surface);
-    }
-
-    .product-thumb.video-thumb::after {
-      content: '\f04b';
-      font-family: 'Font Awesome 6 Free';
-      font-weight: 900;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      background: rgba(0,0,0,0.6);
-      width: clamp(25px, 4vw, 32px);
-      height: clamp(25px, 4vw, 32px);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: var(--font-size-xs);
-      backdrop-filter: blur(2px);
-      border: 2px solid rgba(255,255,255,0.3);
     }
 
     .product-thumb:hover {
-      transform: scale(1.15) rotate(2deg);
-      box-shadow: var(--shadow-xl);
+      transform: scale(1.1);
       border-color: var(--color-primary);
     }
 
-    .page-badges {
-      display: flex;
-      gap: var(--spacing-xs);
-      flex-wrap: wrap;
-    }
-
     .page-badge {
-      background: var(--color-border);
-      padding: var(--spacing-xs) var(--spacing-md);
+      padding: var(--spacing-xs) var(--spacing-sm);
       border-radius: 30px;
       font-size: var(--font-size-xs);
       font-weight: 600;
+      display: inline-block;
+    }
+
+    .page-badge.home { background: var(--color-primary); color: var(--color-secondary); }
+    .page-badge.accessories { background: var(--color-info-light); color: var(--color-info); }
+    .page-badge.essentials { background: var(--color-success-light); color: var(--color-success); }
+    .page-badge.new { background: var(--color-warning-light); color: var(--color-warning); }
+
+    .newin-badge {
       display: inline-flex;
       align-items: center;
-      gap: var(--spacing-xs);
-      transition: all var(--transition-base);
-    }
-
-    .page-badge.home {
-      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      gap: 4px;
+      background: var(--color-warning);
       color: var(--color-secondary);
-    }
-
-    .page-badge.accessories {
-      background: var(--color-info-light);
-      color: var(--color-info);
-    }
-
-    .page-badge.essentials {
-      background: var(--color-success-light);
-      color: var(--color-success);
-    }
-
-    .page-badge.new {
-      background: var(--color-warning-light);
-      color: var(--color-warning);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-left: var(--spacing-xs);
     }
 
     .action-btns {
@@ -1381,67 +796,25 @@
       padding: var(--spacing-sm) var(--spacing-md);
       border: none;
       border-radius: 30px;
-      cursor: pointer;
-      font-size: var(--font-size-xs);
       font-weight: 600;
+      cursor: pointer;
       transition: all var(--transition-base);
       display: inline-flex;
       align-items: center;
       gap: var(--spacing-xs);
-      min-height: 40px;
-      border: 2px solid transparent;
     }
 
-    .edit-btn { 
-      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); 
-      color: var(--color-secondary); 
-    }
-    .delete-btn { 
-      background: linear-gradient(135deg, var(--color-danger), #cc0000); 
-      color: white; 
-    }
-    .view-btn { 
-      background: linear-gradient(135deg, var(--color-success), #45a049); 
-      color: white; 
-    }
+    .edit-btn { background: var(--color-primary); color: var(--color-secondary); }
+    .delete-btn { background: var(--color-danger); color: white; }
+    .view-btn { background: var(--color-success); color: white; }
 
-    .action-btns button:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--color-surface);
-    }
-
-    /* -------------------- */
-    /* EMPTY STATE */
-    /* -------------------- */
     .empty-state {
       text-align: center;
-      padding: var(--spacing-3xl) var(--spacing-xl);
+      padding: var(--spacing-2xl);
       color: var(--color-text-lighter);
     }
 
-    .empty-state i {
-      font-size: clamp(4rem, 10vw, 5rem);
-      margin-bottom: var(--spacing-xl);
-      color: var(--color-primary);
-      opacity: 0.3;
-    }
-
-    .empty-state h3 {
-      margin-bottom: var(--spacing-md);
-      font-size: var(--font-size-xl);
-      color: var(--color-text);
-    }
-
-    .empty-state p {
-      font-size: var(--font-size-base);
-      max-width: 400px;
-      margin: 0 auto;
-    }
-
-    /* -------------------- */
-    /* NOTIFICATION */
-    /* -------------------- */
+    /* Notification */
     .notification {
       position: fixed;
       top: 20px;
@@ -1451,659 +824,327 @@
       color: white;
       font-weight: 500;
       z-index: 9999;
-      animation: slideInRight var(--transition-base);
+      animation: slideInRight 0.3s ease;
       box-shadow: var(--shadow-xl);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
     }
 
-    .notification.success {
-      background: linear-gradient(135deg, var(--color-success), #45a049);
-    }
-
-    .notification.error {
-      background: linear-gradient(135deg, var(--color-danger), #cc0000);
-    }
-
-    .notification.info {
-      background: linear-gradient(135deg, var(--color-info), #1976D2);
-    }
-
-    /* -------------------- */
-    /* ANIMATIONS */
-    /* -------------------- */
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+    .notification.success { background: linear-gradient(135deg, var(--color-success), #45a049); }
+    .notification.error { background: linear-gradient(135deg, var(--color-danger), #cc0000); }
+    .notification.info { background: linear-gradient(135deg, var(--color-info), #1976D2); }
+    .notification.warning { background: linear-gradient(135deg, var(--color-warning), #b85b1a); }
 
     @keyframes slideInRight {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
-    @keyframes slideOutRight {
-      from {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      to {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-
-    /* -------------------- */
-    /* TABLET BREAKPOINT */
-    /* -------------------- */
-    @media (min-width: 768px) {
-      .admin-container {
-        flex-direction: row;
-      }
-
-      .sidebar {
-        width: var(--sidebar-width);
-        position: fixed;
-        height: 100vh;
-        overflow-y: auto;
-        padding: var(--spacing-xl);
-      }
-
-      .sidebar-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-lg);
-      }
-
-      .menu-toggle {
-        display: none;
-      }
-
-      .nav-menu {
-        display: flex;
-        margin-top: var(--spacing-xl);
-      }
-
-      .main-content {
-        margin-left: var(--sidebar-width);
-        padding: var(--spacing-xl);
-      }
-
-      .header {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .quick-actions {
-        flex-direction: row;
-        align-items: center;
-      }
-
-      .action-buttons {
-        width: auto;
-      }
-
-      .search-bar {
-        max-width: 400px;
-      }
-
-      .btn {
-        width: auto;
-      }
-
-      .import-header {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .import-controls {
-        flex-direction: row;
-        width: auto;
-      }
-
-      .import-controls select,
-      .import-controls input {
-        width: auto;
-        min-width: 220px;
-      }
-
-      .table-header {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .form-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .form-group.full-width {
-        grid-column: span 2;
-      }
-
-      .page-selector {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    /* -------------------- */
-    /* DESKTOP BREAKPOINT */
-    /* -------------------- */
-    @media (min-width: 1024px) {
-      :root {
-        --sidebar-width: 280px;
-      }
-
-      .media-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-
-      .page-selector {
-        grid-template-columns: repeat(4, 1fr);
-      }
-
-      .form-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    /* -------------------- */
-    /* LARGE DESKTOP BREAKPOINT */
-    /* -------------------- */
-    @media (min-width: 1440px) {
-      .main-content {
-        padding: var(--spacing-2xl);
-      }
-    }
-
-    /* -------------------- */
-    /* TOUCH OPTIMIZATIONS */
-    /* -------------------- */
-    @media (hover: none) and (pointer: coarse) {
-      .nav-item,
-      .quick-action-btn,
-      .btn,
-      .media-tab,
-      .upload-box,
-      .action-btns button,
-      .order-badge,
-      .page-option label {
-        min-height: 52px;
-      }
-
-      input, select, textarea {
-        font-size: 16px !important;
-      }
-
-      .modal-content {
-        margin: var(--spacing-md);
-      }
-
-      .position-controls button,
-      .item-actions button,
-      .remove-media {
-        width: 44px;
-        height: 44px;
-      }
-    }
-
-    /* -------------------- */
-    /* PRINT STYLES */
-    /* -------------------- */
-    @media print {
-      .sidebar,
-      .quick-actions,
-      .product-form,
-      .import-section,
-      .action-btns {
-        display: none;
-      }
-
-      .main-content {
-        margin: 0;
-        padding: 0;
-      }
-
-      table {
-        border: 1px solid #000;
-      }
-
-      th {
-        background: #f0f0f0;
-      }
+    @media (max-width: 640px) {
+      body { padding: var(--spacing-sm); }
+      .form-body { padding: var(--spacing-lg); }
     }
   </style>
 </head>
 <body>
   <div class="admin-container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <div class="sidebar-header">
-        <div class="brand">
-          <h2>MyEssantia</h2>
-          <span>Administrator</span>
-        </div>
-        <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
-          <i class="fa-solid fa-bars"></i>
-        </button>
+    <!-- Header -->
+    <div class="header">
+      <div class="brand">
+        <h1>MyEssantia · Admin</h1>
+        <span>Product Manager</span>
       </div>
-      
-      <div class="nav-menu" id="navMenu">
-        <a href="#" class="nav-item active">
-          <i class="fa-solid fa-box"></i>
-          <span>Products</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fa-solid fa-layer-group"></i>
-          <span>Collections</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fa-solid fa-truck"></i>
-          <span>Orders</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fa-solid fa-users"></i>
-          <span>Customers</span>
-        </a>
-        <a href="#" class="nav-item">
-          <i class="fa-solid fa-chart-line"></i>
-          <span>Analytics</span>
-        </a>
-        <a href="collection.html" class="nav-item">
-          <i class="fa-solid fa-store"></i>
-          <span>View Store</span>
-        </a>
+      <div class="admin-badge">
+        <i class="fa-solid fa-shield"></i> Dashboard
       </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Header -->
-      <div class="header">
-        <h1>Product Management</h1>
-        <div class="admin-badge">
-          <i class="fa-solid fa-shield"></i>
-          Admin Dashboard
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <div class="search-bar">
+        <i class="fa-solid fa-search"></i>
+        <input type="text" id="search-products" placeholder="Search products...">
+      </div>
+      <div class="action-buttons">
+        <button class="quick-action-btn" onclick="exportProducts()">
+          <i class="fa-solid fa-download"></i> Export
+        </button>
+        <button class="quick-action-btn" onclick="importProducts()">
+          <i class="fa-solid fa-upload"></i> Import
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-box"></i></div>
+        <div class="stat-info">
+          <h3 id="total-products">0</h3>
+          <p>Total Products</p>
         </div>
       </div>
-
-      <!-- Quick Actions -->
-      <div class="quick-actions">
-        <div class="search-bar">
-          <i class="fa-solid fa-search"></i>
-          <input type="text" id="search-products" placeholder="Search products by name, category, brand...">
-        </div>
-        <div class="action-buttons">
-          <button class="quick-action-btn" onclick="exportProducts()">
-            <i class="fa-solid fa-download"></i>
-            Export
-          </button>
-          <button class="quick-action-btn" onclick="importProducts()">
-            <i class="fa-solid fa-upload"></i>
-            Import
-          </button>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+        <div class="stat-info">
+          <h3 id="newin-products">0</h3>
+          <p>New In (24h)</p>
         </div>
       </div>
-
-      <!-- Stats -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fa-solid fa-box"></i>
-          </div>
-          <div class="stat-info">
-            <h3 id="total-products">0</h3>
-            <p>Total Products</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fa-solid fa-house"></i>
-          </div>
-          <div class="stat-info">
-            <h3 id="home-products">0</h3>
-            <p>On Homepage</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fa-solid fa-cubes"></i>
-          </div>
-          <div class="stat-info">
-            <h3 id="total-stock">0</h3>
-            <p>Total Stock</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">
-            <i class="fa-solid fa-layer-group"></i>
-          </div>
-          <div class="stat-info">
-            <h3 id="total-categories">3</h3>
-            <p>Categories</p>
-          </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-cubes"></i></div>
+        <div class="stat-info">
+          <h3 id="total-stock">0</h3>
+          <p>Total Stock</p>
         </div>
       </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+        <div class="stat-info">
+          <h3 id="total-categories">3</h3>
+          <p>Categories</p>
+        </div>
+      </div>
+    </div>
 
-      <!-- Product Form -->
-      <div class="product-form">
+    <!-- ========== IMPROVED PRODUCT FORM ========== -->
+    <div class="product-form">
+      <div class="form-header">
         <div class="form-title">
           <i class="fa-solid fa-plus-circle"></i>
           <span id="form-title">Add New Product</span>
         </div>
-        
+        <div class="form-subtitle">Fill in the details below to create a stunning product</div>
+      </div>
+
+      <div class="form-body">
         <form id="product-form">
-          <input type="hidden" id="product-id" value="">
-          
-          <div class="form-grid">
-            <div class="form-group full-width">
-              <label>
-                <i class="fa-solid fa-tag"></i>
-                Product Title
-              </label>
-              <input type="text" id="product-title" placeholder="e.g. Premium Leather Cardholder" required>
+          <input type="hidden" id="product-id">
+          <input type="hidden" id="product-creation-date">
+
+          <!-- Section 1: Basic Information -->
+          <div class="form-section">
+            <div class="form-section-title">
+              <i class="fa-solid fa-info-circle"></i>
+              <span>Basic Information</span>
             </div>
-            
-            <div class="form-group">
-              <label>
-                <i class="fa-solid fa-layer-group"></i>
-                Category
-              </label>
-              <select id="product-category" required onchange="updatePageSelector()">
-                <option value="">Select Category</option>
-                <option value="accessories">Accessories</option>
-                <option value="essentials">Essentials</option>
-                <option value="newarrival">New Arrivals</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label>
-                <i class="fa-solid fa-indian-rupee-sign"></i>
-                Price (₹)
-              </label>
-              <input type="number" id="product-price" step="0.01" min="0" placeholder="e.g. 1999.99" required>
-            </div>
-            
-            <div class="form-group">
-              <label>
-                <i class="fa-solid fa-star"></i>
-                Rating
-              </label>
-              <input type="number" id="product-rating" step="0.1" min="0" max="5" placeholder="e.g. 4.5" required>
-            </div>
-            
-            <div class="form-group">
-              <label>
-                <i class="fa-solid fa-cubes"></i>
-                Stock Quantity
-              </label>
-              <input type="number" id="product-stock" placeholder="e.g. 50" value="10" required>
-            </div>
-            
-            <div class="form-group">
-              <label>
-                <i class="fa-solid fa-building"></i>
-                Brand
-              </label>
-              <input type="text" id="product-brand" placeholder="e.g. MyEssantia" value="MyEssantia">
-            </div>
-            
-            <div class="form-group full-width">
-              <label>
-                <i class="fa-solid fa-images"></i>
-                Product Media (Images & Videos)
-              </label>
-              <div class="media-upload-section">
-                <div class="media-tabs">
-                  <div class="media-tab active" onclick="switchMediaTab('images')" id="images-tab">
-                    <i class="fa-solid fa-image"></i> Images
-                  </div>
-                  <div class="media-tab" onclick="switchMediaTab('videos')" id="videos-tab">
-                    <i class="fa-solid fa-video"></i> Videos
-                  </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fa-solid fa-tag"></i> Product Title</label>
+                <div class="input-wrapper">
+                  <i class="input-icon fa-solid fa-pen"></i>
+                  <input type="text" id="product-title" placeholder="e.g. Premium Leather Cardholder" required>
                 </div>
-                
-                <div id="images-grid" class="media-grid">
-                  <!-- Image upload boxes will be generated here -->
+                <div class="field-hint"><i class="fa-regular fa-lightbulb"></i> Use a clear, descriptive title</div>
+              </div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-building"></i> Brand</label>
+                <div class="input-wrapper">
+                  <i class="input-icon fa-solid fa-copyright"></i>
+                  <input type="text" id="product-brand" placeholder="MyEssantia" value="MyEssantia">
                 </div>
-                
-                <div id="videos-grid" class="media-grid" style="display: none;">
-                  <!-- Video upload boxes will be generated here -->
-                </div>
-                
-                <input type="file" id="file-input" accept="image/*,video/*" style="display: none;" multiple onchange="handleFileSelect(event)">
               </div>
             </div>
-            
-            <div class="form-group full-width">
-              <label>
-                <i class="fa-solid fa-align-left"></i>
-                Short Description
-              </label>
-              <textarea id="product-short-desc" rows="2" placeholder="Brief description for product cards..."></textarea>
-            </div>
-            
-            <div class="form-group full-width">
-              <label>
-                <i class="fa-solid fa-align-justify"></i>
-                Full Description
-              </label>
-              <textarea id="product-description" rows="4" placeholder="Detailed product description..."></textarea>
-            </div>
-            
-            <div class="form-group full-width">
-              <label>
-                <i class="fa-solid fa-list"></i>
-                Specifications (One per line)
-              </label>
-              <textarea id="product-specs" rows="3" placeholder="e.g. Material: Premium Leather&#10;Dimensions: 10cm x 7cm&#10;Warranty: 1 Year"></textarea>
-            </div>
-            
-            <div class="form-group full-width">
-              <label>
-                <i class="fa-solid fa-eye"></i>
-                Show on Pages
-              </label>
-              <div class="page-selector" id="pageSelector">
-                <div class="page-option">
-                  <input type="checkbox" id="show-on-home">
-                  <label for="show-on-home" class="home-option">
-                    <i class="fa-solid fa-house"></i>
-                    Home Page
-                    <span class="page-badge-category">Manual only</span>
-                  </label>
-                </div>
-                <div class="page-option">
-                  <input type="checkbox" id="show-on-accessories">
-                  <label for="show-on-accessories">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    Accessories
-                    <span class="page-badge-category">Auto</span>
-                  </label>
-                </div>
-                <div class="page-option">
-                  <input type="checkbox" id="show-on-essentials">
-                  <label for="show-on-essentials">
-                    <i class="fa-solid fa-bolt"></i>
-                    Essentials
-                    <span class="page-badge-category">Auto</span>
-                  </label>
-                </div>
-                <div class="page-option">
-                  <input type="checkbox" id="show-on-new">
-                  <label for="show-on-new">
-                    <i class="fa-solid fa-star"></i>
-                    New-in
-                    <span class="page-badge-category">24h auto</span>
-                  </label>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fa-solid fa-layer-group"></i> Category</label>
+                <div class="input-wrapper">
+                  <i class="input-icon fa-solid fa-folder"></i>
+                  <select id="product-category" required>
+                    <option value="">Select Category</option>
+                    <option value="accessories">Accessories</option>
+                    <option value="essentials">Essentials</option>
+                    <option value="newarrival">New Arrivals</option>
+                  </select>
                 </div>
               </div>
-              <div class="auto-assign-note" id="autoAssignNote">
-                <i class="fa-solid fa-info-circle"></i>
-                <span>New products are auto-assigned to New-in for 24 hours. Category pages auto-sync with product category. Home page requires manual selection.</span>
+              <div class="form-group">
+                <label><i class="fa-solid fa-cubes"></i> Stock Quantity</label>
+                <div class="input-wrapper">
+                  <i class="input-icon fa-solid fa-boxes"></i>
+                  <input type="number" id="product-stock" placeholder="e.g. 50" value="10" min="0">
+                </div>
               </div>
             </div>
           </div>
-          
-          <div style="display: flex; flex-direction: column; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
+
+          <!-- Section 2: Pricing & Ratings -->
+          <div class="form-section">
+            <div class="form-section-title">
+              <i class="fa-solid fa-chart-line"></i>
+              <span>Pricing & Ratings</span>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label><i class="fa-solid fa-indian-rupee-sign"></i> Price (₹)</label>
+                <div class="input-wrapper">
+                  <i class="input-icon fa-solid fa-currency"></i>
+                  <input type="number" id="product-price" step="0.01" min="0" placeholder="1999.99" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-star"></i> Rating (0-5)</label>
+                <div class="input-wrapper">
+                  <i class="input-icon fa-solid fa-star"></i>
+                  <input type="number" id="product-rating" step="0.1" min="0" max="5" placeholder="4.5" required>
+                </div>
+                <div class="field-hint"><i class="fa-regular fa-lightbulb"></i> Average customer rating</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Media -->
+          <div class="form-section">
+            <div class="form-section-title">
+              <i class="fa-solid fa-images"></i>
+              <span>Product Media</span>
+            </div>
+            <div class="media-upload-section">
+              <div class="media-tabs">
+                <div class="media-tab active" onclick="switchMediaTab('images')" id="images-tab">
+                  <i class="fa-solid fa-image"></i> Images
+                </div>
+                <div class="media-tab" onclick="switchMediaTab('videos')" id="videos-tab">
+                  <i class="fa-solid fa-video"></i> Videos
+                </div>
+              </div>
+              <div id="images-grid" class="media-grid"></div>
+              <div id="videos-grid" class="media-grid" style="display:none;"></div>
+              <input type="file" id="file-input" accept="image/*,video/*" style="display:none;" multiple onchange="handleFileSelect(event)">
+            </div>
+            <div class="field-hint" style="margin-top: var(--spacing-sm);">
+              <i class="fa-regular fa-lightbulb"></i> Upload up to 4 images or videos. Drag to reorder.
+            </div>
+          </div>
+
+          <!-- Section 4: Descriptions -->
+          <div class="form-section">
+            <div class="form-section-title">
+              <i class="fa-solid fa-align-left"></i>
+              <span>Descriptions</span>
+            </div>
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label><i class="fa-solid fa-paragraph"></i> Short Description</label>
+                <div class="input-wrapper">
+                  <textarea id="product-short-desc" rows="2" placeholder="Brief description for product cards..."></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label><i class="fa-solid fa-align-justify"></i> Full Description</label>
+                <div class="input-wrapper">
+                  <textarea id="product-description" rows="4" placeholder="Detailed product description..."></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label><i class="fa-solid fa-list"></i> Specifications (one per line)</label>
+                <div class="input-wrapper">
+                  <textarea id="product-specs" rows="3" placeholder="e.g. Material: Premium Leather&#10;Dimensions: 10cm x 7cm&#10;Warranty: 1 Year"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 5: Page Visibility -->
+          <div class="form-section">
+            <div class="form-section-title">
+              <i class="fa-solid fa-eye"></i>
+              <span>Page Visibility</span>
+            </div>
+            <div class="page-selector">
+              <div class="page-chip">
+                <input type="checkbox" id="show-on-home">
+                <label for="show-on-home"><i class="fa-solid fa-house"></i> Home Page</label>
+              </div>
+              <div class="page-chip">
+                <input type="checkbox" id="show-on-accessories">
+                <label for="show-on-accessories"><i class="fa-solid fa-bag-shopping"></i> Accessories</label>
+              </div>
+              <div class="page-chip">
+                <input type="checkbox" id="show-on-essentials">
+                <label for="show-on-essentials"><i class="fa-solid fa-bolt"></i> Essentials</label>
+              </div>
+              <div class="page-chip">
+                <input type="checkbox" id="show-on-new">
+                <label for="show-on-new"><i class="fa-solid fa-star"></i> New In</label>
+              </div>
+            </div>
+
+            <!-- New In Status Display -->
+            <div id="newin-status-container" style="margin-top: var(--spacing-md); display: none;">
+              <div class="newin-status-badge">
+                <i class="fa-regular fa-clock"></i>
+                <span>New In: Auto-removes after 24 hours</span>
+                <span id="newin-timer" class="newin-timer" style="background:white; padding:2px 8px; border-radius:20px; margin-left:var(--spacing-sm);"></span>
+              </div>
+            </div>
+
+            <div class="auto-assign-note">
+              <i class="fa-solid fa-info-circle"></i>
+              <span id="auto-assign-message">
+                New products are automatically added to "New In" for 24 hours. 
+                Category pages auto-sync with product category. Home page requires manual selection.
+              </span>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
             <button type="submit" class="btn btn-primary">
-              <i class="fa-solid fa-save"></i>
-              Save Product
+              <i class="fa-solid fa-save"></i> Save Product
             </button>
             <button type="button" class="btn btn-outline" id="cancel-edit">
-              <i class="fa-solid fa-times"></i>
-              Cancel
+              <i class="fa-solid fa-times"></i> Cancel
             </button>
           </div>
         </form>
       </div>
+    </div>
 
-      <!-- Enhanced Rich Import Section -->
-      <div class="import-section">
-        <div class="import-header">
-          <h3>
-            <i class="fa-solid fa-paste"></i>
-            Smart Import & Media Positioning
-          </h3>
-          <div class="import-controls">
-            <select id="import-product-select">
-              <option value="">Select target product</option>
-            </select>
-            <input type="text" id="import-url" placeholder="Paste URL to fetch content...">
-            <button class="btn btn-success" onclick="fetchFromUrl()">
-              <i class="fa-solid fa-download"></i> Fetch
-            </button>
-          </div>
-        </div>
-        
-        <!-- Rich Paste Area -->
-        <div class="rich-paste-area" id="richPasteArea" 
-             ondragover="handleDragOver(event)" 
-             ondrop="handleDrop(event)"
-             onpaste="handleRichPaste(event)">
-          <div contenteditable="true" id="richContent" style="min-height: 200px;"></div>
-          <div class="rich-paste-placeholder" id="pastePlaceholder">
-            <i class="fa-solid fa-cloud-upload-alt"></i>
-            <p>Paste anywhere (Ctrl+V / Cmd+V)</p>
-            <small>Supports images, videos, text, and links from any platform</small>
-          </div>
-        </div>
-        
-        <!-- Position Order List -->
-        <div class="position-order-list" id="positionOrderList">
-          <span class="order-badge active">
-            <i class="fa-solid fa-grip-vertical"></i>
-            Drag to reorder imported items
-          </span>
-        </div>
-        
-        <!-- Paste Preview Grid -->
-        <div class="paste-preview-grid" id="pastePreview"></div>
-        
-        <!-- Import Actions -->
-        <div style="display: flex; flex-direction: column; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
-          <button class="btn btn-primary" onclick="importToProduct()">
-            <i class="fa-solid fa-arrow-right"></i>
-            Import to Selected Product
-          </button>
-          <button class="btn btn-outline" onclick="clearPasteArea()">
-            <i class="fa-solid fa-trash"></i>
-            Clear All
-          </button>
-        </div>
+    <!-- Products Table -->
+    <div class="products-table">
+      <div class="table-header">
+        <h3><i class="fa-solid fa-list"></i> Product Inventory</h3>
+        <span id="product-count"></span>
       </div>
 
-      <!-- Products Table -->
-      <div class="products-table">
-        <div class="table-header">
-          <h3>
-            <i class="fa-solid fa-list"></i> Product Inventory
-          </h3>
-          <span id="product-count"></span>
-        </div>
-        
-        <table id="products-table">
-          <thead>
-            <tr>
-              <th>Media</th>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Stock</th>
-              <th>Rating</th>
-              <th>Pages</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="products-list"></tbody>
-        </table>
-        
-        <div id="empty-products" class="empty-state" style="display: none;">
-          <i class="fa-solid fa-box-open"></i>
-          <h3>No Products Yet</h3>
-          <p>Add your first product using the form above to get started!</p>
-        </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Media</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Rating</th>
+            <th>Pages</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="products-list"></tbody>
+      </table>
+
+      <div id="empty-products" class="empty-state" style="display:none;">
+        <i class="fa-solid fa-box-open"></i>
+        <h3>No Products Yet</h3>
+        <p>Add your first product using the form above.</p>
       </div>
     </div>
   </div>
 
   <script>
-    // Mobile menu toggle
-    function toggleMenu() {
-      const navMenu = document.getElementById('navMenu');
-      const toggleBtn = document.querySelector('.menu-toggle');
-      navMenu.classList.toggle('active');
-      toggleBtn.classList.toggle('active');
-    }
-
-    // Close menu on link click for mobile
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.addEventListener('click', () => {
-        if (window.innerWidth < 768) {
-          document.getElementById('navMenu').classList.remove('active');
-          document.querySelector('.menu-toggle').classList.remove('active');
-        }
-      });
-    });
-
+    // ---------- Core Data ----------
     let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
     let productMedia = { images: [], videos: [] };
     let currentMediaTab = 'images';
-    let selectedProductForImport = null;
-    let importedMedia = [];
-    let draggedIndex = null;
-    
-    // Get today's date for new-in auto assignment
-    const today = new Date().toDateString();
 
     // DOM Elements
     const productForm = document.getElementById('product-form');
     const productId = document.getElementById('product-id');
+    const productCreationDate = document.getElementById('product-creation-date');
     const productTitle = document.getElementById('product-title');
     const productCategory = document.getElementById('product-category');
     const productPrice = document.getElementById('product-price');
@@ -2117,10 +1158,12 @@
     const showOnAccessories = document.getElementById('show-on-accessories');
     const showOnEssentials = document.getElementById('show-on-essentials');
     const showOnNew = document.getElementById('show-on-new');
+    const newinStatusContainer = document.getElementById('newin-status-container');
+    const newinTimer = document.getElementById('newin-timer');
     const productsList = document.getElementById('products-list');
     const emptyProducts = document.getElementById('empty-products');
     const totalProducts = document.getElementById('total-products');
-    const homeProducts = document.getElementById('home-products');
+    const newinProducts = document.getElementById('newin-products');
     const totalStock = document.getElementById('total-stock');
     const productCount = document.getElementById('product-count');
     const formTitle = document.getElementById('form-title');
@@ -2129,9 +1172,10 @@
     const imagesGrid = document.getElementById('images-grid');
     const videosGrid = document.getElementById('videos-grid');
     const fileInput = document.getElementById('file-input');
-    const autoAssignNote = document.getElementById('autoAssignNote');
+    const autoAssignMessage = document.getElementById('auto-assign-message');
 
     let filteredProducts = [...products];
+    let newInCheckInterval = null;
 
     // Initialize media arrays
     function initializeMediaArrays() {
@@ -2140,712 +1184,184 @@
     }
     initializeMediaArrays();
 
-    // Update page selector based on category and date
-    function updatePageSelector() {
-      const category = productCategory.value;
-      
-      // Auto-assign based on category
-      showOnAccessories.checked = (category === 'accessories');
-      showOnEssentials.checked = (category === 'essentials');
-      
-      // Auto-assign new arrivals for today (only for new products)
-      if (!productId.value) { // Only for new products
-        showOnNew.checked = true;
-      }
-      
-      // Update note based on selection
-      updateAutoAssignNote();
-    }
+    // New In Management
+    function updateNewInStatus() {
+      const now = new Date();
+      let changed = false;
 
-    // Update auto-assign note
-    function updateAutoAssignNote() {
-      const category = productCategory.value;
-      let message = 'New products are auto-assigned to New-in for 24 hours. ';
-      
-      if (category) {
-        message += `Products in "${category}" category are auto-assigned to the ${category} page. `;
-      }
-      
-      message += 'Home page requires manual selection.';
-      autoAssignNote.querySelector('span').textContent = message;
-    }
-
-    // Check if product is still new (within 24 hours)
-    function isProductNew(creationDate) {
-      if (!creationDate) return false;
-      const productDate = new Date(creationDate).toDateString();
-      return productDate === today;
-    }
-
-    // Rich paste functionality
-    const richContent = document.getElementById('richContent');
-    const pastePlaceholder = document.getElementById('pastePlaceholder');
-    const pastePreview = document.getElementById('pastePreview');
-    const positionOrderList = document.getElementById('positionOrderList');
-
-    // Handle paste events
-    window.handleRichPaste = function(event) {
-      event.preventDefault();
-      
-      // Hide placeholder
-      pastePlaceholder.style.display = 'none';
-      
-      // Get clipboard data
-      const items = (event.clipboardData || window.clipboardData).items;
-      
-      // Process each item
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        
-        if (item.type.indexOf('image') !== -1) {
-          // Handle image
-          const blob = item.getAsFile();
-          const reader = new FileReader();
-          
-          reader.onload = function(e) {
-            addImportedMedia({
-              type: 'image',
-              url: e.target.result,
-              name: 'Pasted image',
-              position: importedMedia.length
-            });
-          };
-          
-          reader.readAsDataURL(blob);
-        } else if (item.type.indexOf('video') !== -1) {
-          // Handle video
-          const blob = item.getAsFile();
-          const reader = new FileReader();
-          
-          reader.onload = function(e) {
-            addImportedMedia({
-              type: 'video',
-              url: e.target.result,
-              name: 'Pasted video',
-              position: importedMedia.length
-            });
-          };
-          
-          reader.readAsDataURL(blob);
-        } else if (item.type === 'text/html' || item.type === 'text/plain') {
-          // Handle text/html
-          item.getAsString(function(text) {
-            // Parse HTML for images/videos
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = text;
-            
-            // Extract images
-            const images = tempDiv.querySelectorAll('img');
-            images.forEach(img => {
-              if (img.src) {
-                fetchAndAddMedia(img.src, 'image');
-              }
-            });
-            
-            // Extract videos
-            const videos = tempDiv.querySelectorAll('video');
-            videos.forEach(video => {
-              if (video.src) {
-                fetchAndAddMedia(video.src, 'video');
-              }
-            });
-            
-            // Add text content
-            if (tempDiv.innerText.trim()) {
-              addImportedMedia({
-                type: 'text',
-                content: tempDiv.innerText,
-                position: importedMedia.length
-              });
-            }
-          });
-        }
-      }
-      
-      // Clear contenteditable
-      richContent.innerHTML = '';
-    };
-
-    // Fetch and add media from URL
-    async function fetchAndAddMedia(url, type) {
-      try {
-        // For demo purposes, we'll create a proxy to fetch the image
-        // In production, you'd need a proper proxy server
-        const response = await fetch(url);
-        const blob = await response.blob();
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-          addImportedMedia({
-            type: type,
-            url: e.target.result,
-            originalUrl: url,
-            position: importedMedia.length
-          });
-        };
-        
-        reader.readAsDataURL(blob);
-      } catch (error) {
-        console.error('Error fetching media:', error);
-        // Fallback: store URL reference
-        addImportedMedia({
-          type: type,
-          url: url,
-          isExternal: true,
-          position: importedMedia.length
-        });
-      }
-    }
-
-    // Handle drag and over
-    window.handleDragOver = function(event) {
-      event.preventDefault();
-      event.currentTarget.classList.add('dragover');
-    };
-
-    window.handleDrop = function(event) {
-      event.preventDefault();
-      event.currentTarget.classList.remove('dragover');
-      
-      const files = event.dataTransfer.files;
-      
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-        const type = file.type.startsWith('video/') ? 'video' : 'image';
-        
-        reader.onload = function(e) {
-          addImportedMedia({
-            type: type,
-            url: e.target.result,
-            name: file.name,
-            file: file,
-            position: importedMedia.length
-          });
-        };
-        
-        reader.readAsDataURL(file);
-      }
-    };
-
-    // Add imported media
-    function addImportedMedia(media) {
-      importedMedia.push(media);
-      renderImportedMedia();
-      updatePositionOrder();
-    }
-
-    // Render imported media preview
-    function renderImportedMedia() {
-      pastePreview.innerHTML = importedMedia.map((media, index) => `
-        <div class="paste-preview-item" draggable="true" ondragstart="handleDragStart(event, ${index})" ondragover="handleDragOverItem(event)" ondrop="handleDropItem(event, ${index})">
-          ${media.type === 'video' ? 
-            `<video src="${media.url}" controls></video>` : 
-            media.type === 'image' ?
-            `<img src="${media.url}" alt="Imported media">` :
-            `<div style="padding: var(--spacing-md); background: var(--color-background); height: 100%; display: flex; align-items: center; justify-content: center; text-align: center;">
-              <div>
-                <i class="fa-solid fa-quote-right" style="font-size: 2rem; color: var(--color-primary); margin-bottom: var(--spacing-sm);"></i>
-                <p style="font-size: var(--font-size-xs);">${media.content.substring(0, 50)}...</p>
-              </div>
-            </div>`
-          }
-          <span class="item-type">
-            <i class="fa-solid fa-${media.type === 'video' ? 'video' : media.type === 'image' ? 'image' : 'quote-right'}"></i>
-          </span>
-          <span class="item-position">Position ${index + 1}</span>
-          <div class="item-actions">
-            <button onclick="moveMediaUp(${index})" ${index === 0 ? 'disabled' : ''} title="Move up">
-              <i class="fa-solid fa-arrow-up"></i>
-            </button>
-            <button onclick="moveMediaDown(${index})" ${index === importedMedia.length - 1 ? 'disabled' : ''} title="Move down">
-              <i class="fa-solid fa-arrow-down"></i>
-            </button>
-            <button class="delete-btn" onclick="removeImportedMedia(${index})" title="Delete">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Update position order list
-    function updatePositionOrder() {
-      if (importedMedia.length === 0) {
-        positionOrderList.innerHTML = '<span class="order-badge active"><i class="fa-solid fa-grip-vertical"></i> No items to order</span>';
-        return;
-      }
-      
-      positionOrderList.innerHTML = importedMedia.map((media, index) => `
-        <span class="order-badge ${index === 0 ? 'active' : ''}" draggable="true" ondragstart="handleOrderDragStart(event, ${index})" ondragover="handleOrderDragOver(event)" ondrop="handleOrderDrop(event, ${index})">
-          <i class="fa-solid fa-grip-vertical"></i>
-          ${index + 1}. ${media.type} ${media.name ? `- ${media.name.substring(0, 15)}` : ''}
-        </span>
-      `).join('');
-    }
-
-    // Drag and drop handlers for reordering
-    window.handleDragStart = function(event, index) {
-      draggedIndex = index;
-      event.dataTransfer.setData('text/plain', index);
-      event.currentTarget.classList.add('dragging');
-    };
-
-    window.handleDragOverItem = function(event) {
-      event.preventDefault();
-    };
-
-    window.handleDropItem = function(event, targetIndex) {
-      event.preventDefault();
-      event.currentTarget.classList.remove('dragging');
-      if (draggedIndex !== null && draggedIndex !== targetIndex) {
-        reorderMedia(draggedIndex, targetIndex);
-      }
-      draggedIndex = null;
-    };
-
-    window.handleOrderDragStart = function(event, index) {
-      draggedIndex = index;
-      event.dataTransfer.setData('text/plain', index);
-    };
-
-    window.handleOrderDragOver = function(event) {
-      event.preventDefault();
-    };
-
-    window.handleOrderDrop = function(event, targetIndex) {
-      event.preventDefault();
-      if (draggedIndex !== null && draggedIndex !== targetIndex) {
-        reorderMedia(draggedIndex, targetIndex);
-      }
-      draggedIndex = null;
-    };
-
-    // Reorder media
-    function reorderMedia(fromIndex, toIndex) {
-      const [movedItem] = importedMedia.splice(fromIndex, 1);
-      importedMedia.splice(toIndex, 0, movedItem);
-      renderImportedMedia();
-      updatePositionOrder();
-    }
-
-    // Move media up/down
-    window.moveMediaUp = function(index) {
-      if (index > 0) {
-        reorderMedia(index, index - 1);
-      }
-    };
-
-    window.moveMediaDown = function(index) {
-      if (index < importedMedia.length - 1) {
-        reorderMedia(index, index + 1);
-      }
-    };
-
-    // Remove imported media
-    window.removeImportedMedia = function(index) {
-      importedMedia.splice(index, 1);
-      renderImportedMedia();
-      updatePositionOrder();
-      
-      if (importedMedia.length === 0) {
-        pastePlaceholder.style.display = 'block';
-      }
-    };
-
-    // Clear paste area
-    window.clearPasteArea = function() {
-      importedMedia = [];
-      richContent.innerHTML = '';
-      pastePlaceholder.style.display = 'block';
-      renderImportedMedia();
-      updatePositionOrder();
-    };
-
-    // Fetch from URL
-    window.fetchFromUrl = function() {
-      const url = document.getElementById('import-url').value;
-      if (!url) {
-        showNotification('Please enter a URL', 'error');
-        return;
-      }
-      
-      showNotification('Fetching content...', 'info');
-      
-      // Determine content type from URL
-      const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
-      const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(url);
-      
-      if (isImage) {
-        fetchAndAddMedia(url, 'image');
-        showNotification('Image fetched successfully', 'success');
-      } else if (isVideo) {
-        fetchAndAddMedia(url, 'video');
-        showNotification('Video fetched successfully', 'success');
-      } else {
-        // Try to fetch as HTML page
-        fetch(url)
-          .then(response => response.text())
-          .then(html => {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-            
-            // Extract meta image
-            const ogImage = tempDiv.querySelector('meta[property="og:image"]');
-            if (ogImage && ogImage.content) {
-              fetchAndAddMedia(ogImage.content, 'image');
-            }
-            
-            // Extract product images
-            const productImages = tempDiv.querySelectorAll('[data-product-image], .product-image img, .gallery-image img');
-            productImages.forEach(img => {
-              if (img.src) {
-                fetchAndAddMedia(img.src, 'image');
-              }
-            });
-            
-            // Extract title and description
-            const title = tempDiv.querySelector('meta[property="og:title"]')?.content || 
-                         tempDiv.querySelector('title')?.textContent;
-            const description = tempDiv.querySelector('meta[property="og:description"]')?.content ||
-                              tempDiv.querySelector('meta[name="description"]')?.content;
-            
-            if (title || description) {
-              addImportedMedia({
-                type: 'text',
-                content: `${title || ''}\n\n${description || ''}`,
-                position: importedMedia.length
-              });
-            }
-            
-            showNotification('Content fetched successfully', 'success');
-          })
-          .catch(error => {
-            console.error('Error fetching URL:', error);
-            showNotification('Error fetching content from URL', 'error');
-          });
-      }
-    };
-
-    // Import to selected product
-    window.importToProduct = function() {
-      const productId = document.getElementById('import-product-select').value;
-      if (!productId) {
-        showNotification('Please select a target product', 'error');
-        return;
-      }
-      
-      const product = products.find(p => p.id === parseInt(productId));
-      if (!product) return;
-      
-      // Initialize media arrays if not exists
-      if (!product.media) {
-        product.media = { images: [], videos: [] };
-      }
-      
-      // Add imported media to product based on position
-      let imagesAdded = 0;
-      let videosAdded = 0;
-      let textsAdded = 0;
-      
-      importedMedia.forEach((media, index) => {
-        if (media.type === 'image') {
-          if (!product.media.images) product.media.images = [];
-          product.media.images.push({
-            url: media.url,
-            position: index,
-            name: media.name || `Image ${product.media.images.length + 1}`
-          });
-          imagesAdded++;
-        } else if (media.type === 'video') {
-          if (!product.media.videos) product.media.videos = [];
-          product.media.videos.push({
-            url: media.url,
-            position: index,
-            name: media.name || `Video ${product.media.videos.length + 1}`
-          });
-          videosAdded++;
-        } else if (media.type === 'text') {
-          // Add text as description or spec
-          if (!product.description) {
-            product.description = media.content;
-          } else {
-            product.description += '\n\n' + media.content;
-          }
-          textsAdded++;
-        }
-      });
-      
-      // Save products
-      saveProducts();
-      
-      // Show success message
-      showNotification(`Imported ${imagesAdded} images, ${videosAdded} videos, ${textsAdded} texts to ${product.title}`, 'success');
-      
-      // Clear import area
-      clearPasteArea();
-      
-      // Refresh product select
-      updateImportProductSelect();
-    };
-
-    // Update import product select
-    function updateImportProductSelect() {
-      const select = document.getElementById('import-product-select');
-      select.innerHTML = '<option value="">Select target product</option>';
       products.forEach(product => {
-        select.innerHTML += `<option value="${product.id}">${product.title}</option>`;
-      });
-    }
-
-    // Switch between media tabs
-    window.switchMediaTab = function(tab) {
-      currentMediaTab = tab;
-      document.getElementById('images-tab').classList.toggle('active', tab === 'images');
-      document.getElementById('videos-tab').classList.toggle('active', tab === 'videos');
-      document.getElementById('images-grid').style.display = tab === 'images' ? 'grid' : 'none';
-      document.getElementById('videos-grid').style.display = tab === 'videos' ? 'grid' : 'none';
-      initializeMediaUpload();
-    };
-
-    // Initialize media upload
-    function initializeMediaUpload() {
-      const media = currentMediaTab === 'images' ? productMedia.images : productMedia.videos;
-      const grid = currentMediaTab === 'images' ? imagesGrid : videosGrid;
-      
-      let html = '';
-      const maxItems = 4;
-      
-      for (let i = 0; i < maxItems; i++) {
-        if (media[i]) {
-          const isVideo = media[i].type === 'video' || (media[i].url && media[i].url.includes('video'));
-          html += `
-            <div class="media-preview">
-              ${isVideo ? `
-                <video src="${media[i].url}" controls></video>
-                <div class="video-indicator">
-                  <i class="fa-solid fa-video"></i> Video
-                </div>
-              ` : `
-                <img src="${media[i].url}" alt="Product image">
-              `}
-              <div class="media-position">Position ${i + 1}</div>
-              <div class="position-controls">
-                <button onclick="moveUploadedMedia(${i}, 'up')" ${i === 0 ? 'disabled' : ''} title="Move up">
-                  <i class="fa-solid fa-arrow-up"></i>
-                </button>
-                <button onclick="moveUploadedMedia(${i}, 'down')" ${i === maxItems - 1 ? 'disabled' : ''} title="Move down">
-                  <i class="fa-solid fa-arrow-down"></i>
-                </button>
-              </div>
-              <div class="remove-media" onclick="removeMedia(${i})" title="Remove">
-                <i class="fa-solid fa-times"></i>
-              </div>
-            </div>
-          `;
-        } else {
-          const isVideo = currentMediaTab === 'videos';
-          html += `
-            <div class="upload-box ${isVideo ? 'video-box' : ''}" onclick="triggerFileUpload(${i})">
-              <i class="fa-solid fa-${isVideo ? 'video' : 'cloud-upload-alt'}"></i>
-              <span>Upload ${isVideo ? 'Video' : 'Image'} ${i + 1}</span>
-            </div>
-          `;
-        }
-      }
-      
-      grid.innerHTML = html;
-    }
-
-    // Move uploaded media
-    window.moveUploadedMedia = function(index, direction) {
-      const media = currentMediaTab === 'images' ? productMedia.images : productMedia.videos;
-      
-      if (direction === 'up' && index > 0) {
-        [media[index], media[index - 1]] = [media[index - 1], media[index]];
-      } else if (direction === 'down' && index < media.length - 1) {
-        [media[index], media[index + 1]] = [media[index + 1], media[index]];
-      }
-      
-      initializeMediaUpload();
-    };
-
-    // Trigger file upload
-    window.triggerFileUpload = function(index) {
-      fileInput.setAttribute('data-index', index);
-      fileInput.setAttribute('data-type', currentMediaTab);
-      fileInput.click();
-    };
-
-    // Handle file selection
-    window.handleFileSelect = function(event) {
-      const files = event.target.files;
-      const index = parseInt(fileInput.getAttribute('data-index'));
-      const type = fileInput.getAttribute('data-type');
-      
-      if (files && files[0]) {
-        const file = files[0];
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-          const mediaData = {
-            url: e.target.result,
-            type: file.type.startsWith('video/') ? 'video' : 'image',
-            name: file.name,
-            size: file.size
-          };
+        if (product.creationDate) {
+          const creationDate = new Date(product.creationDate);
+          const hoursDiff = (now - creationDate) / (1000 * 60 * 60);
           
-          if (type === 'images' && mediaData.type === 'image') {
-            productMedia.images[index] = mediaData;
-          } else if (type === 'videos' && mediaData.type === 'video') {
-            productMedia.videos[index] = mediaData;
-          } else {
-            showNotification(`Please select a ${type === 'images' ? 'image' : 'video'} file.`, 'error');
-            return;
+          if (hoursDiff >= 24 && product.showOnNew) {
+            product.showOnNew = false;
+            changed = true;
+          } else if (hoursDiff < 24 && !product.showOnNew) {
+            product.showOnNew = true;
+            changed = true;
           }
-          
-          initializeMediaUpload();
-        };
-        
-        reader.readAsDataURL(file);
-      }
-    };
+        }
+      });
 
-    // Remove media
-    window.removeMedia = function(index) {
-      if (currentMediaTab === 'images') {
-        productMedia.images[index] = null;
+      if (changed) {
+        saveProducts();
+        renderProducts();
+        updateStats();
+        showNotification('New In status updated automatically', 'info');
+      }
+    }
+
+    function startNewInMonitor() {
+      if (newInCheckInterval) clearInterval(newInCheckInterval);
+      updateNewInStatus();
+      newInCheckInterval = setInterval(updateNewInStatus, 60000);
+    }
+
+    function getTimeRemaining(creationDate) {
+      if (!creationDate) return null;
+      const now = new Date();
+      const creation = new Date(creationDate);
+      const expiryTime = new Date(creation.getTime() + 24 * 60 * 60 * 1000);
+      if (now >= expiryTime) return null;
+      const diffMs = expiryTime - now;
+      const hours = Math.floor(diffMs / (1000 * 60 * 60));
+      const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      return `${hours}h ${minutes}m`;
+    }
+
+    function updateCurrentProductTimer() {
+      if (productId.value && showOnNew.checked) {
+        const product = products.find(p => p.id === parseInt(productId.value));
+        if (product && product.creationDate) {
+          const timeLeft = getTimeRemaining(product.creationDate);
+          if (timeLeft) {
+            newinStatusContainer.style.display = 'block';
+            newinTimer.textContent = timeLeft;
+          } else {
+            newinStatusContainer.style.display = 'none';
+          }
+        }
       } else {
-        productMedia.videos[index] = null;
+        newinStatusContainer.style.display = 'none';
       }
-      initializeMediaUpload();
-    };
+    }
 
-    // Save products to localStorage
     function saveProducts() {
       localStorage.setItem('MyEssantia_products', JSON.stringify(products));
       updateStats();
       filterProducts();
-      updateImportProductSelect();
     }
 
-    // Update statistics
     function updateStats() {
       totalProducts.textContent = products.length;
-      homeProducts.textContent = products.filter(p => p.showOnHome).length;
+      const now = new Date();
+      const newInCount = products.filter(p => {
+        if (!p.creationDate) return false;
+        const creationDate = new Date(p.creationDate);
+        return (now - creationDate) < (24 * 60 * 60 * 1000);
+      }).length;
+      newinProducts.textContent = newInCount;
       const totalStockValue = products.reduce((sum, p) => sum + (p.stock || 0), 0);
       totalStock.textContent = totalStockValue;
-      productCount.textContent = `${products.length} products in inventory`;
+      productCount.textContent = `${products.length} products`;
     }
 
-    // Filter products based on search
     function filterProducts() {
-      const searchTerm = searchInput.value.toLowerCase();
+      const term = searchInput.value.toLowerCase();
       filteredProducts = products.filter(p => 
-        p.title.toLowerCase().includes(searchTerm) ||
-        p.category.toLowerCase().includes(searchTerm) ||
-        (p.brand && p.brand.toLowerCase().includes(searchTerm))
+        p.title.toLowerCase().includes(term) ||
+        p.category.toLowerCase().includes(term) ||
+        (p.brand && p.brand.toLowerCase().includes(term))
       );
       renderProducts();
     }
 
-    // Render products table
     function renderProducts() {
-      if (filteredProducts.length === 0) {
-        if (products.length === 0) {
-          emptyProducts.style.display = 'block';
-          productsList.innerHTML = '';
-        } else {
-          productsList.innerHTML = `
-            <tr>
-              <td colspan="8" style="text-align: center; padding: var(--spacing-xl); color: var(--color-text-lighter);">
-                <i class="fa-solid fa-search" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                <p style="font-size: var(--font-size-lg);">No products match your search.</p>
-                <p style="font-size: var(--font-size-base);">Try different keywords or clear the search.</p>
-              </td>
-            </tr>
-          `;
-          emptyProducts.style.display = 'none';
-        }
+      if (filteredProducts.length === 0 && products.length === 0) {
+        emptyProducts.style.display = 'block';
+        productsList.innerHTML = '';
         return;
       }
-
       emptyProducts.style.display = 'none';
-      
       productsList.innerHTML = filteredProducts.map(product => {
         const pages = [];
         if (product.showOnHome) pages.push('<span class="page-badge home"><i class="fa-solid fa-house"></i> Home</span>');
         if (product.showOnAccessories) pages.push('<span class="page-badge accessories"><i class="fa-solid fa-bag-shopping"></i> Acc</span>');
         if (product.showOnEssentials) pages.push('<span class="page-badge essentials"><i class="fa-solid fa-bolt"></i> Ess</span>');
-        if (product.showOnNew) pages.push('<span class="page-badge new"><i class="fa-solid fa-star"></i> New</span>');
         
-        let mainMedia = '';
-        if (product.media && product.media.images && product.media.images[0]) {
-          mainMedia = product.media.images[0].url;
-        } else if (product.media && product.media.videos && product.media.videos[0]) {
-          mainMedia = product.media.videos[0].url;
-        } else {
-          mainMedia = 'https://via.placeholder.com/70/f0f0f0/999999?text=No+Image';
-        }
+        const isNewIn = product.creationDate && 
+                        (new Date() - new Date(product.creationDate)) < (24 * 60 * 60 * 1000);
         
-        const hasVideo = product.media && product.media.videos && product.media.videos.length > 0;
-        const isNew = product.creationDate && isProductNew(product.creationDate);
+        let mainMedia = product.primaryImg || 
+                       (product.media?.images?.[0]?.url) || 
+                       (product.media?.videos?.[0]?.url) || 
+                       'https://via.placeholder.com/70/f0f0f0/999999?text=No+Image';
         
-        return `
-          <tr>
-            <td>
-              <div class="product-thumb ${hasVideo ? 'video-thumb' : ''}" style="background-image: url('${mainMedia}')" onclick="window.open('product.html?id=${product.id}', '_blank')" title="View product"></div>
-            </td>
-            <td>
-              <strong>${product.title}</strong>
-              ${product.brand ? `<div style="font-size: var(--font-size-xs); color: var(--color-text-lighter); margin-top: var(--spacing-xs);">${product.brand}</div>` : ''}
-              ${isNew ? '<span style="background: var(--color-warning); color: var(--color-secondary); padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; margin-left: var(--spacing-xs);">NEW</span>' : ''}
-            </td>
-            <td><span style="text-transform: capitalize; font-weight: 500;">${product.category}</span></td>
-            <td><strong style="color: var(--color-primary); font-size: var(--font-size-lg);">₹${product.price ? product.price.toFixed(2) : '0.00'}</strong></td>
-            <td>
-              <span style="color: ${product.stock > 10 ? 'var(--color-success)' : (product.stock > 0 ? 'var(--color-warning)' : 'var(--color-danger)')}; font-weight: 600; background: ${product.stock > 10 ? 'var(--color-success-light)' : (product.stock > 0 ? 'var(--color-warning-light)' : 'var(--color-danger-light)')}; padding: var(--spacing-xs) var(--spacing-sm); border-radius: 20px;">
-                ${product.stock || 0} units
-              </span>
-            </td>
-            <td>
-              <span style="font-weight: 600;">${product.rating ? product.rating.toFixed(1) : '0.0'}</span> 
-              <i class="fa-solid fa-star" style="color: var(--color-primary);"></i>
-            </td>
-            <td>
-              <div class="page-badges">
-                ${pages.join(' ')}
-              </div>
-            </td>
-            <td>
-              <div class="action-btns">
-                <button class="view-btn" onclick="window.open('product.html?id=${product.id}', '_blank')" title="View">
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-                <button class="edit-btn" onclick="editProduct(${product.id})" title="Edit">
-                  <i class="fa-solid fa-edit"></i>
-                </button>
-                <button class="delete-btn" onclick="deleteProduct(${product.id})" title="Delete">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
+        const hasVideo = product.media?.videos?.length > 0;
+        
+        return `<tr>
+          <td>
+            <div class="product-thumb ${hasVideo ? 'video-thumb' : ''}" 
+                 style="background-image: url('${mainMedia}')" 
+                 onclick="window.open('product.html?id=${product.id}', '_blank')">
+            </div>
+          </td>
+          <td>
+            <strong>${product.title}</strong>
+            ${isNewIn ? '<span class="newin-badge"><i class="fa-regular fa-clock"></i> NEW</span>' : ''}
+            ${product.brand ? `<div style="font-size:var(--font-size-xs); color:var(--color-text-lighter);">${product.brand}</div>` : ''}
+          </td>
+          <td>${product.category}</td>
+          <td><strong>₹${product.price?.toFixed(2)}</strong></td>
+          <td>
+            <span style="background:${product.stock > 10 ? '#E8F5E8' : (product.stock > 0 ? '#FFF3E0' : '#FFEBEE')}; 
+                         padding:4px 12px; border-radius:20px;">
+              ${product.stock || 0}
+            </span>
+          </td>
+          <td>${product.rating?.toFixed(1)} <i class="fa-solid fa-star" style="color:var(--color-primary);"></i></td>
+          <td><div style="display:flex; gap:4px; flex-wrap:wrap;">${pages.join(' ')}</div></td>
+          <td>
+            <div class="action-btns">
+              <button class="view-btn" onclick="window.open('product.html?id=${product.id}', '_blank')">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+              <button class="edit-btn" onclick="editProduct(${product.id})">
+                <i class="fa-solid fa-edit"></i>
+              </button>
+              <button class="delete-btn" onclick="deleteProduct(${product.id})">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>`;
       }).join('');
-      
       updateStats();
     }
 
-    // Add or Update product
+    function updateCategorySync() {
+      const category = productCategory.value;
+      showOnAccessories.checked = (category === 'accessories');
+      showOnEssentials.checked = (category === 'essentials');
+      let message = 'New products are automatically added to "New In" for 24 hours. ';
+      if (category) {
+        message += `Products in "${category}" category are auto-assigned to the ${category} page. `;
+      }
+      message += 'Home page requires manual selection.';
+      autoAssignMessage.textContent = message;
+    }
+
+    productCategory.addEventListener('change', updateCategorySync);
+
     productForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const filteredImages = productMedia.images.filter(img => img !== null);
-      const filteredVideos = productMedia.videos.filter(vid => vid !== null);
-      
-      // Format price to 2 decimal places
+      const filteredImages = productMedia.images.filter(i => i !== null);
+      const filteredVideos = productMedia.videos.filter(v => v !== null);
       const price = parseFloat(productPrice.value).toFixed(2);
+      
+      const now = new Date().toISOString();
       
       const productData = {
         title: productTitle.value,
@@ -2859,29 +1375,30 @@
           videos: filteredVideos
         },
         primaryImg: filteredImages[0]?.url || filteredVideos[0]?.url || '',
-        shortDesc: productShortDesc.value || '',
-        description: productDescription.value || '',
+        shortDesc: productShortDesc.value,
+        description: productDescription.value,
         specs: productSpecs.value ? productSpecs.value.split('\n').filter(s => s.trim()) : [],
         showOnHome: showOnHome.checked,
         showOnAccessories: showOnAccessories.checked,
         showOnEssentials: showOnEssentials.checked,
-        showOnNew: showOnNew.checked,
-        updatedAt: new Date().toISOString()
+        showOnNew: true,
+        updatedAt: now
       };
 
       if (productId.value) {
-        // Update existing product
         const index = products.findIndex(p => p.id === parseInt(productId.value));
         if (index !== -1) {
-          // Preserve creation date
           productData.creationDate = products[index].creationDate;
+          const creationDate = new Date(productData.creationDate);
+          const hoursSinceCreation = (new Date() - creationDate) / (1000 * 60 * 60);
+          productData.showOnNew = hoursSinceCreation < 24;
           products[index] = { ...products[index], ...productData };
           showNotification('Product updated successfully!', 'success');
         }
       } else {
-        // Add new product with creation date
         const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-        productData.creationDate = new Date().toISOString();
+        productData.creationDate = now;
+        productData.showOnNew = true;
         products.push({ id: newId, ...productData });
         showNotification('Product added successfully!', 'success');
       }
@@ -2891,12 +1408,12 @@
       resetForm();
     });
 
-    // Edit product
     window.editProduct = function(id) {
       const product = products.find(p => p.id === id);
       if (!product) return;
 
       productId.value = product.id;
+      productCreationDate.value = product.creationDate || '';
       productTitle.value = product.title;
       productCategory.value = product.category;
       productPrice.value = product.price;
@@ -2906,32 +1423,26 @@
       productShortDesc.value = product.shortDesc || '';
       productDescription.value = product.description || '';
       productSpecs.value = product.specs ? product.specs.join('\n') : '';
-      
-      if (product.media) {
-        productMedia.images = product.media.images || [];
-        productMedia.videos = product.media.videos || [];
-      } else {
-        productMedia.images = [];
-        productMedia.videos = [];
-      }
-      
+
+      productMedia.images = product.media?.images ? [...product.media.images] : [];
+      productMedia.videos = product.media?.videos ? [...product.media.videos] : [];
       while (productMedia.images.length < 4) productMedia.images.push(null);
       while (productMedia.videos.length < 4) productMedia.videos.push(null);
       
-      initializeMediaUpload();
-      
+      renderMediaGrid();
+
       showOnHome.checked = product.showOnHome || false;
       showOnAccessories.checked = product.showOnAccessories || false;
       showOnEssentials.checked = product.showOnEssentials || false;
       showOnNew.checked = product.showOnNew || false;
-      
+
       formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> Edit Product';
+      updateCurrentProductTimer();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Delete product
     window.deleteProduct = function(id) {
-      if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+      if (confirm('Are you sure you want to delete this product?')) {
         products = products.filter(p => p.id !== id);
         saveProducts();
         renderProducts();
@@ -2940,123 +1451,179 @@
       }
     };
 
-    // Reset form
     function resetForm() {
       productForm.reset();
       productId.value = '';
+      productCreationDate.value = '';
       productMedia = { images: new Array(4).fill(null), videos: new Array(4).fill(null) };
-      initializeMediaUpload();
-      
-      // Reset page selector
+      renderMediaGrid();
       showOnHome.checked = false;
       showOnAccessories.checked = false;
       showOnEssentials.checked = false;
-      showOnNew.checked = true; // New products always on new-in by default
-      
+      showOnNew.checked = false;
+      newinStatusContainer.style.display = 'none';
       formTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add New Product';
-      updateAutoAssignNote();
+      updateCategorySync();
     }
 
-    // Cancel edit
     cancelEdit.addEventListener('click', resetForm);
 
-    // Search functionality
+    // Media functions
+    window.switchMediaTab = function(tab) {
+      currentMediaTab = tab;
+      document.getElementById('images-tab').classList.toggle('active', tab === 'images');
+      document.getElementById('videos-tab').classList.toggle('active', tab === 'videos');
+      imagesGrid.style.display = tab === 'images' ? 'grid' : 'none';
+      videosGrid.style.display = tab === 'videos' ? 'grid' : 'none';
+      renderMediaGrid();
+    };
+
+    function renderMediaGrid() {
+      const media = currentMediaTab === 'images' ? productMedia.images : productMedia.videos;
+      const grid = currentMediaTab === 'images' ? imagesGrid : videosGrid;
+      
+      let html = '';
+      for (let i = 0; i < 4; i++) {
+        if (media[i]) {
+          const isVideo = media[i].type === 'video';
+          html += `<div class="media-preview">
+            ${isVideo ? 
+              `<video src="${media[i].url}" controls></video>` : 
+              `<img src="${media[i].url}" alt="Media">`
+            }
+            <div class="media-position">Pos ${i+1}</div>
+            <div class="position-controls">
+              <button onclick="moveMedia(${i}, 'up')" ${i === 0 ? 'disabled' : ''}>
+                <i class="fa-solid fa-arrow-up"></i>
+              </button>
+              <button onclick="moveMedia(${i}, 'down')" ${i === 3 ? 'disabled' : ''}>
+                <i class="fa-solid fa-arrow-down"></i>
+              </button>
+            </div>
+            <div class="remove-media" onclick="removeMedia(${i})">
+              <i class="fa-solid fa-times"></i>
+            </div>
+          </div>`;
+        } else {
+          html += `<div class="upload-box" onclick="triggerUpload(${i})">
+            <i class="fa-solid fa-${currentMediaTab === 'images' ? 'cloud-upload-alt' : 'video'}"></i>
+            <span>Upload ${currentMediaTab === 'images' ? 'Image' : 'Video'} ${i+1}</span>
+          </div>`;
+        }
+      }
+      grid.innerHTML = html;
+    }
+
+    window.triggerUpload = function(index) {
+      fileInput.setAttribute('data-index', index);
+      fileInput.setAttribute('data-type', currentMediaTab);
+      fileInput.click();
+    };
+
+    window.handleFileSelect = function(e) {
+      const index = parseInt(fileInput.dataset.index);
+      const type = fileInput.dataset.type;
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const mediaItem = { 
+          url: ev.target.result, 
+          type: file.type.startsWith('video/') ? 'video' : 'image',
+          name: file.name
+        };
+        if (type === 'images' && mediaItem.type === 'image') {
+          productMedia.images[index] = mediaItem;
+        } else if (type === 'videos' && mediaItem.type === 'video') {
+          productMedia.videos[index] = mediaItem;
+        } else {
+          showNotification('Please select the correct file type', 'error');
+          return;
+        }
+        renderMediaGrid();
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.moveMedia = function(index, direction) {
+      const media = currentMediaTab === 'images' ? productMedia.images : productMedia.videos;
+      if (direction === 'up' && index > 0) {
+        [media[index], media[index - 1]] = [media[index - 1], media[index]];
+      } else if (direction === 'down' && index < 3) {
+        [media[index], media[index + 1]] = [media[index + 1], media[index]];
+      }
+      renderMediaGrid();
+    };
+
+    window.removeMedia = function(index) {
+      if (currentMediaTab === 'images') {
+        productMedia.images[index] = null;
+      } else {
+        productMedia.videos[index] = null;
+      }
+      renderMediaGrid();
+    };
+
     searchInput.addEventListener('input', filterProducts);
 
-    // Show notification
+    window.exportProducts = function() {
+      const data = JSON.stringify(products, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `myessantia_products_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showNotification('Products exported successfully!', 'success');
+    };
+
+    window.importProducts = function() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const imported = JSON.parse(ev.target.result);
+            if (Array.isArray(imported)) {
+              products = imported;
+              saveProducts();
+              renderProducts();
+              showNotification('Products imported successfully!', 'success');
+            }
+          } catch {
+            showNotification('Invalid file format', 'error');
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    };
+
     function showNotification(message, type = 'info') {
       const notification = document.createElement('div');
       notification.className = `notification ${type}`;
       notification.textContent = message;
       document.body.appendChild(notification);
-
       setTimeout(() => {
-        notification.style.animation = 'slideOutRight var(--transition-base)';
-        setTimeout(() => {
-          document.body.removeChild(notification);
-        }, 300);
+        notification.remove();
       }, 3000);
     }
 
-    // Export products
-    window.exportProducts = function() {
-      const dataStr = JSON.stringify(products, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-      const exportFileDefaultName = `myessantia_products_${new Date().toISOString().slice(0,10)}.json`;
-      
-      const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', exportFileDefaultName);
-      linkElement.click();
-      
-      showNotification('Products exported successfully!', 'success');
-    };
+    function initialize() {
+      renderMediaGrid();
+      renderProducts();
+      updateCategorySync();
+      startNewInMonitor();
+      setInterval(() => {
+        updateCurrentProductTimer();
+      }, 60000);
+    }
 
-    // Import products
-    window.importProducts = function() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.json';
-      
-      input.onchange = function(e) {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-          try {
-            const importedProducts = JSON.parse(e.target.result);
-            if (Array.isArray(importedProducts)) {
-              products = importedProducts;
-              saveProducts();
-              renderProducts();
-              showNotification('Products imported successfully!', 'success');
-            } else {
-              showNotification('Invalid file format!', 'error');
-            }
-          } catch (err) {
-            showNotification('Error importing file!', 'error');
-          }
-        };
-        
-        reader.readAsText(file);
-      };
-      
-      input.click();
-    };
-
-    // Get products for specific pages
-    window.getProductsForPage = function(page) {
-      const today = new Date().toDateString();
-      
-      return products.filter(p => {
-        switch(page) {
-          case 'home':
-            return p.showOnHome === true;
-          case 'accessories':
-            return p.showOnAccessories === true && p.category === 'accessories';
-          case 'essentials':
-            return p.showOnEssentials === true && p.category === 'essentials';
-          case 'newarrival':
-            // Check if product is marked as new OR was created today
-            return p.showOnNew === true || (p.creationDate && new Date(p.creationDate).toDateString() === today);
-          case 'all':
-            return true;
-          default:
-            return false;
-        }
-      });
-    };
-
-    // Get all products
-    window.getAllProducts = function() {
-      return products;
-    };
-
-    // Initialize
-    initializeMediaUpload();
-    renderProducts();
-    updateImportProductSelect();
-    updateAutoAssignNote();
+    initialize();
   </script>
 </body>
 </html>
