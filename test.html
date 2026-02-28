@@ -167,10 +167,12 @@
       opacity: 0;
       transform: translateY(10px);
       transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
     }
     .image-frame:hover .image-actions {
       opacity: 1;
       transform: translateY(0);
+      pointer-events: auto;
     }
 
     .img-add, .img-buy {
@@ -314,13 +316,6 @@
       color: #0c0c0c;
     }
 
-    /* Enquiry Form Styles (specific to essentials page) */
-    .enquiry-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
     /* RESPONSIVE BREAKPOINTS */
     @media (min-width: 1200px) {
       .container {
@@ -398,6 +393,18 @@
       height: auto;
       display: block;
     }
+
+    /* Enquiry Form Styles (specific to essentials page) */
+    .enquiry-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .enquiry-form .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
   </style>
 </head>
 <body class="bg-noise">
@@ -464,19 +471,6 @@
     // ========== ESSENTIALS PAGE SPECIFIC VARIABLES ==========
     let enquiries = JSON.parse(localStorage.getItem('essence_user_enquiries')) || [];
 
-    // Update products with essentials-specific flags
-    if (products.length > 0) {
-      // Add showOnEssentials flag to existing products
-      products = products.map(p => {
-        if (p.id === 101 || p.id === 102 || p.id === 103 || p.id === 104 || 
-            p.id === 105 || p.id === 106 || p.id === 107 || p.id === 108) {
-          return { ...p, showOnEssentials: true };
-        }
-        return p;
-      });
-      localStorage.setItem('MyEssantia_products', JSON.stringify(products));
-    }
-
     // ========== PRODUCT RENDERING ==========
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
@@ -497,6 +491,26 @@
           </div>
         `;
         return;
+      }
+
+      function renderRating(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+          if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
+          else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+          else stars += '<i class="fa-regular fa-star"></i>';
+        }
+        return stars;
+      }
+
+      function getStockStatus(stock) {
+        if (stock > 10) return '<span class="stock-badge in-stock">In Stock</span>';
+        if (stock > 0) return `<span class="stock-badge low-stock">Only ${stock} left</span>`;
+        return '<span class="stock-badge out-of-stock">Out of Stock</span>';
+      }
+
+      function formatPrice(price) {
+        return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
       }
 
       function getSortedProducts() {
@@ -541,7 +555,10 @@
               </div>
               <h3 class="product-title">${product.title}</h3>
               <p class="product-category">${product.category}</p>
-              <div class="product-rating">${renderRating(product.rating)}</div>
+              <div class="product-rating">
+                ${renderRating(product.rating)}
+                <span>(${product.rating.toFixed(1)})</span>
+              </div>
               <div class="product-price">
                 <span class="inr-symbol">₹</span>${formatPrice(product.price)}
               </div>
@@ -561,34 +578,10 @@
       }
     }
 
-    // ========== INITIALIZATION ==========
-    function initializeApp() {
-      renderProducts();
-      updateCartCount();
-      initializeEnquiry();
+    // ========== ENQUIRY FUNCTIONS (Specific to essentials page) ==========
+    function initializeEnquiry() {
+      loadEnquiries();
       
-      const savedUser = localStorage.getItem('MyEssantia_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateProfileIcon();
-      }
-    }
-
-    // Override setupEventListeners to include enquiry modal
-    function setupEventListeners() {
-      // Call the original setupEventListeners from common.js
-      if (typeof window.originalSetupEventListeners === 'function') {
-        window.originalSetupEventListeners();
-      }
-
-      const closeEnquiry = document.getElementById('close-enquiry');
-      if (closeEnquiry) {
-        closeEnquiry.addEventListener('click', function() {
-          closeModal('enquiry-modal');
-        });
-      }
-
-      // Add enquiry button listener
       const enquiryBtn = document.getElementById('enquiry-btn');
       if (enquiryBtn) {
         enquiryBtn.addEventListener('click', function(e) {
@@ -602,30 +595,12 @@
         });
       }
 
-      // Update window click listener
-      const originalClickHandler = window.onclick;
-      window.addEventListener('click', function(e) {
-        const enquiryModal = document.getElementById('enquiry-modal');
-        if (e.target === enquiryModal) {
+      const closeEnquiry = document.getElementById('close-enquiry');
+      if (closeEnquiry) {
+        closeEnquiry.addEventListener('click', function() {
           closeModal('enquiry-modal');
-        }
-      });
-
-      // Update escape key handler
-      const originalKeyHandler = document.onkeydown;
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeModal('enquiry-modal');
-        }
-      });
-    }
-
-    // Store original setupEventListeners
-    window.originalSetupEventListeners = setupEventListeners;
-
-    // ========== ENQUIRY FUNCTIONS ==========
-    function initializeEnquiry() {
-      loadEnquiries();
+        });
+      }
     }
 
     function loadEnquiries() {
@@ -643,15 +618,6 @@
 
     function saveEnquiries() {
       localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
-    }
-
-    function openEnquiry() {
-      const enquiryModal = document.getElementById('enquiry-modal');
-      if (enquiryModal) {
-        renderEnquiryForm();
-        enquiryModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
     }
 
     function renderEnquiryForm() {
@@ -727,6 +693,28 @@
       }, 2000);
     };
 
+    function openEnquiry() {
+      const enquiryModal = document.getElementById('enquiry-modal');
+      if (enquiryModal) {
+        renderEnquiryForm();
+        enquiryModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    // ========== INITIALIZATION ==========
+    function initializeApp() {
+      renderProducts();
+      updateCartCount();
+      initializeEnquiry();
+      
+      const savedUser = localStorage.getItem('MyEssantia_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateProfileIcon();
+      }
+    }
+
     // Load common modals
     async function loadCommonModals() {
       try {
@@ -738,33 +726,27 @@
       }
     }
 
+    // Override modal close handlers for enquiry modal
+    function setupEssentialsEventListeners() {
+      window.addEventListener('click', function(e) {
+        const enquiryModal = document.getElementById('enquiry-modal');
+        if (e.target === enquiryModal) {
+          closeModal('enquiry-modal');
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeModal('enquiry-modal');
+        }
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       loadCommonModals();
       loadComponents();
+      setupEssentialsEventListeners();
     });
   </script>
-
-  <style>
-    /* Enquiry Form specific styles */
-    .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .form-group select {
-      padding: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      transition: all 0.3s;
-    }
-
-    .form-group select:focus {
-      outline: none;
-      border-color: #d4af37;
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-    }
-  </style>
 </body>
 </html>
