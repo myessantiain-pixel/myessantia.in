@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ESSENCE · enquire</title>
+  <title>ESSENCE · track your order (responsive)</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -18,17 +18,13 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
-  <!-- CSS Files -->
+  <!-- Common CSS -->
+  <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    /* -------------------- ORDER TRACKING PAGE SPECIFIC STYLES -------------------- */
     body {
       background-color: #fafafa;
       color: #1a1a1a;
@@ -40,32 +36,15 @@
       flex-direction: column;
     }
 
-    h1, h2, h3, h4 {
-      font-family: 'Playfair Display', serif;
-      font-weight: 400;
-      letter-spacing: -0.02em;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      width: 100%;
-    }
-
-    .bg-noise {
-      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
-      background-repeat: repeat;
-    }
-
     .page-title {
       text-align: center;
-      padding: 1rem 0 2rem;
+      padding: clamp(0.5rem, 3vw, 1rem) 0 clamp(1rem, 4vw, 2rem);
     }
     .page-title h1 {
       font-size: clamp(2.2rem, 6vw, 2.8rem);
       font-weight: 400;
       color: #1a1a1a;
+      line-height: 1.2;
     }
     .page-title h1 span {
       color: #d4af37;
@@ -77,66 +56,40 @@
       max-width: 500px;
       margin: 0.5rem auto 0;
       font-size: clamp(0.9rem, 2.5vw, 1rem);
+      padding: 0 1rem;
     }
 
-    .login-prompt {
-      background: linear-gradient(135deg, #f9f7f4 0%, #ffffff 100%);
-      border-radius: 32px;
-      padding: 3rem 2rem;
-      text-align: center;
-      max-width: 500px;
-      margin: 2rem auto;
-      border: 1px solid #e5e5e5;
-    }
-
-    .login-prompt i {
-      font-size: 4rem;
-      color: #d4af37;
-      margin-bottom: 1rem;
-    }
-
-    .login-prompt h3 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .login-prompt p {
-      color: #666;
-      margin-bottom: 2rem;
-    }
-
-    .enquiry-card {
+    .track-card {
       background: #ffffff;
-      border-radius: 32px;
-      padding: clamp(1.8rem, 5vw, 2.5rem);
+      border-radius: clamp(24px, 5vw, 32px);
+      padding: clamp(1.5rem, 5vw, 2.5rem);
       box-shadow: 0 15px 35px -10px rgba(0,0,0,0.05);
       border: 1px solid #f0f0f0;
-      max-width: 700px;
+      max-width: 600px;
       margin: 0 auto 3rem;
-      display: none;
+      width: 100%;
     }
 
-    .enquiry-card.visible {
-      display: block;
-      animation: fadeIn 0.4s;
-    }
-
-    .enquiry-card h2 {
+    .track-card h2 {
       font-size: clamp(1.5rem, 4vw, 1.8rem);
       margin-bottom: 1.5rem;
       text-align: center;
       font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-    .enquiry-card h2 i {
+    .track-card h2 i {
       color: #d4af37;
-      margin-right: 10px;
     }
 
-    .form-row {
+    .input-group {
       margin-bottom: 1.5rem;
     }
 
-    .form-row label {
+    .input-group label {
       display: block;
       font-size: 0.85rem;
       font-weight: 500;
@@ -146,92 +99,33 @@
       text-transform: uppercase;
     }
 
-    .form-row input, .form-row textarea, .form-row select {
+    .input-group input {
       width: 100%;
       padding: 1rem 1.2rem;
       border: 1px solid #e5e5e5;
-      border-radius: 30px;
+      border-radius: 60px;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 1rem;
       transition: all 0.2s;
       background: #fcfcfc;
     }
 
-    .form-row textarea {
-      border-radius: 30px;
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .form-row select {
-      appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-      background-size: 1em;
-    }
-
-    .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+    .input-group input:focus {
       outline: none;
       border-color: #d4af37;
       box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
       background: #ffffff;
     }
 
-    .file-upload-area {
-      background: #f9f7f4;
-      border: 2px dashed #d4af37;
-      border-radius: 40px;
-      padding: 2rem;
-      text-align: center;
-      cursor: pointer;
-      transition: background 0.2s;
-      margin-bottom: 1.5rem;
-    }
-
-    .file-upload-area:hover {
-      background: #f2eee8;
-    }
-
-    .file-upload-area i {
-      font-size: 2.5rem;
-      color: #d4af37;
-      margin-bottom: 0.5rem;
-    }
-
-    .file-upload-area p {
-      color: #7f7a74;
-      font-size: 0.95rem;
-    }
-
-    .file-upload-area input {
-      display: none;
-    }
-
-    .image-preview {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      margin: 1rem 0 0.5rem;
-    }
-
-    .preview-thumb {
-      width: 70px;
-      height: 70px;
-      border-radius: 20px;
-      object-fit: cover;
-      border: 2px solid #e0d9d0;
-    }
-
-    .submit-btn {
+    .track-btn {
       background: #1a1a1a;
       color: white;
       width: 100%;
-      padding: 1.2rem;
+      padding: 1.1rem;
       border: none;
       border-radius: 60px;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 500;
       letter-spacing: 0.5px;
       cursor: pointer;
@@ -243,1668 +137,930 @@
       margin-top: 1rem;
     }
 
-    .submit-btn:hover:not(:disabled) {
+    .track-btn:hover:not(:disabled) {
       background: #d4af37;
       color: #0c0c0c;
       transform: scale(1.02);
     }
 
-    .submit-btn:disabled {
+    .track-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
 
-    .success-message {
-      background: #e3f1e3;
-      border-radius: 40px;
-      padding: 1.5rem;
+    .track-btn i {
+      font-size: 1rem;
+    }
+
+    .order-note {
       text-align: center;
-      margin: 1.5rem 0 0;
-      border: 1px solid #b6d7b6;
+      margin-top: 1.2rem;
+      font-size: 0.85rem;
+      color: #8f8b85;
+    }
+
+    .result-section {
+      max-width: 800px;
+      margin: 2rem auto 4rem;
+      scroll-margin-top: 2rem;
+      width: 100%;
+      padding: 0 clamp(1rem, 3vw, 2rem);
+    }
+
+    .order-result-card {
+      background: #ffffff;
+      border-radius: clamp(24px, 5vw, 36px);
+      padding: clamp(1.5rem, 4vw, 2rem);
+      box-shadow: 0 20px 40px -14px rgba(0,0,0,0.08);
+      border: 1px solid #ece8e2;
+      transition: all 0.3s;
       display: none;
     }
 
+    .order-result-card.visible {
+      display: block;
+      animation: fadeSlide 0.4s ease;
+    }
+
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 2px solid #f6f4f0;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .order-id-large {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: clamp(1.3rem, 4vw, 1.6rem);
+      letter-spacing: -0.5px;
+      color: #1e1e1e;
+    }
+
+    .order-date-large {
+      background: #f4f2ef;
+      padding: 0.5rem 1.3rem;
+      border-radius: 60px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #4e4b47;
+      white-space: nowrap;
+    }
+
+    .order-status {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    .status-processing { background: #fff3e0; color: #ef6c00; }
+    .status-shipped { background: #e3f2fd; color: #0d47a1; }
+    .status-delivered { background: #e8f5e9; color: #2e7d32; }
+    .status-cancelled { background: #ffebee; color: #c62828; }
+
+    .order-items-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin: 2rem 0 1.8rem;
+    }
+
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #faf9f7;
+      border-radius: 28px;
+      padding: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .product-image-placeholder {
+      width: 70px;
+      height: 70px;
+      background: #eae4db;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b9aa97;
+      font-size: 2rem;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .product-image-placeholder span {
+      font-size: 2.2rem;
+      line-height: 1;
+    }
+
+    .product-info {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      min-width: 200px;
+    }
+
+    .product-name {
+      font-weight: 500;
+      font-size: 1.1rem;
+      color: #1e1e1e;
+    }
+
+    .product-meta {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .product-qty {
+      color: #7f7a74;
+      font-size: 0.95rem;
+    }
+
+    .product-price {
+      font-weight: 600;
+      font-family: 'Montserrat', sans-serif;
+      color: #1a1a1a;
+      min-width: 70px;
+      text-align: right;
+    }
+
+    .order-summary {
+      background: #f3f1ee;
+      border-radius: 28px;
+      padding: 1.5rem 2rem;
+      margin: 1.5rem 0 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Montserrat', sans-serif;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .summary-left span {
+      font-size: 1rem;
+      color: #5f5b57;
+    }
+
+    .summary-right {
+      font-size: clamp(1.5rem, 4vw, 1.8rem);
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .tracking-info {
+      background: #f9f9f9;
+      border-radius: 20px;
+      padding: 1.2rem;
+      margin: 1rem 0;
+      border-left: 4px solid #d4af37;
+    }
+
+    .tracking-info p {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #333;
+    }
+
+    .tracking-info i {
+      color: #d4af37;
+      width: 20px;
+    }
+
+    .tracking-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      flex: 1;
+      background: transparent;
+      border: 1px solid #d4af37;
+      border-radius: 60px;
+      padding: 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #1a1a1a;
+      text-decoration: none;
+      font-family: inherit;
+      min-width: 140px;
+    }
+
+    .action-btn:hover:not(:disabled) {
+      background: #d4af37;
+      color: #0c0c0c;
+      border-color: #d4af37;
+    }
+
+    .action-btn.primary {
+      background: #1a1a1a;
+      border-color: #1a1a1a;
+      color: white;
+    }
+    .action-btn.primary:hover:not(:disabled) {
+      background: #d4af37;
+      border-color: #d4af37;
+      color: #0c0c0c;
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .error-message {
+      text-align: center;
+      background: #fff2f0;
+      border-radius: 60px;
+      padding: 1rem;
+      margin: 1rem 0;
+      color: #b33c1f;
+      border: 1px solid #ffcdc2;
+      display: none;
+    }
+    .error-message.show {
+      display: block;
+    }
+
+    .success-message {
+      text-align: center;
+      background: #e8f5e9;
+      border-radius: 60px;
+      padding: 1rem;
+      margin: 1rem 0;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+      display: none;
+    }
     .success-message.show {
       display: block;
-      animation: fadeIn 0.4s;
     }
 
-    .success-message i {
-      font-size: 2.5rem;
-      color: #1e7a44;
-      margin-bottom: 0.5rem;
-    }
-
-    .success-message h3 {
-      font-size: 1.6rem;
-      font-weight: 400;
-      margin-bottom: 0.5rem;
-    }
-
-    .success-message p {
-      color: #2b5e2b;
-    }
-
-    .enquiries-title {
-      font-size: clamp(1.8rem, 4vw, 2rem);
-      font-weight: 400;
-      margin: 3rem 0 2rem;
+    .info-note {
       text-align: center;
-    }
-    .enquiries-title span {
-      color: #d4af37;
-      border-bottom: 2px solid #ece8e2;
-      padding-bottom: 0.2rem;
-    }
-
-    .enquiries-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
-      margin-bottom: 3rem;
-    }
-
-    .enquiry-item {
-      background: #ffffff;
-      border-radius: 28px;
-      padding: 1.8rem;
-      box-shadow: 0 8px 22px -8px rgba(0,0,0,0.05);
-      border: 1px solid #f5f5f5;
-      transition: 0.2s;
-      position: relative;
-    }
-
-    .enquiry-item:hover {
-      box-shadow: 0 18px 30px -12px rgba(0,0,0,0.1);
-    }
-
-    .delete-btn {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #ffebee;
-      border: none;
-      color: #b71c1c;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      opacity: 0;
-    }
-
-    .enquiry-item:hover .delete-btn {
-      opacity: 1;
-    }
-
-    .delete-btn:hover {
-      background: #b71c1c;
-      color: white;
-      transform: scale(1.1);
-    }
-
-    .enquiry-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      padding-bottom: 0.8rem;
-      border-bottom: 1px dashed #f0f0f0;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      padding-right: 2.5rem;
-    }
-
-    .enquiry-name {
-      font-weight: 600;
-      font-size: 1.2rem;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .status-badge {
-      padding: 0.3rem 1rem;
-      border-radius: 60px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-
-    .status-received { background: #e8eaf6; color: #3f51b5; }
-    .status-processing { background: #fff0db; color: #b85b1a; }
-    .status-completed { background: #e3f1e3; color: #1e7a44; }
-    .status-invalid { background: #ffebee; color: #b71c1c; }
-
-    .enquiry-contact {
-      font-size: 0.9rem;
-      color: #5f5b57;
-      margin-bottom: 1rem;
-      word-break: break-word;
-    }
-
-    .enquiry-contact i {
-      width: 20px;
-      color: #d4af37;
-    }
-
-    .enquiry-images {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin: 1rem 0;
-    }
-
-    .enquiry-image-thumb {
-      width: 60px;
-      height: 60px;
-      border-radius: 18px;
-      object-fit: cover;
-      border: 1px solid #eee;
-      background: #f9f7f4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-    }
-
-    .enquiry-message {
-      background: #faf9f7;
-      border-radius: 18px;
-      padding: 0.8rem 1rem;
-      font-size: 0.9rem;
-      margin: 0.8rem 0;
-      color: #3e3a36;
-    }
-
-    .enquiry-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 0.8rem;
-      font-size: 0.8rem;
       color: #8f8b85;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+      font-size: 0.9rem;
+      margin: 2rem 0;
     }
-
-    .empty-enquiries {
-      text-align: center;
-      padding: 3rem;
-      background: #ffffff;
-      border-radius: 40px;
-      border: 1px solid #f0f0f0;
-      grid-column: 1 / -1;
-    }
-
-    .empty-enquiries i {
-      font-size: 3rem;
+    .info-note i {
       color: #d4af37;
-      opacity: 0.5;
-      margin-bottom: 1rem;
     }
 
-    .filter-bar {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 2rem;
-      gap: 1rem;
-      flex-wrap: wrap;
+    .recent-orders {
+      margin: 3rem 0;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 32px;
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
     }
 
-    .filter-select {
+    .recent-orders h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      background: white;
-      padding: 0.5rem 1rem;
-      border-radius: 40px;
-      border: 1px solid #eaeaea;
     }
 
-    .filter-select i {
+    .recent-order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .recent-order-item:hover {
+      background: #f9f9f9;
+    }
+
+    .recent-order-item:last-child {
+      border-bottom: none;
+    }
+
+    .recent-order-info {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .recent-order-id {
+      font-weight: 600;
       color: #d4af37;
     }
 
-    .filter-select select {
-      background: transparent;
-      border: none;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+    .recent-order-date {
+      color: #666;
       font-size: 0.9rem;
-      color: #1a1a1a;
-      outline: none;
-      cursor: pointer;
     }
 
-    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .submit-btn, .file-upload-area, .delete-btn {
-      touch-action: manipulation;
+    .recent-order-total {
+      font-weight: 600;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    footer {
+      margin-top: auto;
     }
 
-    @media (max-width: 600px) {
-      .container { padding: 0 1.2rem; }
-      .enquiry-card { padding: 1.5rem; }
-      .delete-btn {
-        opacity: 1;
-        background: #ffebee;
+    @media (max-width: 768px) {
+      .product-row {
+        flex-direction: column;
+        align-items: flex-start;
       }
-      .filter-bar {
-        justify-content: center;
+      .product-info {
+        width: 100%;
+      }
+      .product-meta {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .tracking-actions {
+        flex-direction: column;
+      }
+      .action-btn {
+        width: 100%;
+      }
+      .recent-order-info {
+        gap: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .track-card {
+        padding: 1.5rem;
+      }
+      .result-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .order-date-large {
+        align-self: flex-start;
+      }
+      .product-image-placeholder {
+        width: 60px;
+        height: 60px;
+      }
+      .product-name {
+        font-size: 1rem;
+      }
+      .order-summary {
+        padding: 1.2rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .product-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
+      }
+      .product-price {
+        text-align: left;
       }
     }
   </style>
 </head>
 <body class="bg-noise">
   
+  <!-- Header loaded dynamically -->
   <div id="header"></div>
 
   <main>
     <div class="container page-title">
-      <h1>enquire <span>now</span></h1>
-      <p>Upload product images & tell us what you need</p>
+      <h1>my <span>orders</span></h1>
+      <p>Enter your details to track an order</p>
     </div>
 
-    <!-- Login Prompt (shown when not logged in) -->
-    <div class="container" id="loginPromptContainer">
-      <div class="login-prompt">
-        <i class="fa-regular fa-circle-user"></i>
-        <h3>sign in to enquire</h3>
-        <p>Please sign in to submit enquiries and track their status</p>
-        <button class="btn" onclick="openProfile()" style="background: #d4af37; color: #0c0c0c; padding: 1rem 2rem; border-radius: 40px; border: none; font-weight: 600; cursor: pointer;">
-          <i class="fa-regular fa-user"></i> sign in / register
-        </button>
-      </div>
-    </div>
-
-    <!-- Enquiry Form (shown when logged in) -->
     <div class="container">
-      <div class="enquiry-card" id="enquiryCard">
-        <h2><i class="fa-regular fa-message"></i> submit enquiry</h2>
-        
-        <div class="form-row">
-          <label>full name *</label>
-          <input type="text" id="enquiryName" placeholder="e.g. Alex Morgan">
+      <div class="track-card">
+        <h2><i class="fa-solid fa-magnifying-glass"></i> track your order</h2>
+        <div class="input-group">
+          <label>order number</label>
+          <input type="text" id="order-number" placeholder="e.g. ESS-9876" value="ESS-9876">
         </div>
-
-        <div class="form-row">
-          <label>email *</label>
-          <input type="email" id="enquiryEmail" placeholder="alex@example.com">
+        <div class="input-group">
+          <label>email / phone</label>
+          <input type="text" id="order-email" placeholder="you@example.com" value="customer@essence.in">
         </div>
-
-        <div class="form-row">
-          <label>phone (optional)</label>
-          <input type="tel" id="enquiryPhone" placeholder="+1 234 567 890">
-        </div>
-
-        <div class="form-row">
-          <label>enquiry type</label>
-          <select id="enquiryType">
-            <option value="product">Product Information</option>
-            <option value="bulk">Bulk Order / Wholesale</option>
-            <option value="custom">Custom Request</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div class="file-upload-area" id="fileUploadArea">
-          <i class="fa-regular fa-images"></i>
-          <p>click or drag to upload product images (max 5)</p>
-          <input type="file" id="imageUpload" multiple accept="image/*" max="5">
-        </div>
-        <div class="image-preview" id="imagePreview"></div>
-
-        <div class="form-row">
-          <label>your message / enquiry *</label>
-          <textarea id="enquiryMessage" placeholder="Tell us about the product, quantity, or any specific request..."></textarea>
-        </div>
-
-        <button class="submit-btn" id="submitEnquiry"><i class="fa-regular fa-paper-plane"></i> submit enquiry</button>
-
-        <div class="success-message" id="successMessage">
-          <i class="fa-regular fa-circle-check"></i>
-          <h3>thank you!</h3>
-          <p>We'll get back to you soon.</p>
-        </div>
+        <button class="track-btn" id="track-order-btn"><i class="fa-solid fa-location-dot"></i> find order</button>
+        <p class="order-note">We'll display your order if the details match.</p>
+        <div class="error-message" id="error-message"></div>
+        <div class="success-message" id="success-message"></div>
       </div>
     </div>
 
-    <!-- User's Enquiries -->
-    <div class="container" id="enquiriesSection" style="display: none;">
-      <h2 class="enquiries-title"><span>your</span> enquiries</h2>
-      
-      <div class="filter-bar">
-        <div class="filter-select">
-          <i class="fa-solid fa-filter"></i>
-          <select id="enquiryFilter">
-            <option value="all">All Enquiries</option>
-            <option value="received">Received</option>
-            <option value="processing">Processing</option>
-            <option value="completed">Completed</option>
-          </select>
-        </div>
-      </div>
+    <div class="container result-section" id="resultContainer">
+      <div class="order-result-card" id="orderResultCard"></div>
+    </div>
 
-      <div class="enquiries-grid" id="enquiriesGrid"></div>
+    <div class="container" id="recentOrdersContainer" style="display: none;">
+      <div class="recent-orders">
+        <h3><i class="fa-regular fa-clock"></i> recent orders</h3>
+        <div id="recentOrdersList"></div>
+      </div>
+    </div>
+
+    <div class="container" style="text-align: center; margin: 2rem auto 3rem;">
+      <p style="color: #8f8b85; font-size: 0.9rem;">
+        <i class="fa-regular fa-circle-question" style="color: #d4af37;"></i> 
+        need help? <a href="#" style="color: #1a1a1a; font-weight: 500;" onclick="showSupportModal()">contact support</a>
+      </p>
     </div>
   </main>
 
+  <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
-  <!-- Cart Modal -->
-  <div id="cart-modal" class="modal">
+  <!-- Common Modals -->
+  <div id="common-modals"></div>
+
+  <!-- Support Modal (specific to track order page) -->
+  <div id="support-modal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>Shopping Cart</h3>
-        <button class="close-modal" id="close-cart">&times;</button>
+        <h3>Contact Support</h3>
+        <button class="close-modal" onclick="closeSupportModal()">&times;</button>
       </div>
-      <div id="cart-items" class="cart-items"></div>
-      <div class="modal-footer">
-        <div class="cart-total">
-          <span>Total:</span>
-          <span id="cart-total-amount">₹0.00</span>
+      <div class="support-form">
+        <p style="text-align: center; margin-bottom: 1.5rem;">How can we help you today?</p>
+        <div class="form-group">
+          <label for="support-name">Name</label>
+          <input type="text" id="support-name" placeholder="Your name" value="John Doe">
         </div>
-        <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+        <div class="form-group">
+          <label for="support-email">Email</label>
+          <input type="email" id="support-email" placeholder="Your email" value="john@gmail.com">
+        </div>
+        <div class="form-group">
+          <label for="support-message">Message</label>
+          <textarea id="support-message" rows="4" placeholder="Describe your issue..."></textarea>
+        </div>
+        <button class="btn" onclick="submitSupport()" style="width: 100%;">
+          <i class="fa-regular fa-paper-plane"></i> Send Message
+        </button>
+        <div id="support-message-status" class="auth-message" style="margin-top: 1rem;"></div>
       </div>
     </div>
   </div>
 
-  <!-- Profile Modal -->
-  <div id="profile-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>My Account</h3>
-        <button class="close-modal" id="close-profile">&times;</button>
-      </div>
-      <div id="profile-content"></div>
-    </div>
-  </div>
+  <!-- Common JavaScript -->
+  <script src="common.js"></script>
 
   <script>
-    // ========== FIREBASE CONFIGURATION ==========
-    const firebaseConfig = {
-      apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
-      authDomain: "myessantia.firebaseapp.com",
-      projectId: "myessantia",
-      storageBucket: "myessantia.firebasestorage.app",
-      messagingSenderId: "701726517205",
-      appId: "1:701726517205:web:f6ab79efdffeab6dbbbf5c",
-      measurementId: "G-SZF11SHZBH"
+    // ========== ORDER TRACKING PAGE SPECIFIC VARIABLES ==========
+    let orders = [];
+
+    // Sample orders database
+    const sampleOrders = [
+      {
+        orderId: 'ESS-9876',
+        email: 'customer@essence.in',
+        phone: '9876543210',
+        date: '15 Mar 2025',
+        status: 'delivered',
+        items: [
+          { name: 'Leather Cardholder', qty: 1, price: 1990.00, image: '👜' },
+          { name: 'Minimal Watch', qty: 1, price: 4490.00, image: '⌚' }
+        ],
+        total: 6480.00,
+        trackingNumber: 'TRK123456789',
+        carrier: 'FedEx',
+        estimatedDelivery: '18 Mar 2025'
+      },
+      {
+        orderId: 'ESS-5432',
+        email: 'alex@essence.in',
+        phone: '9876543211',
+        date: '10 Apr 2025',
+        status: 'shipped',
+        items: [
+          { name: 'Slim Power Bank', qty: 2, price: 7180.00, image: '🔋' },
+          { name: 'Universal Adapter', qty: 1, price: 3290.00, image: '🔌' }
+        ],
+        total: 10470.00,
+        trackingNumber: 'TRK987654321',
+        carrier: 'UPS',
+        estimatedDelivery: '15 Apr 2025'
+      },
+      {
+        orderId: 'ESS-2468',
+        email: 'jordan@essence.in',
+        phone: '9876543212',
+        date: '18 Apr 2025',
+        status: 'processing',
+        items: [
+          { name: 'Aviator Sunglasses', qty: 1, price: 2990.00, image: '🕶️' },
+          { name: 'Tech Organizer', qty: 1, price: 2490.00, image: '🧳' }
+        ],
+        total: 5480.00,
+        trackingNumber: null,
+        carrier: null,
+        estimatedDelivery: '22 Apr 2025'
+      },
+      {
+        orderId: 'ESS-1357',
+        email: 'sam@essence.in',
+        phone: '9876543213',
+        date: '22 Apr 2025',
+        status: 'cancelled',
+        items: [
+          { name: 'Leather Backpack', qty: 1, price: 6490.00, image: '🎒' },
+          { name: 'Wireless Charger', qty: 1, price: 2190.00, image: '⚡' }
+        ],
+        total: 8680.00,
+        trackingNumber: null,
+        carrier: null,
+        estimatedDelivery: null
+      },
+      {
+        orderId: 'ESS-2025',
+        email: 'john@gmail.com',
+        phone: '9876543214',
+        date: '25 Apr 2025',
+        status: 'shipped',
+        items: [
+          { name: 'Noise Cancelling Earbuds', qty: 1, price: 5999.00, image: '🎧' },
+          { name: 'Travel Adapter', qty: 1, price: 1499.50, image: '🔌' }
+        ],
+        total: 7498.50,
+        trackingNumber: 'TRK456789123',
+        carrier: 'DHL',
+        estimatedDelivery: '28 Apr 2025'
+      }
+    ];
+
+    // ========== ORDER TRACKING FUNCTIONS ==========
+    function initializeOrderTracking() {
+      // Load orders from localStorage or use sample
+      const storedOrders = localStorage.getItem('MyEssantia_orders');
+      if (storedOrders) {
+        try {
+          orders = JSON.parse(storedOrders);
+        } catch (e) {
+          orders = sampleOrders;
+        }
+      } else {
+        orders = sampleOrders;
+        localStorage.setItem('MyEssantia_orders', JSON.stringify(orders));
+      }
+
+      const trackBtn = document.getElementById('track-order-btn');
+      const orderNumberInput = document.getElementById('order-number');
+      const orderEmailInput = document.getElementById('order-email');
+      const errorDiv = document.getElementById('error-message');
+      const successDiv = document.getElementById('success-message');
+
+      if (errorDiv) errorDiv.classList.remove('show');
+      if (successDiv) successDiv.classList.remove('show');
+      
+      const resultCard = document.getElementById('orderResultCard');
+      if (resultCard) resultCard.classList.remove('visible');
+
+      if (trackBtn) {
+        trackBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          findOrder();
+        });
+      }
+
+      if (orderNumberInput && orderEmailInput) {
+        [orderNumberInput, orderEmailInput].forEach(input => {
+          input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              findOrder();
+            }
+          });
+        });
+      }
+
+      // Load user's orders if logged in
+      if (currentUser) {
+        loadUserOrders();
+      }
+    }
+
+    function loadUserOrders() {
+      if (!currentUser) return;
+
+      // Filter orders by user's email
+      const userOrders = orders.filter(o => 
+        o.email.toLowerCase() === currentUser.email.toLowerCase()
+      );
+
+      if (userOrders.length > 0) {
+        displayRecentOrders(userOrders);
+      }
+    }
+
+    function displayRecentOrders(userOrders) {
+      const container = document.getElementById('recentOrdersContainer');
+      const list = document.getElementById('recentOrdersList');
+      
+      if (!container || !list) return;
+
+      container.style.display = 'block';
+      
+      list.innerHTML = userOrders.slice(0, 3).map(order => {
+        let statusClass = '';
+        if (order.status === 'processing') statusClass = 'status-processing';
+        else if (order.status === 'shipped') statusClass = 'status-shipped';
+        else if (order.status === 'delivered') statusClass = 'status-delivered';
+        else if (order.status === 'cancelled') statusClass = 'status-cancelled';
+
+        return `
+          <div class="recent-order-item" onclick="quickTrackOrder('${order.orderId}', '${order.email}')">
+            <div class="recent-order-info">
+              <span class="recent-order-id">${order.orderId}</span>
+              <span class="recent-order-date">${order.date}</span>
+              <span class="order-status ${statusClass}">${order.status}</span>
+            </div>
+            <div class="recent-order-total">₹${order.total.toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.quickTrackOrder = function(orderId, email) {
+      document.getElementById('order-number').value = orderId;
+      document.getElementById('order-email').value = email;
+      findOrder();
     };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    function hideRecentOrders() {
+      const container = document.getElementById('recentOrdersContainer');
+      if (container) {
+        container.style.display = 'none';
+      }
+    }
 
-    // ========== GLOBAL VARIABLES ==========
-    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-    let currentUser = null;
-    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
-    let enquiries = [];
+    function findOrder() {
+      const orderNumberInput = document.getElementById('order-number');
+      const orderEmailInput = document.getElementById('order-email');
+      const errorDiv = document.getElementById('error-message');
+      const successDiv = document.getElementById('success-message');
+      const trackBtn = document.getElementById('track-order-btn');
 
-    // ========== FIREBASE AUTH STATE OBSERVER ==========
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        currentUser = {
-          uid: user.uid,
-          name: user.displayName || user.email.split('@')[0],
-          email: user.email,
-          picture: user.photoURL || 'https://via.placeholder.com/80',
-          provider: user.providerData[0]?.providerId || 'email',
-          memberSince: user.metadata.creationTime
-        };
-        localStorage.setItem('MyEssantia_user', JSON.stringify(currentUser));
-        updateProfileIcon();
-        if (document.getElementById('profile-content')) {
-          renderProfileContent();
+      const orderNumber = orderNumberInput.value.trim().toUpperCase();
+      const email = orderEmailInput.value.trim().toLowerCase();
+
+      if (errorDiv) errorDiv.classList.remove('show');
+      if (successDiv) successDiv.classList.remove('show');
+      
+      if (!orderNumber || !email) {
+        if (errorDiv) {
+          errorDiv.textContent = 'Please enter both order number and email/phone.';
+          errorDiv.classList.add('show');
         }
-        showEnquiryForm();
-        loadUserEnquiries();
-      } else {
-        currentUser = null;
-        localStorage.removeItem('MyEssantia_user');
-        updateProfileIcon();
-        if (document.getElementById('profile-content')) {
-          renderProfileContent();
-        }
-        showLoginPrompt();
-        hideEnquiries();
-      }
-    });
-
-    // ========== LOAD COMPONENTS ==========
-    async function loadComponents() {
-      try {
-        const headerResponse = await fetch('header.html');
-        const headerData = await headerResponse.text();
-        document.getElementById('header').innerHTML = headerData;
-
-        const footerResponse = await fetch('footer.html');
-        const footerData = await footerResponse.text();
-        document.getElementById('footer').innerHTML = footerData;
-
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
-      } catch (error) {
-        console.error('Error loading components:', error);
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
-      }
-    }
-
-    function initializeApp() {
-      updateCartCount();
-      updateProfileIcon();
-      setupEventListeners();
-      
-      // Check for existing user
-      const savedUser = localStorage.getItem('MyEssantia_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateProfileIcon();
-        showEnquiryForm();
-        loadUserEnquiries();
-      } else {
-        showLoginPrompt();
-      }
-    }
-
-    function showLoginPrompt() {
-      const loginPrompt = document.getElementById('loginPromptContainer');
-      const enquiryCard = document.getElementById('enquiryCard');
-      const enquiriesSection = document.getElementById('enquiriesSection');
-      
-      if (loginPrompt) loginPrompt.style.display = 'block';
-      if (enquiryCard) enquiryCard.classList.remove('visible');
-      if (enquiriesSection) enquiriesSection.style.display = 'none';
-    }
-
-    function showEnquiryForm() {
-      const loginPrompt = document.getElementById('loginPromptContainer');
-      const enquiryCard = document.getElementById('enquiryCard');
-      
-      if (loginPrompt) loginPrompt.style.display = 'none';
-      if (enquiryCard) {
-        enquiryCard.classList.add('visible');
-        // Pre-fill form with user data
-        if (currentUser) {
-          document.getElementById('enquiryName').value = currentUser.name || '';
-          document.getElementById('enquiryEmail').value = currentUser.email || '';
-        }
-      }
-    }
-
-    function hideEnquiries() {
-      const enquiriesSection = document.getElementById('enquiriesSection');
-      if (enquiriesSection) enquiriesSection.style.display = 'none';
-    }
-
-    function setupEventListeners() {
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const navMenu = document.getElementById('nav-menu');
-      
-      if (mobileMenuToggle && navMenu) {
-        mobileMenuToggle.addEventListener('click', function(e) {
-          e.stopPropagation();
-          navMenu.classList.toggle('show');
-        });
+        const resultCard = document.getElementById('orderResultCard');
+        if (resultCard) resultCard.classList.remove('visible');
+        return;
       }
 
-      const cartIcon = document.getElementById('cart-icon');
-      if (cartIcon) {
-        cartIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openCart();
-        });
-      }
+      // Show loading state
+      trackBtn.disabled = true;
+      trackBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> searching...';
 
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        profileIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openProfile();
-        });
-      }
-
-      const closeCart = document.getElementById('close-cart');
-      if (closeCart) {
-        closeCart.addEventListener('click', () => closeModal('cart-modal'));
-      }
-
-      const closeProfile = document.getElementById('close-profile');
-      if (closeProfile) {
-        closeProfile.addEventListener('click', () => closeModal('profile-modal'));
-      }
-
-      const checkoutBtn = document.getElementById('checkout-btn');
-      if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', function() {
-          if (!currentUser) {
-            alert('Please login to checkout');
-            closeModal('cart-modal');
-            openProfile();
-            return;
-          }
-          if (cart.length === 0) {
-            alert('Your cart is empty!');
-          } else {
-            alert('Proceeding to checkout...');
-          }
-        });
-      }
-
-      const filterSelect = document.getElementById('enquiryFilter');
-      if (filterSelect) {
-        filterSelect.addEventListener('change', renderEnquiries);
-      }
-
-      window.addEventListener('click', function(e) {
-        const cartModal = document.getElementById('cart-modal');
-        const profileModal = document.getElementById('profile-modal');
+      // Simulate API call delay
+      setTimeout(() => {
+        const foundOrder = orders.find(o => 
+          o.orderId === orderNumber && 
+          (o.email.toLowerCase() === email || o.phone === email)
+        );
         
-        if (e.target === cartModal) closeModal('cart-modal');
-        if (e.target === profileModal) closeModal('profile-modal');
-      });
-
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeModal('cart-modal');
-          closeModal('profile-modal');
+        if (foundOrder) {
+          renderOrder(foundOrder);
+          if (successDiv) {
+            successDiv.textContent = 'Order found!';
+            successDiv.classList.add('show');
+            setTimeout(() => successDiv.classList.remove('show'), 3000);
+          }
+          scrollToResult();
+        } else {
+          const resultCard = document.getElementById('orderResultCard');
+          if (resultCard) resultCard.classList.remove('visible');
+          if (errorDiv) {
+            errorDiv.textContent = 'Order not found. Please check your order number and email.';
+            errorDiv.classList.add('show');
+          }
         }
-      });
+
+        // Reset button
+        trackBtn.disabled = false;
+        trackBtn.innerHTML = '<i class="fa-solid fa-location-dot"></i> find order';
+      }, 800);
     }
 
-    // ========== MODAL FUNCTIONS ==========
-    function openCart() {
-      const cartModal = document.getElementById('cart-modal');
-      if (cartModal) {
-        renderCartItems();
-        cartModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function openProfile() {
-      const profileModal = document.getElementById('profile-modal');
-      if (profileModal) {
-        renderProfileContent();
-        profileModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-      }
-    }
-
-    // ========== CART FUNCTIONS ==========
-    function renderCartItems() {
-      const cartItemsContainer = document.getElementById('cart-items');
-      const cartItemCount = document.getElementById('cart-item-count');
-      const cartTotalAmount = document.getElementById('cart-total-amount');
-
-      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
+    function renderOrder(order) {
+      const resultCard = document.getElementById('orderResultCard');
+      
+      let statusClass = '';
+      if (order.status === 'processing') statusClass = 'status-processing';
+      else if (order.status === 'shipped') statusClass = 'status-shipped';
+      else if (order.status === 'delivered') statusClass = 'status-delivered';
+      else if (order.status === 'cancelled') statusClass = 'status-cancelled';
 
       function formatPrice(price) {
         return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
       }
 
-      if (cart.length === 0) {
-        cartItemsContainer.innerHTML = `
-          <div class="empty-cart-message">
-            <i class="fa-regular fa-cart-shopping"></i>
-            <p>Your cart is empty</p>
-            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Start shopping to add items!</p>
-          </div>
-        `;
-        cartItemCount.textContent = '0';
-        cartTotalAmount.textContent = '₹0.00';
-        return;
-      }
-
-      let total = 0;
-      let totalItems = 0;
-
-      cartItemsContainer.innerHTML = cart.map(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        totalItems += item.quantity;
-
+      const itemsHtml = order.items.map(item => {
         return `
-          <div class="cart-item" style="display: flex; gap: 1rem; padding: 1rem; border-bottom: 1px solid #eee;">
-            <div class="cart-item-image" style="width: 60px; height: 60px; background-image: url('${item.primaryImg || 'https://via.placeholder.com/60'}'); background-size: cover; background-position: center; border-radius: 8px;"></div>
-            <div class="cart-item-details" style="flex: 1;">
-              <h4 style="font-size: 1rem; margin-bottom: 0.3rem;">${item.title}</h4>
-              <p style="font-size: 0.8rem; color: #666; margin-bottom: 0.3rem;">${item.category}</p>
-              <div style="font-weight: 600; color: #d4af37; margin-bottom: 0.5rem;">₹${formatPrice(item.price)}</div>
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <button onclick="window.updateQuantity(${item.id}, -1)" style="background: #f0f0f0; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">
-                  <i class="fa-solid fa-minus"></i>
-                </button>
-                <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
-                <button onclick="window.updateQuantity(${item.id}, 1)" style="background: #f0f0f0; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">
-                  <i class="fa-solid fa-plus"></i>
-                </button>
-                <button onclick="window.removeFromCart(${item.id})" style="background: none; border: none; color: #f44336; margin-left: auto; cursor: pointer;">
-                  <i class="fa-regular fa-trash-can"></i>
-                </button>
+          <div class="product-row">
+            <div class="product-image-placeholder">
+              <span>${item.image}</span>
+            </div>
+            <div class="product-info">
+              <span class="product-name">${item.name}</span>
+              <div class="product-meta">
+                <span class="product-qty">x${item.qty}</span>
+                <span class="product-price">₹${formatPrice(item.price)}</span>
               </div>
             </div>
           </div>
         `;
       }).join('');
 
-      cartItemCount.textContent = totalItems;
-      cartTotalAmount.textContent = `₹${formatPrice(total)}`;
-    }
+      const trackingHtml = order.trackingNumber ? `
+        <div class="tracking-info">
+          <p><i class="fa-solid fa-truck"></i> <strong>Carrier:</strong> ${order.carrier || 'Standard Shipping'}</p>
+          <p><i class="fa-solid fa-barcode"></i> <strong>Tracking #:</strong> ${order.trackingNumber}</p>
+          <p><i class="fa-regular fa-calendar"></i> <strong>Est. Delivery:</strong> ${order.estimatedDelivery || 'To be updated'}</p>
+        </div>
+      ` : '';
 
-    function updateCartCount() {
-      const cartCount = document.getElementById('cart-count');
-      if (cartCount) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCount.textContent = totalItems;
-      }
-    }
-
-    window.updateQuantity = function(productId, change) {
-      const itemIndex = cart.findIndex(item => item.id === productId);
-      if (itemIndex === -1) return;
-
-      const item = cart[itemIndex];
-      const newQuantity = item.quantity + change;
-
-      if (newQuantity <= 0) {
-        cart.splice(itemIndex, 1);
-      } else {
-        item.quantity = newQuantity;
-      }
-
-      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-      updateCartCount();
-      renderCartItems();
-    };
-
-    window.removeFromCart = function(productId) {
-      cart = cart.filter(item => item.id !== productId);
-      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-      updateCartCount();
-      renderCartItems();
-    };
-
-    // ========== AUTH FUNCTIONS ==========
-    function renderProfileContent() {
-      const profileContent = document.getElementById('profile-content');
-      if (!profileContent) return;
-
-      if (currentUser) {
-        profileContent.innerHTML = `
-          <div class="profile-info">
-            <div class="profile-avatar">
-              <img src="${currentUser.picture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/80'">
-            </div>
-            <div class="profile-details">
-              <p>
-                <i class="fa-regular fa-user"></i>
-                <span class="label">Name:</span>
-                <span class="value">${currentUser.name}</span>
-              </p>
-              <p>
-                <i class="fa-regular fa-envelope"></i>
-                <span class="label">Email:</span>
-                <span class="value">${currentUser.email}</span>
-              </p>
-              <p>
-                <i class="fa-regular fa-calendar"></i>
-                <span class="label">Member since:</span>
-                <span class="value">${new Date(currentUser.memberSince).toLocaleDateString()}</span>
-              </p>
-            </div>
-            <button class="btn logout-btn" onclick="window.logout()">
-              <i class="fa-solid fa-sign-out-alt"></i>
-              Logout
-            </button>
-          </div>
-        `;
-      } else {
-        profileContent.innerHTML = `
-          <div class="login-form">
-            <div class="login-header">
-              <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
-              <h4>Welcome Back!</h4>
-              <p>Sign in with Google to continue</p>
-            </div>
-            
-            <button class="btn google-login-btn" onclick="window.loginWithGoogle()">
-              <i class="fa-brands fa-google"></i>
-              Sign in with Google
-            </button>
-            
-            <div style="margin: 1rem 0; text-align: center; color: #999;">or</div>
-            
-            <button class="btn" onclick="window.showEmailLogin()" style="background: #1a1a1a; color: white;">
-              <i class="fa-regular fa-envelope"></i> Sign in with Email
-            </button>
-            
-            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
-              By signing in, you agree to our Terms of Service and Privacy Policy.
-            </p>
-          </div>
-        `;
-      }
-    }
-
-    window.loginWithGoogle = async function() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      try {
-        const result = await auth.signInWithPopup(provider);
-        closeModal('profile-modal');
-      } catch (error) {
-        console.error('Google login error:', error);
-        alert('Google login failed. Please try again.');
-      }
-    };
-
-    window.showEmailLogin = function() {
-      const profileContent = document.getElementById('profile-content');
-      profileContent.innerHTML = `
-        <div class="auth-container">
-          <div class="auth-tabs">
-            <button class="auth-tab active" onclick="window.switchAuthTab('login')" id="login-tab">Login</button>
-            <button class="auth-tab" onclick="window.switchAuthTab('signup')" id="signup-tab">Sign Up</button>
-          </div>
-          
-          <div id="login-form" class="auth-form">
-            <div class="form-group">
-              <label for="login-email">Email</label>
-              <input type="email" id="login-email" placeholder="Enter your email">
-            </div>
-            <div class="form-group">
-              <label for="login-password">Password</label>
-              <input type="password" id="login-password" placeholder="Enter your password">
-            </div>
-            <div class="forgot-password">
-              <a href="#" onclick="window.showForgotPassword()">Forgot Password?</a>
-            </div>
-            <button class="btn" onclick="window.loginWithEmail()" id="login-btn">
-              <i class="fa-regular fa-envelope"></i> Login
-            </button>
-          </div>
-          
-          <div id="signup-form" class="auth-form" style="display: none;">
-            <div class="form-group">
-              <label for="signup-name">Full Name</label>
-              <input type="text" id="signup-name" placeholder="Enter your full name">
-            </div>
-            <div class="form-group">
-              <label for="signup-email">Email</label>
-              <input type="email" id="signup-email" placeholder="Enter your email">
-            </div>
-            <div class="form-group">
-              <label for="signup-password">Password</label>
-              <input type="password" id="signup-password" placeholder="Choose a password (min. 6 characters)">
-            </div>
-            <div class="form-group">
-              <label for="signup-confirm">Confirm Password</label>
-              <input type="password" id="signup-confirm" placeholder="Confirm your password">
-            </div>
-            <button class="btn" onclick="window.signUpWithEmail()" id="signup-btn">
-              <i class="fa-regular fa-user-plus"></i> Create Account
-            </button>
-          </div>
-          
-          <div id="forgot-password-form" class="auth-form" style="display: none;">
-            <div class="form-group">
-              <label for="reset-email">Email</label>
-              <input type="email" id="reset-email" placeholder="Enter your email">
-            </div>
-            <button class="btn" onclick="window.resetPassword()" id="reset-btn">
-              <i class="fa-regular fa-paper-plane"></i> Send Reset Link
-            </button>
-            <button class="btn btn-outline" onclick="window.backToLogin()" style="margin-top: 1rem;">
-              <i class="fa-regular fa-arrow-left"></i> Back to Login
-            </button>
-          </div>
-          
-          <div id="auth-message" class="auth-message"></div>
-          
-          <div style="margin-top: 1rem; text-align: center;">
-            <a href="#" onclick="window.backToMain()" style="color: #999; text-decoration: none;">
-              <i class="fa-regular fa-arrow-left"></i> Back to sign in options
-            </a>
-          </div>
+      const html = `
+        <div class="result-header">
+          <span class="order-id-large">${order.orderId}</span>
+          <span class="order-date-large">ordered ${order.date}</span>
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <span class="order-status ${statusClass}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
+        </div>
+        ${trackingHtml}
+        <div class="order-items-container">
+          ${itemsHtml}
+        </div>
+        <div class="order-summary">
+          <div class="summary-left"><span>total amount</span></div>
+          <div class="summary-right">₹${formatPrice(order.total)}</div>
+        </div>
+        <div class="tracking-actions">
+          ${order.trackingNumber ? 
+            `<button class="action-btn primary" onclick="trackShipment('${order.trackingNumber}', '${order.carrier}')">
+              <i class="fa-solid fa-truck"></i> track package
+            </button>` : 
+            `<button class="action-btn" disabled>
+              <i class="fa-regular fa-clock"></i> awaiting shipment
+            </button>`
+          }
+          <a href="index.html" class="action-btn"><i class="fa-solid fa-house"></i> continue shopping</a>
         </div>
       `;
-    };
-
-    window.switchAuthTab = function(tab) {
-      const loginTab = document.getElementById('login-tab');
-      const signupTab = document.getElementById('signup-tab');
-      const loginForm = document.getElementById('login-form');
-      const signupForm = document.getElementById('signup-form');
-      const forgotForm = document.getElementById('forgot-password-form');
       
-      if (forgotForm) forgotForm.style.display = 'none';
-      
-      if (tab === 'login') {
-        loginTab?.classList.add('active');
-        signupTab?.classList.remove('active');
-        if (loginForm) loginForm.style.display = 'block';
-        if (signupForm) signupForm.style.display = 'none';
-      } else {
-        loginTab?.classList.remove('active');
-        signupTab?.classList.add('active');
-        if (loginForm) loginForm.style.display = 'none';
-        if (signupForm) signupForm.style.display = 'block';
-      }
-      
-      clearAuthMessage();
-    };
-
-    window.showForgotPassword = function() {
-      const loginForm = document.getElementById('login-form');
-      const signupForm = document.getElementById('signup-form');
-      const forgotForm = document.getElementById('forgot-password-form');
-      const authTabs = document.querySelector('.auth-tabs');
-      
-      if (authTabs) authTabs.style.display = 'none';
-      if (loginForm) loginForm.style.display = 'none';
-      if (signupForm) signupForm.style.display = 'none';
-      if (forgotForm) forgotForm.style.display = 'block';
-      
-      clearAuthMessage();
-    };
-
-    window.backToLogin = function() {
-      const authTabs = document.querySelector('.auth-tabs');
-      const loginForm = document.getElementById('login-form');
-      const signupForm = document.getElementById('signup-form');
-      const forgotForm = document.getElementById('forgot-password-form');
-      
-      if (authTabs) authTabs.style.display = 'flex';
-      if (loginForm) loginForm.style.display = 'block';
-      if (signupForm) signupForm.style.display = 'none';
-      if (forgotForm) forgotForm.style.display = 'none';
-      
-      window.switchAuthTab('login');
-      clearAuthMessage();
-    };
-
-    window.backToMain = function() {
-      renderProfileContent();
-    };
-
-    function showAuthMessage(message, isError = true) {
-      const messageDiv = document.getElementById('auth-message');
-      if (messageDiv) {
-        messageDiv.className = isError ? 'auth-error' : 'auth-success';
-        messageDiv.textContent = message;
+      if (resultCard) {
+        resultCard.innerHTML = html;
+        resultCard.classList.add('visible');
       }
     }
 
-    function clearAuthMessage() {
-      const messageDiv = document.getElementById('auth-message');
-      if (messageDiv) {
-        messageDiv.className = '';
-        messageDiv.textContent = '';
+    window.trackShipment = function(trackingNumber, carrier) {
+      // Simulate tracking - in real app, this would link to carrier's tracking page
+      alert(`🔍 Tracking ${trackingNumber} with ${carrier}\n\nYour package is in transit and on schedule.`);
+    };
+
+    function scrollToResult() {
+      const resultSection = document.getElementById('resultContainer');
+      setTimeout(() => {
+        if (resultSection) {
+          resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+
+    // ========== SUPPORT FUNCTIONS ==========
+    function showSupportModal() {
+      const supportModal = document.getElementById('support-modal');
+      if (supportModal) {
+        supportModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
       }
     }
 
-    window.loginWithEmail = async function() {
-      const email = document.getElementById('login-email')?.value;
-      const password = document.getElementById('login-password')?.value;
-      
-      if (!email || !password) {
-        showAuthMessage('Please fill in all fields');
-        return;
-      }
-      
-      try {
-        await auth.signInWithEmailAndPassword(email, password);
-        showAuthMessage('Login successful!', false);
-        setTimeout(() => closeModal('profile-modal'), 1500);
-      } catch (error) {
-        let errorMessage = 'Login failed. Please try again.';
-        switch (error.code) {
-          case 'auth/user-not-found':
-            errorMessage = 'No account found with this email.';
-            break;
-          case 'auth/wrong-password':
-            errorMessage = 'Incorrect password.';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Invalid email address.';
-            break;
-        }
-        showAuthMessage(errorMessage);
-      }
-    };
-
-    window.signUpWithEmail = async function() {
-      const name = document.getElementById('signup-name')?.value;
-      const email = document.getElementById('signup-email')?.value;
-      const password = document.getElementById('signup-password')?.value;
-      const confirm = document.getElementById('signup-confirm')?.value;
-      
-      if (!name || !email || !password || !confirm) {
-        showAuthMessage('Please fill in all fields');
-        return;
-      }
-      
-      if (password.length < 6) {
-        showAuthMessage('Password must be at least 6 characters');
-        return;
-      }
-      
-      if (password !== confirm) {
-        showAuthMessage('Passwords do not match');
-        return;
-      }
-      
-      try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        await userCredential.user.updateProfile({ displayName: name });
-        await db.collection('users').doc(userCredential.user.uid).set({
-          name, email,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        showAuthMessage('Account created successfully!', false);
-        setTimeout(() => closeModal('profile-modal'), 1500);
-      } catch (error) {
-        let errorMessage = 'Sign up failed. Please try again.';
-        if (error.code === 'auth/email-already-in-use') {
-          errorMessage = 'An account already exists with this email.';
-        } else if (error.code === 'auth/invalid-email') {
-          errorMessage = 'Invalid email address.';
-        } else if (error.code === 'auth/weak-password') {
-          errorMessage = 'Password is too weak.';
-        }
-        showAuthMessage(errorMessage);
-      }
-    };
-
-    window.resetPassword = async function() {
-      const email = document.getElementById('reset-email')?.value;
-      if (!email) {
-        showAuthMessage('Please enter your email address');
-        return;
-      }
-      
-      try {
-        await auth.sendPasswordResetEmail(email);
-        showAuthMessage('Password reset email sent! Check your inbox.', false);
-      } catch (error) {
-        let errorMessage = 'Failed to send reset email.';
-        if (error.code === 'auth/user-not-found') {
-          errorMessage = 'No account found with this email.';
-        } else if (error.code === 'auth/invalid-email') {
-          errorMessage = 'Invalid email address.';
-        }
-        showAuthMessage(errorMessage);
-      }
-    };
-
-    window.logout = async function() {
-      try {
-        await auth.signOut();
-        closeModal('profile-modal');
-        showLoginPrompt();
-        hideEnquiries();
-      } catch (error) {
-        console.error('Logout error:', error);
-        alert('Failed to logout. Please try again.');
-      }
-    };
-
-    function updateProfileIcon() {
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        profileIcon.innerHTML = currentUser ? 
-          '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>' : 
-          '<i class="fa-regular fa-user"></i>';
+    function closeSupportModal() {
+      const supportModal = document.getElementById('support-modal');
+      if (supportModal) {
+        supportModal.classList.remove('show');
+        document.body.style.overflow = '';
       }
     }
 
-    // ========== ENQUIRY FUNCTIONS ==========
-    function loadUserEnquiries() {
-      const stored = localStorage.getItem('essence_user_enquiries');
-      if (stored) {
-        try {
-          enquiries = JSON.parse(stored);
-        } catch (e) {
-          enquiries = [];
+    window.submitSupport = function() {
+      const name = document.getElementById('support-name')?.value;
+      const email = document.getElementById('support-email')?.value;
+      const message = document.getElementById('support-message')?.value;
+      const statusDiv = document.getElementById('support-message-status');
+
+      if (!name || !email || !message) {
+        if (statusDiv) {
+          statusDiv.className = 'auth-error';
+          statusDiv.textContent = 'Please fill in all fields';
         }
-      } else {
-        // Sample enquiries for demo
-        enquiries = [
-          {
-            id: 'ENQ' + Date.now() + '1',
-            name: 'Alex Morgan',
-            email: 'alex@example.com',
-            phone: '+91 98765 43210',
-            type: 'product',
-            message: 'I\'m interested in the leather collection, especially cardholders and watch straps. Do you have them in burgundy?',
-            images: ['📷', '📷'],
-            status: 'received',
-            timestamp: Date.now() - 2 * 24 * 60 * 60 * 1000
-          },
-          {
-            id: 'ENQ' + Date.now() + '2',
-            name: 'Alex Morgan',
-            email: 'alex@example.com',
-            phone: '+91 98765 43210',
-            type: 'bulk',
-            message: 'Looking for bulk order of power banks (50 units) for corporate gifting. Need pricing and customization options.',
-            images: ['📷'],
-            status: 'processing',
-            timestamp: Date.now() - 5 * 24 * 60 * 60 * 1000
-          }
-        ];
-        localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
-      }
-
-      // Filter to show only current user's enquiries
-      if (currentUser) {
-        enquiries = enquiries.filter(e => e.email === currentUser.email);
-      }
-
-      renderEnquiries();
-      const enquiriesSection = document.getElementById('enquiriesSection');
-      if (enquiriesSection && enquiries.length > 0) {
-        enquiriesSection.style.display = 'block';
-      }
-    }
-
-    function saveEnquiries() {
-      localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
-    }
-
-    window.deleteEnquiry = function(enquiryId) {
-      if (confirm('Are you sure you want to delete this enquiry?')) {
-        enquiries = enquiries.filter(e => e.id !== enquiryId);
-        saveEnquiries();
-        renderEnquiries();
-        
-        if (enquiries.length === 0) {
-          const enquiriesSection = document.getElementById('enquiriesSection');
-          if (enquiriesSection) enquiriesSection.style.display = 'none';
-        }
-      }
-    };
-
-    function renderEnquiries() {
-      const grid = document.getElementById('enquiriesGrid');
-      const filterValue = document.getElementById('enquiryFilter')?.value || 'all';
-      
-      if (!grid) return;
-
-      if (!enquiries || enquiries.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-enquiries">
-            <i class="fa-regular fa-folder-open"></i>
-            <p>You haven't submitted any enquiries yet.</p>
-          </div>
-        `;
         return;
       }
 
-      let filteredEnquiries = enquiries;
-      if (filterValue !== 'all') {
-        filteredEnquiries = enquiries.filter(e => e.status === filterValue);
+      // Simulate sending support request
+      if (statusDiv) {
+        statusDiv.className = 'auth-success';
+        statusDiv.textContent = 'Support request sent! We\'ll respond within 24 hours.';
       }
 
-      const sorted = [...filteredEnquiries].sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+      // Clear form
+      document.getElementById('support-message').value = '';
 
-      let html = '';
-      sorted.forEach(e => {
-        let statusClass = 'status-received';
-        if (e.status === 'processing') statusClass = 'status-processing';
-        else if (e.status === 'completed') statusClass = 'status-completed';
-        else if (e.status === 'invalid') statusClass = 'status-invalid';
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        closeSupportModal();
+      }, 2000);
+    };
 
-        const date = e.timestamp ? new Date(e.timestamp).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : 'just now';
+    // ========== INITIALIZATION ==========
+    function initializeApp() {
+      updateCartCount();
+      initializeOrderTracking();
+      
+      const savedUser = localStorage.getItem('MyEssantia_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateProfileIcon();
+      }
 
-        let imagesHtml = '';
-        if (e.images && e.images.length > 0) {
-          imagesHtml = e.images.map(img => {
-            if (typeof img === 'string' && img.length <= 8 && !img.startsWith('data:')) {
-              return `<div class="enquiry-image-thumb">${img}</div>`;
-            } else {
-              return `<div class="enquiry-image-thumb"><i class="fa-regular fa-image" style="color:#aaa;"></i></div>`;
-            }
-          }).join('');
-        } else {
-          imagesHtml = `<div class="enquiry-image-thumb"><i class="fa-regular fa-image" style="color:#ccc;"></i></div>`;
+      // Add ESC key handler for support modal
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeSupportModal();
         }
-
-        const typeLabel = {
-          'product': 'Product Info',
-          'bulk': 'Bulk Order',
-          'custom': 'Custom Request',
-          'other': 'Other'
-        }[e.type] || 'General';
-
-        html += `
-          <div class="enquiry-item">
-            <button class="delete-btn" onclick="deleteEnquiry('${e.id}')" title="Delete enquiry">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-            <div class="enquiry-header">
-              <span class="enquiry-name">${e.name}</span>
-              <span class="status-badge ${statusClass}">${e.status}</span>
-            </div>
-            <div class="enquiry-contact">
-              <div><i class="fa-regular fa-envelope"></i> ${e.email}</div>
-              ${e.phone ? `<div><i class="fa-regular fa-phone"></i> ${e.phone}</div>` : ''}
-              <div style="margin-top: 0.3rem;"><i class="fa-regular fa-tag"></i> ${typeLabel}</div>
-            </div>
-            <div class="enquiry-images">
-              ${imagesHtml}
-            </div>
-            <div class="enquiry-message">
-              <i class="fa-regular fa-note-sticky" style="color:#d4af37; margin-right:6px;"></i> ${e.message}
-            </div>
-            <div class="enquiry-footer">
-              <span><i class="fa-regular fa-clock"></i> ${date}</span>
-              <span><i class="fa-regular fa-id-card"></i> ${e.id.slice(0,8)}</span>
-            </div>
-          </div>
-        `;
       });
 
-      if (sorted.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-enquiries">
-            <i class="fa-regular fa-filter"></i>
-            <p>No enquiries match the selected filter.</p>
-          </div>
-        `;
-      } else {
-        grid.innerHTML = html;
-      }
-    }
-
-    // Initialize enquiry form
-    const fileInput = document.getElementById('imageUpload');
-    const previewDiv = document.getElementById('imagePreview');
-    const uploadArea = document.getElementById('fileUploadArea');
-    let selectedFiles = [];
-
-    if (uploadArea) {
-      uploadArea.addEventListener('click', () => fileInput.click());
-
-      fileInput.addEventListener('change', function(e) {
-        selectedFiles = Array.from(e.target.files || []).slice(0, 5); // Max 5 files
-        previewDiv.innerHTML = '';
-        if (selectedFiles.length === 0) return;
-
-        selectedFiles.forEach((file) => {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            const img = document.createElement('img');
-            img.src = event.target.result;
-            img.classList.add('preview-thumb');
-            img.alt = 'preview';
-            previewDiv.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-        });
+      // Add click outside handler for support modal
+      window.addEventListener('click', function(e) {
+        const supportModal = document.getElementById('support-modal');
+        if (e.target === supportModal) {
+          closeSupportModal();
+        }
       });
     }
 
-    const submitBtn = document.getElementById('submitEnquiry');
-    const successMsg = document.getElementById('successMessage');
-
-    if (submitBtn) {
-      submitBtn.addEventListener('click', function() {
-        if (!currentUser) {
-          alert('Please login to submit an enquiry');
-          openProfile();
-          return;
-        }
-
-        const name = document.getElementById('enquiryName').value.trim();
-        const email = document.getElementById('enquiryEmail').value.trim();
-        const phone = document.getElementById('enquiryPhone').value.trim();
-        const type = document.getElementById('enquiryType')?.value || 'other';
-        const message = document.getElementById('enquiryMessage').value.trim();
-
-        if (!name || !email || !message) {
-          alert('Please fill in name, email and message.');
-          return;
-        }
-
-        // Show loading state
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> submitting...';
-
-        const imageSymbols = [];
-        if (selectedFiles.length > 0) {
-          for (let i = 0; i < Math.min(selectedFiles.length, 5); i++) {
-            imageSymbols.push('📷');
-          }
-        } else {
-          imageSymbols.push('🖼️');
-        }
-
-        const newEnquiry = {
-          id: 'ENQ' + Date.now() + Math.floor(Math.random()*1000),
-          name: name,
-          email: email,
-          phone: phone || '',
-          type: type,
-          message: message,
-          images: imageSymbols,
-          status: 'received',
-          timestamp: Date.now()
-        };
-
-        enquiries.push(newEnquiry);
-        saveEnquiries();
-        renderEnquiries();
-
-        // Reset button
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> submit enquiry';
-
-        // Show success message
-        successMsg.classList.add('show');
-
-        // Clear form
-        document.getElementById('enquiryMessage').value = '';
-        document.getElementById('enquiryType').value = 'product';
-        previewDiv.innerHTML = '';
-        selectedFiles = [];
-        fileInput.value = '';
-
-        // Show enquiries section
-        const enquiriesSection = document.getElementById('enquiriesSection');
-        if (enquiriesSection) enquiriesSection.style.display = 'block';
-
-        setTimeout(() => {
-          successMsg.classList.remove('show');
-        }, 5000);
-      });
+    // Load common modals
+    async function loadCommonModals() {
+      try {
+        const response = await fetch('common.html');
+        const data = await response.text();
+        document.getElementById('common-modals').innerHTML = data;
+      } catch (error) {
+        console.error('Error loading common modals:', error);
+      }
     }
 
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', loadComponents);
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCommonModals();
+      loadComponents();
+    });
   </script>
-
-  <style>
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
-    }
-
-    .modal.show { display: block; }
-
-    .modal-content {
-      background: white;
-      margin: 2rem auto;
-      padding: 2rem;
-      width: 90%;
-      max-width: 500px;
-      border-radius: 30px;
-      max-height: 80vh;
-      overflow-y: auto;
-      animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-      from {
-        transform: translateY(-20px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .modal-header h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin: 0;
-    }
-
-    .close-modal {
-      background: none;
-      border: none;
-      font-size: 2rem;
-      cursor: pointer;
-      color: #999;
-      transition: color 0.2s;
-      line-height: 1;
-      padding: 0 0.5rem;
-    }
-
-    .close-modal:hover {
-      color: #1a1a1a;
-    }
-
-    .modal-footer {
-      border-top: 1px solid #f0f0f0;
-      padding-top: 1.5rem;
-    }
-
-    .cart-total {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: #1a1a1a;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    #cart-total-amount {
-      color: #d4af37;
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      font-weight: 600;
-    }
-
-    .checkout-btn {
-      width: 100%;
-      background: #d4af37;
-      border: 1px solid #d4af37;
-      color: #0c0c0c;
-      font-weight: 700;
-      padding: 1rem;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.3s;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .checkout-btn:hover:not(:disabled) {
-      background: #c4a030;
-      border-color: #c4a030;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
-    }
-
-    .checkout-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .empty-cart-message {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: #999;
-    }
-
-    .empty-cart-message i {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: #ddd;
-    }
-
-    .profile-avatar {
-      width: 80px;
-      height: 80px;
-      background: #f5f5f5;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.5rem;
-      font-size: 2.5rem;
-      color: #d4af37;
-      border: 2px solid #d4af37;
-      overflow: hidden;
-    }
-
-    .profile-details {
-      text-align: left;
-      background: #f9f9f9;
-      padding: 1.5rem;
-      border-radius: 20px;
-      margin-bottom: 1.5rem;
-    }
-
-    .profile-details p {
-      margin-bottom: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      color: #333;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.95rem;
-    }
-
-    .profile-details .label {
-      font-weight: 400;
-      color: #666;
-      min-width: 70px;
-    }
-
-    .profile-details .value {
-      font-weight: 600;
-      color: #1a1a1a;
-      font-family: 'Playfair Display', serif;
-    }
-
-    .logout-btn {
-      width: 100%;
-      background: #fff;
-      border: 1px solid #d4af37;
-      color: #1a1a1a;
-      padding: 1rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      transition: all 0.3s;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .logout-btn:hover {
-      background: #d4af37;
-      color: #fff;
-    }
-
-    .login-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .login-header i {
-      font-size: 3rem;
-      color: #d4af37;
-      margin-bottom: 1rem;
-    }
-
-    .login-header h4 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 0.5rem;
-    }
-
-    .google-login-btn {
-      background: #fff;
-      color: #333;
-      border: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      width: 100%;
-      padding: 1rem;
-      font-weight: 600;
-      transition: all 0.3s;
-      border-radius: 40px;
-      cursor: pointer;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .google-login-btn:hover {
-      background: #f8f8f8;
-      border-color: #d4af37;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
-    }
-
-    .google-login-btn i {
-      color: #DB4437;
-      font-size: 1.2rem;
-    }
-
-    /* Auth Styles */
-    .auth-tabs {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      border-bottom: 2px solid #f0f0f0;
-      padding-bottom: 1rem;
-    }
-
-    .auth-tab {
-      background: none;
-      border: none;
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: #999;
-      cursor: pointer;
-      padding: 0.5rem 1rem;
-      transition: all 0.3s;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .auth-tab.active {
-      color: #d4af37;
-      position: relative;
-    }
-
-    .auth-tab.active::after {
-      content: '';
-      position: absolute;
-      bottom: -1rem;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: #d4af37;
-    }
-
-    .auth-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .form-group label {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #666;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .form-group input {
-      padding: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      transition: all 0.3s;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: #d4af37;
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-    }
-
-    .forgot-password {
-      text-align: right;
-      margin-top: 0.5rem;
-    }
-
-    .forgot-password a {
-      color: #666;
-      text-decoration: none;
-      font-size: 0.9rem;
-      border-bottom: 1px solid #d4af37;
-      padding-bottom: 2px;
-    }
-
-    .forgot-password a:hover {
-      color: #d4af37;
-    }
-
-    .auth-error {
-      background: #fee;
-      color: #c00;
-      padding: 0.8rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .auth-success {
-      background: #e8f5e9;
-      color: #2e7d32;
-      padding: 0.8rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: #1a1a1a;
-      border: 1px solid #1a1a1a;
-    }
-
-    .btn-outline:hover {
-      background: #1a1a1a;
-      color: #fff;
-    }
-  </style>
 </body>
 </html>
