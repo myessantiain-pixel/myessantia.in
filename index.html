@@ -13,6 +13,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
   <!-- CSS Files -->
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
@@ -192,6 +197,137 @@
     .google-login-btn i {
       color: #DB4437;
       font-size: 1.2rem;
+    }
+
+    /* Email/Password Sign-in */
+    .auth-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 1rem;
+    }
+
+    .auth-tab {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #999;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .auth-tab.active {
+      color: #d4af37;
+      position: relative;
+    }
+
+    .auth-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1rem;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #d4af37;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #666;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .form-group input {
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .auth-error {
+      background: #fee;
+      color: #c00;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .auth-success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .auth-divider {
+      text-align: center;
+      position: relative;
+      margin: 1.5rem 0;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 45%;
+      height: 1px;
+      background: #ddd;
+    }
+
+    .auth-divider::before { left: 0; }
+    .auth-divider::after { right: 0; }
+
+    .auth-divider span {
+      background: #fff;
+      padding: 0 1rem;
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    .forgot-password {
+      text-align: right;
+      margin-top: 0.5rem;
+    }
+
+    .forgot-password a {
+      color: #666;
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #d4af37;
+      padding-bottom: 2px;
+    }
+
+    .forgot-password a:hover {
+      color: #d4af37;
     }
 
     /* VALUE STRIP */
@@ -414,84 +550,24 @@
       border: 1px solid #f2eee9;
     }
 
-    /* Touch targets */
-    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add, .img-buy {
-      touch-action: manipulation;
-    }
-
     /* Loading Spinner */
     .spinner {
-      border: 3px solid rgba(212, 175, 55, 0.1);
-      border-radius: 50%;
-      border-top: 3px solid #d4af37;
+      display: inline-block;
       width: 20px;
       height: 20px;
-      animation: spin 1s linear infinite;
-      display: inline-block;
-      margin-right: 8px;
+      border: 2px solid rgba(0,0,0,0.1);
+      border-radius: 50%;
+      border-top-color: #d4af37;
+      animation: spin 1s ease-in-out infinite;
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
     }
 
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255,255,255,0.9);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      backdrop-filter: blur(5px);
-    }
-
-    .loading-overlay.show {
-      display: flex;
-    }
-
-    .loading-spinner {
-      border: 4px solid rgba(212, 175, 55, 0.1);
-      border-radius: 50%;
-      border-top: 4px solid #d4af37;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-    }
-
-    /* Toast Notification */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #1a1a1a;
-      color: white;
-      padding: 1rem 2rem;
-      border-radius: 30px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 10000;
-      animation: slideUp 0.3s ease;
-      border-left: 4px solid #d4af37;
-    }
-
-    .toast.show {
-      display: block;
-    }
-
-    @keyframes slideUp {
-      from {
-        transform: translateY(20px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
+    /* Touch targets */
+    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add, .img-buy {
+      touch-action: manipulation;
     }
 
     /* RESPONSIVE BREAKPOINTS */
@@ -519,14 +595,6 @@
   </style>
 </head>
 <body class="bg-noise">
-  
-  <!-- Loading Overlay -->
-  <div class="loading-overlay" id="loading-overlay">
-    <div class="loading-spinner"></div>
-  </div>
-
-  <!-- Toast Notification -->
-  <div class="toast" id="toast"></div>
   
   <!-- Header loaded dynamically -->
   <div id="header"></div>
@@ -610,597 +678,960 @@
   <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    // Import Firebase modules
-    import { 
-      auth, 
-      googleProvider, 
-      signInWithPopup, 
-      signOut, 
-      onAuthStateChanged 
-    } from './firebase-config.js';
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Shopping Cart</h3>
+        <button class="close-modal" id="close-cart">&times;</button>
+      </div>
+      <div id="cart-items" class="cart-items">
+        <!-- Cart items will be rendered here -->
+      </div>
+      <div class="modal-footer">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="cart-total-amount">₹0.00</span>
+        </div>
+        <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+      </div>
+    </div>
+  </div>
 
-    // Global variables
-    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-    let currentUser = null;
-    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+  <!-- Profile Modal -->
+  <div id="profile-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>My Account</h3>
+        <button class="close-modal" id="close-profile">&times;</button>
+      </div>
+      <div id="profile-content">
+        <!-- Profile content will be rendered here -->
+      </div>
+    </div>
+  </div>
 
-    // Fallback products if none exist
-    if (products.length === 0) {
-      products = [
-        {
-          id: 1,
-          title: "Premium Leather Wallet",
-          category: "Accessories",
-          price: 2499,
-          rating: 4.5,
-          stock: 15,
-          showOnHome: true,
-          images: ["https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=987&auto=format&fit=crop", "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=987&auto=format&fit=crop"],
-          primaryImg: "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=987&auto=format&fit=crop"
-        },
-        {
-          id: 2,
-          title: "Minimalist Backpack",
-          category: "Bags",
-          price: 3999,
-          rating: 4.8,
-          stock: 8,
-          showOnHome: true,
-          images: ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=987&auto=format&fit=crop", "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=987&auto=format&fit=crop"],
-          primaryImg: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=987&auto=format&fit=crop"
-        },
-        {
-          id: 3,
-          title: "Wireless Earbuds",
-          category: "Electronics",
-          price: 4999,
-          rating: 4.3,
-          stock: 12,
-          showOnHome: true,
-          images: ["https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=2070&auto=format&fit=crop", "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=2070&auto=format&fit=crop"],
-          primaryImg: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=2070&auto=format&fit=crop"
-        },
-        {
-          id: 4,
-          title: "Smart Watch",
-          category: "Electronics",
-          price: 8999,
-          rating: 4.6,
-          stock: 5,
-          showOnHome: true,
-          images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop", "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop"],
-          primaryImg: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop"
-        }
-      ];
-      localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+<script>
+// ========== FIREBASE CONFIGURATION ==========
+const firebaseConfig = {
+  apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
+  authDomain: "myessantia.firebaseapp.com",
+  projectId: "myessantia",
+  storageBucket: "myessantia.firebasestorage.app",
+  messagingSenderId: "701726517205",
+  appId: "1:701726517205:web:f6ab79efdffeab6dbbbf5c",
+  measurementId: "G-SZF11SHZBH"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// ========== GLOBAL VARIABLES ==========
+let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
+let currentUser = null;
+let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+
+// Sample products if none exist
+if (products.length === 0) {
+  products = [
+    {
+      id: 1,
+      title: "Premium Leather Wallet",
+      category: "Accessories",
+      price: 2499,
+      rating: 4.5,
+      stock: 25,
+      showOnHome: true,
+      images: [
+        "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=1887&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1606503825008-909a67e63c3d?q=80&w=1887&auto=format&fit=crop"
+      ],
+      primaryImg: "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=1887&auto=format&fit=crop",
+      secondaryImg: "https://images.unsplash.com/photo-1606503825008-909a67e63c3d?q=80&w=1887&auto=format&fit=crop"
+    },
+    {
+      id: 2,
+      title: "Minimalist Watch",
+      category: "Watches",
+      price: 3999,
+      rating: 4.8,
+      stock: 12,
+      showOnHome: true,
+      images: [
+        "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1888&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1888&auto=format&fit=crop"
+      ],
+      primaryImg: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1888&auto=format&fit=crop",
+      secondaryImg: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1888&auto=format&fit=crop"
+    },
+    {
+      id: 3,
+      title: "Wireless Earbuds",
+      category: "Electronics",
+      price: 5999,
+      rating: 4.3,
+      stock: 8,
+      showOnHome: true,
+      images: [
+        "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=1770&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=1770&auto=format&fit=crop"
+      ],
+      primaryImg: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=1770&auto=format&fit=crop",
+      secondaryImg: "https://images.unsplash.com/photo-1606220838315-056192d5e927?q=80&w=1770&auto=format&fit=crop"
+    },
+    {
+      id: 4,
+      title: "Sunglasses",
+      category: "Accessories",
+      price: 1999,
+      rating: 4.6,
+      stock: 30,
+      showOnHome: true,
+      images: [
+        "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1780&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1577803645770-f5b7f4c09bf3?q=80&w=1780&auto=format&fit=crop"
+      ],
+      primaryImg: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1780&auto=format&fit=crop",
+      secondaryImg: "https://images.unsplash.com/photo-1577803645770-f5b7f4c09bf3?q=80&w=1780&auto=format&fit=crop"
     }
+  ];
+  localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+}
 
-    // Utility Functions
-    function showLoading() {
-      document.getElementById('loading-overlay').classList.add('show');
-    }
-
-    function hideLoading() {
-      document.getElementById('loading-overlay').classList.remove('show');
-    }
-
-    function showToast(message, type = 'success') {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.style.background = type === 'success' ? '#1a1a1a' : '#dc3545';
-      toast.classList.add('show');
-      
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
-    }
-
-    // Load Header and Footer
-    async function loadComponents() {
-      try {
-        const headerResponse = await fetch('header.html');
-        const headerData = await headerResponse.text();
-        document.getElementById('header').innerHTML = headerData;
-
-        const footerResponse = await fetch('footer.html');
-        const footerData = await footerResponse.text();
-        document.getElementById('footer').innerHTML = footerData;
-
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
-      } catch (error) {
-        console.error('Error loading components:', error);
-        document.getElementById('header').innerHTML = getFallbackHeader();
-        document.getElementById('footer').innerHTML = getFallbackFooter();
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
-      }
-    }
-
-    // Render Products
-    function renderProducts() {
-      const gridContainer = document.getElementById('product-grid-container');
-      if (!gridContainer) return;
-
-      const homeProducts = products.filter(p => p.showOnHome === true);
-
-      if (homeProducts.length === 0) {
-        gridContainer.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
-            <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-            <h3>No products on homepage</h3>
-            <p>Check back later for new arrivals!</p>
-          </div>
-        `;
-        return;
-      }
-
-      function renderRating(rating) {
-        let stars = '';
-        for (let i = 1; i <= 5; i++) {
-          if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
-          else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
-          else stars += '<i class="fa-regular fa-star"></i>';
-        }
-        return stars;
-      }
-
-      let gridHtml = '';
-      homeProducts.forEach(product => {
-        const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
-        const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
-        
-        gridHtml += `
-          <a href="product.html?id=${product.id}" class="product-card" style="text-decoration: none; color: inherit;">
-            <div class="image-frame">
-              <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-              <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
-              <div class="image-actions" onclick="event.stopPropagation()">
-                <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault();">
-                  <i class="fa-solid fa-cart-plus"></i> add
-                </button>
-                <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault();">
-                  <i class="fa-solid fa-bolt"></i> buy
-                </button>
-              </div>
-            </div>
-            <h3 class="product-title">${product.title}</h3>
-            <p class="product-category">${product.category}</p>
-            <div class="product-rating">
-              ${renderRating(product.rating)}
-              <span>(${product.rating.toFixed(1)})</span>
-            </div>
-            <div class="product-price">
-              <span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}
-            </div>
-            <div class="stock-badge ${product.stock > 10 ? 'in-stock' : (product.stock > 0 ? 'low-stock' : 'out-of-stock')}">
-              ${product.stock > 10 ? 'In Stock' : (product.stock > 0 ? `Only ${product.stock} left` : 'Out of Stock')}
-            </div>
-          </a>
-        `;
-      });
-      
-      gridContainer.innerHTML = gridHtml;
-    }
-
-    // Authentication Functions
-    async function handleGoogleLogin() {
-      try {
-        showLoading();
-        const result = await signInWithPopup(auth, googleProvider);
-        const user = result.user;
-        
-        // Create user object
-        currentUser = {
-          uid: user.uid,
-          name: user.displayName,
-          email: user.email,
-          picture: user.photoURL,
-          provider: 'google',
-          memberSince: new Date().toISOString()
-        };
-
-        // Save to localStorage
-        localStorage.setItem('MyEssantia_user', JSON.stringify(currentUser));
-        
-        updateProfileIcon();
-        renderProfileContent();
-        closeModal('profile-modal');
-        showToast(`Welcome ${user.displayName}!`);
-        
-      } catch (error) {
-        console.error('Login error:', error);
-        let errorMessage = 'Login failed. Please try again.';
-        
-        if (error.code === 'auth/popup-closed-by-user') {
-          errorMessage = 'Login popup was closed. Please try again.';
-        } else if (error.code === 'auth/cancelled-popup-request') {
-          errorMessage = 'Login cancelled. Please try again.';
-        } else if (error.code === 'auth/network-request-failed') {
-          errorMessage = 'Network error. Please check your connection.';
-        }
-        
-        showToast(errorMessage, 'error');
-      } finally {
-        hideLoading();
-      }
-    }
-
-    async function handleLogout() {
-      try {
-        showLoading();
-        await signOut(auth);
-        localStorage.removeItem('MyEssantia_user');
-        currentUser = null;
-        updateProfileIcon();
-        renderProfileContent();
-        closeModal('profile-modal');
-        showToast('Logged out successfully');
-      } catch (error) {
-        console.error('Logout error:', error);
-        showToast('Logout failed. Please try again.', 'error');
-      } finally {
-        hideLoading();
-      }
-    }
-
-    // Cart Functions
-    window.addToCart = function(productId) {
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
-
-      const existingItem = cart.find(item => item.id === productId);
-
-      if (existingItem) {
-        existingItem.quantity += 1;
-      } else {
-        cart.push({
-          id: productId,
-          title: product.title,
-          category: product.category,
-          price: product.price,
-          primaryImg: product.primaryImg || (product.images && product.images[0]),
-          quantity: 1
-        });
-      }
-
-      saveCart();
-      updateCartCount();
-      
-      const btn = event?.target?.closest('button');
-      if (btn) {
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        btn.style.background = '#4CAF50';
-        btn.style.color = 'white';
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.style.background = '';
-          btn.style.color = '';
-        }, 1500);
-      }
-      
-      showToast(`${product.title} added to cart!`);
+// ========== FIREBASE AUTH STATE OBSERVER ==========
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // User is signed in
+    currentUser = {
+      uid: user.uid,
+      name: user.displayName || user.email.split('@')[0],
+      email: user.email,
+      picture: user.photoURL || 'https://via.placeholder.com/80',
+      provider: user.providerData[0]?.providerId || 'email',
+      memberSince: user.metadata.creationTime
     };
-
-    window.buyNow = function(productId) {
-      window.addToCart(productId);
-      openCart();
-    };
-
-    window.updateQuantity = function(productId, change) {
-      const itemIndex = cart.findIndex(item => item.id === productId);
-      if (itemIndex === -1) return;
-
-      const item = cart[itemIndex];
-      const newQuantity = item.quantity + change;
-
-      if (newQuantity <= 0) {
-        cart.splice(itemIndex, 1);
-      } else {
-        item.quantity = newQuantity;
-      }
-
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-    };
-
-    window.removeFromCart = function(productId) {
-      cart = cart.filter(item => item.id !== productId);
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-      showToast('Item removed from cart');
-    };
-
-    function saveCart() {
-      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-    }
-
-    function updateCartCount() {
-      const cartCount = document.getElementById('cart-count');
-      if (cartCount) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCount.textContent = totalItems;
-      }
-    }
-
-    // Modal Functions
-    function openCart() {
-      const cartModal = document.getElementById('cart-modal');
-      if (cartModal) {
-        renderCartItems();
-        cartModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function openProfile() {
-      const profileModal = document.getElementById('profile-modal');
-      if (profileModal) {
-        renderProfileContent();
-        profileModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-      }
-    }
-
-    // Render Cart Items
-    function renderCartItems() {
-      const cartItemsContainer = document.getElementById('cart-items');
-      const cartItemCount = document.getElementById('cart-item-count');
-      const cartTotalAmount = document.getElementById('cart-total-amount');
-
-      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
-
-      if (cart.length === 0) {
-        cartItemsContainer.innerHTML = `
-          <div class="empty-cart-message">
-            <i class="fa-regular fa-cart-shopping"></i>
-            <p>Your cart is empty</p>
-            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Start shopping to add items!</p>
-          </div>
-        `;
-        cartItemCount.textContent = '0';
-        cartTotalAmount.textContent = '₹0.00';
-        return;
-      }
-
-      let total = 0;
-      let totalItems = 0;
-
-      cartItemsContainer.innerHTML = cart.map(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        totalItems += item.quantity;
-
-        return `
-          <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.primaryImg}')"></div>
-            <div class="cart-item-details">
-              <h4 class="cart-item-title">${item.title}</h4>
-              <p class="cart-item-category">${item.category}</p>
-              <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
-              <div class="cart-item-actions">
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">
-                  <i class="fa-solid fa-minus"></i>
-                </button>
-                <span class="item-quantity">${item.quantity}</span>
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">
-                  <i class="fa-solid fa-plus"></i>
-                </button>
-                <button class="remove-item" onclick="window.removeFromCart(${item.id})">
-                  Remove
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      cartItemCount.textContent = totalItems;
-      cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
-    }
-
-    // Render Profile Content
-    function renderProfileContent() {
-      const profileContent = document.getElementById('profile-content');
-      if (!profileContent) return;
-
-      if (currentUser) {
-        profileContent.innerHTML = `
-          <div class="profile-info">
-            <div class="profile-avatar">
-              <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">
-            </div>
-            <div class="profile-details">
-              <p>
-                <i class="fa-regular fa-user"></i>
-                <span class="label">Name:</span>
-                <span class="value">${currentUser.name}</span>
-              </p>
-              <p>
-                <i class="fa-regular fa-envelope"></i>
-                <span class="label">Email:</span>
-                <span class="value">${currentUser.email}</span>
-              </p>
-            </div>
-            <button class="btn logout-btn" onclick="window.handleLogout()">
-              <i class="fa-solid fa-sign-out-alt"></i>
-              Logout
-            </button>
-          </div>
-        `;
-      } else {
-        profileContent.innerHTML = `
-          <div class="login-form">
-            <div class="login-header">
-              <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
-              <h4>Welcome Back!</h4>
-              <p>Sign in with Google to continue</p>
-            </div>
-            
-            <button class="btn google-login-btn" onclick="window.handleGoogleLogin()">
-              <i class="fa-brands fa-google"></i>
-              Sign in with Google
-            </button>
-            
-            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
-              By signing in, you agree to our Terms of Service and Privacy Policy.
-            </p>
-          </div>
-        `;
-      }
-    }
-
-    function updateProfileIcon() {
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        if (currentUser) {
-          profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
-        } else {
-          profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
-        }
-      }
-    }
-
-    // Initialize App
-    function initializeApp() {
-      renderProducts();
-      updateCartCount();
-      updateProfileIcon();
-      setupEventListeners();
-    }
-
-    // Setup Event Listeners
-    function setupEventListeners() {
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const navMenu = document.getElementById('nav-menu');
-      
-      if (mobileMenuToggle && navMenu) {
-        mobileMenuToggle.addEventListener('click', function(e) {
-          e.stopPropagation();
-          navMenu.classList.toggle('show');
-        });
-      }
-
-      const cartIcon = document.getElementById('cart-icon');
-      if (cartIcon) {
-        cartIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openCart();
-        });
-      }
-
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        profileIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openProfile();
-        });
-      }
-
-      const closeCart = document.getElementById('close-cart');
-      if (closeCart) {
-        closeCart.addEventListener('click', function() {
-          closeModal('cart-modal');
-        });
-      }
-
-      const closeProfile = document.getElementById('close-profile');
-      if (closeProfile) {
-        closeProfile.addEventListener('click', function() {
-          closeModal('profile-modal');
-        });
-      }
-
-      const checkoutBtn = document.getElementById('checkout-btn');
-      if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', function() {
-          if (cart.length === 0) {
-            showToast('Your cart is empty!', 'error');
-          } else {
-            if (!currentUser) {
-              showToast('Please login to checkout', 'error');
-              closeModal('cart-modal');
-              openProfile();
-            } else {
-              showToast('Proceeding to checkout...');
-              // Add your checkout logic here
-            }
-          }
-        });
-      }
-
-      window.addEventListener('click', function(e) {
-        const cartModal = document.getElementById('cart-modal');
-        const profileModal = document.getElementById('profile-modal');
-        
-        if (e.target === cartModal) {
-          closeModal('cart-modal');
-        }
-        if (e.target === profileModal) {
-          closeModal('profile-modal');
-        }
-      });
-
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeModal('cart-modal');
-          closeModal('profile-modal');
-        }
-      });
-
-      document.addEventListener('click', function(e) {
-        if (navMenu && navMenu.classList.contains('show')) {
-          if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-            navMenu.classList.remove('show');
-          }
-        }
-      });
-    }
-
-    // Check Auth State on Load
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in
-        currentUser = {
-          uid: user.uid,
-          name: user.displayName,
-          email: user.email,
-          picture: user.photoURL,
-          provider: 'google',
-          memberSince: new Date().toISOString()
-        };
-        localStorage.setItem('MyEssantia_user', JSON.stringify(currentUser));
-      } else {
-        // User is signed out
-        localStorage.removeItem('MyEssantia_user');
-        currentUser = null;
-      }
-      updateProfileIcon();
+    
+    // Save user to localStorage for persistence
+    localStorage.setItem('MyEssantia_user', JSON.stringify(currentUser));
+    
+    // Update UI
+    updateProfileIcon();
+    if (document.getElementById('profile-content')) {
       renderProfileContent();
+    }
+  } else {
+    // User is signed out
+    currentUser = null;
+    localStorage.removeItem('MyEssantia_user');
+    updateProfileIcon();
+    if (document.getElementById('profile-content')) {
+      renderProfileContent();
+    }
+  }
+});
+
+// ========== LOAD COMPONENTS ==========
+async function loadComponents() {
+  try {
+    const headerResponse = await fetch('header.html');
+    const headerData = await headerResponse.text();
+    document.getElementById('header').innerHTML = headerData;
+
+    const footerResponse = await fetch('footer.html');
+    const footerData = await footerResponse.text();
+    document.getElementById('footer').innerHTML = footerData;
+
+    setTimeout(() => {
+      initializeApp();
+    }, 50);
+  } catch (error) {
+    console.error('Error loading components:', error);
+    document.getElementById('header').innerHTML = getFallbackHeader();
+    document.getElementById('footer').innerHTML = getFallbackFooter();
+    setTimeout(() => {
+      initializeApp();
+    }, 50);
+  }
+}
+
+function getFallbackHeader() {
+  return `
+    <header style="padding: 1rem; background: #fff; border-bottom: 1px solid #eee;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="logo" style="font-family: 'Playfair Display', serif; font-size: 1.8rem;">
+          My<span style="color: #d4af37;">Essantia</span>
+        </div>
+        <div class="header-icons">
+          <a href="#" id="profile-icon" style="margin: 0 0.5rem;"><i class="fa-regular fa-user"></i></a>
+          <a href="#" id="cart-icon" style="margin: 0 0.5rem; position: relative;">
+            <i class="fa-regular fa-shopping-bag"></i>
+            <span id="cart-count" style="position: absolute; top: -8px; right: -8px; background: #d4af37; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; display: flex; align-items: center; justify-content: center;">0</span>
+          </a>
+        </div>
+      </div>
+    </header>
+  `;
+}
+
+function getFallbackFooter() {
+  return `
+    <footer style="background: #1a1a1a; color: #fff; padding: 2rem 1rem; margin-top: 3rem;">
+      <div style="text-align: center;">
+        <p>&copy; 2025 MyEssantia. All rights reserved.</p>
+      </div>
+    </footer>
+  `;
+}
+
+// ========== PRODUCT RENDERING ==========
+function renderProducts() {
+  const gridContainer = document.getElementById('product-grid-container');
+  if (!gridContainer) return;
+
+  const homeProducts = products.filter(p => p.showOnHome === true);
+
+  if (homeProducts.length === 0) {
+    gridContainer.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
+        <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+        <h3>No products on homepage</h3>
+        <p>Check back later for new arrivals!</p>
+      </div>
+    `;
+    return;
+  }
+
+  function renderRating(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+      if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
+      else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+      else stars += '<i class="fa-regular fa-star"></i>';
+    }
+    return stars;
+  }
+
+  let gridHtml = '';
+  homeProducts.forEach(product => {
+    const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
+    const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
+    
+    gridHtml += `
+      <a href="product.html?id=${product.id}" class="product-card" style="text-decoration: none; color: inherit;">
+        <div class="image-frame">
+          <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+          <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+          <div class="image-actions" onclick="event.stopPropagation()">
+            <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault();">
+              <i class="fa-solid fa-cart-plus"></i> add
+            </button>
+            <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault();">
+              <i class="fa-solid fa-bolt"></i> buy
+            </button>
+          </div>
+        </div>
+        <h3 class="product-title">${product.title}</h3>
+        <p class="product-category">${product.category}</p>
+        <div class="product-rating">
+          ${renderRating(product.rating)}
+          <span>(${product.rating.toFixed(1)})</span>
+        </div>
+        <div class="product-price">
+          <span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}
+        </div>
+        <div style="font-size: 0.8rem; color: ${product.stock > 10 ? '#4CAF50' : (product.stock > 0 ? '#FF9800' : '#f44336')}; margin-top: 0.3rem;">
+          ${product.stock > 10 ? 'In Stock' : (product.stock > 0 ? `Only ${product.stock} left` : 'Out of Stock')}
+        </div>
+      </a>
+    `;
+  });
+  
+  gridContainer.innerHTML = gridHtml;
+}
+
+// ========== INITIALIZATION ==========
+function initializeApp() {
+  renderProducts();
+  updateCartCount();
+  setupEventListeners();
+  
+  // Check for existing user in localStorage
+  const savedUser = localStorage.getItem('MyEssantia_user');
+  if (savedUser) {
+    currentUser = JSON.parse(savedUser);
+    updateProfileIcon();
+  }
+}
+
+function setupEventListeners() {
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const navMenu = document.getElementById('nav-menu');
+  
+  if (mobileMenuToggle && navMenu) {
+    mobileMenuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      navMenu.classList.toggle('show');
     });
+  }
 
-    // Make functions globally available
-    window.handleGoogleLogin = handleGoogleLogin;
-    window.handleLogout = handleLogout;
+  const cartIcon = document.getElementById('cart-icon');
+  if (cartIcon) {
+    cartIcon.addEventListener('click', function(e) {
+      e.preventDefault();
+      openCart();
+    });
+  }
 
-    // Load components on page load
-    document.addEventListener('DOMContentLoaded', loadComponents);
-  </script>
+  const profileIcon = document.getElementById('profile-icon');
+  if (profileIcon) {
+    profileIcon.addEventListener('click', function(e) {
+      e.preventDefault();
+      openProfile();
+    });
+  }
+
+  const closeCart = document.getElementById('close-cart');
+  if (closeCart) {
+    closeCart.addEventListener('click', function() {
+      closeModal('cart-modal');
+    });
+  }
+
+  const closeProfile = document.getElementById('close-profile');
+  if (closeProfile) {
+    closeProfile.addEventListener('click', function() {
+      closeModal('profile-modal');
+    });
+  }
+
+  const checkoutBtn = document.getElementById('checkout-btn');
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', function() {
+      if (!currentUser) {
+        alert('Please login to checkout');
+        closeModal('cart-modal');
+        openProfile();
+        return;
+      }
+      if (cart.length === 0) {
+        alert('Your cart is empty!');
+      } else {
+        alert('Proceeding to checkout...');
+        // Here you would integrate with payment gateway
+      }
+    });
+  }
+
+  window.addEventListener('click', function(e) {
+    const cartModal = document.getElementById('cart-modal');
+    const profileModal = document.getElementById('profile-modal');
+    
+    if (e.target === cartModal) {
+      closeModal('cart-modal');
+    }
+    if (e.target === profileModal) {
+      closeModal('profile-modal');
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeModal('cart-modal');
+      closeModal('profile-modal');
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (navMenu && navMenu.classList.contains('show')) {
+      if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        navMenu.classList.remove('show');
+      }
+    }
+  });
+}
+
+// ========== MODAL FUNCTIONS ==========
+function openCart() {
+  const cartModal = document.getElementById('cart-modal');
+  if (cartModal) {
+    renderCartItems();
+    cartModal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function openProfile() {
+  const profileModal = document.getElementById('profile-modal');
+  if (profileModal) {
+    renderProfileContent();
+    profileModal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+}
+
+// ========== CART FUNCTIONS ==========
+window.addToCart = function(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+
+  if (product.stock <= 0) {
+    alert('Sorry, this product is out of stock!');
+    return;
+  }
+
+  const existingItem = cart.find(item => item.id === productId);
+
+  if (existingItem) {
+    if (existingItem.quantity >= product.stock) {
+      alert('Sorry, not enough stock available!');
+      return;
+    }
+    existingItem.quantity += 1;
+  } else {
+    cart.push({
+      id: productId,
+      title: product.title,
+      category: product.category,
+      price: product.price,
+      primaryImg: product.primaryImg || (product.images && product.images[0]),
+      quantity: 1
+    });
+  }
+
+  saveCart();
+  updateCartCount();
+  
+  const btn = event?.target?.closest('button');
+  if (btn) {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+    btn.style.background = '#4CAF50';
+    btn.style.color = 'white';
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 1500);
+  } else {
+    alert(`${product.title} added to cart!`);
+  }
+};
+
+window.buyNow = function(productId) {
+  addToCart(productId);
+  openCart();
+};
+
+window.updateQuantity = function(productId, change) {
+  const itemIndex = cart.findIndex(item => item.id === productId);
+  if (itemIndex === -1) return;
+
+  const product = products.find(p => p.id === productId);
+  const item = cart[itemIndex];
+  const newQuantity = item.quantity + change;
+
+  if (newQuantity <= 0) {
+    cart.splice(itemIndex, 1);
+  } else if (product && newQuantity > product.stock) {
+    alert('Sorry, not enough stock available!');
+    return;
+  } else {
+    item.quantity = newQuantity;
+  }
+
+  saveCart();
+  updateCartCount();
+  renderCartItems();
+};
+
+window.removeFromCart = function(productId) {
+  cart = cart.filter(item => item.id !== productId);
+  saveCart();
+  updateCartCount();
+  renderCartItems();
+};
+
+function renderCartItems() {
+  const cartItemsContainer = document.getElementById('cart-items');
+  const cartItemCount = document.getElementById('cart-item-count');
+  const cartTotalAmount = document.getElementById('cart-total-amount');
+
+  if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
+
+  if (cart.length === 0) {
+    cartItemsContainer.innerHTML = `
+      <div class="empty-cart-message">
+        <i class="fa-regular fa-cart-shopping"></i>
+        <p>Your cart is empty</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Start shopping to add items!</p>
+      </div>
+    `;
+    cartItemCount.textContent = '0';
+    cartTotalAmount.textContent = '₹0.00';
+    return;
+  }
+
+  let total = 0;
+  let totalItems = 0;
+
+  cartItemsContainer.innerHTML = cart.map(item => {
+    const itemTotal = item.price * item.quantity;
+    total += itemTotal;
+    totalItems += item.quantity;
+
+    return `
+      <div class="cart-item" style="display: flex; gap: 1rem; padding: 1rem; border-bottom: 1px solid #eee;">
+        <div class="cart-item-image" style="width: 60px; height: 60px; background-image: url('${item.primaryImg || 'https://via.placeholder.com/60'}'); background-size: cover; background-position: center; border-radius: 8px;"></div>
+        <div class="cart-item-details" style="flex: 1;">
+          <h4 style="font-size: 1rem; margin-bottom: 0.3rem;">${item.title}</h4>
+          <p style="font-size: 0.8rem; color: #666; margin-bottom: 0.3rem;">${item.category}</p>
+          <div style="font-weight: 600; color: #d4af37; margin-bottom: 0.5rem;">₹${item.price.toLocaleString()}</div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button onclick="window.updateQuantity(${item.id}, -1)" style="background: #f0f0f0; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">
+              <i class="fa-solid fa-minus"></i>
+            </button>
+            <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
+            <button onclick="window.updateQuantity(${item.id}, 1)" style="background: #f0f0f0; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <button onclick="window.removeFromCart(${item.id})" style="background: none; border: none; color: #f44336; margin-left: auto; cursor: pointer;">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  cartItemCount.textContent = totalItems;
+  cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
+}
+
+function updateCartCount() {
+  const cartCount = document.getElementById('cart-count');
+  if (cartCount) {
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = totalItems;
+  }
+}
+
+function saveCart() {
+  localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+}
+
+// ========== AUTH FUNCTIONS ==========
+function renderProfileContent() {
+  const profileContent = document.getElementById('profile-content');
+  if (!profileContent) return;
+
+  if (currentUser) {
+    // Logged in view
+    profileContent.innerHTML = `
+      <div class="profile-info">
+        <div class="profile-avatar">
+          <img src="${currentUser.picture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile" onerror="this.src='https://via.placeholder.com/80'">
+        </div>
+        <div class="profile-details">
+          <p>
+            <i class="fa-regular fa-user"></i>
+            <span class="label">Name:</span>
+            <span class="value">${currentUser.name}</span>
+          </p>
+          <p>
+            <i class="fa-regular fa-envelope"></i>
+            <span class="label">Email:</span>
+            <span class="value">${currentUser.email}</span>
+          </p>
+          <p>
+            <i class="fa-regular fa-calendar"></i>
+            <span class="label">Member since:</span>
+            <span class="value">${new Date(currentUser.memberSince).toLocaleDateString()}</span>
+          </p>
+        </div>
+        <button class="btn logout-btn" onclick="window.logout()">
+          <i class="fa-solid fa-sign-out-alt"></i>
+          Logout
+        </button>
+      </div>
+    `;
+  } else {
+    // Not logged in view with auth tabs
+    profileContent.innerHTML = `
+      <div class="auth-container">
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="window.switchAuthTab('login')" id="login-tab">Login</button>
+          <button class="auth-tab" onclick="window.switchAuthTab('signup')" id="signup-tab">Sign Up</button>
+        </div>
+        
+        <div id="login-form" class="auth-form">
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="Enter your email">
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter your password">
+          </div>
+          <div class="forgot-password">
+            <a href="#" onclick="window.showForgotPassword()">Forgot Password?</a>
+          </div>
+          <button class="btn" onclick="window.loginWithEmail()" id="login-btn">
+            <i class="fa-regular fa-envelope"></i> Login with Email
+          </button>
+        </div>
+        
+        <div id="signup-form" class="auth-form" style="display: none;">
+          <div class="form-group">
+            <label for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" placeholder="Enter your full name">
+          </div>
+          <div class="form-group">
+            <label for="signup-email">Email</label>
+            <input type="email" id="signup-email" placeholder="Enter your email">
+          </div>
+          <div class="form-group">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="Choose a password (min. 6 characters)">
+          </div>
+          <div class="form-group">
+            <label for="signup-confirm">Confirm Password</label>
+            <input type="password" id="signup-confirm" placeholder="Confirm your password">
+          </div>
+          <button class="btn" onclick="window.signUpWithEmail()" id="signup-btn">
+            <i class="fa-regular fa-user-plus"></i> Create Account
+          </button>
+        </div>
+        
+        <div id="forgot-password-form" class="auth-form" style="display: none;">
+          <div class="form-group">
+            <label for="reset-email">Email</label>
+            <input type="email" id="reset-email" placeholder="Enter your email">
+          </div>
+          <button class="btn" onclick="window.resetPassword()" id="reset-btn">
+            <i class="fa-regular fa-paper-plane"></i> Send Reset Link
+          </button>
+          <button class="btn btn-outline" onclick="window.backToLogin()" style="margin-top: 1rem;">
+            <i class="fa-regular fa-arrow-left"></i> Back to Login
+          </button>
+        </div>
+        
+        <div class="auth-divider">
+          <span>OR</span>
+        </div>
+        
+        <button class="google-login-btn" onclick="window.loginWithGoogle()" id="google-login-btn">
+          <i class="fa-brands fa-google"></i>
+          Continue with Google
+        </button>
+        
+        <div id="auth-message" class="auth-message"></div>
+      </div>
+    `;
+  }
+}
+
+window.switchAuthTab = function(tab) {
+  const loginTab = document.getElementById('login-tab');
+  const signupTab = document.getElementById('signup-tab');
+  const loginForm = document.getElementById('login-form');
+  const signupForm = document.getElementById('signup-form');
+  const forgotForm = document.getElementById('forgot-password-form');
+  
+  if (forgotForm) forgotForm.style.display = 'none';
+  
+  if (tab === 'login') {
+    loginTab?.classList.add('active');
+    signupTab?.classList.remove('active');
+    if (loginForm) loginForm.style.display = 'block';
+    if (signupForm) signupForm.style.display = 'none';
+  } else {
+    loginTab?.classList.remove('active');
+    signupTab?.classList.add('active');
+    if (loginForm) loginForm.style.display = 'none';
+    if (signupForm) signupForm.style.display = 'block';
+  }
+  
+  clearAuthMessage();
+};
+
+window.showForgotPassword = function() {
+  const loginForm = document.getElementById('login-form');
+  const signupForm = document.getElementById('signup-form');
+  const forgotForm = document.getElementById('forgot-password-form');
+  const authTabs = document.querySelector('.auth-tabs');
+  
+  if (authTabs) authTabs.style.display = 'none';
+  if (loginForm) loginForm.style.display = 'none';
+  if (signupForm) signupForm.style.display = 'none';
+  if (forgotForm) forgotForm.style.display = 'block';
+  
+  clearAuthMessage();
+};
+
+window.backToLogin = function() {
+  const authTabs = document.querySelector('.auth-tabs');
+  const loginForm = document.getElementById('login-form');
+  const signupForm = document.getElementById('signup-form');
+  const forgotForm = document.getElementById('forgot-password-form');
+  
+  if (authTabs) authTabs.style.display = 'flex';
+  if (loginForm) loginForm.style.display = 'block';
+  if (signupForm) signupForm.style.display = 'none';
+  if (forgotForm) forgotForm.style.display = 'none';
+  
+  window.switchAuthTab('login');
+  clearAuthMessage();
+};
+
+function showAuthMessage(message, isError = true) {
+  const messageDiv = document.getElementById('auth-message');
+  if (messageDiv) {
+    messageDiv.className = isError ? 'auth-error' : 'auth-success';
+    messageDiv.textContent = message;
+  }
+}
+
+function clearAuthMessage() {
+  const messageDiv = document.getElementById('auth-message');
+  if (messageDiv) {
+    messageDiv.className = '';
+    messageDiv.textContent = '';
+  }
+}
+
+function setLoading(buttonId, isLoading) {
+  const btn = document.getElementById(buttonId);
+  if (btn) {
+    btn.disabled = isLoading;
+    btn.innerHTML = isLoading ? 
+      '<span class="spinner"></span> Loading...' : 
+      btn.getAttribute('data-original-html') || btn.innerHTML;
+  }
+}
+
+window.loginWithEmail = async function() {
+  const email = document.getElementById('login-email')?.value;
+  const password = document.getElementById('login-password')?.value;
+  
+  if (!email || !password) {
+    showAuthMessage('Please fill in all fields');
+    return;
+  }
+  
+  const loginBtn = document.getElementById('login-btn');
+  const originalHtml = loginBtn.innerHTML;
+  loginBtn.setAttribute('data-original-html', originalHtml);
+  
+  setLoading('login-btn', true);
+  clearAuthMessage();
+  
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+    showAuthMessage('Login successful!', false);
+    setTimeout(() => {
+      closeModal('profile-modal');
+    }, 1500);
+  } catch (error) {
+    let errorMessage = 'Login failed. Please try again.';
+    switch (error.code) {
+      case 'auth/user-not-found':
+        errorMessage = 'No account found with this email.';
+        break;
+      case 'auth/wrong-password':
+        errorMessage = 'Incorrect password.';
+        break;
+      case 'auth/invalid-email':
+        errorMessage = 'Invalid email address.';
+        break;
+      case 'auth/too-many-requests':
+        errorMessage = 'Too many failed attempts. Please try again later.';
+        break;
+    }
+    showAuthMessage(errorMessage);
+  } finally {
+    setLoading('login-btn', false);
+  }
+};
+
+window.signUpWithEmail = async function() {
+  const name = document.getElementById('signup-name')?.value;
+  const email = document.getElementById('signup-email')?.value;
+  const password = document.getElementById('signup-password')?.value;
+  const confirm = document.getElementById('signup-confirm')?.value;
+  
+  if (!name || !email || !password || !confirm) {
+    showAuthMessage('Please fill in all fields');
+    return;
+  }
+  
+  if (password.length < 6) {
+    showAuthMessage('Password must be at least 6 characters');
+    return;
+  }
+  
+  if (password !== confirm) {
+    showAuthMessage('Passwords do not match');
+    return;
+  }
+  
+  const signupBtn = document.getElementById('signup-btn');
+  const originalHtml = signupBtn.innerHTML;
+  signupBtn.setAttribute('data-original-html', originalHtml);
+  
+  setLoading('signup-btn', true);
+  clearAuthMessage();
+  
+  try {
+    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+    
+    // Update profile with display name
+    await userCredential.user.updateProfile({
+      displayName: name
+    });
+    
+    // Store additional user data in Firestore
+    await db.collection('users').doc(userCredential.user.uid).set({
+      name: name,
+      email: email,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    showAuthMessage('Account created successfully!', false);
+    setTimeout(() => {
+      closeModal('profile-modal');
+    }, 1500);
+  } catch (error) {
+    let errorMessage = 'Sign up failed. Please try again.';
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        errorMessage = 'An account already exists with this email.';
+        break;
+      case 'auth/invalid-email':
+        errorMessage = 'Invalid email address.';
+        break;
+      case 'auth/weak-password':
+        errorMessage = 'Password is too weak.';
+        break;
+    }
+    showAuthMessage(errorMessage);
+  } finally {
+    setLoading('signup-btn', false);
+  }
+};
+
+window.loginWithGoogle = async function() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.addScope('profile');
+  provider.addScope('email');
+  
+  const googleBtn = document.getElementById('google-login-btn');
+  const originalHtml = googleBtn.innerHTML;
+  googleBtn.setAttribute('data-original-html', originalHtml);
+  
+  setLoading('google-login-btn', true);
+  clearAuthMessage();
+  
+  try {
+    const result = await auth.signInWithPopup(provider);
+    
+    // Check if this is a new user
+    const isNewUser = result.additionalUserInfo?.isNewUser;
+    
+    if (isNewUser) {
+      // Store new user in Firestore
+      await db.collection('users').doc(result.user.uid).set({
+        name: result.user.displayName,
+        email: result.user.email,
+        photoURL: result.user.photoURL,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+    
+    showAuthMessage('Login successful!', false);
+    setTimeout(() => {
+      closeModal('profile-modal');
+    }, 1500);
+  } catch (error) {
+    console.error('Google login error:', error);
+    let errorMessage = 'Google login failed. Please try again.';
+    if (error.code === 'auth/popup-closed-by-user') {
+      errorMessage = 'Login cancelled.';
+    } else if (error.code === 'auth/popup-blocked') {
+      errorMessage = 'Popup was blocked by your browser.';
+    }
+    showAuthMessage(errorMessage);
+  } finally {
+    setLoading('google-login-btn', false);
+  }
+};
+
+window.resetPassword = async function() {
+  const email = document.getElementById('reset-email')?.value;
+  
+  if (!email) {
+    showAuthMessage('Please enter your email address');
+    return;
+  }
+  
+  const resetBtn = document.getElementById('reset-btn');
+  const originalHtml = resetBtn.innerHTML;
+  resetBtn.setAttribute('data-original-html', originalHtml);
+  
+  setLoading('reset-btn', true);
+  clearAuthMessage();
+  
+  try {
+    await auth.sendPasswordResetEmail(email);
+    showAuthMessage('Password reset email sent! Check your inbox.', false);
+  } catch (error) {
+    let errorMessage = 'Failed to send reset email.';
+    if (error.code === 'auth/user-not-found') {
+      errorMessage = 'No account found with this email.';
+    } else if (error.code === 'auth/invalid-email') {
+      errorMessage = 'Invalid email address.';
+    }
+    showAuthMessage(errorMessage);
+  } finally {
+    setLoading('reset-btn', false);
+  }
+};
+
+window.logout = async function() {
+  try {
+    await auth.signOut();
+    closeModal('profile-modal');
+  } catch (error) {
+    console.error('Logout error:', error);
+    alert('Failed to logout. Please try again.');
+  }
+};
+
+function updateProfileIcon() {
+  const profileIcon = document.getElementById('profile-icon');
+  if (profileIcon) {
+    if (currentUser) {
+      profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
+    } else {
+      profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
+    }
+  }
+}
+
+// ========== INITIALIZATION ==========
+document.addEventListener('DOMContentLoaded', loadComponents);
+</script>
 
   <style>
     /* Modal Styles */
@@ -1321,11 +1752,6 @@
       box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
     }
 
-    .checkout-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
     .empty-cart-message {
       text-align: center;
       padding: 3rem 1rem;
@@ -1402,7 +1828,7 @@
       cursor: pointer;
     }
 
-    .logout-btn:hover {
+    .logout-btn:hover:not(:disabled) {
       background: #d4af37;
       color: #fff;
     }
@@ -1450,123 +1876,9 @@
       box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
     }
 
-    .google-login-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
     .google-login-btn i {
       color: #DB4437;
       font-size: 1.2rem;
-    }
-
-    .cart-items-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1rem 0;
-    }
-
-    .cart-item {
-      display: flex;
-      gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .cart-item-image {
-      width: 80px;
-      height: 80px;
-      background-size: cover;
-      background-position: center;
-      border-radius: 12px;
-      flex-shrink: 0;
-    }
-
-    .cart-item-details {
-      flex: 1;
-    }
-
-    .cart-item-title {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-      color: #1a1a1a;
-    }
-
-    .cart-item-category {
-      font-size: 0.8rem;
-      color: #999;
-      margin-bottom: 0.5rem;
-    }
-
-    .cart-item-price {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-      color: #d4af37;
-      margin-bottom: 0.5rem;
-    }
-
-    .cart-item-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .quantity-btn {
-      background: #f5f5f5;
-      border: none;
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .quantity-btn:hover {
-      background: #e5e5e5;
-    }
-
-    .item-quantity {
-      font-weight: 600;
-      min-width: 30px;
-      text-align: center;
-    }
-
-    .remove-item {
-      background: none;
-      border: none;
-      color: #dc3545;
-      font-size: 0.8rem;
-      cursor: pointer;
-      padding: 0.5rem;
-      margin-left: 0.5rem;
-      text-decoration: underline;
-    }
-
-    .remove-item:hover {
-      color: #c82333;
-    }
-
-    .stock-badge {
-      font-size: 0.7rem;
-      margin-top: 0.5rem;
-      color: #666;
-    }
-
-    .stock-badge.in-stock {
-      color: #28a745;
-    }
-
-    .stock-badge.low-stock {
-      color: #ffc107;
-    }
-
-    .stock-badge.out-of-stock {
-      color: #dc3545;
     }
   </style>
 </body>
