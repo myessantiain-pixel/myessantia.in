@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ESSENCE · new arrivals (premium)</title>
+  <title>ESSENCE · enquire</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -18,22 +18,54 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
-  <!-- Common CSS -->
-  <link rel="stylesheet" href="common.css">
+  <!-- CSS Files -->
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* -------------------- NEW ARRIVALS PAGE SPECIFIC STYLES -------------------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #fafafa;
+      color: #1a1a1a;
+      line-height: 1.5;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      width: 100%;
+    }
+
+    .bg-noise {
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
+      background-repeat: repeat;
+    }
+
     .page-title {
       text-align: center;
-      padding: clamp(1.5rem, 4vw, 2rem) 0 clamp(0.5rem, 2vw, 1rem);
+      padding: 1rem 0 2rem;
     }
     .page-title h1 {
-      font-size: clamp(2.2rem, 6vw, 3.2rem);
+      font-size: clamp(2.2rem, 6vw, 2.8rem);
       font-weight: 400;
       color: #1a1a1a;
-      line-height: 1.2;
     }
     .page-title h1 span {
       color: #d4af37;
@@ -42,629 +74,1837 @@
     }
     .page-title p {
       color: #5f5b57;
-      max-width: 600px;
-      margin: 1rem auto 0;
-      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
-      padding: 0 1rem;
+      max-width: 500px;
+      margin: 0.5rem auto 0;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
     }
 
-    /* New arrivals counter */
-    .new-counter {
+    .login-prompt {
+      background: linear-gradient(135deg, #f9f7f4 0%, #ffffff 100%);
+      border-radius: 32px;
+      padding: 3rem 2rem;
       text-align: center;
-      margin: 1rem 0 2rem;
-      font-size: 1rem;
-      color: #666;
+      max-width: 500px;
+      margin: 2rem auto;
+      border: 1px solid #e5e5e5;
     }
-    .new-counter span {
+
+    .login-prompt i {
+      font-size: 4rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+    }
+
+    .login-prompt h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .login-prompt p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    .enquiry-card {
+      background: #ffffff;
+      border-radius: 32px;
+      padding: clamp(1.8rem, 5vw, 2.5rem);
+      box-shadow: 0 15px 35px -10px rgba(0,0,0,0.05);
+      border: 1px solid #f0f0f0;
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      display: none;
+    }
+
+    .enquiry-card.visible {
+      display: block;
+      animation: fadeIn 0.4s;
+    }
+
+    .enquiry-card h2 {
+      font-size: clamp(1.5rem, 4vw, 1.8rem);
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 400;
+    }
+    .enquiry-card h2 i {
+      color: #d4af37;
+      margin-right: 10px;
+    }
+
+    .form-row {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-row label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #5f5b57;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .form-row input, .form-row textarea, .form-row select {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border: 1px solid #e5e5e5;
+      border-radius: 30px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      transition: all 0.2s;
+      background: #fcfcfc;
+    }
+
+    .form-row textarea {
+      border-radius: 30px;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-row select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+    }
+
+    .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+      background: #ffffff;
+    }
+
+    .file-upload-area {
+      background: #f9f7f4;
+      border: 2px dashed #d4af37;
+      border-radius: 40px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-bottom: 1.5rem;
+    }
+
+    .file-upload-area:hover {
+      background: #f2eee8;
+    }
+
+    .file-upload-area i {
+      font-size: 2.5rem;
+      color: #d4af37;
+      margin-bottom: 0.5rem;
+    }
+
+    .file-upload-area p {
+      color: #7f7a74;
+      font-size: 0.95rem;
+    }
+
+    .file-upload-area input {
+      display: none;
+    }
+
+    .image-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin: 1rem 0 0.5rem;
+    }
+
+    .preview-thumb {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      object-fit: cover;
+      border: 2px solid #e0d9d0;
+    }
+
+    .submit-btn {
+      background: #1a1a1a;
+      color: white;
+      width: 100%;
+      padding: 1.2rem;
+      border: none;
+      border-radius: 60px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+
+    .submit-btn:hover:not(:disabled) {
       background: #d4af37;
       color: #0c0c0c;
-      padding: 0.3rem 1rem;
-      border-radius: 40px;
-      font-weight: 600;
-      display: inline-block;
+      transform: scale(1.02);
     }
 
-    .sort-bar {
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .success-message {
+      background: #e3f1e3;
+      border-radius: 40px;
+      padding: 1.5rem;
+      text-align: center;
+      margin: 1.5rem 0 0;
+      border: 1px solid #b6d7b6;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+      animation: fadeIn 0.4s;
+    }
+
+    .success-message i {
+      font-size: 2.5rem;
+      color: #1e7a44;
+      margin-bottom: 0.5rem;
+    }
+
+    .success-message h3 {
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+
+    .success-message p {
+      color: #2b5e2b;
+    }
+
+    .enquiries-title {
+      font-size: clamp(1.8rem, 4vw, 2rem);
+      font-weight: 400;
+      margin: 3rem 0 2rem;
+      text-align: center;
+    }
+    .enquiries-title span {
+      color: #d4af37;
+      border-bottom: 2px solid #ece8e2;
+      padding-bottom: 0.2rem;
+    }
+
+    .enquiries-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .enquiry-item {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 1.8rem;
+      box-shadow: 0 8px 22px -8px rgba(0,0,0,0.05);
+      border: 1px solid #f5f5f5;
+      transition: 0.2s;
+      position: relative;
+    }
+
+    .enquiry-item:hover {
+      box-shadow: 0 18px 30px -12px rgba(0,0,0,0.1);
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ffebee;
+      border: none;
+      color: #b71c1c;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      opacity: 0;
+    }
+
+    .enquiry-item:hover .delete-btn {
+      opacity: 1;
+    }
+
+    .delete-btn:hover {
+      background: #b71c1c;
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .enquiry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px dashed #f0f0f0;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding-right: 2.5rem;
+    }
+
+    .enquiry-name {
+      font-weight: 600;
+      font-size: 1.2rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .status-badge {
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .status-received { background: #e8eaf6; color: #3f51b5; }
+    .status-processing { background: #fff0db; color: #b85b1a; }
+    .status-completed { background: #e3f1e3; color: #1e7a44; }
+    .status-invalid { background: #ffebee; color: #b71c1c; }
+
+    .enquiry-contact {
+      font-size: 0.9rem;
+      color: #5f5b57;
+      margin-bottom: 1rem;
+      word-break: break-word;
+    }
+
+    .enquiry-contact i {
+      width: 20px;
+      color: #d4af37;
+    }
+
+    .enquiry-images {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .enquiry-image-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      object-fit: cover;
+      border: 1px solid #eee;
+      background: #f9f7f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .enquiry-message {
+      background: #faf9f7;
+      border-radius: 18px;
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+      margin: 0.8rem 0;
+      color: #3e3a36;
+    }
+
+    .enquiry-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.8rem;
+      font-size: 0.8rem;
+      color: #8f8b85;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .empty-enquiries {
+      text-align: center;
+      padding: 3rem;
+      background: #ffffff;
+      border-radius: 40px;
+      border: 1px solid #f0f0f0;
+      grid-column: 1 / -1;
+    }
+
+    .empty-enquiries i {
+      font-size: 3rem;
+      color: #d4af37;
+      opacity: 0.5;
+      margin-bottom: 1rem;
+    }
+
+    .filter-bar {
       display: flex;
       justify-content: flex-end;
-      align-items: center;
-      padding: 1.5rem 0 1rem;
-      border-bottom: 1px solid #f0f0f0;
       margin-bottom: 2rem;
-      flex-wrap: wrap;
       gap: 1rem;
+      flex-wrap: wrap;
     }
-    .sort-select {
+
+    .filter-select {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      background: #fafafa;
-      padding: 0.5rem 1.2rem;
+      gap: 0.5rem;
+      background: white;
+      padding: 0.5rem 1rem;
       border-radius: 40px;
       border: 1px solid #eaeaea;
-      cursor: pointer;
-      transition: 0.2s;
-      width: fit-content;
     }
-    .sort-select:hover {
-      border-color: #d4af37;
-    }
-    .sort-select i {
+
+    .filter-select i {
       color: #d4af37;
-      font-size: 1rem;
     }
-    .sort-select select {
+
+    .filter-select select {
       background: transparent;
       border: none;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 0.9rem;
-      font-weight: 400;
       color: #1a1a1a;
       outline: none;
       cursor: pointer;
     }
 
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: clamp(1rem, 2.5vw, 2rem);
-      margin: 2rem 0 4rem;
+    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .submit-btn, .file-upload-area, .delete-btn {
+      touch-action: manipulation;
     }
 
-    .product-card {
-      background: #fff;
-      border-radius: 28px;
-      padding: 1.2rem 1rem 1.8rem;
-      box-shadow: 0 8px 22px -8px rgba(0,0,0,0.05);
-      transition: all 0.25s ease;
-      text-align: center;
-      border: 1px solid #f5f5f5;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      cursor: pointer;
-      text-decoration: none;
-      color: inherit;
-      position: relative;
-    }
-    .product-card:hover {
-      box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
-      border-color: #d4af37;
-      transform: translateY(-6px);
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .image-frame {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 24px;
-      overflow: hidden;
-      margin-bottom: 1.5rem;
-      background-color: #f4f2ef;
-    }
-
-    .primary-img, .secondary-img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      transition: opacity 0.35s ease;
-    }
-
-    .primary-img {
-      opacity: 1;
-      z-index: 2;
-    }
-    .secondary-img {
-      opacity: 0;
-      z-index: 1;
-    }
-    .image-frame:hover .primary-img {
-      opacity: 0;
-    }
-    .image-frame:hover .secondary-img {
-      opacity: 1;
-    }
-
-    .image-actions {
-      position: absolute;
-      bottom: 16px;
-      left: 0;
-      width: 100%;
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      padding: 0 12px;
-      z-index: 10;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      pointer-events: none;
-    }
-    .image-frame:hover .image-actions {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .img-add, .img-buy {
-      flex: 1;
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(4px);
-      border: none;
-      border-radius: 40px;
-      padding: 0.7rem 0.2rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid rgba(0,0,0,0.1);
-      color: #1a1a1a;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      pointer-events: auto;
-    }
-    .img-add i, .img-buy i {
-      font-size: 0.85rem;
-    }
-    .img-add:hover {
-      background: #ffffff;
-      border-color: #d4af37;
-      transform: scale(1.03);
-    }
-    .img-buy {
-      background: rgba(212,175,55,0.9);
-      color: #0c0c0c;
-      border-color: #d4af37;
-    }
-    .img-buy:hover {
-      background: #d4af37;
-      transform: scale(1.03);
-      box-shadow: 0 4px 10px rgba(212,175,55,0.3);
-    }
-
-    .product-title {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 500;
-      font-size: clamp(1.1rem, 2vw, 1.3rem);
-      margin-bottom: 0.3rem;
-      color: #1e1e1e;
-      letter-spacing: -0.01em;
-    }
-
-    .product-category {
-      font-size: 0.75rem;
-      color: #a2a2a2;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.4rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 300;
-    }
-
-    .product-rating {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      margin: 0.3rem 0 0.3rem;
-      flex-wrap: wrap;
-    }
-    .product-rating i {
-      color: #d4af37;
-      font-size: 0.9rem;
-    }
-    .product-rating span {
-      margin-left: 4px;
-      color: #5f5b57;
-      font-size: 0.8rem;
-      font-weight: 300;
-    }
-
-    .product-price {
-      color: #d4af37;
-      font-weight: 600;
-      font-size: clamp(1.4rem, 3vw, 1.6rem);
-      margin: 0.4rem 0 0.2rem;
-      font-family: 'Montserrat', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-    }
-    .product-price .inr-symbol {
-      font-size: clamp(1.2rem, 2.5vw, 1.4rem);
-      font-weight: 500;
-      margin-right: 2px;
-    }
-
-    .new-badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: #d4af37;
-      color: #1a1a1a;
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 0.3rem 0.8rem;
-      border-radius: 30px;
-      z-index: 20;
-      letter-spacing: 0.3px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .sale-badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: #ff4444;
-      color: white;
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 0.3rem 0.8rem;
-      border-radius: 30px;
-      z-index: 20;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .original-price {
-      color: #999;
-      font-size: 1rem;
-      text-decoration: line-through;
-      margin-right: 0.5rem;
-    }
-
-    .stock-badge {
-      display: inline-block;
-      padding: 0.2rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      margin-top: 0.5rem;
-    }
-    .in-stock {
-      background: #e3f1e3;
-      color: #1e7a44;
-    }
-    .low-stock {
-      background: #fff0db;
-      color: #b85b1a;
-    }
-    .out-of-stock {
-      background: #ffebee;
-      color: #b71c1c;
-    }
-
-    .results-count {
-      text-align: center;
-      color: #666;
-      margin: 1rem 0;
-      font-size: 0.9rem;
-    }
-
-    @media (min-width: 1200px) {
-      .container {
-        padding: 0 3rem;
+    @media (max-width: 600px) {
+      .container { padding: 0 1.2rem; }
+      .enquiry-card { padding: 1.5rem; }
+      .delete-btn {
+        opacity: 1;
+        background: #ffebee;
       }
-      .page-title h1 {
-        font-size: 3.2rem;
-      }
-    }
-
-    @media (max-width: 992px) {
-      .product-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .product-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.2rem;
-      }
-      .container {
-        padding: 0 1.5rem;
-      }
-      .page-title h1 {
-        font-size: clamp(2rem, 7vw, 2.8rem);
-      }
-      .sort-bar {
+      .filter-bar {
         justify-content: center;
       }
-    }
-
-    @media (max-width: 480px) {
-      .product-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-      .container {
-        padding: 0 1rem;
-      }
-      .sort-bar {
-        justify-content: stretch;
-      }
-      .sort-select {
-        width: 100%;
-        justify-content: center;
-      }
-      .sort-select select {
-        flex: 1;
-      }
-      .product-card {
-        padding: 1rem 0.8rem 1.5rem;
-      }
-    }
-
-    @media (max-width: 360px) {
-      .image-actions {
-        flex-direction: column;
-        gap: 6px;
-        bottom: 10px;
-      }
-      .img-add, .img-buy {
-        padding: 0.5rem;
-        font-size: 0.75rem;
-      }
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      display: block;
     }
   </style>
 </head>
 <body class="bg-noise">
   
-  <!-- Header loaded dynamically -->
   <div id="header"></div>
 
   <main>
     <div class="container page-title">
-      <h1>new <span>arrivals</span></h1>
-      <p>Fresh drops — discover the latest accessories & essentials.</p>
+      <h1>enquire <span>now</span></h1>
+      <p>Upload product images & tell us what you need</p>
     </div>
 
-    <div class="container">
-      <div id="new-counter" class="new-counter">
-        <span><i class="fa-regular fa-clock"></i> Loading new arrivals...</span>
+    <!-- Login Prompt (shown when not logged in) -->
+    <div class="container" id="loginPromptContainer">
+      <div class="login-prompt">
+        <i class="fa-regular fa-circle-user"></i>
+        <h3>sign in to enquire</h3>
+        <p>Please sign in to submit enquiries and track their status</p>
+        <button class="btn" onclick="openProfile()" style="background: #d4af37; color: #0c0c0c; padding: 1rem 2rem; border-radius: 40px; border: none; font-weight: 600; cursor: pointer;">
+          <i class="fa-regular fa-user"></i> sign in / register
+        </button>
       </div>
     </div>
 
+    <!-- Enquiry Form (shown when logged in) -->
     <div class="container">
-      <div class="sort-bar">
-        <div class="sort-select">
-          <i class="fa-solid fa-arrow-down-wide-short"></i>
-          <select id="sort-select" aria-label="Sort products">
-            <option value="newest">sort by: newest first</option>
-            <option value="price-low">price: low to high</option>
-            <option value="price-high">price: high to low</option>
-            <option value="rating">top rated</option>
+      <div class="enquiry-card" id="enquiryCard">
+        <h2><i class="fa-regular fa-message"></i> submit enquiry</h2>
+        
+        <div class="form-row">
+          <label>full name *</label>
+          <input type="text" id="enquiryName" placeholder="e.g. Alex Morgan">
+        </div>
+
+        <div class="form-row">
+          <label>email *</label>
+          <input type="email" id="enquiryEmail" placeholder="alex@example.com">
+        </div>
+
+        <div class="form-row">
+          <label>phone (optional)</label>
+          <input type="tel" id="enquiryPhone" placeholder="+1 234 567 890">
+        </div>
+
+        <div class="form-row">
+          <label>enquiry type</label>
+          <select id="enquiryType">
+            <option value="product">Product Information</option>
+            <option value="bulk">Bulk Order / Wholesale</option>
+            <option value="custom">Custom Request</option>
+            <option value="other">Other</option>
           </select>
+        </div>
+
+        <div class="file-upload-area" id="fileUploadArea">
+          <i class="fa-regular fa-images"></i>
+          <p>click or drag to upload product images (max 5)</p>
+          <input type="file" id="imageUpload" multiple accept="image/*" max="5">
+        </div>
+        <div class="image-preview" id="imagePreview"></div>
+
+        <div class="form-row">
+          <label>your message / enquiry *</label>
+          <textarea id="enquiryMessage" placeholder="Tell us about the product, quantity, or any specific request..."></textarea>
+        </div>
+
+        <button class="submit-btn" id="submitEnquiry"><i class="fa-regular fa-paper-plane"></i> submit enquiry</button>
+
+        <div class="success-message" id="successMessage">
+          <i class="fa-regular fa-circle-check"></i>
+          <h3>thank you!</h3>
+          <p>We'll get back to you soon.</p>
         </div>
       </div>
     </div>
 
-    <div class="container">
-      <div id="results-count" class="results-count"></div>
-      <div id="product-grid-container" class="product-grid"></div>
+    <!-- User's Enquiries -->
+    <div class="container" id="enquiriesSection" style="display: none;">
+      <h2 class="enquiries-title"><span>your</span> enquiries</h2>
+      
+      <div class="filter-bar">
+        <div class="filter-select">
+          <i class="fa-solid fa-filter"></i>
+          <select id="enquiryFilter">
+            <option value="all">All Enquiries</option>
+            <option value="received">Received</option>
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="enquiries-grid" id="enquiriesGrid"></div>
     </div>
   </main>
 
-  <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
-  <!-- Common Modals -->
-  <div id="common-modals"></div>
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Shopping Cart</h3>
+        <button class="close-modal" id="close-cart">&times;</button>
+      </div>
+      <div id="cart-items" class="cart-items"></div>
+      <div class="modal-footer">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="cart-total-amount">₹0.00</span>
+        </div>
+        <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+      </div>
+    </div>
+  </div>
 
-  <!-- Common JavaScript -->
-  <script src="common.js"></script>
+  <!-- Profile Modal -->
+  <div id="profile-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>My Account</h3>
+        <button class="close-modal" id="close-profile">&times;</button>
+      </div>
+      <div id="profile-content"></div>
+    </div>
+  </div>
 
   <script>
-    // ========== NEW ARRIVALS PAGE SPECIFIC VARIABLES ==========
-    let newProducts = [];
+    // ========== FIREBASE CONFIGURATION ==========
+    const firebaseConfig = {
+      apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
+      authDomain: "myessantia.firebaseapp.com",
+      projectId: "myessantia",
+      storageBucket: "myessantia.firebasestorage.app",
+      messagingSenderId: "701726517205",
+      appId: "1:701726517205:web:f6ab79efdffeab6dbbbf5c",
+      measurementId: "G-SZF11SHZBH"
+    };
 
-    // ========== NEW ARRIVALS MONITOR ==========
-    function getNewArrivals() {
-      const now = new Date();
-      const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
-      
-      return products.filter(product => {
-        // Check if product has showOnNew flag or is within last 7 days
-        if (product.showOnNew === true) return true;
-        
-        if (product.creationDate) {
-          const productDate = new Date(product.creationDate);
-          return productDate >= sevenDaysAgo;
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ========== GLOBAL VARIABLES ==========
+    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
+    let currentUser = null;
+    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+    let enquiries = [];
+
+    // ========== FIREBASE AUTH STATE OBSERVER ==========
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        currentUser = {
+          uid: user.uid,
+          name: user.displayName || user.email.split('@')[0],
+          email: user.email,
+          picture: user.photoURL || 'https://via.placeholder.com/80',
+          provider: user.providerData[0]?.providerId || 'email',
+          memberSince: user.metadata.creationTime
+        };
+        localStorage.setItem('MyEssantia_user', JSON.stringify(currentUser));
+        updateProfileIcon();
+        if (document.getElementById('profile-content')) {
+          renderProfileContent();
         }
-        return false;
-      });
-    }
-
-    function updateNewCounter() {
-      const counter = document.getElementById('new-counter');
-      const newArrivals = getNewArrivals();
-      
-      if (counter) {
-        const count = newArrivals.length;
-        const today = newArrivals.filter(p => {
-          if (!p.creationDate) return false;
-          const productDate = new Date(p.creationDate);
-          const now = new Date();
-          return (now - productDate) < 24 * 60 * 60 * 1000;
-        }).length;
-        
-        counter.innerHTML = `
-          <span>
-            <i class="fa-regular fa-clock"></i> 
-            ${count} new item${count !== 1 ? 's' : ''} added this week 
-            ${today > 0 ? `( ${today} new today! )` : ''}
-          </span>
-        `;
-      }
-    }
-
-    // ========== PRODUCT RENDERING ==========
-    function renderProducts() {
-      const gridContainer = document.getElementById('product-grid-container');
-      const sortSelect = document.getElementById('sort-select');
-      const resultsCount = document.getElementById('results-count');
-      
-      if (!gridContainer) return;
-
-      // Get all new arrivals
-      newProducts = getNewArrivals();
-
-      // Update counter
-      updateNewCounter();
-
-      if (newProducts.length === 0) {
-        gridContainer.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
-            <i class="fa-regular fa-clock" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-            <h3>No new arrivals yet</h3>
-            <p>Check back soon for fresh products!</p>
-          </div>
-        `;
-        if (resultsCount) resultsCount.innerHTML = 'Showing 0 products';
-        return;
-      }
-
-      function isToday(dateString) {
-        if (!dateString) return false;
-        const productDate = new Date(dateString);
-        const now = new Date();
-        return (now - productDate) < 24 * 60 * 60 * 1000;
-      }
-
-      function getSortedProducts() {
-        let sorted = [...newProducts];
-        switch (sortSelect.value) {
-          case 'price-low':
-            sorted.sort((a, b) => a.price - b.price);
-            break;
-          case 'price-high':
-            sorted.sort((a, b) => b.price - a.price);
-            break;
-          case 'rating':
-            sorted.sort((a, b) => b.rating - a.rating);
-            break;
-          case 'newest':
-          default:
-            sorted.sort((a, b) => {
-              const dateA = a.creationDate ? new Date(a.creationDate) : new Date(0);
-              const dateB = b.creationDate ? new Date(b.creationDate) : new Date(0);
-              return dateB - dateA;
-            });
-            break;
+        showEnquiryForm();
+        loadUserEnquiries();
+      } else {
+        currentUser = null;
+        localStorage.removeItem('MyEssantia_user');
+        updateProfileIcon();
+        if (document.getElementById('profile-content')) {
+          renderProfileContent();
         }
-        return sorted;
+        showLoginPrompt();
+        hideEnquiries();
       }
+    });
 
-      function renderAllProducts() {
-        const sortedProducts = getSortedProducts();
-        
-        // Update results count
-        if (resultsCount) {
-          resultsCount.innerHTML = `Showing ${sortedProducts.length} new arrival${sortedProducts.length !== 1 ? 's' : ''}`;
-        }
-        
-        let gridHtml = '';
-        sortedProducts.forEach(product => {
-          const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
-          const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
-          const isBrandNew = isToday(product.creationDate);
-          const hasSale = product.onSale && product.originalPrice;
-          const discount = hasSale ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
-          
-          gridHtml += `
-            <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}">
-              <span class="new-badge">
-                <i class="fa-regular fa-${isBrandNew ? 'star' : 'clock'}"></i> 
-                ${isBrandNew ? 'just landed' : 'new this week'}
-              </span>
-              ${hasSale ? `<span class="sale-badge">-${discount}%</span>` : ''}
-              <div class="image-frame">
-                <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-                <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
-                <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
-                  <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault(); event.stopPropagation();">
-                    <i class="fa-solid fa-cart-plus"></i> add
-                  </button>
-                  <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault(); event.stopPropagation();">
-                    <i class="fa-solid fa-bolt"></i> buy
-                  </button>
-                </div>
-              </div>
-              <h3 class="product-title">${product.title}</h3>
-              <p class="product-category">${product.category}</p>
-              <div class="product-rating">
-                ${renderRating(product.rating)}
-                <span>(${product.rating.toFixed(1)})</span>
-              </div>
-              <div class="product-price">
-                ${hasSale ? `<span class="original-price">₹${formatPrice(product.originalPrice)}</span>` : ''}
-                <span class="inr-symbol">₹</span>${formatPrice(product.price)}
-              </div>
-              <span class="stock-badge ${product.stock > 10 ? 'in-stock' : (product.stock > 0 ? 'low-stock' : 'out-of-stock')}">
-                ${product.stock > 10 ? 'In Stock' : (product.stock > 0 ? 'Low Stock' : 'Out of Stock')}
-              </span>
-            </a>
-          `;
-        });
-        
-        gridContainer.innerHTML = gridHtml;
-      }
+    // ========== LOAD COMPONENTS ==========
+    async function loadComponents() {
+      try {
+        const headerResponse = await fetch('header.html');
+        const headerData = await headerResponse.text();
+        document.getElementById('header').innerHTML = headerData;
 
-      renderAllProducts();
-      
-      if (sortSelect) {
-        sortSelect.removeEventListener('change', renderAllProducts);
-        sortSelect.addEventListener('change', renderAllProducts);
+        const footerResponse = await fetch('footer.html');
+        const footerData = await footerResponse.text();
+        document.getElementById('footer').innerHTML = footerData;
+
+        setTimeout(() => {
+          initializeApp();
+        }, 50);
+      } catch (error) {
+        console.error('Error loading components:', error);
+        setTimeout(() => {
+          initializeApp();
+        }, 50);
       }
     }
 
-    // ========== INITIALIZATION ==========
     function initializeApp() {
       updateCartCount();
-      renderProducts();
+      updateProfileIcon();
+      setupEventListeners();
       
+      // Check for existing user
       const savedUser = localStorage.getItem('MyEssantia_user');
       if (savedUser) {
         currentUser = JSON.parse(savedUser);
         updateProfileIcon();
+        showEnquiryForm();
+        loadUserEnquiries();
+      } else {
+        showLoginPrompt();
+      }
+    }
+
+    function showLoginPrompt() {
+      const loginPrompt = document.getElementById('loginPromptContainer');
+      const enquiryCard = document.getElementById('enquiryCard');
+      const enquiriesSection = document.getElementById('enquiriesSection');
+      
+      if (loginPrompt) loginPrompt.style.display = 'block';
+      if (enquiryCard) enquiryCard.classList.remove('visible');
+      if (enquiriesSection) enquiriesSection.style.display = 'none';
+    }
+
+    function showEnquiryForm() {
+      const loginPrompt = document.getElementById('loginPromptContainer');
+      const enquiryCard = document.getElementById('enquiryCard');
+      
+      if (loginPrompt) loginPrompt.style.display = 'none';
+      if (enquiryCard) {
+        enquiryCard.classList.add('visible');
+        // Pre-fill form with user data
+        if (currentUser) {
+          document.getElementById('enquiryName').value = currentUser.name || '';
+          document.getElementById('enquiryEmail').value = currentUser.email || '';
+        }
+      }
+    }
+
+    function hideEnquiries() {
+      const enquiriesSection = document.getElementById('enquiriesSection');
+      if (enquiriesSection) enquiriesSection.style.display = 'none';
+    }
+
+    function setupEventListeners() {
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const navMenu = document.getElementById('nav-menu');
+      
+      if (mobileMenuToggle && navMenu) {
+        mobileMenuToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          navMenu.classList.toggle('show');
+        });
+      }
+
+      const cartIcon = document.getElementById('cart-icon');
+      if (cartIcon) {
+        cartIcon.addEventListener('click', function(e) {
+          e.preventDefault();
+          openCart();
+        });
+      }
+
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon) {
+        profileIcon.addEventListener('click', function(e) {
+          e.preventDefault();
+          openProfile();
+        });
+      }
+
+      const closeCart = document.getElementById('close-cart');
+      if (closeCart) {
+        closeCart.addEventListener('click', () => closeModal('cart-modal'));
+      }
+
+      const closeProfile = document.getElementById('close-profile');
+      if (closeProfile) {
+        closeProfile.addEventListener('click', () => closeModal('profile-modal'));
+      }
+
+      const checkoutBtn = document.getElementById('checkout-btn');
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
+          if (!currentUser) {
+            alert('Please login to checkout');
+            closeModal('cart-modal');
+            openProfile();
+            return;
+          }
+          if (cart.length === 0) {
+            alert('Your cart is empty!');
+          } else {
+            alert('Proceeding to checkout...');
+          }
+        });
+      }
+
+      const filterSelect = document.getElementById('enquiryFilter');
+      if (filterSelect) {
+        filterSelect.addEventListener('change', renderEnquiries);
+      }
+
+      window.addEventListener('click', function(e) {
+        const cartModal = document.getElementById('cart-modal');
+        const profileModal = document.getElementById('profile-modal');
+        
+        if (e.target === cartModal) closeModal('cart-modal');
+        if (e.target === profileModal) closeModal('profile-modal');
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeModal('cart-modal');
+          closeModal('profile-modal');
+        }
+      });
+    }
+
+    // ========== MODAL FUNCTIONS ==========
+    function openCart() {
+      const cartModal = document.getElementById('cart-modal');
+      if (cartModal) {
+        renderCartItems();
+        cartModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function openProfile() {
+      const profileModal = document.getElementById('profile-modal');
+      if (profileModal) {
+        renderProfileContent();
+        profileModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // ========== CART FUNCTIONS ==========
+    function renderCartItems() {
+      const cartItemsContainer = document.getElementById('cart-items');
+      const cartItemCount = document.getElementById('cart-item-count');
+      const cartTotalAmount = document.getElementById('cart-total-amount');
+
+      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
+
+      function formatPrice(price) {
+        return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      }
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+          <div class="empty-cart-message">
+            <i class="fa-regular fa-cart-shopping"></i>
+            <p>Your cart is empty</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Start shopping to add items!</p>
+          </div>
+        `;
+        cartItemCount.textContent = '0';
+        cartTotalAmount.textContent = '₹0.00';
+        return;
+      }
+
+      let total = 0;
+      let totalItems = 0;
+
+      cartItemsContainer.innerHTML = cart.map(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        totalItems += item.quantity;
+
+        return `
+          <div class="cart-item" style="display: flex; gap: 1rem; padding: 1rem; border-bottom: 1px solid #eee;">
+            <div class="cart-item-image" style="width: 60px; height: 60px; background-image: url('${item.primaryImg || 'https://via.placeholder.com/60'}'); background-size: cover; background-position: center; border-radius: 8px;"></div>
+            <div class="cart-item-details" style="flex: 1;">
+              <h4 style="font-size: 1rem; margin-bottom: 0.3rem;">${item.title}</h4>
+              <p style="font-size: 0.8rem; color: #666; margin-bottom: 0.3rem;">${item.category}</p>
+              <div style="font-weight: 600; color: #d4af37; margin-bottom: 0.5rem;">₹${formatPrice(item.price)}</div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button onclick="window.updateQuantity(${item.id}, -1)" style="background: #f0f0f0; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">
+                  <i class="fa-solid fa-minus"></i>
+                </button>
+                <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
+                <button onclick="window.updateQuantity(${item.id}, 1)" style="background: #f0f0f0; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+                <button onclick="window.removeFromCart(${item.id})" style="background: none; border: none; color: #f44336; margin-left: auto; cursor: pointer;">
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      cartItemCount.textContent = totalItems;
+      cartTotalAmount.textContent = `₹${formatPrice(total)}`;
+    }
+
+    function updateCartCount() {
+      const cartCount = document.getElementById('cart-count');
+      if (cartCount) {
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.textContent = totalItems;
+      }
+    }
+
+    window.updateQuantity = function(productId, change) {
+      const itemIndex = cart.findIndex(item => item.id === productId);
+      if (itemIndex === -1) return;
+
+      const item = cart[itemIndex];
+      const newQuantity = item.quantity + change;
+
+      if (newQuantity <= 0) {
+        cart.splice(itemIndex, 1);
+      } else {
+        item.quantity = newQuantity;
+      }
+
+      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCartItems();
+    };
+
+    window.removeFromCart = function(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCartItems();
+    };
+
+    // ========== AUTH FUNCTIONS ==========
+    function renderProfileContent() {
+      const profileContent = document.getElementById('profile-content');
+      if (!profileContent) return;
+
+      if (currentUser) {
+        profileContent.innerHTML = `
+          <div class="profile-info">
+            <div class="profile-avatar">
+              <img src="${currentUser.picture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/80'">
+            </div>
+            <div class="profile-details">
+              <p>
+                <i class="fa-regular fa-user"></i>
+                <span class="label">Name:</span>
+                <span class="value">${currentUser.name}</span>
+              </p>
+              <p>
+                <i class="fa-regular fa-envelope"></i>
+                <span class="label">Email:</span>
+                <span class="value">${currentUser.email}</span>
+              </p>
+              <p>
+                <i class="fa-regular fa-calendar"></i>
+                <span class="label">Member since:</span>
+                <span class="value">${new Date(currentUser.memberSince).toLocaleDateString()}</span>
+              </p>
+            </div>
+            <button class="btn logout-btn" onclick="window.logout()">
+              <i class="fa-solid fa-sign-out-alt"></i>
+              Logout
+            </button>
+          </div>
+        `;
+      } else {
+        profileContent.innerHTML = `
+          <div class="login-form">
+            <div class="login-header">
+              <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
+              <h4>Welcome Back!</h4>
+              <p>Sign in with Google to continue</p>
+            </div>
+            
+            <button class="btn google-login-btn" onclick="window.loginWithGoogle()">
+              <i class="fa-brands fa-google"></i>
+              Sign in with Google
+            </button>
+            
+            <div style="margin: 1rem 0; text-align: center; color: #999;">or</div>
+            
+            <button class="btn" onclick="window.showEmailLogin()" style="background: #1a1a1a; color: white;">
+              <i class="fa-regular fa-envelope"></i> Sign in with Email
+            </button>
+            
+            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
+              By signing in, you agree to our Terms of Service and Privacy Policy.
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    window.loginWithGoogle = async function() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        const result = await auth.signInWithPopup(provider);
+        closeModal('profile-modal');
+      } catch (error) {
+        console.error('Google login error:', error);
+        alert('Google login failed. Please try again.');
+      }
+    };
+
+    window.showEmailLogin = function() {
+      const profileContent = document.getElementById('profile-content');
+      profileContent.innerHTML = `
+        <div class="auth-container">
+          <div class="auth-tabs">
+            <button class="auth-tab active" onclick="window.switchAuthTab('login')" id="login-tab">Login</button>
+            <button class="auth-tab" onclick="window.switchAuthTab('signup')" id="signup-tab">Sign Up</button>
+          </div>
+          
+          <div id="login-form" class="auth-form">
+            <div class="form-group">
+              <label for="login-email">Email</label>
+              <input type="email" id="login-email" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" placeholder="Enter your password">
+            </div>
+            <div class="forgot-password">
+              <a href="#" onclick="window.showForgotPassword()">Forgot Password?</a>
+            </div>
+            <button class="btn" onclick="window.loginWithEmail()" id="login-btn">
+              <i class="fa-regular fa-envelope"></i> Login
+            </button>
+          </div>
+          
+          <div id="signup-form" class="auth-form" style="display: none;">
+            <div class="form-group">
+              <label for="signup-name">Full Name</label>
+              <input type="text" id="signup-name" placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+              <label for="signup-email">Email</label>
+              <input type="email" id="signup-email" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+              <label for="signup-password">Password</label>
+              <input type="password" id="signup-password" placeholder="Choose a password (min. 6 characters)">
+            </div>
+            <div class="form-group">
+              <label for="signup-confirm">Confirm Password</label>
+              <input type="password" id="signup-confirm" placeholder="Confirm your password">
+            </div>
+            <button class="btn" onclick="window.signUpWithEmail()" id="signup-btn">
+              <i class="fa-regular fa-user-plus"></i> Create Account
+            </button>
+          </div>
+          
+          <div id="forgot-password-form" class="auth-form" style="display: none;">
+            <div class="form-group">
+              <label for="reset-email">Email</label>
+              <input type="email" id="reset-email" placeholder="Enter your email">
+            </div>
+            <button class="btn" onclick="window.resetPassword()" id="reset-btn">
+              <i class="fa-regular fa-paper-plane"></i> Send Reset Link
+            </button>
+            <button class="btn btn-outline" onclick="window.backToLogin()" style="margin-top: 1rem;">
+              <i class="fa-regular fa-arrow-left"></i> Back to Login
+            </button>
+          </div>
+          
+          <div id="auth-message" class="auth-message"></div>
+          
+          <div style="margin-top: 1rem; text-align: center;">
+            <a href="#" onclick="window.backToMain()" style="color: #999; text-decoration: none;">
+              <i class="fa-regular fa-arrow-left"></i> Back to sign in options
+            </a>
+          </div>
+        </div>
+      `;
+    };
+
+    window.switchAuthTab = function(tab) {
+      const loginTab = document.getElementById('login-tab');
+      const signupTab = document.getElementById('signup-tab');
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const forgotForm = document.getElementById('forgot-password-form');
+      
+      if (forgotForm) forgotForm.style.display = 'none';
+      
+      if (tab === 'login') {
+        loginTab?.classList.add('active');
+        signupTab?.classList.remove('active');
+        if (loginForm) loginForm.style.display = 'block';
+        if (signupForm) signupForm.style.display = 'none';
+      } else {
+        loginTab?.classList.remove('active');
+        signupTab?.classList.add('active');
+        if (loginForm) loginForm.style.display = 'none';
+        if (signupForm) signupForm.style.display = 'block';
       }
       
-      // Update new arrivals every minute
-      setInterval(renderProducts, 60000);
-    }
+      clearAuthMessage();
+    };
 
-    // Load common modals
-    async function loadCommonModals() {
-      try {
-        const response = await fetch('common.html');
-        const data = await response.text();
-        document.getElementById('common-modals').innerHTML = data;
-      } catch (error) {
-        console.error('Error loading common modals:', error);
+    window.showForgotPassword = function() {
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const forgotForm = document.getElementById('forgot-password-form');
+      const authTabs = document.querySelector('.auth-tabs');
+      
+      if (authTabs) authTabs.style.display = 'none';
+      if (loginForm) loginForm.style.display = 'none';
+      if (signupForm) signupForm.style.display = 'none';
+      if (forgotForm) forgotForm.style.display = 'block';
+      
+      clearAuthMessage();
+    };
+
+    window.backToLogin = function() {
+      const authTabs = document.querySelector('.auth-tabs');
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const forgotForm = document.getElementById('forgot-password-form');
+      
+      if (authTabs) authTabs.style.display = 'flex';
+      if (loginForm) loginForm.style.display = 'block';
+      if (signupForm) signupForm.style.display = 'none';
+      if (forgotForm) forgotForm.style.display = 'none';
+      
+      window.switchAuthTab('login');
+      clearAuthMessage();
+    };
+
+    window.backToMain = function() {
+      renderProfileContent();
+    };
+
+    function showAuthMessage(message, isError = true) {
+      const messageDiv = document.getElementById('auth-message');
+      if (messageDiv) {
+        messageDiv.className = isError ? 'auth-error' : 'auth-success';
+        messageDiv.textContent = message;
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      loadCommonModals();
-      loadComponents();
-    });
+    function clearAuthMessage() {
+      const messageDiv = document.getElementById('auth-message');
+      if (messageDiv) {
+        messageDiv.className = '';
+        messageDiv.textContent = '';
+      }
+    }
+
+    window.loginWithEmail = async function() {
+      const email = document.getElementById('login-email')?.value;
+      const password = document.getElementById('login-password')?.value;
+      
+      if (!email || !password) {
+        showAuthMessage('Please fill in all fields');
+        return;
+      }
+      
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        showAuthMessage('Login successful!', false);
+        setTimeout(() => closeModal('profile-modal'), 1500);
+      } catch (error) {
+        let errorMessage = 'Login failed. Please try again.';
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage = 'No account found with this email.';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = 'Incorrect password.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Invalid email address.';
+            break;
+        }
+        showAuthMessage(errorMessage);
+      }
+    };
+
+    window.signUpWithEmail = async function() {
+      const name = document.getElementById('signup-name')?.value;
+      const email = document.getElementById('signup-email')?.value;
+      const password = document.getElementById('signup-password')?.value;
+      const confirm = document.getElementById('signup-confirm')?.value;
+      
+      if (!name || !email || !password || !confirm) {
+        showAuthMessage('Please fill in all fields');
+        return;
+      }
+      
+      if (password.length < 6) {
+        showAuthMessage('Password must be at least 6 characters');
+        return;
+      }
+      
+      if (password !== confirm) {
+        showAuthMessage('Passwords do not match');
+        return;
+      }
+      
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        await userCredential.user.updateProfile({ displayName: name });
+        await db.collection('users').doc(userCredential.user.uid).set({
+          name, email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showAuthMessage('Account created successfully!', false);
+        setTimeout(() => closeModal('profile-modal'), 1500);
+      } catch (error) {
+        let errorMessage = 'Sign up failed. Please try again.';
+        if (error.code === 'auth/email-already-in-use') {
+          errorMessage = 'An account already exists with this email.';
+        } else if (error.code === 'auth/invalid-email') {
+          errorMessage = 'Invalid email address.';
+        } else if (error.code === 'auth/weak-password') {
+          errorMessage = 'Password is too weak.';
+        }
+        showAuthMessage(errorMessage);
+      }
+    };
+
+    window.resetPassword = async function() {
+      const email = document.getElementById('reset-email')?.value;
+      if (!email) {
+        showAuthMessage('Please enter your email address');
+        return;
+      }
+      
+      try {
+        await auth.sendPasswordResetEmail(email);
+        showAuthMessage('Password reset email sent! Check your inbox.', false);
+      } catch (error) {
+        let errorMessage = 'Failed to send reset email.';
+        if (error.code === 'auth/user-not-found') {
+          errorMessage = 'No account found with this email.';
+        } else if (error.code === 'auth/invalid-email') {
+          errorMessage = 'Invalid email address.';
+        }
+        showAuthMessage(errorMessage);
+      }
+    };
+
+    window.logout = async function() {
+      try {
+        await auth.signOut();
+        closeModal('profile-modal');
+        showLoginPrompt();
+        hideEnquiries();
+      } catch (error) {
+        console.error('Logout error:', error);
+        alert('Failed to logout. Please try again.');
+      }
+    };
+
+    function updateProfileIcon() {
+      const profileIcon = document.getElementById('profile-icon');
+      if (profileIcon) {
+        profileIcon.innerHTML = currentUser ? 
+          '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>' : 
+          '<i class="fa-regular fa-user"></i>';
+      }
+    }
+
+    // ========== ENQUIRY FUNCTIONS ==========
+    function loadUserEnquiries() {
+      const stored = localStorage.getItem('essence_user_enquiries');
+      if (stored) {
+        try {
+          enquiries = JSON.parse(stored);
+        } catch (e) {
+          enquiries = [];
+        }
+      } else {
+        // Sample enquiries for demo
+        enquiries = [
+          {
+            id: 'ENQ' + Date.now() + '1',
+            name: 'Alex Morgan',
+            email: 'alex@example.com',
+            phone: '+91 98765 43210',
+            type: 'product',
+            message: 'I\'m interested in the leather collection, especially cardholders and watch straps. Do you have them in burgundy?',
+            images: ['📷', '📷'],
+            status: 'received',
+            timestamp: Date.now() - 2 * 24 * 60 * 60 * 1000
+          },
+          {
+            id: 'ENQ' + Date.now() + '2',
+            name: 'Alex Morgan',
+            email: 'alex@example.com',
+            phone: '+91 98765 43210',
+            type: 'bulk',
+            message: 'Looking for bulk order of power banks (50 units) for corporate gifting. Need pricing and customization options.',
+            images: ['📷'],
+            status: 'processing',
+            timestamp: Date.now() - 5 * 24 * 60 * 60 * 1000
+          }
+        ];
+        localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
+      }
+
+      // Filter to show only current user's enquiries
+      if (currentUser) {
+        enquiries = enquiries.filter(e => e.email === currentUser.email);
+      }
+
+      renderEnquiries();
+      const enquiriesSection = document.getElementById('enquiriesSection');
+      if (enquiriesSection && enquiries.length > 0) {
+        enquiriesSection.style.display = 'block';
+      }
+    }
+
+    function saveEnquiries() {
+      localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
+    }
+
+    window.deleteEnquiry = function(enquiryId) {
+      if (confirm('Are you sure you want to delete this enquiry?')) {
+        enquiries = enquiries.filter(e => e.id !== enquiryId);
+        saveEnquiries();
+        renderEnquiries();
+        
+        if (enquiries.length === 0) {
+          const enquiriesSection = document.getElementById('enquiriesSection');
+          if (enquiriesSection) enquiriesSection.style.display = 'none';
+        }
+      }
+    };
+
+    function renderEnquiries() {
+      const grid = document.getElementById('enquiriesGrid');
+      const filterValue = document.getElementById('enquiryFilter')?.value || 'all';
+      
+      if (!grid) return;
+
+      if (!enquiries || enquiries.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-enquiries">
+            <i class="fa-regular fa-folder-open"></i>
+            <p>You haven't submitted any enquiries yet.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let filteredEnquiries = enquiries;
+      if (filterValue !== 'all') {
+        filteredEnquiries = enquiries.filter(e => e.status === filterValue);
+      }
+
+      const sorted = [...filteredEnquiries].sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+      let html = '';
+      sorted.forEach(e => {
+        let statusClass = 'status-received';
+        if (e.status === 'processing') statusClass = 'status-processing';
+        else if (e.status === 'completed') statusClass = 'status-completed';
+        else if (e.status === 'invalid') statusClass = 'status-invalid';
+
+        const date = e.timestamp ? new Date(e.timestamp).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : 'just now';
+
+        let imagesHtml = '';
+        if (e.images && e.images.length > 0) {
+          imagesHtml = e.images.map(img => {
+            if (typeof img === 'string' && img.length <= 8 && !img.startsWith('data:')) {
+              return `<div class="enquiry-image-thumb">${img}</div>`;
+            } else {
+              return `<div class="enquiry-image-thumb"><i class="fa-regular fa-image" style="color:#aaa;"></i></div>`;
+            }
+          }).join('');
+        } else {
+          imagesHtml = `<div class="enquiry-image-thumb"><i class="fa-regular fa-image" style="color:#ccc;"></i></div>`;
+        }
+
+        const typeLabel = {
+          'product': 'Product Info',
+          'bulk': 'Bulk Order',
+          'custom': 'Custom Request',
+          'other': 'Other'
+        }[e.type] || 'General';
+
+        html += `
+          <div class="enquiry-item">
+            <button class="delete-btn" onclick="deleteEnquiry('${e.id}')" title="Delete enquiry">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+            <div class="enquiry-header">
+              <span class="enquiry-name">${e.name}</span>
+              <span class="status-badge ${statusClass}">${e.status}</span>
+            </div>
+            <div class="enquiry-contact">
+              <div><i class="fa-regular fa-envelope"></i> ${e.email}</div>
+              ${e.phone ? `<div><i class="fa-regular fa-phone"></i> ${e.phone}</div>` : ''}
+              <div style="margin-top: 0.3rem;"><i class="fa-regular fa-tag"></i> ${typeLabel}</div>
+            </div>
+            <div class="enquiry-images">
+              ${imagesHtml}
+            </div>
+            <div class="enquiry-message">
+              <i class="fa-regular fa-note-sticky" style="color:#d4af37; margin-right:6px;"></i> ${e.message}
+            </div>
+            <div class="enquiry-footer">
+              <span><i class="fa-regular fa-clock"></i> ${date}</span>
+              <span><i class="fa-regular fa-id-card"></i> ${e.id.slice(0,8)}</span>
+            </div>
+          </div>
+        `;
+      });
+
+      if (sorted.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-enquiries">
+            <i class="fa-regular fa-filter"></i>
+            <p>No enquiries match the selected filter.</p>
+          </div>
+        `;
+      } else {
+        grid.innerHTML = html;
+      }
+    }
+
+    // Initialize enquiry form
+    const fileInput = document.getElementById('imageUpload');
+    const previewDiv = document.getElementById('imagePreview');
+    const uploadArea = document.getElementById('fileUploadArea');
+    let selectedFiles = [];
+
+    if (uploadArea) {
+      uploadArea.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', function(e) {
+        selectedFiles = Array.from(e.target.files || []).slice(0, 5); // Max 5 files
+        previewDiv.innerHTML = '';
+        if (selectedFiles.length === 0) return;
+
+        selectedFiles.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = document.createElement('img');
+            img.src = event.target.result;
+            img.classList.add('preview-thumb');
+            img.alt = 'preview';
+            previewDiv.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    }
+
+    const submitBtn = document.getElementById('submitEnquiry');
+    const successMsg = document.getElementById('successMessage');
+
+    if (submitBtn) {
+      submitBtn.addEventListener('click', function() {
+        if (!currentUser) {
+          alert('Please login to submit an enquiry');
+          openProfile();
+          return;
+        }
+
+        const name = document.getElementById('enquiryName').value.trim();
+        const email = document.getElementById('enquiryEmail').value.trim();
+        const phone = document.getElementById('enquiryPhone').value.trim();
+        const type = document.getElementById('enquiryType')?.value || 'other';
+        const message = document.getElementById('enquiryMessage').value.trim();
+
+        if (!name || !email || !message) {
+          alert('Please fill in name, email and message.');
+          return;
+        }
+
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> submitting...';
+
+        const imageSymbols = [];
+        if (selectedFiles.length > 0) {
+          for (let i = 0; i < Math.min(selectedFiles.length, 5); i++) {
+            imageSymbols.push('📷');
+          }
+        } else {
+          imageSymbols.push('🖼️');
+        }
+
+        const newEnquiry = {
+          id: 'ENQ' + Date.now() + Math.floor(Math.random()*1000),
+          name: name,
+          email: email,
+          phone: phone || '',
+          type: type,
+          message: message,
+          images: imageSymbols,
+          status: 'received',
+          timestamp: Date.now()
+        };
+
+        enquiries.push(newEnquiry);
+        saveEnquiries();
+        renderEnquiries();
+
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-regular fa-paper-plane"></i> submit enquiry';
+
+        // Show success message
+        successMsg.classList.add('show');
+
+        // Clear form
+        document.getElementById('enquiryMessage').value = '';
+        document.getElementById('enquiryType').value = 'product';
+        previewDiv.innerHTML = '';
+        selectedFiles = [];
+        fileInput.value = '';
+
+        // Show enquiries section
+        const enquiriesSection = document.getElementById('enquiriesSection');
+        if (enquiriesSection) enquiriesSection.style.display = 'block';
+
+        setTimeout(() => {
+          successMsg.classList.remove('show');
+        }, 5000);
+      });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', loadComponents);
   </script>
+
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal.show { display: block; }
+
+    .modal-content {
+      background: white;
+      margin: 2rem auto;
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 30px;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .modal-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #999;
+      transition: color 0.2s;
+      line-height: 1;
+      padding: 0 0.5rem;
+    }
+
+    .close-modal:hover {
+      color: #1a1a1a;
+    }
+
+    .modal-footer {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 1.5rem;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #1a1a1a;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    #cart-total-amount {
+      color: #d4af37;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: #d4af37;
+      border: 1px solid #d4af37;
+      color: #0c0c0c;
+      font-weight: 700;
+      padding: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .checkout-btn:hover:not(:disabled) {
+      background: #c4a030;
+      border-color: #c4a030;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .checkout-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .empty-cart-message {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #999;
+    }
+
+    .empty-cart-message i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #ddd;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      background: #f5f5f5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2.5rem;
+      color: #d4af37;
+      border: 2px solid #d4af37;
+      overflow: hidden;
+    }
+
+    .profile-details {
+      text-align: left;
+      background: #f9f9f9;
+      padding: 1.5rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-details p {
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #333;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+    }
+
+    .profile-details .label {
+      font-weight: 400;
+      color: #666;
+      min-width: 70px;
+    }
+
+    .profile-details .value {
+      font-weight: 600;
+      color: #1a1a1a;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .logout-btn {
+      width: 100%;
+      background: #fff;
+      border: 1px solid #d4af37;
+      color: #1a1a1a;
+      padding: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      transition: all 0.3s;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background: #d4af37;
+      color: #fff;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-header i {
+      font-size: 3rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+    }
+
+    .login-header h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+    }
+
+    .google-login-btn {
+      background: #fff;
+      color: #333;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      width: 100%;
+      padding: 1rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      border-radius: 40px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .google-login-btn:hover {
+      background: #f8f8f8;
+      border-color: #d4af37;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .google-login-btn i {
+      color: #DB4437;
+      font-size: 1.2rem;
+    }
+
+    /* Auth Styles */
+    .auth-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 1rem;
+    }
+
+    .auth-tab {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #999;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .auth-tab.active {
+      color: #d4af37;
+      position: relative;
+    }
+
+    .auth-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1rem;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #d4af37;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #666;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .form-group input {
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .forgot-password {
+      text-align: right;
+      margin-top: 0.5rem;
+    }
+
+    .forgot-password a {
+      color: #666;
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #d4af37;
+      padding-bottom: 2px;
+    }
+
+    .forgot-password a:hover {
+      color: #d4af37;
+    }
+
+    .auth-error {
+      background: #fee;
+      color: #c00;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .auth-success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #1a1a1a;
+      border: 1px solid #1a1a1a;
+    }
+
+    .btn-outline:hover {
+      background: #1a1a1a;
+      color: #fff;
+    }
+  </style>
 </body>
 </html>
