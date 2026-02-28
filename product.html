@@ -1460,7 +1460,7 @@
   <!-- Common JavaScript -->
   <script src="common.js"></script>
 
-  <script>
+ <script>
     // ========== PRODUCT PAGE SPECIFIC FUNCTIONS ==========
     
     // Facebook Pixel helper function (safe execution)
@@ -2092,7 +2092,7 @@
       }
     }
 
-    window.addToCart = function(productId) {
+    window.addToCart = async function(productId) {
       const product = products.find(p => p.id === productId);
       if (!product) return;
 
@@ -2120,7 +2120,14 @@
         });
       }
 
-      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+      // Save to Firebase if user is logged in
+      if (currentUser) {
+        await saveCartToFirebase();
+      } else {
+        // Fallback to localStorage for guests
+        localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+      }
+      
       updateCartCount();
 
       const btn = event?.target?.closest('button');
@@ -2207,7 +2214,7 @@
       document.body.classList.add('modal-open');
     }
 
-    window.submitPriorityForm = function(event, productId) {
+    window.submitPriorityForm = async function(event, productId) {
       event.preventDefault();
 
       const emailInput = document.getElementById('priority-email');
@@ -2240,6 +2247,33 @@
           phoneInput.classList.remove('error');
           phoneError.classList.remove('show');
         }
+      }
+
+      // Save priority access request to Firebase if user is logged in
+      if (currentUser) {
+        try {
+          await db.collection('priority_requests').add({
+            productId: productId,
+            productTitle: products.find(p => p.id === productId)?.title,
+            email: email,
+            phone: phone || null,
+            userId: currentUser.uid,
+            status: 'pending',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        } catch (error) {
+          console.error('Error saving priority request:', error);
+        }
+      } else {
+        // Save to localStorage for guests
+        const priorityRequests = JSON.parse(localStorage.getItem('MyEssantia_priority_requests') || '[]');
+        priorityRequests.push({
+          productId,
+          email,
+          phone,
+          timestamp: Date.now()
+        });
+        localStorage.setItem('MyEssantia_priority_requests', JSON.stringify(priorityRequests));
       }
 
       // Track Facebook Lead event
@@ -2293,8 +2327,8 @@
     };
 
     // Override updateCartCount to use common function but add delivery bar update
-    const originalUpdateCartCount = updateCartCount;
-    updateCartCount = function() {
+    const originalUpdateCartCount = window.updateCartCount;
+    window.updateCartCount = function() {
       if (originalUpdateCartCount) {
         originalUpdateCartCount();
       }
@@ -2309,11 +2343,8 @@
       updateProfileIcon();
       loadProduct();
       
-      const savedUser = localStorage.getItem('MyEssantia_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateProfileIcon();
-      }
+      // currentUser is now managed by Firebase in common.js
+      // No need to load from localStorage
 
       // Priority modal close button
       const closePriorityBtn = document.getElementById('close-priority-modal');
@@ -2341,9 +2372,29 @@
       }
     }
 
+    // Listen for auth state changes
+    firebase.auth().onAuthStateChanged((user) => {
+      // Re-render product if needed
+      if (window.location.pathname.includes('product.html')) {
+        // Cart might have changed due to login/logout
+        updateCartCount();
+      }
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
       loadCommonModals();
       loadComponents();
+    });
+
+    // Add fallback for products
+    window.addEventListener('load', () => {
+      if (products.length === 0) {
+        const cachedProducts = localStorage.getItem('MyEssantia_products');
+        if (cachedProducts) {
+          products = JSON.parse(cachedProducts);
+          loadProduct();
+        }
+      }
     });
   </script>
 </body>
