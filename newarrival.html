@@ -13,44 +13,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- CSS Files -->
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Common CSS -->
+  <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* -------------------- RESET & GLOBAL -------------------- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background-color: #ffffff;
-      color: #1a1a1a;
-      line-height: 1.5;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-weight: 300;
-    }
-
-    h1, h2 {
-      font-family: 'Playfair Display', serif;
-      font-weight: 400;
-      letter-spacing: -0.02em;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 clamp(1rem, 5vw, 3rem);
-    }
-
-    .bg-noise {
-      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
-      background-repeat: repeat;
-    }
-
+    /* -------------------- NEW ARRIVALS PAGE SPECIFIC STYLES -------------------- */
     .page-title {
       text-align: center;
       padding: clamp(1.5rem, 4vw, 2rem) 0 clamp(0.5rem, 2vw, 1rem);
@@ -72,6 +46,22 @@
       margin: 1rem auto 0;
       font-size: clamp(0.95rem, 2.5vw, 1.1rem);
       padding: 0 1rem;
+    }
+
+    /* New arrivals counter */
+    .new-counter {
+      text-align: center;
+      margin: 1rem 0 2rem;
+      font-size: 1rem;
+      color: #666;
+    }
+    .new-counter span {
+      background: #d4af37;
+      color: #0c0c0c;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      font-weight: 600;
+      display: inline-block;
     }
 
     .sort-bar {
@@ -135,6 +125,7 @@
       cursor: pointer;
       text-decoration: none;
       color: inherit;
+      position: relative;
     }
     .product-card:hover {
       box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
@@ -191,10 +182,12 @@
       opacity: 0;
       transform: translateY(10px);
       transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
     }
     .image-frame:hover .image-actions {
       opacity: 1;
       transform: translateY(0);
+      pointer-events: auto;
     }
 
     .img-add, .img-buy {
@@ -215,6 +208,7 @@
       border: 1px solid rgba(0,0,0,0.1);
       color: #1a1a1a;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      pointer-events: auto;
     }
     .img-add i, .img-buy i {
       font-size: 0.85rem;
@@ -303,6 +297,30 @@
       z-index: 20;
       letter-spacing: 0.3px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sale-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #ff4444;
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      z-index: 20;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .original-price {
+      color: #999;
+      font-size: 1rem;
+      text-decoration: line-through;
+      margin-right: 0.5rem;
     }
 
     .stock-badge {
@@ -326,8 +344,11 @@
       color: #b71c1c;
     }
 
-    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add, .img-buy, select {
-      touch-action: manipulation;
+    .results-count {
+      text-align: center;
+      color: #666;
+      margin: 1rem 0;
+      font-size: 0.9rem;
     }
 
     @media (min-width: 1200px) {
@@ -406,6 +427,7 @@
 </head>
 <body class="bg-noise">
   
+  <!-- Header loaded dynamically -->
   <div id="header"></div>
 
   <main>
@@ -415,11 +437,17 @@
     </div>
 
     <div class="container">
+      <div id="new-counter" class="new-counter">
+        <span><i class="fa-regular fa-clock"></i> Loading new arrivals...</span>
+      </div>
+    </div>
+
+    <div class="container">
       <div class="sort-bar">
         <div class="sort-select">
           <i class="fa-solid fa-arrow-down-wide-short"></i>
           <select id="sort-select" aria-label="Sort products">
-            <option value="popular">sort by: popular</option>
+            <option value="newest">sort by: newest first</option>
             <option value="price-low">price: low to high</option>
             <option value="price-high">price: high to low</option>
             <option value="rating">top rated</option>
@@ -429,74 +457,95 @@
     </div>
 
     <div class="container">
+      <div id="results-count" class="results-count"></div>
       <div id="product-grid-container" class="product-grid"></div>
     </div>
   </main>
 
+  <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
+  <!-- Common Modals -->
+  <div id="common-modals"></div>
+
+  <!-- Common JavaScript -->
+  <script src="common.js"></script>
+
   <script>
-    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-    let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
-    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+    // ========== NEW ARRIVALS PAGE SPECIFIC VARIABLES ==========
+    let newProducts = [];
 
-    async function loadComponents() {
-      try {
-        const headerResponse = await fetch('header.html');
-        const headerData = await headerResponse.text();
-        document.getElementById('header').innerHTML = headerData;
+    // ========== NEW ARRIVALS MONITOR ==========
+    function getNewArrivals() {
+      const now = new Date();
+      const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+      
+      return products.filter(product => {
+        // Check if product has showOnNew flag or is within last 7 days
+        if (product.showOnNew === true) return true;
+        
+        if (product.creationDate) {
+          const productDate = new Date(product.creationDate);
+          return productDate >= sevenDaysAgo;
+        }
+        return false;
+      });
+    }
 
-        const footerResponse = await fetch('footer.html');
-        const footerData = await footerResponse.text();
-        document.getElementById('footer').innerHTML = footerData;
-
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
-      } catch (error) {
-        console.error('Error loading components:', error);
+    function updateNewCounter() {
+      const counter = document.getElementById('new-counter');
+      const newArrivals = getNewArrivals();
+      
+      if (counter) {
+        const count = newArrivals.length;
+        const today = newArrivals.filter(p => {
+          if (!p.creationDate) return false;
+          const productDate = new Date(p.creationDate);
+          const now = new Date();
+          return (now - productDate) < 24 * 60 * 60 * 1000;
+        }).length;
+        
+        counter.innerHTML = `
+          <span>
+            <i class="fa-regular fa-clock"></i> 
+            ${count} new item${count !== 1 ? 's' : ''} added this week 
+            ${today > 0 ? `( ${today} new today! )` : ''}
+          </span>
+        `;
       }
     }
 
-    function getRandomReviewCount() {
-      return Math.floor(Math.random() * (500 - 50 + 1)) + 50;
-    }
-
+    // ========== PRODUCT RENDERING ==========
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
       const sortSelect = document.getElementById('sort-select');
+      const resultsCount = document.getElementById('results-count');
       
       if (!gridContainer) return;
 
-      const newProducts = products.filter(p => 
-        p.showOnNew === true && p.category === 'newarrival'
-      );
+      // Get all new arrivals
+      newProducts = getNewArrivals();
+
+      // Update counter
+      updateNewCounter();
 
       if (newProducts.length === 0) {
         gridContainer.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
-            <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-            <h3>No new arrivals found</h3>
-            <p>Check back later for new products!</p>
+            <i class="fa-regular fa-clock" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+            <h3>No new arrivals yet</h3>
+            <p>Check back soon for fresh products!</p>
           </div>
         `;
+        if (resultsCount) resultsCount.innerHTML = 'Showing 0 products';
         return;
       }
 
-      function renderRating(rating) {
-        let stars = '';
-        for (let i = 1; i <= 5; i++) {
-          if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
-          else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
-          else stars += '<i class="fa-regular fa-star"></i>';
-        }
-        return stars;
-      }
-
-      function getStockStatus(stock) {
-        if (stock > 10) return '<span class="stock-badge in-stock">In Stock</span>';
-        if (stock > 0) return '<span class="stock-badge low-stock">Low Stock</span>';
-        return '<span class="stock-badge out-of-stock">Out of Stock</span>';
+      function isToday(dateString) {
+        if (!dateString) return false;
+        const productDate = new Date(dateString);
+        const now = new Date();
+        return (now - productDate) < 24 * 60 * 60 * 1000;
       }
 
       function getSortedProducts() {
@@ -511,9 +560,13 @@
           case 'rating':
             sorted.sort((a, b) => b.rating - a.rating);
             break;
+          case 'newest':
           default:
-            // Default sort by newest (by id or timestamp if available)
-            sorted.sort((a, b) => b.id - a.id);
+            sorted.sort((a, b) => {
+              const dateA = a.creationDate ? new Date(a.creationDate) : new Date(0);
+              const dateB = b.creationDate ? new Date(b.creationDate) : new Date(0);
+              return dateB - dateA;
+            });
             break;
         }
         return sorted;
@@ -521,17 +574,28 @@
 
       function renderAllProducts() {
         const sortedProducts = getSortedProducts();
-        const reviewCount = getRandomReviewCount();
+        
+        // Update results count
+        if (resultsCount) {
+          resultsCount.innerHTML = `Showing ${sortedProducts.length} new arrival${sortedProducts.length !== 1 ? 's' : ''}`;
+        }
         
         let gridHtml = '';
         sortedProducts.forEach(product => {
           const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
           const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
+          const isBrandNew = isToday(product.creationDate);
+          const hasSale = product.onSale && product.originalPrice;
+          const discount = hasSale ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
           
           gridHtml += `
             <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}">
+              <span class="new-badge">
+                <i class="fa-regular fa-${isBrandNew ? 'star' : 'clock'}"></i> 
+                ${isBrandNew ? 'just landed' : 'new this week'}
+              </span>
+              ${hasSale ? `<span class="sale-badge">-${discount}%</span>` : ''}
               <div class="image-frame">
-                <span class="new-badge"><i class="fa-regular fa-star"></i> just in</span>
                 <div class="primary-img" style="background-image: url('${mainImage}');"></div>
                 <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
                 <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
@@ -547,12 +611,15 @@
               <p class="product-category">${product.category}</p>
               <div class="product-rating">
                 ${renderRating(product.rating)}
-                <span>(${reviewCount})</span>
+                <span>(${product.rating.toFixed(1)})</span>
               </div>
               <div class="product-price">
-                <span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}
+                ${hasSale ? `<span class="original-price">₹${formatPrice(product.originalPrice)}</span>` : ''}
+                <span class="inr-symbol">₹</span>${formatPrice(product.price)}
               </div>
-              ${getStockStatus(product.stock || 10)}
+              <span class="stock-badge ${product.stock > 10 ? 'in-stock' : (product.stock > 0 ? 'low-stock' : 'out-of-stock')}">
+                ${product.stock > 10 ? 'In Stock' : (product.stock > 0 ? 'Low Stock' : 'Out of Stock')}
+              </span>
             </a>
           `;
         });
@@ -563,595 +630,41 @@
       renderAllProducts();
       
       if (sortSelect) {
+        sortSelect.removeEventListener('change', renderAllProducts);
         sortSelect.addEventListener('change', renderAllProducts);
       }
     }
 
+    // ========== INITIALIZATION ==========
     function initializeApp() {
+      updateCartCount();
       renderProducts();
-      updateCartCount();
-      updateProfileIcon();
-      setupEventListeners();
-    }
-
-    function setupEventListeners() {
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const navMenu = document.getElementById('nav-menu');
       
-      if (mobileMenuToggle && navMenu) {
-        mobileMenuToggle.addEventListener('click', function(e) {
-          e.stopPropagation();
-          navMenu.classList.toggle('show');
-        });
+      const savedUser = localStorage.getItem('MyEssantia_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateProfileIcon();
       }
-
-      const cartIcon = document.getElementById('cart-icon');
-      if (cartIcon) {
-        cartIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openCart();
-        });
-      }
-
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        profileIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openProfile();
-        });
-      }
-
-      const closeCart = document.getElementById('close-cart');
-      if (closeCart) {
-        closeCart.addEventListener('click', function() {
-          closeModal('cart-modal');
-        });
-      }
-
-      const closeProfile = document.getElementById('close-profile');
-      if (closeProfile) {
-        closeProfile.addEventListener('click', function() {
-          closeModal('profile-modal');
-        });
-      }
-
-      const checkoutBtn = document.getElementById('checkout-btn');
-      if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', function() {
-          if (cart.length === 0) {
-            alert('Your cart is empty!');
-          } else {
-            alert('Proceeding to checkout...');
-          }
-        });
-      }
-
-      window.addEventListener('click', function(e) {
-        const cartModal = document.getElementById('cart-modal');
-        const profileModal = document.getElementById('profile-modal');
-        
-        if (e.target === cartModal) {
-          closeModal('cart-modal');
-        }
-        if (e.target === profileModal) {
-          closeModal('profile-modal');
-        }
-      });
-
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeModal('cart-modal');
-          closeModal('profile-modal');
-        }
-      });
-
-      document.addEventListener('click', function(e) {
-        if (navMenu && navMenu.classList.contains('show')) {
-          if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-            navMenu.classList.remove('show');
-          }
-        }
-      });
+      
+      // Update new arrivals every minute
+      setInterval(renderProducts, 60000);
     }
 
-    function openCart() {
-      const cartModal = document.getElementById('cart-modal');
-      if (cartModal) {
-        renderCartItems();
-        cartModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
+    // Load common modals
+    async function loadCommonModals() {
+      try {
+        const response = await fetch('common.html');
+        const data = await response.text();
+        document.getElementById('common-modals').innerHTML = data;
+      } catch (error) {
+        console.error('Error loading common modals:', error);
       }
     }
 
-    function openProfile() {
-      const profileModal = document.getElementById('profile-modal');
-      if (profileModal) {
-        renderProfileContent();
-        profileModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-      }
-    }
-
-    window.addToCart = function(productId) {
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
-
-      const existingItem = cart.find(item => item.id === productId);
-
-      if (existingItem) {
-        existingItem.quantity += 1;
-      } else {
-        cart.push({
-          id: productId,
-          title: product.title,
-          category: product.category,
-          price: product.price,
-          primaryImg: product.primaryImg || (product.images && product.images[0]),
-          quantity: 1
-        });
-      }
-
-      saveCart();
-      updateCartCount();
-
-      // Show visual feedback on the button
-      const btn = event?.target?.closest('button');
-      if (btn) {
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        btn.style.background = '#4CAF50';
-        btn.style.color = 'white';
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.style.background = '';
-          btn.style.color = '';
-        }, 1500);
-      } else {
-        alert(`${product.title} added to cart!`);
-      }
-    };
-
-    window.buyNow = function(productId) {
-      addToCart(productId);
-      openCart();
-    };
-
-    window.updateQuantity = function(productId, change) {
-      const itemIndex = cart.findIndex(item => item.id === productId);
-      if (itemIndex === -1) return;
-
-      const item = cart[itemIndex];
-      const newQuantity = item.quantity + change;
-
-      if (newQuantity <= 0) {
-        cart.splice(itemIndex, 1);
-      } else {
-        item.quantity = newQuantity;
-      }
-
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-    };
-
-    window.removeFromCart = function(productId) {
-      cart = cart.filter(item => item.id !== productId);
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-    };
-
-    function renderCartItems() {
-      const cartItemsContainer = document.getElementById('cart-items');
-      const cartItemCount = document.getElementById('cart-item-count');
-      const cartTotalAmount = document.getElementById('cart-total-amount');
-
-      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
-
-      if (cart.length === 0) {
-        cartItemsContainer.innerHTML = `
-          <div class="empty-cart-message">
-            <i class="fa-regular fa-cart-shopping"></i>
-            <p>Your cart is empty</p>
-            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Start shopping to add items!</p>
-          </div>
-        `;
-        cartItemCount.textContent = '0';
-        cartTotalAmount.textContent = '₹0.00';
-        return;
-      }
-
-      let total = 0;
-      let totalItems = 0;
-
-      cartItemsContainer.innerHTML = cart.map(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        totalItems += item.quantity;
-
-        return `
-          <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.primaryImg}')"></div>
-            <div class="cart-item-details">
-              <h4 class="cart-item-title">${item.title}</h4>
-              <p class="cart-item-category">${item.category}</p>
-              <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
-              <div class="cart-item-actions">
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">
-                  <i class="fa-solid fa-minus"></i>
-                </button>
-                <span class="item-quantity">${item.quantity}</span>
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">
-                  <i class="fa-solid fa-plus"></i>
-                </button>
-                <button class="remove-item" onclick="window.removeFromCart(${item.id})">
-                  Remove
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      cartItemCount.textContent = totalItems;
-      cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
-    }
-
-    function updateCartCount() {
-      const cartCount = document.getElementById('cart-count');
-      if (cartCount) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCount.textContent = totalItems;
-      }
-    }
-
-    function saveCart() {
-      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-    }
-
-    function renderProfileContent() {
-      const profileContent = document.getElementById('profile-content');
-      if (!profileContent) return;
-
-      if (currentUser) {
-        profileContent.innerHTML = `
-          <div class="profile-info">
-            <div class="profile-avatar">
-              <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">
-            </div>
-            <div class="profile-details">
-              <p>
-                <i class="fa-regular fa-user"></i>
-                <span class="label">Name:</span>
-                <span class="value">${currentUser.name}</span>
-              </p>
-              <p>
-                <i class="fa-regular fa-envelope"></i>
-                <span class="label">Email:</span>
-                <span class="value">${currentUser.email}</span>
-              </p>
-            </div>
-            <button class="btn logout-btn" onclick="window.logout()">
-              <i class="fa-solid fa-sign-out-alt"></i>
-              Logout
-            </button>
-          </div>
-        `;
-      } else {
-        profileContent.innerHTML = `
-          <div class="login-form">
-            <div class="login-header">
-              <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
-              <h4>Welcome Back!</h4>
-              <p>Sign in with Google to continue</p>
-            </div>
-            
-            <button class="btn google-login-btn" onclick="window.handleGoogleLogin()">
-              <i class="fa-brands fa-google"></i>
-              Sign in with Google
-            </button>
-            
-            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
-              By signing in, you agree to our Terms of Service and Privacy Policy.
-            </p>
-          </div>
-        `;
-      }
-    }
-
-    function updateProfileIcon() {
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        if (currentUser) {
-          profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
-        } else {
-          profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
-        }
-      }
-    }
-
-    window.handleGoogleLogin = function() {
-      const mockGoogleUser = {
-        name: 'John Doe',
-        email: 'john@gmail.com',
-        picture: 'https://via.placeholder.com/80',
-        provider: 'google',
-        memberSince: '2025'
-      };
-
-      localStorage.setItem('MyEssantia_user', JSON.stringify(mockGoogleUser));
-      currentUser = mockGoogleUser;
-      updateProfileIcon();
-      renderProfileContent();
-      closeModal('profile-modal');
-      alert('Successfully signed in with Google!');
-    };
-
-    window.logout = function() {
-      localStorage.removeItem('MyEssantia_user');
-      currentUser = null;
-      updateProfileIcon();
-      renderProfileContent();
-      alert('You have been logged out successfully');
-    };
-
-    document.addEventListener('DOMContentLoaded', loadComponents);
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCommonModals();
+      loadComponents();
+    });
   </script>
-
-  <style>
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
-    }
-
-    .modal.show {
-      display: block;
-    }
-
-    .modal-content {
-      background-color: #fff;
-      margin: 2rem auto;
-      padding: 2rem;
-      width: 90%;
-      max-width: 500px;
-      border-radius: 30px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      max-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-      from {
-        transform: translateY(-20px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .modal-header h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin: 0;
-    }
-
-    .close-modal {
-      background: none;
-      border: none;
-      font-size: 2rem;
-      cursor: pointer;
-      color: #999;
-      transition: color 0.2s;
-      line-height: 1;
-      padding: 0 0.5rem;
-    }
-
-    .close-modal:hover {
-      color: #1a1a1a;
-    }
-
-    .modal-footer {
-      border-top: 1px solid #f0f0f0;
-      padding-top: 1.5rem;
-    }
-
-    .cart-total {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: #1a1a1a;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    #cart-total-amount {
-      color: #d4af37;
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      font-weight: 600;
-    }
-
-    .checkout-btn {
-      width: 100%;
-      background: #d4af37;
-      border: 1px solid #d4af37;
-      color: #0c0c0c;
-      font-weight: 700;
-      padding: 1rem;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.3s;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .checkout-btn:hover {
-      background: #c4a030;
-      border-color: #c4a030;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
-    }
-
-    .empty-cart-message {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: #999;
-    }
-
-    .empty-cart-message i {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: #ddd;
-    }
-
-    .profile-avatar {
-      width: 80px;
-      height: 80px;
-      background: #f5f5f5;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.5rem;
-      font-size: 2.5rem;
-      color: #d4af37;
-      border: 2px solid #d4af37;
-      overflow: hidden;
-    }
-
-    .profile-details {
-      text-align: left;
-      background: #f9f9f9;
-      padding: 1.5rem;
-      border-radius: 20px;
-      margin-bottom: 1.5rem;
-    }
-
-    .profile-details p {
-      margin-bottom: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      color: #333;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.95rem;
-    }
-
-    .profile-details .label {
-      font-weight: 400;
-      color: #666;
-      min-width: 70px;
-    }
-
-    .profile-details .value {
-      font-weight: 600;
-      color: #1a1a1a;
-      font-family: 'Playfair Display', serif;
-    }
-
-    .logout-btn {
-      width: 100%;
-      background: #fff;
-      border: 1px solid #d4af37;
-      color: #1a1a1a;
-      padding: 1rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      transition: all 0.3s;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .logout-btn:hover {
-      background: #d4af37;
-      color: #fff;
-    }
-
-    .login-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .login-header i {
-      font-size: 3rem;
-      color: #d4af37;
-      margin-bottom: 1rem;
-    }
-
-    .login-header h4 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 0.5rem;
-    }
-
-    .google-login-btn {
-      background: #fff;
-      color: #333;
-      border: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      width: 100%;
-      padding: 1rem;
-      font-weight: 600;
-      transition: all 0.3s;
-      border-radius: 40px;
-      cursor: pointer;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .google-login-btn:hover {
-      background: #f8f8f8;
-      border-color: #d4af37;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
-    }
-
-    .google-login-btn i {
-      color: #DB4437;
-      font-size: 1.2rem;
-    }
-  </style>
 </body>
 </html>
