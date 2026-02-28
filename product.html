@@ -1460,7 +1460,7 @@
   <!-- Common JavaScript -->
   <script src="common.js"></script>
 
- <script>
+<script>
     // ========== PRODUCT PAGE SPECIFIC FUNCTIONS ==========
     
     // Facebook Pixel helper function (safe execution)
@@ -1475,7 +1475,7 @@
 
     function getProductId() {
       const urlParams = new URLSearchParams(window.location.search);
-      return parseInt(urlParams.get('id')) || 1;
+      return urlParams.get('id'); // Return as string, not parseInt
     }
 
     function getCurrentCartTotal() {
@@ -1484,7 +1484,7 @@
 
     function loadProduct() {
       const productId = getProductId();
-      const product = products.find(p => p.id === productId);
+      const product = products.find(p => p.id === productId); // Compare as string
 
       if (!product) {
         document.getElementById('product-container').innerHTML = `
@@ -1727,10 +1727,10 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons">
-              <button class="btn btn-add-to-cart" onclick="addToCart(${product.id})" ${stock === 0 ? 'disabled' : ''}>
+              <button class="btn btn-add-to-cart" onclick="addToCart('${product.id}')" ${stock === 0 ? 'disabled' : ''}>
                 <i class="fa-solid fa-cart-plus"></i> Add to Cart
               </button>
-              <button class="btn btn-buy-now" onclick="handleBuyNow(${product.id})" ${stock === 0 ? 'disabled' : ''}>
+              <button class="btn btn-buy-now" onclick="handleBuyNow('${product.id}')" ${stock === 0 ? 'disabled' : ''}>
                 <i class="fa-solid fa-bolt"></i> Buy Now
               </button>
             </div>
@@ -1835,7 +1835,7 @@
                 }
                 return `
                   <div class="related-card" onclick="window.location='product.html?id=${p.id}'">
-                    <div class="related-share" onclick="shareRelatedProduct(event, ${p.id})">
+                    <div class="related-share" onclick="shareRelatedProduct(event, '${p.id}')">
                       <i class="fa-regular fa-share-from-square"></i>
                     </div>
                     <div class="related-image">
@@ -1850,7 +1850,7 @@
                     <div class="related-price">
                       <span class="inr-symbol">₹</span>${p.price ? p.price.toFixed(2) : '0.00'}
                     </div>
-                    <div class="quick-add" onclick="event.stopPropagation(); addToCart(${p.id})">
+                    <div class="quick-add" onclick="event.stopPropagation(); addToCart('${p.id}')">
                       <i class="fa-solid fa-cart-plus"></i> Quick Add
                     </div>
                   </div>
@@ -2187,7 +2187,7 @@
           Due to high demand, this product is launching in a limited first batch. Enter your details to secure priority access.
         </div>
         
-        <form class="priority-form" id="priority-form" onsubmit="submitPriorityForm(event, ${product.id})">
+        <form class="priority-form" id="priority-form" onsubmit="submitPriorityForm(event, '${product.id}')">
           <div class="form-group">
             <label class="form-label">
               <i class="fa-solid fa-envelope"></i> Email Address *
@@ -2343,9 +2343,6 @@
       updateProfileIcon();
       loadProduct();
       
-      // currentUser is now managed by Firebase in common.js
-      // No need to load from localStorage
-
       // Priority modal close button
       const closePriorityBtn = document.getElementById('close-priority-modal');
       if (closePriorityBtn) {
