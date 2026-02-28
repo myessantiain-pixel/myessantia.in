@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>MyEssantia | best · premium essentials</title>
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Common CSS -->
+  <link rel="stylesheet" href="common.css">
+  
+  <style>
+    /* ---------- HOME PAGE SPECIFIC STYLES ---------- */
+    .hero {
+      background: #f8f6f2;
+      min-height: auto;
+      padding: 3rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover;
+      background-position: 60% 40%;
+      opacity: 0.2;
+    }
+
+    .hero .container { 
+      position: relative; 
+      z-index: 2;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .hero-content {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(12px);
+      padding: 2rem 1.8rem;
+      border-radius: 40px;
+      box-shadow: 0 30px 50px -30px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.6);
+      max-width: 700px;
+      width: fit-content;
+      margin-left: 0;
+      margin-right: auto;
+    }
+
+    .hero-sub {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #6f6b63;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 400;
+      line-height: 1.1;
+      color: #1a1714;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-title strong {
+      font-weight: 600;
+      color: #d4af37;
+      font-style: italic;
+    }
+
+    .hero-desc {
+      font-size: 1rem;
+      color: #3e3a35;
+      margin-bottom: 2rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+    }
+
+    /* FEATURED COLLECTION */
+    .featured-collection {
+      background: #f8f5f1;
+      border-radius: 40px;
+      padding: 2rem 2rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .featured-text h2 { 
+      font-size: clamp(1.8rem, 4vw, 2.2rem); 
+    }
+    .gold { color: #d4af37; }
+
+    .featured-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background-image: url('https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=1972&auto=format&fit=crop');
+      background-size: cover;
+      border-radius: 30px;
+    }
+
+    /* TESTIMONIALS */
+    .testimonials {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+      margin: 2rem 0 3rem;
+    }
+
+    .testimonial {
+      background: #ffffff;
+      padding: 1.8rem 1.5rem;
+      border-radius: 28px;
+      border: 1px solid #f2eee9;
+    }
+
+    .testimonial i {
+      color: #d4af37;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial p {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .testimonial h5 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      color: #666;
+    }
+
+    @media (min-width: 640px) {
+      .hero-content { padding: 2.5rem; }
+      .testimonials { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 900px) {
+      .featured-collection { flex-direction: row; align-items: center; padding: 3rem; }
+      .featured-image { flex: 1; aspect-ratio: auto; height: 320px; }
+      .featured-text { flex: 1; }
+    }
+
+    @media (min-width: 1100px) {
+      .testimonials { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body class="bg-noise">
+  
+  <!-- Header loaded dynamically -->
+  <div id="header"></div>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-sub">best · premium essentials</div>
+          <h1 class="hero-title">curated <strong>accessories</strong> <br>shipped worldwide</h1>
+          <p class="hero-desc">Partner with vetted suppliers. Daily essentials, minimalist design, and fast fulfillment.</p>
+          <div class="hero-buttons">
+            <a href="#" class="btn">start shopping</a>
+            <a href="collection.html" class="btn btn-outline">view all</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VALUE STRIP -->
+    <div class="value-strip">
+      <div class="container">
+        <div class="value-grid">
+          <div class="value-item"><i class="fa-solid fa-bolt"></i> <span>fast dispatch · 2–5 days</span></div>
+          <div class="value-item"><i class="fa-regular fa-handshake"></i> <span>vetted suppliers IN/Asia</span></div>
+          <div class="value-item"><i class="fa-regular fa-credit-card"></i> <span>secure payment</span></div>
+          <div class="value-item"><i class="fa-regular fa-comment-dots"></i> <span>24/7 support</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS SECTION -->
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title"><span>accessories & essentials</span> — new arrivals</h2>
+        <a href="accessories.html" class="view-all-link">view all products <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <div class="product-grid" id="product-grid-container">
+        <!-- Products will be loaded dynamically -->
+      </div>
+    </div>
+
+    <!-- FEATURED COLLECTION -->
+    <div class="container">
+      <div class="featured-collection">
+        <div class="featured-text">
+          <h2><span class="gold">premium supplier</span> <br>tech & travel kit</h2>
+          <p style="margin: 1.5rem 0; color: #4f4a44;">Curated from Germany & Korea — power banks, multi-chargers, and organizers tested for quality.</p>
+          <a href="#" class="btn" style="background: #d4af37; border-color: #d4af37; color: #0c0c0c;">explore tech essentials</a>
+        </div>
+        <div class="featured-image"></div>
+      </div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div class="container">
+      <h2 class="section-title"><span>why <span class="italic-gold">people</span></span> trust us </h2>
+      <div class="testimonials">
+        <div class="testimonial">
+          <i class="fa-solid fa-quote-left"></i>
+          <p>“Reliable <span class="italic-gold">suppliers</span> & fast shipping. The quality exceeds expectations.”</p>
+          <h5>— roy, kottayam</h5>
+        </div>
+        <div class="testimonial">
+          <i class="fa-solid fa-quote-left"></i>
+          <p>“I use MyEssantia for my accessory niche. best & premium products.”</p>
+          <h5>— maria, kochi</h5>
+        </div>
+        <div class="testimonial">
+          <i class="fa-solid fa-quote-left"></i>
+          <p>“The accessories collection is a bestseller. good & consistent quality.”</p>
+          <h5>— sofia, idukki</h5>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer loaded dynamically -->
+  <div id="footer"></div>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Shopping Cart</h3>
+        <button class="close-modal" id="close-cart">&times;</button>
+      </div>
+      <div id="cart-items" class="cart-items">
+        <!-- Cart items will be rendered here -->
+      </div>
+      <div class="modal-footer">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="cart-total-amount">₹0.00</span>
+        </div>
+        <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profile-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>My Account</h3>
+        <button class="close-modal" id="close-profile">&times;</button>
+      </div>
+      <div id="profile-content">
+        <!-- Profile content will be rendered here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Common JavaScript -->
+  <script src="common.js"></script>
+  
+  <script>
+    // Home page specific initialization
+    function initializePage() {
+      renderHomeProducts();
+      setupEventListeners();
+      updateCartCount();
+      
+      const savedUser = localStorage.getItem('MyEssantia_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateProfileIcon();
+      }
+    }
+
+    function renderHomeProducts() {
+      const gridContainer = document.getElementById('product-grid-container');
+      if (!gridContainer) return;
+
+      const homeProducts = products.filter(p => p.showOnHome === true);
+
+      if (homeProducts.length === 0) {
+        gridContainer.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
+            <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+            <h3>No products on homepage</h3>
+            <p>Check back later for new arrivals!</p>
+          </div>
+        `;
+        return;
+      }
+
+      let gridHtml = '';
+      homeProducts.slice(0, 4).forEach(product => {
+        const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
+        const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
+        
+        gridHtml += `
+          <a href="product.html?id=${product.id}" class="product-card">
+            <div class="image-frame">
+              <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+              <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+              <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
+                <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault(); event.stopPropagation();">
+                  <i class="fa-solid fa-cart-plus"></i> add
+                </button>
+                <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault(); event.stopPropagation();">
+                  <i class="fa-solid fa-bolt"></i> buy
+                </button>
+              </div>
+            </div>
+            <h3 class="product-title">${product.title}</h3>
+            <p class="product-category">${product.category}</p>
+            <div class="product-rating">${renderRating(product.rating)}</div>
+            <div class="product-price">
+              <span class="inr-symbol">₹</span>${formatPrice(product.price)}
+            </div>
+            ${getStockStatus(product.stock)}
+          </a>
+        `;
+      });
+      
+      gridContainer.innerHTML = gridHtml;
+    }
+
+    // Override the initializePage function from common.js
+    window.initializePage = initializePage;
+  </script>
+</body>
+</html>
