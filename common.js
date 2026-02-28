@@ -1,6 +1,6 @@
-// ========== COMMON.JS - Shared across all pages ==========
+// ========== COMMON JAVASCRIPT FOR MYESSANTIA ==========
 
-// ---------- FIREBASE CONFIGURATION ----------
+// ========== FIREBASE CONFIGURATION ==========
 const firebaseConfig = {
   apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
   authDomain: "myessantia.firebaseapp.com",
@@ -16,19 +16,19 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ---------- GLOBAL VARIABLES ----------
+// ========== GLOBAL VARIABLES ==========
 let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
 let currentUser = null;
 let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
 
-// ---------- SAMPLE PRODUCTS ----------
+// Sample products if none exist
 if (products.length === 0) {
   products = [
     {
       id: 1,
       title: "Premium Leather Wallet",
-      category: "accessories",
-      price: 2499.99,
+      category: "Accessories",
+      price: 2499,
       rating: 4.5,
       stock: 25,
       showOnHome: true,
@@ -43,8 +43,8 @@ if (products.length === 0) {
     {
       id: 2,
       title: "Minimalist Watch",
-      category: "accessories",
-      price: 3999.50,
+      category: "Watches",
+      price: 3999,
       rating: 4.8,
       stock: 12,
       showOnHome: true,
@@ -59,8 +59,8 @@ if (products.length === 0) {
     {
       id: 3,
       title: "Wireless Earbuds",
-      category: "electronics",
-      price: 5999.00,
+      category: "Electronics",
+      price: 5999,
       rating: 4.3,
       stock: 8,
       showOnHome: true,
@@ -75,8 +75,8 @@ if (products.length === 0) {
     {
       id: 4,
       title: "Sunglasses",
-      category: "accessories",
-      price: 1999.99,
+      category: "Accessories",
+      price: 1999,
       rating: 4.6,
       stock: 30,
       showOnHome: true,
@@ -91,8 +91,8 @@ if (products.length === 0) {
     {
       id: 5,
       title: "Canvas Tote Bag",
-      category: "accessories",
-      price: 1799.00,
+      category: "Accessories",
+      price: 1799,
       rating: 4.4,
       stock: 15,
       showOnHome: false,
@@ -107,8 +107,8 @@ if (products.length === 0) {
     {
       id: 6,
       title: "Brass Keychain",
-      category: "accessories",
-      price: 499.25,
+      category: "Accessories",
+      price: 499,
       rating: 4.2,
       stock: 45,
       showOnHome: false,
@@ -119,12 +119,44 @@ if (products.length === 0) {
       ],
       primaryImg: "https://images.unsplash.com/photo-1600791574155-6b2c31fc07dd?q=80&w=1887&auto=format&fit=crop",
       secondaryImg: "https://images.unsplash.com/photo-1578269174936-2709b6aeb913?q=80&w=1887&auto=format&fit=crop"
+    },
+    {
+      id: 7,
+      title: "Silk Scarf",
+      category: "Accessories",
+      price: 1299,
+      rating: 4.7,
+      stock: 10,
+      showOnHome: false,
+      showOnAccessories: true,
+      images: [
+        "https://images.unsplash.com/photo-1584036553516-bf932ce5a0e6?q=80&w=1932&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1602810320073-1230c46df89d?q=80&w=1887&auto=format&fit=crop"
+      ],
+      primaryImg: "https://images.unsplash.com/photo-1584036553516-bf932ce5a0e6?q=80&w=1932&auto=format&fit=crop",
+      secondaryImg: "https://images.unsplash.com/photo-1602810320073-1230c46df89d?q=80&w=1887&auto=format&fit=crop"
+    },
+    {
+      id: 8,
+      title: "Leather Gloves",
+      category: "Accessories",
+      price: 2199,
+      rating: 4.5,
+      stock: 7,
+      showOnHome: false,
+      showOnAccessories: true,
+      images: [
+        "https://images.unsplash.com/photo-1604909052743-94e838986d24?q=80&w=1888&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1516476853904-1d209bf2cf68?q=80&w=1887&auto=format&fit=crop"
+      ],
+      primaryImg: "https://images.unsplash.com/photo-1604909052743-94e838986d24?q=80&w=1888&auto=format&fit=crop",
+      secondaryImg: "https://images.unsplash.com/photo-1516476853904-1d209bf2cf68?q=80&w=1887&auto=format&fit=crop"
     }
   ];
   localStorage.setItem('MyEssantia_products', JSON.stringify(products));
 }
 
-// ---------- FIREBASE AUTH STATE OBSERVER ----------
+// ========== FIREBASE AUTH STATE OBSERVER ==========
 auth.onAuthStateChanged((user) => {
   if (user) {
     currentUser = {
@@ -135,6 +167,7 @@ auth.onAuthStateChanged((user) => {
       provider: user.providerData[0]?.providerId || 'email',
       memberSince: user.metadata.creationTime
     };
+    
     localStorage.setItem('MyEssantia_user', JSON.stringify(currentUser));
     updateProfileIcon();
     if (document.getElementById('profile-content')) {
@@ -150,7 +183,7 @@ auth.onAuthStateChanged((user) => {
   }
 });
 
-// ---------- UTILITY FUNCTIONS ----------
+// ========== UTILITY FUNCTIONS ==========
 function formatPrice(price) {
   return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
@@ -171,30 +204,7 @@ function getStockStatus(stock) {
   return '<span class="stock-badge out-of-stock">Out of Stock</span>';
 }
 
-// ---------- LOAD COMPONENTS ----------
-async function loadComponents() {
-  try {
-    const headerResponse = await fetch('header.html');
-    const headerData = await headerResponse.text();
-    document.getElementById('header').innerHTML = headerData;
-
-    const footerResponse = await fetch('footer.html');
-    const footerData = await footerResponse.text();
-    document.getElementById('footer').innerHTML = footerData;
-
-    setTimeout(() => {
-      initializePage();
-    }, 50);
-  } catch (error) {
-    console.error('Error loading components:', error);
-    document.getElementById('header').innerHTML = getFallbackHeader();
-    document.getElementById('footer').innerHTML = getFallbackFooter();
-    setTimeout(() => {
-      initializePage();
-    }, 50);
-  }
-}
-
+// ========== FALLBACK COMPONENTS ==========
 function getFallbackHeader() {
   return `
     <header style="padding: 1rem; background: #fff; border-bottom: 1px solid #eee;">
@@ -224,7 +234,37 @@ function getFallbackFooter() {
   `;
 }
 
-// ---------- EVENT LISTENERS SETUP ----------
+// ========== COMPONENT LOADING ==========
+async function loadComponents() {
+  try {
+    const headerResponse = await fetch('header.html');
+    const headerData = await headerResponse.text();
+    document.getElementById('header').innerHTML = headerData;
+
+    const footerResponse = await fetch('footer.html');
+    const footerData = await footerResponse.text();
+    document.getElementById('footer').innerHTML = footerData;
+
+    setTimeout(() => {
+      if (typeof initializeApp === 'function') {
+        initializeApp();
+      }
+      setupEventListeners();
+    }, 50);
+  } catch (error) {
+    console.error('Error loading components:', error);
+    document.getElementById('header').innerHTML = getFallbackHeader();
+    document.getElementById('footer').innerHTML = getFallbackFooter();
+    setTimeout(() => {
+      if (typeof initializeApp === 'function') {
+        initializeApp();
+      }
+      setupEventListeners();
+    }, 50);
+  }
+}
+
+// ========== EVENT LISTENERS SETUP ==========
 function setupEventListeners() {
   const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
   const navMenu = document.getElementById('nav-menu');
@@ -311,7 +351,7 @@ function setupEventListeners() {
   });
 }
 
-// ---------- MODAL FUNCTIONS ----------
+// ========== MODAL FUNCTIONS ==========
 function openCart() {
   const cartModal = document.getElementById('cart-modal');
   if (cartModal) {
@@ -338,7 +378,7 @@ function closeModal(modalId) {
   }
 }
 
-// ---------- CART FUNCTIONS ----------
+// ========== CART FUNCTIONS ==========
 window.addToCart = function(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
@@ -414,444 +454,4 @@ window.updateQuantity = function(productId, change) {
 };
 
 window.removeFromCart = function(productId) {
-  cart = cart.filter(item => item.id !== productId);
-  saveCart();
-  updateCartCount();
-  renderCartItems();
-};
-
-function renderCartItems() {
-  const cartItemsContainer = document.getElementById('cart-items');
-  const cartItemCount = document.getElementById('cart-item-count');
-  const cartTotalAmount = document.getElementById('cart-total-amount');
-
-  if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
-
-  if (cart.length === 0) {
-    cartItemsContainer.innerHTML = `
-      <div class="empty-cart-message">
-        <i class="fa-regular fa-cart-shopping"></i>
-        <p>Your cart is empty</p>
-        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Start shopping to add items!</p>
-      </div>
-    `;
-    cartItemCount.textContent = '0';
-    cartTotalAmount.textContent = '₹0.00';
-    return;
-  }
-
-  let total = 0;
-  let totalItems = 0;
-
-  cartItemsContainer.innerHTML = cart.map(item => {
-    const itemTotal = item.price * item.quantity;
-    total += itemTotal;
-    totalItems += item.quantity;
-
-    return `
-      <div class="cart-item" style="display: flex; gap: 1rem; padding: 1rem; border-bottom: 1px solid #eee;">
-        <div class="cart-item-image" style="width: 60px; height: 60px; background-image: url('${item.primaryImg || 'https://via.placeholder.com/60'}'); background-size: cover; background-position: center; border-radius: 8px;"></div>
-        <div class="cart-item-details" style="flex: 1;">
-          <h4 style="font-size: 1rem; margin-bottom: 0.3rem;">${item.title}</h4>
-          <p style="font-size: 0.8rem; color: #666; margin-bottom: 0.3rem;">${item.category}</p>
-          <div style="font-weight: 600; color: #d4af37; margin-bottom: 0.5rem;">₹${formatPrice(item.price)}</div>
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <button onclick="window.updateQuantity(${item.id}, -1)" style="background: #f0f0f0; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">
-              <i class="fa-solid fa-minus"></i>
-            </button>
-            <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
-            <button onclick="window.updateQuantity(${item.id}, 1)" style="background: #f0f0f0; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">
-              <i class="fa-solid fa-plus"></i>
-            </button>
-            <button onclick="window.removeFromCart(${item.id})" style="background: none; border: none; color: #f44336; margin-left: auto; cursor: pointer;">
-              <i class="fa-regular fa-trash-can"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  cartItemCount.textContent = totalItems;
-  cartTotalAmount.textContent = `₹${formatPrice(total)}`;
-}
-
-function updateCartCount() {
-  const cartCount = document.getElementById('cart-count');
-  if (cartCount) {
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartCount.textContent = totalItems;
-  }
-}
-
-function saveCart() {
-  localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-}
-
-// ---------- AUTH FUNCTIONS ----------
-function renderProfileContent() {
-  const profileContent = document.getElementById('profile-content');
-  if (!profileContent) return;
-
-  if (currentUser) {
-    profileContent.innerHTML = `
-      <div class="profile-info">
-        <div class="profile-avatar">
-          <img src="${currentUser.picture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile" onerror="this.src='https://via.placeholder.com/80'">
-        </div>
-        <div class="profile-details">
-          <p>
-            <i class="fa-regular fa-user"></i>
-            <span class="label">Name:</span>
-            <span class="value">${currentUser.name}</span>
-          </p>
-          <p>
-            <i class="fa-regular fa-envelope"></i>
-            <span class="label">Email:</span>
-            <span class="value">${currentUser.email}</span>
-          </p>
-          <p>
-            <i class="fa-regular fa-calendar"></i>
-            <span class="label">Member since:</span>
-            <span class="value">${new Date(currentUser.memberSince).toLocaleDateString()}</span>
-          </p>
-        </div>
-        <button class="btn logout-btn" onclick="window.logout()">
-          <i class="fa-solid fa-sign-out-alt"></i>
-          Logout
-        </button>
-      </div>
-    `;
-  } else {
-    profileContent.innerHTML = `
-      <div class="login-form">
-        <div class="login-header">
-          <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
-          <h4>Welcome Back!</h4>
-          <p>Sign in to continue shopping</p>
-        </div>
-        
-        <button class="btn google-login-btn" onclick="window.loginWithGoogle()">
-          <i class="fa-brands fa-google"></i>
-          Sign in with Google
-        </button>
-        
-        <div style="margin: 1rem 0; text-align: center; color: #999;">or</div>
-        
-        <button class="btn" onclick="window.showEmailLogin()" style="background: #1a1a1a; color: white;">
-          <i class="fa-regular fa-envelope"></i> Sign in with Email
-        </button>
-        
-        <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
-          By signing in, you agree to our Terms of Service and Privacy Policy.
-        </p>
-      </div>
-    `;
-  }
-}
-
-window.loginWithGoogle = async function() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  
-  try {
-    const result = await auth.signInWithPopup(provider);
-    closeModal('profile-modal');
-  } catch (error) {
-    console.error('Google login error:', error);
-    alert('Google login failed. Please try again.');
-  }
-};
-
-window.showEmailLogin = function() {
-  const profileContent = document.getElementById('profile-content');
-  profileContent.innerHTML = `
-    <div class="auth-container">
-      <div class="auth-tabs">
-        <button class="auth-tab active" onclick="window.switchAuthTab('login')" id="login-tab">Login</button>
-        <button class="auth-tab" onclick="window.switchAuthTab('signup')" id="signup-tab">Sign Up</button>
-      </div>
-      
-      <div id="login-form" class="auth-form">
-        <div class="form-group">
-          <label for="login-email">Email</label>
-          <input type="email" id="login-email" placeholder="Enter your email">
-        </div>
-        <div class="form-group">
-          <label for="login-password">Password</label>
-          <input type="password" id="login-password" placeholder="Enter your password">
-        </div>
-        <div class="forgot-password">
-          <a href="#" onclick="window.showForgotPassword()">Forgot Password?</a>
-        </div>
-        <button class="btn" onclick="window.loginWithEmail()" id="login-btn">
-          <i class="fa-regular fa-envelope"></i> Login
-        </button>
-      </div>
-      
-      <div id="signup-form" class="auth-form" style="display: none;">
-        <div class="form-group">
-          <label for="signup-name">Full Name</label>
-          <input type="text" id="signup-name" placeholder="Enter your full name">
-        </div>
-        <div class="form-group">
-          <label for="signup-email">Email</label>
-          <input type="email" id="signup-email" placeholder="Enter your email">
-        </div>
-        <div class="form-group">
-          <label for="signup-password">Password</label>
-          <input type="password" id="signup-password" placeholder="Choose a password (min. 6 characters)">
-        </div>
-        <div class="form-group">
-          <label for="signup-confirm">Confirm Password</label>
-          <input type="password" id="signup-confirm" placeholder="Confirm your password">
-        </div>
-        <button class="btn" onclick="window.signUpWithEmail()" id="signup-btn">
-          <i class="fa-regular fa-user-plus"></i> Create Account
-        </button>
-      </div>
-      
-      <div id="forgot-password-form" class="auth-form" style="display: none;">
-        <div class="form-group">
-          <label for="reset-email">Email</label>
-          <input type="email" id="reset-email" placeholder="Enter your email">
-        </div>
-        <button class="btn" onclick="window.resetPassword()" id="reset-btn">
-          <i class="fa-regular fa-paper-plane"></i> Send Reset Link
-        </button>
-        <button class="btn btn-outline" onclick="window.backToLogin()" style="margin-top: 1rem;">
-          <i class="fa-regular fa-arrow-left"></i> Back to Login
-        </button>
-      </div>
-      
-      <div id="auth-message" class="auth-message"></div>
-      
-      <div style="margin-top: 1rem; text-align: center;">
-        <a href="#" onclick="window.backToMain()" style="color: #999; text-decoration: none;">
-          <i class="fa-regular fa-arrow-left"></i> Back to sign in options
-        </a>
-      </div>
-    </div>
-  `;
-};
-
-window.switchAuthTab = function(tab) {
-  const loginTab = document.getElementById('login-tab');
-  const signupTab = document.getElementById('signup-tab');
-  const loginForm = document.getElementById('login-form');
-  const signupForm = document.getElementById('signup-form');
-  const forgotForm = document.getElementById('forgot-password-form');
-  
-  if (forgotForm) forgotForm.style.display = 'none';
-  
-  if (tab === 'login') {
-    loginTab?.classList.add('active');
-    signupTab?.classList.remove('active');
-    if (loginForm) loginForm.style.display = 'block';
-    if (signupForm) signupForm.style.display = 'none';
-  } else {
-    loginTab?.classList.remove('active');
-    signupTab?.classList.add('active');
-    if (loginForm) loginForm.style.display = 'none';
-    if (signupForm) signupForm.style.display = 'block';
-  }
-  
-  clearAuthMessage();
-};
-
-window.showForgotPassword = function() {
-  const loginForm = document.getElementById('login-form');
-  const signupForm = document.getElementById('signup-form');
-  const forgotForm = document.getElementById('forgot-password-form');
-  const authTabs = document.querySelector('.auth-tabs');
-  
-  if (authTabs) authTabs.style.display = 'none';
-  if (loginForm) loginForm.style.display = 'none';
-  if (signupForm) signupForm.style.display = 'none';
-  if (forgotForm) forgotForm.style.display = 'block';
-  
-  clearAuthMessage();
-};
-
-window.backToLogin = function() {
-  const authTabs = document.querySelector('.auth-tabs');
-  const loginForm = document.getElementById('login-form');
-  const signupForm = document.getElementById('signup-form');
-  const forgotForm = document.getElementById('forgot-password-form');
-  
-  if (authTabs) authTabs.style.display = 'flex';
-  if (loginForm) loginForm.style.display = 'block';
-  if (signupForm) signupForm.style.display = 'none';
-  if (forgotForm) forgotForm.style.display = 'none';
-  
-  window.switchAuthTab('login');
-  clearAuthMessage();
-};
-
-window.backToMain = function() {
-  renderProfileContent();
-};
-
-function showAuthMessage(message, isError = true) {
-  const messageDiv = document.getElementById('auth-message');
-  if (messageDiv) {
-    messageDiv.className = isError ? 'auth-error' : 'auth-success';
-    messageDiv.textContent = message;
-  }
-}
-
-function clearAuthMessage() {
-  const messageDiv = document.getElementById('auth-message');
-  if (messageDiv) {
-    messageDiv.className = '';
-    messageDiv.textContent = '';
-  }
-}
-
-window.loginWithEmail = async function() {
-  const email = document.getElementById('login-email')?.value;
-  const password = document.getElementById('login-password')?.value;
-  
-  if (!email || !password) {
-    showAuthMessage('Please fill in all fields');
-    return;
-  }
-  
-  try {
-    await auth.signInWithEmailAndPassword(email, password);
-    showAuthMessage('Login successful!', false);
-    setTimeout(() => {
-      closeModal('profile-modal');
-    }, 1500);
-  } catch (error) {
-    let errorMessage = 'Login failed. Please try again.';
-    switch (error.code) {
-      case 'auth/user-not-found':
-        errorMessage = 'No account found with this email.';
-        break;
-      case 'auth/wrong-password':
-        errorMessage = 'Incorrect password.';
-        break;
-      case 'auth/invalid-email':
-        errorMessage = 'Invalid email address.';
-        break;
-      case 'auth/too-many-requests':
-        errorMessage = 'Too many failed attempts. Please try again later.';
-        break;
-    }
-    showAuthMessage(errorMessage);
-  }
-};
-
-window.signUpWithEmail = async function() {
-  const name = document.getElementById('signup-name')?.value;
-  const email = document.getElementById('signup-email')?.value;
-  const password = document.getElementById('signup-password')?.value;
-  const confirm = document.getElementById('signup-confirm')?.value;
-  
-  if (!name || !email || !password || !confirm) {
-    showAuthMessage('Please fill in all fields');
-    return;
-  }
-  
-  if (password.length < 6) {
-    showAuthMessage('Password must be at least 6 characters');
-    return;
-  }
-  
-  if (password !== confirm) {
-    showAuthMessage('Passwords do not match');
-    return;
-  }
-  
-  try {
-    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-    
-    await userCredential.user.updateProfile({
-      displayName: name
-    });
-    
-    await db.collection('users').doc(userCredential.user.uid).set({
-      name: name,
-      email: email,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    
-    showAuthMessage('Account created successfully!', false);
-    setTimeout(() => {
-      closeModal('profile-modal');
-    }, 1500);
-  } catch (error) {
-    let errorMessage = 'Sign up failed. Please try again.';
-    switch (error.code) {
-      case 'auth/email-already-in-use':
-        errorMessage = 'An account already exists with this email.';
-        break;
-      case 'auth/invalid-email':
-        errorMessage = 'Invalid email address.';
-        break;
-      case 'auth/weak-password':
-        errorMessage = 'Password is too weak.';
-        break;
-    }
-    showAuthMessage(errorMessage);
-  }
-};
-
-window.resetPassword = async function() {
-  const email = document.getElementById('reset-email')?.value;
-  
-  if (!email) {
-    showAuthMessage('Please enter your email address');
-    return;
-  }
-  
-  try {
-    await auth.sendPasswordResetEmail(email);
-    showAuthMessage('Password reset email sent! Check your inbox.', false);
-  } catch (error) {
-    let errorMessage = 'Failed to send reset email.';
-    if (error.code === 'auth/user-not-found') {
-      errorMessage = 'No account found with this email.';
-    } else if (error.code === 'auth/invalid-email') {
-      errorMessage = 'Invalid email address.';
-    }
-    showAuthMessage(errorMessage);
-  }
-};
-
-window.logout = async function() {
-  try {
-    await auth.signOut();
-    closeModal('profile-modal');
-  } catch (error) {
-    console.error('Logout error:', error);
-    alert('Failed to logout. Please try again.');
-  }
-};
-
-function updateProfileIcon() {
-  const profileIcon = document.getElementById('profile-icon');
-  if (profileIcon) {
-    if (currentUser) {
-      profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
-    } else {
-      profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
-    }
-  }
-}
-
-// This function will be overridden by page-specific initialization
-function initializePage() {
-  console.log('Page-specific initialization should be implemented');
-  setupEventListeners();
-  updateCartCount();
-  
-  const savedUser = localStorage.getItem('MyEssantia_user');
-  if (savedUser) {
-    currentUser = JSON.parse(savedUser);
-    updateProfileIcon();
-  }
-}
-
-// Initialize on DOM load
-document.addEventListener('DOMContentLoaded', loadComponents);
+  cart = cart.filter
