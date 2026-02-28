@@ -461,12 +461,13 @@
   <!-- Common JavaScript -->
   <script src="common.js"></script>
 
-  <script>
+<script>
     // ========== HOME PAGE SPECIFIC FUNCTIONS ==========
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
       if (!gridContainer) return;
 
+      // Use the global products array from common.js (loaded from Firebase)
       const homeProducts = products.filter(p => p.showOnHome === true);
 
       if (homeProducts.length === 0) {
@@ -491,10 +492,10 @@
               <div class="primary-img" style="background-image: url('${mainImage}');"></div>
               <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
               <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
-                <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault(); event.stopPropagation();">
+                <button class="img-add" onclick="window.addToCart('${product.id}'); event.preventDefault(); event.stopPropagation();">
                   <i class="fa-solid fa-cart-plus"></i> add
                 </button>
-                <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault(); event.stopPropagation();">
+                <button class="img-buy" onclick="window.buyNow('${product.id}'); event.preventDefault(); event.stopPropagation();">
                   <i class="fa-solid fa-bolt"></i> buy
                 </button>
               </div>
@@ -514,14 +515,12 @@
     }
 
     function initializeApp() {
+      // Products are already loaded from Firebase in common.js
       renderProducts();
       updateCartCount();
       
-      const savedUser = localStorage.getItem('MyEssantia_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateProfileIcon();
-      }
+      // currentUser is managed by Firebase in common.js
+      // No need to load from localStorage anymore
     }
 
     // Load common modals
@@ -538,6 +537,18 @@
     document.addEventListener('DOMContentLoaded', () => {
       loadCommonModals();
       loadComponents();
+    });
+
+    // Add a fallback in case products haven't loaded yet
+    window.addEventListener('load', () => {
+      // If products array is empty but we have cached products, use them as fallback
+      if (products.length === 0) {
+        const cachedProducts = localStorage.getItem('MyEssantia_products');
+        if (cachedProducts) {
+          products = JSON.parse(cachedProducts);
+          renderProducts();
+        }
+      }
     });
   </script>
 </body>
