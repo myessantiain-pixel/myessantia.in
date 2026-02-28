@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ESSENCE · accessories (responsive)</title>
+  <title>MyEssantia · accessories</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -1080,79 +1080,88 @@
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
     }
 
-    // ========== AUTH FUNCTIONS ==========
-    function renderProfileContent() {
-      const profileContent = document.getElementById('profile-content');
-      if (!profileContent) return;
+function renderProfileContent() {
+  const profileContent = document.getElementById('profile-content');
+  if (!profileContent) return;
 
-      if (currentUser) {
-        profileContent.innerHTML = `
-          <div class="profile-info">
-            <div class="profile-avatar">
-              <img src="${currentUser.picture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile" onerror="this.src='https://via.placeholder.com/80'">
-            </div>
-            <div class="profile-details">
-              <p>
-                <i class="fa-regular fa-user"></i>
-                <span class="label">Name:</span>
-                <span class="value">${currentUser.name}</span>
-              </p>
-              <p>
-                <i class="fa-regular fa-envelope"></i>
-                <span class="label">Email:</span>
-                <span class="value">${currentUser.email}</span>
-              </p>
-              <p>
-                <i class="fa-regular fa-calendar"></i>
-                <span class="label">Member since:</span>
-                <span class="value">${new Date(currentUser.memberSince).toLocaleDateString()}</span>
-              </p>
-            </div>
-            <button class="btn logout-btn" onclick="window.logout()">
-              <i class="fa-solid fa-sign-out-alt"></i>
-              Logout
-            </button>
-          </div>
-        `;
-      } else {
-        profileContent.innerHTML = `
-          <div class="login-form">
-            <div class="login-header">
-              <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
-              <h4>Welcome Back!</h4>
-              <p>Sign in with Google to continue</p>
-            </div>
-            
-            <button class="btn google-login-btn" onclick="window.loginWithGoogle()">
-              <i class="fa-brands fa-google"></i>
-              Sign in with Google
-            </button>
-            
-            <div style="margin: 1rem 0; text-align: center; color: #999;">or</div>
-            
-            <button class="btn" onclick="window.showEmailLogin()" style="background: #1a1a1a; color: white;">
-              <i class="fa-regular fa-envelope"></i> Sign in with Email
-            </button>
-            
-            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
-              By signing in, you agree to our Terms of Service and Privacy Policy.
-            </p>
-          </div>
-        `;
-      }
+  if (currentUser) {
+    profileContent.innerHTML = `
+      <div class="profile-info">
+        <div class="profile-avatar">
+          <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile" onerror="this.src='https://via.placeholder.com/80'">
+        </div>
+        <div class="profile-details">
+          <p>
+            <i class="fa-regular fa-user"></i>
+            <span class="label">Name:</span>
+            <span class="value">${currentUser.name}</span>
+          </p>
+          <p>
+            <i class="fa-regular fa-envelope"></i>
+            <span class="label">Email:</span>
+            <span class="value">${currentUser.email}</span>
+          </p>
+        </div>
+        <button class="btn logout-btn" onclick="window.logout()">
+          <i class="fa-solid fa-sign-out-alt"></i>
+          Logout
+        </button>
+      </div>
+    `;
+  } else {
+    profileContent.innerHTML = `
+      <div class="login-form">
+        <div class="login-header">
+          <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
+          <h4>Welcome to MyEssantia</h4>
+          <p>Sign in with Google to continue</p>
+        </div>
+        
+        <button class="btn google-login-btn" onclick="window.loginWithGoogle()">
+          <i class="fa-brands fa-google"></i>
+          Sign in with Google
+        </button>
+        
+        <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
+          By signing in, you agree to our Terms of Service and Privacy Policy.
+        </p>
+      </div>
+    `;
+  }
+}
+
+window.loginWithGoogle = async function() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  
+  try {
+    const result = await auth.signInWithPopup(provider);
+    
+    // Check if this is a new user
+    const isNewUser = result.additionalUserInfo?.isNewUser;
+    
+    if (isNewUser) {
+      // Store new user in Firestore
+      await db.collection('users').doc(result.user.uid).set({
+        name: result.user.displayName,
+        email: result.user.email,
+        photoURL: result.user.photoURL,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
     }
-
-    window.loginWithGoogle = async function() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      
-      try {
-        const result = await auth.signInWithPopup(provider);
-        closeModal('profile-modal');
-      } catch (error) {
-        console.error('Google login error:', error);
-        alert('Google login failed. Please try again.');
-      }
-    };
+    
+    closeModal('profile-modal');
+  } catch (error) {
+    console.error('Google login error:', error);
+    let errorMessage = 'Google login failed. Please try again.';
+    if (error.code === 'auth/popup-closed-by-user') {
+      errorMessage = 'Login cancelled.';
+    } else if (error.code === 'auth/popup-blocked') {
+      errorMessage = 'Popup was blocked by your browser.';
+    }
+    alert(errorMessage);
+  }
+};
 
     window.showEmailLogin = function() {
       const profileContent = document.getElementById('profile-content');
