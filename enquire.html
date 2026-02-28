@@ -738,6 +738,20 @@
       });
     }
 
+    // Add this to handle potential Firebase initialization issues
+if (typeof firebase === 'undefined' || !firebase.apps.length) {
+  console.warn('Firebase not initialized, using localStorage only');
+  // Fallback to localStorage-only mode
+  const originalLoadUserEnquiries = loadUserEnquiries;
+  loadUserEnquiries = async function() {
+    if (!currentUser) return;
+    const storageKey = `enquiries_${currentUser.uid}`;
+    const stored = localStorage.getItem(storageKey);
+    enquiries = stored ? JSON.parse(stored) : [];
+    renderEnquiries();
+  };
+}
+
     function initializeEnquiry() {
       const fileInput = document.getElementById('imageUpload');
       const previewDiv = document.getElementById('imagePreview');
