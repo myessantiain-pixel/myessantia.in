@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ESSENCE · essentials (responsive)</title>
+  <title>All Products · MyEssantia Collection</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
-  <!-- Premium Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -24,470 +24,743 @@
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* -------------------- ESSENTIALS PAGE SPECIFIC STYLES -------------------- */
-    .page-title {
-      text-align: center;
-      padding: clamp(1.5rem, 4vw, 2rem) 0 clamp(0.5rem, 2vw, 1rem);
-    }
-    .page-title h1 {
-      font-size: clamp(2.2rem, 6vw, 3.2rem);
-      font-weight: 400;
-      color: #1a1a1a;
-      line-height: 1.2;
-    }
-    .page-title h1 span {
-      color: #d4af37;
-      font-weight: 500;
-      font-style: italic;
-    }
-    .page-title p {
-      color: #5f5b57;
-      max-width: 600px;
-      margin: 1rem auto 0;
-      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
-      padding: 0 1rem;
+    /* -------------------- ALL PRODUCTS PAGE SPECIFIC STYLES -------------------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    /* SORT BAR */
-    .sort-bar {
+    body {
+      background-color: #fafafa;
+    }
+
+    .page-header {
+      text-align: center;
+      padding: 2rem 0 1rem;
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 3.2rem);
+      font-weight: 400;
+      color: #1a1a1a;
+    }
+
+    .page-header h1 span {
+      color: #d4af37;
+      font-style: italic;
+    }
+
+    .page-header p {
+      color: #666;
+      max-width: 600px;
+      margin: 1rem auto 0;
+    }
+
+    .filter-bar {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       align-items: center;
-      padding: 1.5rem 0 1rem;
+      padding: 1.5rem 0;
       border-bottom: 1px solid #f0f0f0;
       margin-bottom: 2rem;
       flex-wrap: wrap;
       gap: 1rem;
     }
-    .sort-select {
+
+    .filter-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-select {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      background: #fafafa;
-      padding: 0.5rem 1.2rem;
+      gap: 0.5rem;
+      background: white;
+      padding: 0.5rem 1rem;
       border-radius: 40px;
       border: 1px solid #eaeaea;
       cursor: pointer;
-      transition: 0.2s;
-      width: fit-content;
     }
-    .sort-select:hover {
-      border-color: #d4af37;
-    }
-    .sort-select i {
+
+    .filter-select i {
       color: #d4af37;
-      font-size: 1rem;
     }
-    .sort-select select {
+
+    .filter-select select,
+    .filter-select input {
       background: transparent;
       border: none;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 0.9rem;
-      font-weight: 400;
       color: #1a1a1a;
       outline: none;
       cursor: pointer;
     }
 
-    /* PRODUCT GRID */
+    .filter-select input {
+      width: 200px;
+    }
+
+    .filter-select input::placeholder {
+      color: #999;
+    }
+
+    .category-chips {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .category-chip {
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      background: white;
+      border: 1px solid #eaeaea;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .category-chip:hover,
+    .category-chip.active {
+      background: #d4af37;
+      color: #0c0c0c;
+      border-color: #d4af37;
+    }
+
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: clamp(1rem, 2.5vw, 2rem);
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
       margin: 2rem 0 4rem;
     }
 
     .product-card {
-      background: #fff;
+      background: white;
       border-radius: 28px;
-      padding: 1.2rem 1rem 1.8rem;
+      padding: 1.2rem;
       box-shadow: 0 8px 22px -8px rgba(0,0,0,0.05);
-      transition: all 0.25s ease;
+      transition: all 0.3s;
       text-align: center;
       border: 1px solid #f5f5f5;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
+      cursor: pointer;
       text-decoration: none;
       color: inherit;
-      cursor: pointer;
+      display: block;
+      position: relative;
     }
+
     .product-card:hover {
+      transform: translateY(-8px);
       box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
-      border-color: #e0d9d0;
-      transform: translateY(-6px);
+      border-color: #d4af37;
+    }
+
+    .new-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: #ffbb33;
+      color: #0c0c0c;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sale-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #d4af37;
+      color: #0c0c0c;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .image-frame {
       position: relative;
       width: 100%;
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 1;
       border-radius: 24px;
       overflow: hidden;
-      margin-bottom: 1.5rem;
-      background-color: #f4f2ef;
+      margin-bottom: 1.2rem;
+      background: #f4f2ef;
     }
 
-    .primary-img, .secondary-img {
-      position: absolute;
-      top: 0;
-      left: 0;
+    .product-image {
       width: 100%;
       height: 100%;
-      background-size: cover;
-      background-position: center;
-      transition: opacity 0.35s ease;
+      object-fit: cover;
+      transition: transform 0.5s;
     }
 
-    .primary-img {
-      opacity: 1;
-      z-index: 2;
-    }
-    .secondary-img {
-      opacity: 0;
-      z-index: 1;
-    }
-    .image-frame:hover .primary-img {
-      opacity: 0;
-    }
-    .image-frame:hover .secondary-img {
-      opacity: 1;
+    .product-card:hover .product-image {
+      transform: scale(1.05);
     }
 
-    .image-actions {
+    .quick-actions {
       position: absolute;
-      bottom: 16px;
+      bottom: 10px;
       left: 0;
       width: 100%;
       display: flex;
-      gap: 10px;
+      gap: 8px;
       justify-content: center;
-      padding: 0 12px;
-      z-index: 10;
+      padding: 0 10px;
+      z-index: 20;
       opacity: 0;
       transform: translateY(10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transition: opacity 0.3s, transform 0.3s;
       pointer-events: none;
     }
-    .image-frame:hover .image-actions {
+
+    .image-frame:hover .quick-actions {
       opacity: 1;
       transform: translateY(0);
       pointer-events: auto;
     }
 
-    .img-add, .img-buy {
+    .quick-add, .quick-buy {
       flex: 1;
       background: rgba(255,255,255,0.9);
       backdrop-filter: blur(4px);
       border: none;
-      border-radius: 40px;
-      padding: 0.7rem 0.2rem;
+      border-radius: 30px;
+      padding: 0.6rem;
       font-size: 0.8rem;
       font-weight: 600;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 4px;
       cursor: pointer;
-      transition: all 0.2s;
       border: 1px solid rgba(0,0,0,0.1);
       color: #1a1a1a;
       font-family: 'Plus Jakarta Sans', sans-serif;
       pointer-events: auto;
     }
-    .img-add i, .img-buy i {
-      font-size: 0.85rem;
-    }
-    .img-add:hover {
-      background: #ffffff;
-      border-color: #d4af37;
-      transform: scale(1.03);
-    }
-    .img-buy {
+
+    .quick-buy {
       background: rgba(212,175,55,0.9);
       color: #0c0c0c;
       border-color: #d4af37;
     }
-    .img-buy:hover {
+
+    .quick-add:hover {
+      background: white;
+      border-color: #d4af37;
+    }
+
+    .quick-buy:hover {
       background: #d4af37;
-      transform: scale(1.03);
-      box-shadow: 0 4px 10px rgba(212,175,55,0.3);
     }
 
     .product-title {
       font-family: 'Montserrat', sans-serif;
       font-weight: 500;
-      font-size: clamp(1.1rem, 2vw, 1.3rem);
+      font-size: 1.1rem;
       margin-bottom: 0.3rem;
       color: #1e1e1e;
-      letter-spacing: -0.01em;
     }
 
     .product-category {
       font-size: 0.75rem;
       color: #a2a2a2;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.4rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 300;
+      margin-bottom: 0.5rem;
     }
 
     .product-rating {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      margin: 0.3rem 0 0.3rem;
-      flex-wrap: wrap;
+      gap: 2px;
+      margin: 0.5rem 0;
     }
+
     .product-rating i {
       color: #d4af37;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
     }
+
     .product-rating span {
       margin-left: 4px;
-      color: #5f5b57;
+      color: #666;
       font-size: 0.8rem;
-      font-weight: 300;
     }
 
     .product-price {
       color: #d4af37;
       font-weight: 600;
-      font-size: clamp(1.4rem, 3vw, 1.6rem);
-      margin: 0.4rem 0 0.2rem;
+      font-size: 1.4rem;
       font-family: 'Montserrat', sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 2px;
     }
+
     .product-price .inr-symbol {
-      font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+      font-size: 1.2rem;
       font-weight: 500;
-      margin-right: 2px;
+    }
+
+    .original-price {
+      color: #999;
+      font-size: 1rem;
+      text-decoration: line-through;
+      margin-right: 0.5rem;
     }
 
     .stock-badge {
-      font-size: 0.75rem;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
       display: inline-block;
-      align-self: center;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
       margin-top: 0.5rem;
-      font-weight: 500;
     }
+
     .in-stock {
-      background: #e8f5e9;
-      color: #2e7d32;
+      background: #e3f1e3;
+      color: #1e7a44;
     }
+
     .low-stock {
-      background: #fff3e0;
-      color: #ef6c00;
+      background: #fff0db;
+      color: #b85b1a;
     }
+
     .out-of-stock {
       background: #ffebee;
-      color: #c62828;
+      color: #b71c1c;
     }
 
-    /* PAGINATION */
-    .pagination {
-      display: flex;
-      justify-content: center;
-      gap: clamp(0.5rem, 2vw, 1rem);
-      margin: 3rem 0 4rem;
-      flex-wrap: wrap;
-    }
-    .pagination a {
-      text-decoration: none;
-      color: #1a1a1a;
-      padding: 0.5rem 1rem;
-      border-radius: 30px;
-      border: 1px solid #e0e0e0;
-      transition: 0.2s;
-      font-weight: 400;
-      min-width: 40px;
-      text-align: center;
-    }
-    .pagination a:hover, .pagination a.active-page {
-      background: #d4af37;
-      border-color: #d4af37;
-      color: #0c0c0c;
-    }
-
-    /* RESPONSIVE BREAKPOINTS */
-    @media (min-width: 1200px) {
-      .container {
-        padding: 0 3rem;
-      }
-      .page-title h1 {
-        font-size: 3.2rem;
-      }
-    }
-
-    @media (max-width: 992px) {
-      .product-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
-      }
+    .results-count {
+      color: #666;
+      font-size: 0.9rem;
+      margin-top: 1rem;
     }
 
     @media (max-width: 768px) {
-      .product-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.2rem;
+      .filter-bar { 
+        flex-direction: column; 
+        align-items: stretch; 
       }
-      .container {
-        padding: 0 1.5rem;
+      .filter-group { 
+        justify-content: center; 
       }
-      .page-title h1 {
-        font-size: clamp(2rem, 7vw, 2.8rem);
-      }
-      .sort-bar {
-        justify-content: center;
+      .filter-select input { 
+        width: 100%; 
       }
     }
 
     @media (max-width: 480px) {
-      .product-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-      .container {
-        padding: 0 1rem;
-      }
-      .sort-bar {
-        justify-content: stretch;
-      }
-      .sort-select {
-        width: 100%;
-        justify-content: center;
-      }
-      .sort-select select {
-        flex: 1;
-      }
-      .product-card {
-        padding: 1rem 0.8rem 1.5rem;
-      }
-      .pagination a {
-        padding: 0.6rem 1rem;
-        min-width: 44px;
-      }
-    }
-
-    @media (max-width: 360px) {
-      .image-actions {
+      .quick-actions {
         flex-direction: column;
-        gap: 6px;
-        bottom: 10px;
+        gap: 4px;
       }
-      .img-add, .img-buy {
-        padding: 0.5rem;
-        font-size: 0.75rem;
-      }
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* Enquiry Form Styles (specific to essentials page) */
-    .enquiry-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .enquiry-form .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
     }
   </style>
 </head>
 <body class="bg-noise">
-  
-  <!-- Header loaded dynamically -->
   <div id="header"></div>
 
   <main>
-    <!-- page title -->
-    <div class="container page-title">
-      <h1>all <span>essentials</span></h1>
-      <p>Everyday necessities — tech, travel & self-care, curated for modern life.</p>
+    <div class="container page-header">
+      <h1>our <span>collection</span></h1>
+      <p>Discover our complete range of premium accessories and essentials</p>
     </div>
 
-    <!-- sort bar -->
     <div class="container">
-      <div class="sort-bar">
-        <div class="sort-select">
-          <i class="fa-solid fa-arrow-down-wide-short"></i>
-          <select id="sort-select" aria-label="Sort products">
-            <option value="popular">sort by: popular</option>
-            <option value="price-low">price: low to high</option>
-            <option value="price-high">price: high to low</option>
-            <option value="rating">top rated</option>
-          </select>
+      <div class="filter-bar">
+        <div class="filter-group">
+          <div class="filter-select">
+            <i class="fa-solid fa-filter"></i>
+            <select id="category-filter">
+              <option value="all">All Categories</option>
+              <option value="accessories">Accessories</option>
+              <option value="essentials">Essentials</option>
+              <option value="newarrival">New Arrivals</option>
+              <option value="sale">On Sale</option>
+            </select>
+          </div>
+          <div class="filter-select">
+            <i class="fa-solid fa-arrow-down-wide-short"></i>
+            <select id="sort-filter">
+              <option value="default">Sort by: Featured</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+              <option value="newest">Newest First</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-select">
+          <i class="fa-solid fa-search"></i>
+          <input type="text" id="search-input" placeholder="Search products..." autocomplete="off">
         </div>
       </div>
-    </div>
 
-    <!-- product grid container -->
-    <div class="container">
-      <div id="product-grid-container" class="product-grid">
-        <!-- products injected via JS -->
+      <div id="category-chips" class="category-chips">
+        <span class="category-chip active" data-category="all">All</span>
+        <span class="category-chip" data-category="accessories">Accessories</span>
+        <span class="category-chip" data-category="essentials">Essentials</span>
+        <span class="category-chip" data-category="newarrival">New Arrivals</span>
+        <span class="category-chip" data-category="sale">On Sale</span>
       </div>
 
-      <!-- pagination container -->
-      <div id="pagination-container" class="pagination"></div>
+      <div id="results-count" class="results-count"></div>
+      <div id="product-grid" class="product-grid"></div>
     </div>
   </main>
 
-  <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
   <!-- Common Modals -->
   <div id="common-modals"></div>
 
-  <!-- Enquiry Form Modal (specific to essentials page) -->
-  <div id="enquiry-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Submit Enquiry</h3>
-        <button class="close-modal" id="close-enquiry">&times;</button>
-      </div>
-      <div id="enquiry-content">
-        <!-- Enquiry form will be rendered here -->
-      </div>
-    </div>
-  </div>
-
   <!-- Common JavaScript -->
   <script src="common.js"></script>
 
   <script>
-    // ========== ESSENTIALS PAGE SPECIFIC VARIABLES ==========
-    let enquiries = JSON.parse(localStorage.getItem('essence_user_enquiries')) || [];
+    // ========== ALL PRODUCTS PAGE SPECIFIC FUNCTIONS ==========
+    
+    // Override products array with expanded data for all products page
+    // This runs after common.js loads and sets the initial products
+    if (products.length <= 8) {
+      // Only set expanded products if the common ones are too basic
+      products = [
+        // Accessories
+        {
+          id: 1,
+          title: "Premium Leather Wallet",
+          category: "accessories",
+          price: 2499.99,
+          originalPrice: 2999.99,
+          rating: 4.5,
+          stock: 25,
+          showOnHome: true,
+          showOnAccessories: true,
+          showOnEssentials: false,
+          onSale: true,
+          salePercentage: 17,
+          creationDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          brand: "Artisan Leather",
+          images: [
+            "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=1887&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1606503825008-909a67e63c3d?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 2,
+          title: "Minimalist Watch",
+          category: "accessories",
+          price: 3999.50,
+          originalPrice: 4499.00,
+          rating: 4.8,
+          stock: 12,
+          showOnHome: true,
+          showOnAccessories: true,
+          showOnEssentials: false,
+          onSale: true,
+          salePercentage: 11,
+          creationDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          brand: "Nordic Time",
+          images: [
+            "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1888&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1888&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1888&auto=format&fit=crop"
+        },
+        {
+          id: 4,
+          title: "Sunglasses",
+          category: "accessories",
+          price: 1999.99,
+          rating: 4.6,
+          stock: 30,
+          showOnHome: true,
+          showOnAccessories: true,
+          showOnEssentials: false,
+          onSale: false,
+          creationDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+          brand: "Urban Shades",
+          images: [
+            "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1780&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1577803645770-f5b7f4c09bf3?q=80&w=1780&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1780&auto=format&fit=crop"
+        },
+        {
+          id: 7,
+          title: "Silk Scarf",
+          category: "accessories",
+          price: 1299.50,
+          rating: 4.7,
+          stock: 10,
+          showOnAccessories: true,
+          showOnEssentials: false,
+          onSale: false,
+          creationDate: new Date().toISOString(),
+          brand: "Luxe Silks",
+          images: [
+            "https://images.unsplash.com/photo-1584036553516-bf932ce5a0e6?q=80&w=1932&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1602810320073-1230c46df89d?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1584036553516-bf932ce5a0e6?q=80&w=1932&auto=format&fit=crop"
+        },
+        {
+          id: 8,
+          title: "Leather Gloves",
+          category: "accessories",
+          price: 2199.00,
+          rating: 4.5,
+          stock: 7,
+          showOnAccessories: true,
+          showOnEssentials: false,
+          onSale: false,
+          creationDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+          brand: "Winter Luxe",
+          images: [
+            "https://images.unsplash.com/photo-1604909052743-94e838986d24?q=80&w=1888&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1516476853904-1d209bf2cf68?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1604909052743-94e838986d24?q=80&w=1888&auto=format&fit=crop"
+        },
+        {
+          id: 101,
+          title: "Wireless Power Bank",
+          category: "essentials",
+          price: 2999.99,
+          originalPrice: 3499.99,
+          rating: 4.7,
+          stock: 18,
+          showOnHome: true,
+          showOnAccessories: false,
+          showOnEssentials: true,
+          onSale: true,
+          salePercentage: 14,
+          creationDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          brand: "ChargeTech",
+          images: [
+            "https://images.unsplash.com/photo-1609592424839-35a7c8a2bb18?q=80&w=1887&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1583394838336-acd977736f90?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1609592424839-35a7c8a2bb18?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 102,
+          title: "Travel Adapter Kit",
+          category: "essentials",
+          price: 1499.50,
+          rating: 4.5,
+          stock: 25,
+          showOnHome: true,
+          showOnAccessories: false,
+          showOnEssentials: true,
+          onSale: false,
+          creationDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+          brand: "TravelGear",
+          images: [
+            "https://images.unsplash.com/photo-1623869675781-80aa31012a70?q=80&w=1887&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1623869675781-80aa31012a70?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 103,
+          title: "Noise Cancelling Earbuds",
+          category: "essentials",
+          price: 5999.00,
+          originalPrice: 6999.00,
+          rating: 4.8,
+          stock: 7,
+          showOnHome: true,
+          showOnAccessories: false,
+          showOnEssentials: true,
+          onSale: true,
+          salePercentage: 14,
+          creationDate: new Date().toISOString(),
+          brand: "AudioPro",
+          images: [
+            "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=1770&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=1932&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=1770&auto=format&fit=crop"
+        },
+        {
+          id: 104,
+          title: "Smart Water Bottle",
+          category: "essentials",
+          price: 2199.75,
+          rating: 4.3,
+          stock: 12,
+          showOnHome: true,
+          showOnAccessories: false,
+          showOnEssentials: true,
+          onSale: false,
+          creationDate: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+          brand: "HydroSmart",
+          images: [
+            "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=1887&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1523362628745-0c100150b504?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 105,
+          title: "Packing Cubes Set",
+          category: "essentials",
+          price: 1799.25,
+          rating: 4.6,
+          stock: 22,
+          showOnAccessories: false,
+          showOnEssentials: true,
+          onSale: false,
+          creationDate: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+          brand: "TravelWise",
+          images: [
+            "https://images.unsplash.com/photo-1586348943529-beaae6c28db9?q=80&w=1887&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1557772611-78d8d8d3b3c5?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1586348943529-beaae6c28db9?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 108,
+          title: "Sleep Mask & Earplugs",
+          category: "essentials",
+          price: 799.00,
+          rating: 4.5,
+          stock: 42,
+          showOnEssentials: true,
+          onSale: false,
+          creationDate: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          brand: "SleepWell",
+          images: [
+            "https://images.unsplash.com/photo-1617791160536-598cf32026fb?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1617791160536-598cf32026fb?q=80&w=1887&auto=format&fit=crop"
+        }
+      ];
+      localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+    }
 
-    // ========== PRODUCT RENDERING ==========
-    function renderProducts() {
-      const gridContainer = document.getElementById('product-grid-container');
-      const sortSelect = document.getElementById('sort-select');
+    function setupCategoryChips() {
+      const chips = document.querySelectorAll('.category-chip');
+      const categoryFilter = document.getElementById('category-filter');
       
-      if (!gridContainer) return;
+      chips.forEach(chip => {
+        chip.addEventListener('click', function() {
+          chips.forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+          
+          const category = this.dataset.category;
+          categoryFilter.value = category;
+          
+          renderProducts();
+        });
+      });
 
-      const essentialsProducts = products.filter(p => 
-        p.showOnEssentials === true && p.category === 'essentials'
-      );
+      categoryFilter.addEventListener('change', function() {
+        const category = this.value;
+        chips.forEach(chip => {
+          if (chip.dataset.category === category) {
+            chip.classList.add('active');
+          } else {
+            chip.classList.remove('active');
+          }
+        });
+        renderProducts();
+      });
+    }
 
-      if (essentialsProducts.length === 0) {
-        gridContainer.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
-            <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-            <h3>No essential products found</h3>
-            <p>Check back later for new arrivals!</p>
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('product-grid');
+      const categoryFilter = document.getElementById('category-filter').value;
+      const sortFilter = document.getElementById('sort-filter').value;
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+
+      const now = new Date();
+
+      let filteredProducts = products.filter(product => {
+        if (categoryFilter !== 'all') {
+          if (categoryFilter === 'accessories' && product.category !== 'accessories') return false;
+          if (categoryFilter === 'essentials' && product.category !== 'essentials') return false;
+          
+          if (categoryFilter === 'newarrival') {
+            const creationDate = product.creationDate ? new Date(product.creationDate) : null;
+            const isNew = creationDate && (now - creationDate) < (7 * 24 * 60 * 60 * 1000);
+            if (!isNew) return false;
+          }
+          
+          if (categoryFilter === 'sale' && !product.onSale) return false;
+        }
+
+        if (searchTerm) {
+          const searchable = `${product.title} ${product.category} ${product.brand || ''}`.toLowerCase();
+          if (!searchable.includes(searchTerm)) return false;
+        }
+
+        return true;
+      });
+
+      switch(sortFilter) {
+        case 'price-low':
+          filteredProducts.sort((a, b) => a.price - b.price);
+          break;
+        case 'price-high':
+          filteredProducts.sort((a, b) => b.price - a.price);
+          break;
+        case 'rating':
+          filteredProducts.sort((a, b) => b.rating - a.rating);
+          break;
+        case 'newest':
+          filteredProducts.sort((a, b) => {
+            const dateA = a.creationDate ? new Date(a.creationDate) : new Date(0);
+            const dateB = b.creationDate ? new Date(b.creationDate) : new Date(0);
+            return dateB - dateA;
+          });
+          break;
+      }
+
+      document.getElementById('results-count').innerHTML = 
+        `Showing ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''}`;
+
+      if (filteredProducts.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem;">
+            <i class="fa-solid fa-box-open" style="font-size: 4rem; color: #ccc;"></i>
+            <h3 style="margin: 1rem 0;">No products found</h3>
+            <p>Try adjusting your filters or search term.</p>
           </div>
         `;
         return;
@@ -500,12 +773,12 @@
           else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
           else stars += '<i class="fa-regular fa-star"></i>';
         }
-        return stars;
+        return stars + `<span>(${rating.toFixed(1)})</span>`;
       }
 
       function getStockStatus(stock) {
         if (stock > 10) return '<span class="stock-badge in-stock">In Stock</span>';
-        if (stock > 0) return `<span class="stock-badge low-stock">Only ${stock} left</span>`;
+        if (stock > 0) return '<span class="stock-badge low-stock">Low Stock</span>';
         return '<span class="stock-badge out-of-stock">Out of Stock</span>';
       }
 
@@ -513,209 +786,61 @@
         return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
       }
 
-      function getSortedProducts() {
-        let sorted = [...essentialsProducts];
-        switch (sortSelect.value) {
-          case 'price-low':
-            sorted.sort((a, b) => a.price - b.price);
-            break;
-          case 'price-high':
-            sorted.sort((a, b) => b.price - a.price);
-            break;
-          case 'rating':
-            sorted.sort((a, b) => b.rating - a.rating);
-            break;
-          default:
-            break;
-        }
-        return sorted;
+      function isProductNew(creationDate) {
+        if (!creationDate) return false;
+        const productDate = new Date(creationDate);
+        return (now - productDate) < (24 * 60 * 60 * 1000);
       }
 
-      function renderAllProducts() {
-        const sortedProducts = getSortedProducts();
+      grid.innerHTML = filteredProducts.map(product => {
+        const mainImage = product.primaryImg || 
+                         (product.images?.[0]) || 
+                         'https://via.placeholder.com/300';
         
-        let gridHtml = '';
-        sortedProducts.forEach(product => {
-          const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
-          const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
-          
-          gridHtml += `
-            <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}">
-              <div class="image-frame">
-                <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-                <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
-                <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
-                  <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault(); event.stopPropagation();">
-                    <i class="fa-solid fa-cart-plus"></i> add
-                  </button>
-                  <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault(); event.stopPropagation();">
-                    <i class="fa-solid fa-bolt"></i> buy
-                  </button>
-                </div>
-              </div>
-              <h3 class="product-title">${product.title}</h3>
-              <p class="product-category">${product.category}</p>
-              <div class="product-rating">
-                ${renderRating(product.rating)}
-                <span>(${product.rating.toFixed(1)})</span>
-              </div>
-              <div class="product-price">
-                <span class="inr-symbol">₹</span>${formatPrice(product.price)}
-              </div>
-              ${getStockStatus(product.stock)}
-            </a>
-          `;
-        });
+        const isNew = isProductNew(product.creationDate);
+        const hasSale = product.onSale && product.originalPrice;
+        const discount = hasSale ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
         
-        gridContainer.innerHTML = gridHtml;
-      }
-
-      renderAllProducts();
-      
-      if (sortSelect) {
-        sortSelect.removeEventListener('change', renderAllProducts);
-        sortSelect.addEventListener('change', renderAllProducts);
-      }
+        return `
+          <a href="product.html?id=${product.id}" class="product-card">
+            ${isNew ? '<span class="new-badge"><i class="fa-regular fa-clock"></i> NEW</span>' : ''}
+            ${hasSale ? `<span class="sale-badge">-${discount}%</span>` : ''}
+            <div class="image-frame">
+              <img src="${mainImage}" alt="${product.title}" class="product-image" loading="lazy">
+              <div class="quick-actions" onclick="event.preventDefault(); event.stopPropagation();">
+                <button class="quick-add" onclick="window.addToCart(${product.id}, event)">
+                  <i class="fa-solid fa-cart-plus"></i> Add
+                </button>
+                <button class="quick-buy" onclick="window.buyNow(${product.id}, event)">
+                  <i class="fa-solid fa-bolt"></i> Buy
+                </button>
+              </div>
+            </div>
+            <h3 class="product-title">${product.title}</h3>
+            <p class="product-category">${product.category}</p>
+            <div class="product-rating">
+              ${renderRating(product.rating)}
+            </div>
+            <div class="product-price">
+              ${hasSale ? `<span class="original-price">₹${formatPrice(product.originalPrice)}</span>` : ''}
+              <span class="inr-symbol">₹</span>${formatPrice(product.price)}
+            </div>
+            ${getStockStatus(product.stock || 10)}
+          </a>
+        `;
+      }).join('');
     }
 
-    // ========== ENQUIRY FUNCTIONS (Specific to essentials page) ==========
-    function initializeEnquiry() {
-      loadEnquiries();
-      
-      const enquiryBtn = document.getElementById('enquiry-btn');
-      if (enquiryBtn) {
-        enquiryBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          if (!currentUser) {
-            alert('Please login to submit an enquiry');
-            openProfile();
-          } else {
-            openEnquiry();
-          }
-        });
-      }
-
-      const closeEnquiry = document.getElementById('close-enquiry');
-      if (closeEnquiry) {
-        closeEnquiry.addEventListener('click', function() {
-          closeModal('enquiry-modal');
-        });
-      }
-    }
-
-    function loadEnquiries() {
-      const stored = localStorage.getItem('essence_user_enquiries');
-      if (stored) {
-        try {
-          enquiries = JSON.parse(stored);
-        } catch (e) {
-          enquiries = [];
-        }
-      } else {
-        enquiries = [];
-      }
-    }
-
-    function saveEnquiries() {
-      localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
-    }
-
-    function renderEnquiryForm() {
-      const enquiryContent = document.getElementById('enquiry-content');
-      if (!enquiryContent) return;
-
-      enquiryContent.innerHTML = `
-        <div class="enquiry-form">
-          <div class="form-group">
-            <label for="enquiry-subject">Subject</label>
-            <input type="text" id="enquiry-subject" placeholder="What is your enquiry about?">
-          </div>
-          <div class="form-group">
-            <label for="enquiry-message">Message</label>
-            <textarea id="enquiry-message" rows="5" placeholder="Please describe your enquiry in detail..."></textarea>
-          </div>
-          <div class="form-group">
-            <label for="enquiry-priority">Priority</label>
-            <select id="enquiry-priority">
-              <option value="normal">Normal</option>
-              <option value="urgent">Urgent</option>
-              <option value="low">Low</option>
-            </select>
-          </div>
-          <button class="btn" onclick="window.submitEnquiry()" style="width: 100%; margin-top: 1rem;">
-            <i class="fa-regular fa-paper-plane"></i> Submit Enquiry
-          </button>
-          <div id="enquiry-message-status" class="auth-message"></div>
-        </div>
-      `;
-    }
-
-    window.submitEnquiry = function() {
-      const subject = document.getElementById('enquiry-subject')?.value;
-      const message = document.getElementById('enquiry-message')?.value;
-      const priority = document.getElementById('enquiry-priority')?.value;
-      const statusDiv = document.getElementById('enquiry-message-status');
-
-      if (!subject || !message) {
-        if (statusDiv) {
-          statusDiv.className = 'auth-error';
-          statusDiv.textContent = 'Please fill in all fields';
-        }
-        return;
-      }
-
-      const newEnquiry = {
-        id: 'ENQ' + Date.now() + Math.floor(Math.random() * 1000),
-        userId: currentUser?.uid || 'guest',
-        userName: currentUser?.name || 'Guest User',
-        userEmail: currentUser?.email || 'guest@example.com',
-        subject: subject,
-        message: message,
-        priority: priority,
-        status: 'pending',
-        timestamp: Date.now(),
-        date: new Date().toISOString()
-      };
-
-      enquiries.push(newEnquiry);
-      saveEnquiries();
-
-      if (statusDiv) {
-        statusDiv.className = 'auth-success';
-        statusDiv.textContent = 'Enquiry submitted successfully! We will respond within 24 hours.';
-      }
-
-      document.getElementById('enquiry-subject').value = '';
-      document.getElementById('enquiry-message').value = '';
-
-      setTimeout(() => {
-        closeModal('enquiry-modal');
-      }, 2000);
-    };
-
-    function openEnquiry() {
-      const enquiryModal = document.getElementById('enquiry-modal');
-      if (enquiryModal) {
-        renderEnquiryForm();
-        enquiryModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    // ========== INITIALIZATION ==========
     function initializeApp() {
-      renderProducts();
       updateCartCount();
-      initializeEnquiry();
+      updateProfileIcon();
+      setupCategoryChips();
+      renderProducts();
       
-      const savedUser = localStorage.getItem('MyEssantia_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateProfileIcon();
-      }
+      document.getElementById('sort-filter')?.addEventListener('change', renderProducts);
+      document.getElementById('search-input')?.addEventListener('input', debounce(renderProducts, 300));
     }
 
-    // Load common modals
     async function loadCommonModals() {
       try {
         const response = await fetch('common.html');
@@ -726,26 +851,9 @@
       }
     }
 
-    // Override modal close handlers for enquiry modal
-    function setupEssentialsEventListeners() {
-      window.addEventListener('click', function(e) {
-        const enquiryModal = document.getElementById('enquiry-modal');
-        if (e.target === enquiryModal) {
-          closeModal('enquiry-modal');
-        }
-      });
-
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeModal('enquiry-modal');
-        }
-      });
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
       loadCommonModals();
       loadComponents();
-      setupEssentialsEventListeners();
     });
   </script>
 </body>
