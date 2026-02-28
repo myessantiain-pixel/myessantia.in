@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>MyEssantia · accessories</title>
+  <title>ESSENCE · essentials (responsive)</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* -------------------- ACCESSORIES PAGE SPECIFIC STYLES -------------------- */
+    /* -------------------- ESSENTIALS PAGE SPECIFIC STYLES -------------------- */
     .page-title {
       text-align: center;
       padding: clamp(1.5rem, 4vw, 2rem) 0 clamp(0.5rem, 2vw, 1rem);
@@ -268,16 +268,58 @@
     }
 
     .stock-badge {
-      font-size: 0.8rem;
-      margin-top: 0.3rem;
-      padding: 0.2rem 0.5rem;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
       border-radius: 20px;
       display: inline-block;
       align-self: center;
+      margin-top: 0.5rem;
+      font-weight: 500;
     }
-    .in-stock { color: #4CAF50; }
-    .low-stock { color: #FF9800; }
-    .out-of-stock { color: #f44336; }
+    .in-stock {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    .low-stock {
+      background: #fff3e0;
+      color: #ef6c00;
+    }
+    .out-of-stock {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    /* PAGINATION */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: clamp(0.5rem, 2vw, 1rem);
+      margin: 3rem 0 4rem;
+      flex-wrap: wrap;
+    }
+    .pagination a {
+      text-decoration: none;
+      color: #1a1a1a;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      border: 1px solid #e0e0e0;
+      transition: 0.2s;
+      font-weight: 400;
+      min-width: 40px;
+      text-align: center;
+    }
+    .pagination a:hover, .pagination a.active-page {
+      background: #d4af37;
+      border-color: #d4af37;
+      color: #0c0c0c;
+    }
+
+    /* Enquiry Form Styles (specific to essentials page) */
+    .enquiry-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
 
     /* RESPONSIVE BREAKPOINTS */
     @media (min-width: 1200px) {
@@ -333,6 +375,10 @@
       .product-card {
         padding: 1rem 0.8rem 1.5rem;
       }
+      .pagination a {
+        padding: 0.6rem 1rem;
+        min-width: 44px;
+      }
     }
 
     @media (max-width: 360px) {
@@ -360,11 +406,13 @@
   <div id="header"></div>
 
   <main>
+    <!-- page title -->
     <div class="container page-title">
-      <h1>all <span>accessories</span></h1>
-      <p>Minimal, premium & daily essentials — curated for the modern lifestyle.</p>
+      <h1>all <span>essentials</span></h1>
+      <p>Everyday necessities — tech, travel & self-care, curated for modern life.</p>
     </div>
 
+    <!-- sort bar -->
     <div class="container">
       <div class="sort-bar">
         <div class="sort-select">
@@ -379,10 +427,14 @@
       </div>
     </div>
 
+    <!-- product grid container -->
     <div class="container">
       <div id="product-grid-container" class="product-grid">
         <!-- products injected via JS -->
       </div>
+
+      <!-- pagination container -->
+      <div id="pagination-container" class="pagination"></div>
     </div>
   </main>
 
@@ -392,26 +444,55 @@
   <!-- Common Modals -->
   <div id="common-modals"></div>
 
+  <!-- Enquiry Form Modal (specific to essentials page) -->
+  <div id="enquiry-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Submit Enquiry</h3>
+        <button class="close-modal" id="close-enquiry">&times;</button>
+      </div>
+      <div id="enquiry-content">
+        <!-- Enquiry form will be rendered here -->
+      </div>
+    </div>
+  </div>
+
   <!-- Common JavaScript -->
   <script src="common.js"></script>
 
   <script>
-    // ========== ACCESSORIES PAGE SPECIFIC FUNCTIONS ==========
+    // ========== ESSENTIALS PAGE SPECIFIC VARIABLES ==========
+    let enquiries = JSON.parse(localStorage.getItem('essence_user_enquiries')) || [];
+
+    // Update products with essentials-specific flags
+    if (products.length > 0) {
+      // Add showOnEssentials flag to existing products
+      products = products.map(p => {
+        if (p.id === 101 || p.id === 102 || p.id === 103 || p.id === 104 || 
+            p.id === 105 || p.id === 106 || p.id === 107 || p.id === 108) {
+          return { ...p, showOnEssentials: true };
+        }
+        return p;
+      });
+      localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+    }
+
+    // ========== PRODUCT RENDERING ==========
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
       const sortSelect = document.getElementById('sort-select');
       
       if (!gridContainer) return;
 
-      const accessoriesProducts = products.filter(p => 
-        p.showOnAccessories === true && p.category === 'Accessories'
+      const essentialsProducts = products.filter(p => 
+        p.showOnEssentials === true && p.category === 'essentials'
       );
 
-      if (accessoriesProducts.length === 0) {
+      if (essentialsProducts.length === 0) {
         gridContainer.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
             <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-            <h3>No accessories found</h3>
+            <h3>No essential products found</h3>
             <p>Check back later for new arrivals!</p>
           </div>
         `;
@@ -419,7 +500,7 @@
       }
 
       function getSortedProducts() {
-        let sorted = [...accessoriesProducts];
+        let sorted = [...essentialsProducts];
         switch (sortSelect.value) {
           case 'price-low':
             sorted.sort((a, b) => a.price - b.price);
@@ -480,9 +561,11 @@
       }
     }
 
+    // ========== INITIALIZATION ==========
     function initializeApp() {
       renderProducts();
       updateCartCount();
+      initializeEnquiry();
       
       const savedUser = localStorage.getItem('MyEssantia_user');
       if (savedUser) {
@@ -490,6 +573,159 @@
         updateProfileIcon();
       }
     }
+
+    // Override setupEventListeners to include enquiry modal
+    function setupEventListeners() {
+      // Call the original setupEventListeners from common.js
+      if (typeof window.originalSetupEventListeners === 'function') {
+        window.originalSetupEventListeners();
+      }
+
+      const closeEnquiry = document.getElementById('close-enquiry');
+      if (closeEnquiry) {
+        closeEnquiry.addEventListener('click', function() {
+          closeModal('enquiry-modal');
+        });
+      }
+
+      // Add enquiry button listener
+      const enquiryBtn = document.getElementById('enquiry-btn');
+      if (enquiryBtn) {
+        enquiryBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (!currentUser) {
+            alert('Please login to submit an enquiry');
+            openProfile();
+          } else {
+            openEnquiry();
+          }
+        });
+      }
+
+      // Update window click listener
+      const originalClickHandler = window.onclick;
+      window.addEventListener('click', function(e) {
+        const enquiryModal = document.getElementById('enquiry-modal');
+        if (e.target === enquiryModal) {
+          closeModal('enquiry-modal');
+        }
+      });
+
+      // Update escape key handler
+      const originalKeyHandler = document.onkeydown;
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeModal('enquiry-modal');
+        }
+      });
+    }
+
+    // Store original setupEventListeners
+    window.originalSetupEventListeners = setupEventListeners;
+
+    // ========== ENQUIRY FUNCTIONS ==========
+    function initializeEnquiry() {
+      loadEnquiries();
+    }
+
+    function loadEnquiries() {
+      const stored = localStorage.getItem('essence_user_enquiries');
+      if (stored) {
+        try {
+          enquiries = JSON.parse(stored);
+        } catch (e) {
+          enquiries = [];
+        }
+      } else {
+        enquiries = [];
+      }
+    }
+
+    function saveEnquiries() {
+      localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
+    }
+
+    function openEnquiry() {
+      const enquiryModal = document.getElementById('enquiry-modal');
+      if (enquiryModal) {
+        renderEnquiryForm();
+        enquiryModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function renderEnquiryForm() {
+      const enquiryContent = document.getElementById('enquiry-content');
+      if (!enquiryContent) return;
+
+      enquiryContent.innerHTML = `
+        <div class="enquiry-form">
+          <div class="form-group">
+            <label for="enquiry-subject">Subject</label>
+            <input type="text" id="enquiry-subject" placeholder="What is your enquiry about?">
+          </div>
+          <div class="form-group">
+            <label for="enquiry-message">Message</label>
+            <textarea id="enquiry-message" rows="5" placeholder="Please describe your enquiry in detail..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="enquiry-priority">Priority</label>
+            <select id="enquiry-priority">
+              <option value="normal">Normal</option>
+              <option value="urgent">Urgent</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <button class="btn" onclick="window.submitEnquiry()" style="width: 100%; margin-top: 1rem;">
+            <i class="fa-regular fa-paper-plane"></i> Submit Enquiry
+          </button>
+          <div id="enquiry-message-status" class="auth-message"></div>
+        </div>
+      `;
+    }
+
+    window.submitEnquiry = function() {
+      const subject = document.getElementById('enquiry-subject')?.value;
+      const message = document.getElementById('enquiry-message')?.value;
+      const priority = document.getElementById('enquiry-priority')?.value;
+      const statusDiv = document.getElementById('enquiry-message-status');
+
+      if (!subject || !message) {
+        if (statusDiv) {
+          statusDiv.className = 'auth-error';
+          statusDiv.textContent = 'Please fill in all fields';
+        }
+        return;
+      }
+
+      const newEnquiry = {
+        id: 'ENQ' + Date.now() + Math.floor(Math.random() * 1000),
+        userId: currentUser?.uid || 'guest',
+        userName: currentUser?.name || 'Guest User',
+        userEmail: currentUser?.email || 'guest@example.com',
+        subject: subject,
+        message: message,
+        priority: priority,
+        status: 'pending',
+        timestamp: Date.now(),
+        date: new Date().toISOString()
+      };
+
+      enquiries.push(newEnquiry);
+      saveEnquiries();
+
+      if (statusDiv) {
+        statusDiv.className = 'auth-success';
+        statusDiv.textContent = 'Enquiry submitted successfully! We will respond within 24 hours.';
+      }
+
+      document.getElementById('enquiry-subject').value = '';
+      document.getElementById('enquiry-message').value = '';
+
+      setTimeout(() => {
+        closeModal('enquiry-modal');
+      }, 2000);
+    };
 
     // Load common modals
     async function loadCommonModals() {
@@ -507,5 +743,28 @@
       loadComponents();
     });
   </script>
+
+  <style>
+    /* Enquiry Form specific styles */
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-group select {
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: all 0.3s;
+    }
+
+    .form-group select:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+  </style>
 </body>
 </html>
