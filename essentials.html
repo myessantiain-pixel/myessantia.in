@@ -467,9 +467,9 @@
   <!-- Common JavaScript -->
   <script src="common.js"></script>
 
-  <script>
+<script>
     // ========== ESSENTIALS PAGE SPECIFIC VARIABLES ==========
-    let enquiries = JSON.parse(localStorage.getItem('essence_user_enquiries')) || [];
+    let enquiries = [];
 
     // ========== PRODUCT RENDERING ==========
     function renderProducts() {
@@ -545,10 +545,10 @@
                 <div class="primary-img" style="background-image: url('${mainImage}');"></div>
                 <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
                 <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
-                  <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault(); event.stopPropagation();">
+                  <button class="img-add" onclick="window.addToCart('${product.id}'); event.preventDefault(); event.stopPropagation();">
                     <i class="fa-solid fa-cart-plus"></i> add
                   </button>
-                  <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault(); event.stopPropagation();">
+                  <button class="img-buy" onclick="window.buyNow('${product.id}'); event.preventDefault(); event.stopPropagation();">
                     <i class="fa-solid fa-bolt"></i> buy
                   </button>
                 </div>
@@ -579,6 +579,65 @@
     }
 
     // ========== ENQUIRY FUNCTIONS (Specific to essentials page) ==========
+    async function loadEnquiries() {
+      if (!currentUser) {
+        enquiries = [];
+        return;
+      }
+
+      try {
+        const enquiriesSnapshot = await db.collection('enquiries')
+          .where('userId', '==', currentUser.uid)
+          .orderBy('timestamp', 'desc')
+          .get();
+        
+        enquiries = enquiriesSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        // Cache for offline access
+        localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
+      } catch (error) {
+        console.error('Error loading enquiries:', error);
+        // Fallback to localStorage
+        const stored = localStorage.getItem('essence_user_enquiries');
+        if (stored) {
+          try {
+            enquiries = JSON.parse(stored);
+          } catch (e) {
+            enquiries = [];
+          }
+        } else {
+          enquiries = [];
+        }
+      }
+    }
+
+    async function saveEnquiryToFirebase(enquiry) {
+      if (!currentUser) return null;
+
+      try {
+        const docRef = await db.collection('enquiries').add({
+          ...enquiry,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Update local cache
+        enquiry.id = docRef.id;
+        enquiries.unshift(enquiry);
+        localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
+        
+        return docRef.id;
+      } catch (error) {
+        console.error('Error saving enquiry:', error);
+        // Fallback to localStorage only
+        enquiries.unshift(enquiry);
+        localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
+        return null;
+      }
+    }
+
     function initializeEnquiry() {
       loadEnquiries();
       
@@ -601,23 +660,6 @@
           closeModal('enquiry-modal');
         });
       }
-    }
-
-    function loadEnquiries() {
-      const stored = localStorage.getItem('essence_user_enquiries');
-      if (stored) {
-        try {
-          enquiries = JSON.parse(stored);
-        } catch (e) {
-          enquiries = [];
-        }
-      } else {
-        enquiries = [];
-      }
-    }
-
-    function saveEnquiries() {
-      localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
     }
 
     function renderEnquiryForm() {
@@ -650,7 +692,7 @@
       `;
     }
 
-    window.submitEnquiry = function() {
+    window.submitEnquiry = async function() {
       const subject = document.getElementById('enquiry-subject')?.value;
       const message = document.getElementById('enquiry-message')?.value;
       const priority = document.getElementById('enquiry-priority')?.value;
@@ -664,11 +706,18 @@
         return;
       }
 
+      if (!currentUser) {
+        if (statusDiv) {
+          statusDiv.className = 'auth-error';
+          statusDiv.textContent = 'You must be logged in to submit an enquiry';
+        }
+        return;
+      }
+
       const newEnquiry = {
-        id: 'ENQ' + Date.now() + Math.floor(Math.random() * 1000),
-        userId: currentUser?.uid || 'guest',
-        userName: currentUser?.name || 'Guest User',
-        userEmail: currentUser?.email || 'guest@example.com',
+        userId: currentUser.uid,
+        userName: currentUser.name || 'User',
+        userEmail: currentUser.email,
         subject: subject,
         message: message,
         priority: priority,
@@ -677,14 +726,15 @@
         date: new Date().toISOString()
       };
 
-      enquiries.push(newEnquiry);
-      saveEnquiries();
+      // Save to Firebase
+      await saveEnquiryToFirebase(newEnquiry);
 
       if (statusDiv) {
         statusDiv.className = 'auth-success';
         statusDiv.textContent = 'Enquiry submitted successfully! We will respond within 24 hours.';
       }
 
+      // Clear form
       document.getElementById('enquiry-subject').value = '';
       document.getElementById('enquiry-message').value = '';
 
@@ -706,13 +756,16 @@
     function initializeApp() {
       renderProducts();
       updateCartCount();
+      
+      // Load enquiries if user is logged in
+      if (currentUser) {
+        loadEnquiries();
+      }
+      
       initializeEnquiry();
       
-      const savedUser = localStorage.getItem('MyEssantia_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateProfileIcon();
-      }
+      // currentUser is now managed by Firebase in common.js
+      // No need to load from localStorage
     }
 
     // Load common modals
@@ -742,10 +795,32 @@
       });
     }
 
+    // Listen for auth state changes to reload enquiries
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        loadEnquiries();
+      } else {
+        enquiries = [];
+        // Clear localStorage on logout
+        localStorage.removeItem('essence_user_enquiries');
+      }
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
       loadCommonModals();
       loadComponents();
       setupEssentialsEventListeners();
+    });
+
+    // Add fallback for products
+    window.addEventListener('load', () => {
+      if (products.length === 0) {
+        const cachedProducts = localStorage.getItem('MyEssantia_products');
+        if (cachedProducts) {
+          products = JSON.parse(cachedProducts);
+          renderProducts();
+        }
+      }
     });
   </script>
 </body>
