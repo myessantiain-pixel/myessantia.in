@@ -478,10 +478,41 @@
       
       if (!gridContainer) return;
 
-const essentialsProducts = products.filter(p => 
-  p.showOnEssentials === true && 
-  (p.category?.toLowerCase() === 'essentials' || p.category === 'Essentials')
-);
+      // Debug: Log all products to see what's available
+      console.log('===== ESSENTIALS PAGE DEBUG =====');
+      console.log('All products from Firebase:', products);
+      
+      // First, let's see what products have showOnEssentials=true
+      const productsWithEssentialsTrue = products.filter(p => p.showOnEssentials === true);
+      console.log('Products with showOnEssentials = true:', productsWithEssentialsTrue);
+      
+      // Now filter for essentials page - MORE PERMISSIVE FILTER
+      const essentialsProducts = products.filter(p => {
+        // Check if product should show on essentials page (more flexible check)
+        const showOnEssentials = p.showOnEssentials === true || p.showOnEssentials === 'true' || p.showOnEssentials === 1;
+        
+        // Check category (completely case insensitive)
+        let categoryMatch = false;
+        if (p.category) {
+          const categoryLower = p.category.toString().toLowerCase().trim();
+          categoryMatch = categoryLower === 'essentials' || 
+                          categoryLower === 'essential' ||
+                          categoryLower.includes('essential');
+        }
+        
+        // Also include products that have showOnEssentials true regardless of category
+        // (as a fallback, since the admin panel might auto-assign)
+        const result = showOnEssentials || categoryMatch;
+        
+        if (result) {
+          console.log('✅ Product included:', p.title, '| Category:', p.category, '| showOnEssentials:', p.showOnEssentials);
+        }
+        
+        return result;
+      });
+
+      console.log('Final filtered essentials products:', essentialsProducts);
+      console.log('Total essentials products found:', essentialsProducts.length);
 
       if (essentialsProducts.length === 0) {
         gridContainer.innerHTML = `
@@ -489,6 +520,9 @@ const essentialsProducts = products.filter(p =>
             <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
             <h3>No essential products found</h3>
             <p>Check back later for new arrivals!</p>
+            <p style="font-size: 0.9rem; margin-top: 1rem; color: #666;">
+              Debug: Total products in database: ${products.length}
+            </p>
           </div>
         `;
         return;
@@ -496,35 +530,52 @@ const essentialsProducts = products.filter(p =>
 
       function renderRating(rating) {
         let stars = '';
+        const numRating = parseFloat(rating) || 0;
         for (let i = 1; i <= 5; i++) {
-          if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
-          else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+          if (numRating >= i) stars += '<i class="fa-solid fa-star"></i>';
+          else if (numRating > i - 1 && numRating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
           else stars += '<i class="fa-regular fa-star"></i>';
         }
         return stars;
       }
 
       function getStockStatus(stock) {
-        if (stock > 10) return '<span class="stock-badge in-stock">In Stock</span>';
-        if (stock > 0) return `<span class="stock-badge low-stock">Only ${stock} left</span>`;
+        const stockNum = parseInt(stock) || 0;
+        if (stockNum > 10) return '<span class="stock-badge in-stock">In Stock</span>';
+        if (stockNum > 0) return `<span class="stock-badge low-stock">Only ${stockNum} left</span>`;
         return '<span class="stock-badge out-of-stock">Out of Stock</span>';
       }
 
       function formatPrice(price) {
-        return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        const numPrice = parseFloat(price) || 0;
+        return numPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      }
+
+      function getProductImage(product) {
+        // Try multiple sources for image
+        if (product.media && product.media.images && product.media.images[0]) {
+          return product.media.images[0].url || product.media.images[0];
+        }
+        if (product.images && product.images[0]) {
+          return product.images[0];
+        }
+        if (product.primaryImg) {
+          return product.primaryImg;
+        }
+        return 'https://via.placeholder.com/300?text=No+Image';
       }
 
       function getSortedProducts() {
         let sorted = [...essentialsProducts];
         switch (sortSelect.value) {
           case 'price-low':
-            sorted.sort((a, b) => a.price - b.price);
+            sorted.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
             break;
           case 'price-high':
-            sorted.sort((a, b) => b.price - a.price);
+            sorted.sort((a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0));
             break;
           case 'rating':
-            sorted.sort((a, b) => b.rating - a.rating);
+            sorted.sort((a, b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0));
             break;
           default:
             break;
@@ -537,8 +588,11 @@ const essentialsProducts = products.filter(p =>
         
         let gridHtml = '';
         sortedProducts.forEach(product => {
-          const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
-          const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
+          const mainImage = getProductImage(product);
+          const secondImage = product.media?.images?.[1]?.url || 
+                             product.images?.[1] || 
+                             product.secondaryImg || 
+                             mainImage;
           
           gridHtml += `
             <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}">
@@ -554,11 +608,11 @@ const essentialsProducts = products.filter(p =>
                   </button>
                 </div>
               </div>
-              <h3 class="product-title">${product.title}</h3>
-              <p class="product-category">${product.category}</p>
+              <h3 class="product-title">${product.title || 'Untitled Product'}</h3>
+              <p class="product-category">${product.category || 'Uncategorized'}</p>
               <div class="product-rating">
                 ${renderRating(product.rating)}
-                <span>(${product.rating.toFixed(1)})</span>
+                <span>(${(parseFloat(product.rating) || 0).toFixed(1)})</span>
               </div>
               <div class="product-price">
                 <span class="inr-symbol">₹</span>${formatPrice(product.price)}
@@ -642,6 +696,7 @@ const essentialsProducts = products.filter(p =>
     function initializeEnquiry() {
       loadEnquiries();
       
+      // Check if enquiry button exists (you may need to add this button to your HTML)
       const enquiryBtn = document.getElementById('enquiry-btn');
       if (enquiryBtn) {
         enquiryBtn.addEventListener('click', function(e) {
@@ -753,9 +808,38 @@ const essentialsProducts = products.filter(p =>
       }
     }
 
+    // ========== FIREBASE DATA LOADING ==========
+    async function loadProductsFromFirebase() {
+      try {
+        const snapshot = await db.collection('products').get();
+        products = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        // Cache in localStorage as backup
+        localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+        
+        console.log('Products loaded from Firebase:', products);
+        renderProducts(); // Render after loading
+      } catch (error) {
+        console.error('Error loading products from Firebase:', error);
+        
+        // Try to load from localStorage as fallback
+        const cachedProducts = localStorage.getItem('MyEssantia_products');
+        if (cachedProducts) {
+          products = JSON.parse(cachedProducts);
+          console.log('Products loaded from localStorage (fallback):', products);
+          renderProducts();
+        }
+      }
+    }
+
     // ========== INITIALIZATION ==========
     function initializeApp() {
-      renderProducts();
+      // Load products from Firebase first
+      loadProductsFromFirebase();
+      
       updateCartCount();
       
       // Load enquiries if user is logged in
@@ -764,9 +848,6 @@ const essentialsProducts = products.filter(p =>
       }
       
       initializeEnquiry();
-      
-      // currentUser is now managed by Firebase in common.js
-      // No need to load from localStorage
     }
 
     // Load common modals
@@ -809,18 +890,18 @@ const essentialsProducts = products.filter(p =>
 
     document.addEventListener('DOMContentLoaded', () => {
       loadCommonModals();
-      loadComponents();
+      loadComponents(); // This loads header/footer
       setupEssentialsEventListeners();
+      
+      // The initializeApp function will be called from common.js
+      // But we'll override it here
+      window.initializeApp = initializeApp;
     });
 
-    // Add fallback for products
+    // Also try to load products if common.js doesn't have them
     window.addEventListener('load', () => {
       if (products.length === 0) {
-        const cachedProducts = localStorage.getItem('MyEssantia_products');
-        if (cachedProducts) {
-          products = JSON.parse(cachedProducts);
-          renderProducts();
-        }
+        loadProductsFromFirebase();
       }
     });
   </script>
