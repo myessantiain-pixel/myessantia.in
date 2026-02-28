@@ -479,7 +479,8 @@
       if (!gridContainer) return;
 
 const essentialsProducts = products.filter(p => 
-  p.showOnEssentials === true && (p.category === 'essentials' || p.category === 'Essentials')
+  p.showOnEssentials === true && 
+  (p.category?.toLowerCase() === 'essentials' || p.category === 'Essentials')
 );
 
       if (essentialsProducts.length === 0) {
