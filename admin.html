@@ -528,11 +528,6 @@
       min-height: 56px;
     }
 
-    .form-group textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
@@ -2138,6 +2133,13 @@
 
     let filteredProducts = [...products];
 
+    // Initialize media arrays
+    function initializeMediaArrays() {
+      productMedia.images = new Array(4).fill(null);
+      productMedia.videos = new Array(4).fill(null);
+    }
+    initializeMediaArrays();
+
     // Update page selector based on category and date
     function updatePageSelector() {
       const category = productCategory.value;
@@ -2295,7 +2297,7 @@
       }
     }
 
-    // Handle drag and drop
+    // Handle drag and over
     window.handleDragOver = function(event) {
       event.preventDefault();
       event.currentTarget.classList.add('dragover');
@@ -2490,7 +2492,7 @@
             
             // Extract meta image
             const ogImage = tempDiv.querySelector('meta[property="og:image"]');
-            if (ogImage) {
+            if (ogImage && ogImage.content) {
               fetchAndAddMedia(ogImage.content, 'image');
             }
             
@@ -2511,7 +2513,7 @@
             if (title || description) {
               addImportedMedia({
                 type: 'text',
-                content: `${title}\n\n${description}`,
+                content: `${title || ''}\n\n${description || ''}`,
                 position: importedMedia.length
               });
             }
@@ -2548,6 +2550,7 @@
       
       importedMedia.forEach((media, index) => {
         if (media.type === 'image') {
+          if (!product.media.images) product.media.images = [];
           product.media.images.push({
             url: media.url,
             position: index,
@@ -2555,6 +2558,7 @@
           });
           imagesAdded++;
         } else if (media.type === 'video') {
+          if (!product.media.videos) product.media.videos = [];
           product.media.videos.push({
             url: media.url,
             position: index,
@@ -2614,7 +2618,7 @@
       
       for (let i = 0; i < maxItems; i++) {
         if (media[i]) {
-          const isVideo = media[i].type === 'video';
+          const isVideo = media[i].type === 'video' || (media[i].url && media[i].url.includes('video'));
           html += `
             <div class="media-preview">
               ${isVideo ? `
@@ -2798,14 +2802,14 @@
               ${isNew ? '<span style="background: var(--color-warning); color: var(--color-secondary); padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; margin-left: var(--spacing-xs);">NEW</span>' : ''}
             </td>
             <td><span style="text-transform: capitalize; font-weight: 500;">${product.category}</span></td>
-            <td><strong style="color: var(--color-primary); font-size: var(--font-size-lg);">₹${product.price.toFixed(2)}</strong></td>
+            <td><strong style="color: var(--color-primary); font-size: var(--font-size-lg);">₹${product.price ? product.price.toFixed(2) : '0.00'}</strong></td>
             <td>
               <span style="color: ${product.stock > 10 ? 'var(--color-success)' : (product.stock > 0 ? 'var(--color-warning)' : 'var(--color-danger)')}; font-weight: 600; background: ${product.stock > 10 ? 'var(--color-success-light)' : (product.stock > 0 ? 'var(--color-warning-light)' : 'var(--color-danger-light)')}; padding: var(--spacing-xs) var(--spacing-sm); border-radius: 20px;">
                 ${product.stock || 0} units
               </span>
             </td>
             <td>
-              <span style="font-weight: 600;">${product.rating}</span> 
+              <span style="font-weight: 600;">${product.rating ? product.rating.toFixed(1) : '0.0'}</span> 
               <i class="fa-solid fa-star" style="color: var(--color-primary);"></i>
             </td>
             <td>
@@ -3049,8 +3053,6 @@
     };
 
     // Initialize
-    productMedia.images = new Array(4).fill(null);
-    productMedia.videos = new Array(4).fill(null);
     initializeMediaUpload();
     renderProducts();
     updateImportProductSelect();
