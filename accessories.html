@@ -13,6 +13,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
   <!-- CSS Files -->
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
@@ -135,6 +140,9 @@
       display: flex;
       flex-direction: column;
       height: 100%;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
     }
     .product-card:hover {
       box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
@@ -215,6 +223,7 @@
       border: 1px solid rgba(0,0,0,0.1);
       color: #1a1a1a;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      pointer-events: auto;
     }
     .img-add i, .img-buy i {
       font-size: 0.85rem;
@@ -289,6 +298,18 @@
       font-weight: 500;
       margin-right: 2px;
     }
+
+    .stock-badge {
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      display: inline-block;
+      align-self: center;
+    }
+    .in-stock { color: #4CAF50; }
+    .low-stock { color: #FF9800; }
+    .out-of-stock { color: #f44336; }
 
     /* Touch targets */
     button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add, .img-buy, select {
@@ -405,11 +426,221 @@
   <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Shopping Cart</h3>
+        <button class="close-modal" id="close-cart">&times;</button>
+      </div>
+      <div id="cart-items" class="cart-items">
+        <!-- Cart items will be rendered here -->
+      </div>
+      <div class="modal-footer">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="cart-total-amount">₹0.00</span>
+        </div>
+        <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profile-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>My Account</h3>
+        <button class="close-modal" id="close-profile">&times;</button>
+      </div>
+      <div id="profile-content">
+        <!-- Profile content will be rendered here -->
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ========== FIREBASE CONFIGURATION ==========
+    const firebaseConfig = {
+      apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
+      authDomain: "myessantia.firebaseapp.com",
+      projectId: "myessantia",
+      storageBucket: "myessantia.firebasestorage.app",
+      messagingSenderId: "701726517205",
+      appId: "1:701726517205:web:f6ab79efdffeab6dbbbf5c",
+      measurementId: "G-SZF11SHZBH"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // ========== GLOBAL VARIABLES ==========
     let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-    let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+    let currentUser = null;
     let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
 
+    // Sample products if none exist
+    if (products.length === 0) {
+      products = [
+        {
+          id: 1,
+          title: "Premium Leather Wallet",
+          category: "accessories",
+          price: 2499.99,
+          rating: 4.5,
+          stock: 25,
+          showOnAccessories: true,
+          images: [
+            "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=1887&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1606503825008-909a67e63c3d?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1627123424574-724758594e93?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1606503825008-909a67e63c3d?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 2,
+          title: "Minimalist Watch",
+          category: "accessories",
+          price: 3999.50,
+          rating: 4.8,
+          stock: 12,
+          showOnAccessories: true,
+          images: [
+            "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1888&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1888&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=1888&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=1888&auto=format&fit=crop"
+        },
+        {
+          id: 3,
+          title: "Leather Belt",
+          category: "accessories",
+          price: 1499.75,
+          rating: 4.3,
+          stock: 8,
+          showOnAccessories: true,
+          images: [
+            "https://images.unsplash.com/photo-1553062465-6b5b9c6b1a8c?q=80&w=1887&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1624222247344-550fb60583dc?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1553062465-6b5b9c6b1a8c?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1624222247344-550fb60583dc?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 4,
+          title: "Sunglasses",
+          category: "accessories",
+          price: 1999.99,
+          rating: 4.6,
+          stock: 30,
+          showOnAccessories: true,
+          images: [
+            "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1780&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1577803645770-f5b7f4c09bf3?q=80&w=1780&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1780&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1577803645770-f5b7f4c09bf3?q=80&w=1780&auto=format&fit=crop"
+        },
+        {
+          id: 5,
+          title: "Canvas Tote Bag",
+          category: "accessories",
+          price: 1799.00,
+          rating: 4.4,
+          stock: 15,
+          showOnAccessories: true,
+          images: [
+            "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=1887&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1591561954557-26941169b8a7?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1591561954557-26941169b8a7?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 6,
+          title: "Brass Keychain",
+          category: "accessories",
+          price: 499.25,
+          rating: 4.2,
+          stock: 45,
+          showOnAccessories: true,
+          images: [
+            "https://images.unsplash.com/photo-1600791574155-6b2c31fc07dd?q=80&w=1887&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1578269174936-2709b6aeb913?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1600791574155-6b2c31fc07dd?q=80&w=1887&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1578269174936-2709b6aeb913?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 7,
+          title: "Silk Scarf",
+          category: "accessories",
+          price: 1299.50,
+          rating: 4.7,
+          stock: 10,
+          showOnAccessories: true,
+          images: [
+            "https://images.unsplash.com/photo-1584036553516-bf932ce5a0e6?q=80&w=1932&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1602810320073-1230c46df89d?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1584036553516-bf932ce5a0e6?q=80&w=1932&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1602810320073-1230c46df89d?q=80&w=1887&auto=format&fit=crop"
+        },
+        {
+          id: 8,
+          title: "Leather Gloves",
+          category: "accessories",
+          price: 2199.00,
+          rating: 4.5,
+          stock: 7,
+          showOnAccessories: true,
+          images: [
+            "https://images.unsplash.com/photo-1604909052743-94e838986d24?q=80&w=1888&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1516476853904-1d209bf2cf68?q=80&w=1887&auto=format&fit=crop"
+          ],
+          primaryImg: "https://images.unsplash.com/photo-1604909052743-94e838986d24?q=80&w=1888&auto=format&fit=crop",
+          secondaryImg: "https://images.unsplash.com/photo-1516476853904-1d209bf2cf68?q=80&w=1887&auto=format&fit=crop"
+        }
+      ];
+      localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+    }
+
+    // ========== FIREBASE AUTH STATE OBSERVER ==========
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in
+        currentUser = {
+          uid: user.uid,
+          name: user.displayName || user.email.split('@')[0],
+          email: user.email,
+          picture: user.photoURL || 'https://via.placeholder.com/80',
+          provider: user.providerData[0]?.providerId || 'email',
+          memberSince: user.metadata.creationTime
+        };
+        
+        // Save user to localStorage for persistence
+        localStorage.setItem('MyEssantia_user', JSON.stringify(currentUser));
+        
+        // Update UI
+        updateProfileIcon();
+        if (document.getElementById('profile-content')) {
+          renderProfileContent();
+        }
+      } else {
+        // User is signed out
+        currentUser = null;
+        localStorage.removeItem('MyEssantia_user');
+        updateProfileIcon();
+        if (document.getElementById('profile-content')) {
+          renderProfileContent();
+        }
+      }
+    });
+
+    // ========== LOAD COMPONENTS ==========
     async function loadComponents() {
       try {
         const headerResponse = await fetch('header.html');
@@ -425,9 +656,44 @@
         }, 50);
       } catch (error) {
         console.error('Error loading components:', error);
+        document.getElementById('header').innerHTML = getFallbackHeader();
+        document.getElementById('footer').innerHTML = getFallbackFooter();
+        setTimeout(() => {
+          initializeApp();
+        }, 50);
       }
     }
 
+    function getFallbackHeader() {
+      return `
+        <header style="padding: 1rem; background: #fff; border-bottom: 1px solid #eee;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="logo" style="font-family: 'Playfair Display', serif; font-size: 1.8rem;">
+              My<span style="color: #d4af37;">Essantia</span>
+            </div>
+            <div class="header-icons">
+              <a href="#" id="profile-icon" style="margin: 0 0.5rem;"><i class="fa-regular fa-user"></i></a>
+              <a href="#" id="cart-icon" style="margin: 0 0.5rem; position: relative;">
+                <i class="fa-regular fa-shopping-bag"></i>
+                <span id="cart-count" style="position: absolute; top: -8px; right: -8px; background: #d4af37; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; display: flex; align-items: center; justify-content: center;">0</span>
+              </a>
+            </div>
+          </div>
+        </header>
+      `;
+    }
+
+    function getFallbackFooter() {
+      return `
+        <footer style="background: #1a1a1a; color: #fff; padding: 2rem 1rem; margin-top: 3rem;">
+          <div style="text-align: center;">
+            <p>&copy; 2025 MyEssantia. All rights reserved.</p>
+          </div>
+        </footer>
+      `;
+    }
+
+    // ========== PRODUCT RENDERING ==========
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
       const sortSelect = document.getElementById('sort-select');
@@ -459,6 +725,12 @@
         return stars + `<span>(${rating.toFixed(1)})</span>`;
       }
 
+      function getStockStatus(stock) {
+        if (stock > 10) return '<span class="stock-badge in-stock">In Stock</span>';
+        if (stock > 0) return `<span class="stock-badge low-stock">Only ${stock} left</span>`;
+        return '<span class="stock-badge out-of-stock">Out of Stock</span>';
+      }
+
       function getSortedProducts() {
         let sorted = [...accessoriesProducts];
         switch (sortSelect.value) {
@@ -472,9 +744,14 @@
             sorted.sort((a, b) => b.rating - a.rating);
             break;
           default:
+            // Keep original order for 'popular'
             break;
         }
         return sorted;
+      }
+
+      function formatPrice(price) {
+        return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
       }
 
       function renderAllProducts() {
@@ -482,16 +759,19 @@
         
         let gridHtml = '';
         sortedProducts.forEach(product => {
+          const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
+          const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
+          
           gridHtml += `
-            <div class="product-card" data-product-id="${product.id}" data-product-title="${product.title}" data-product-category="${product.category}" data-product-price="${product.price}" data-product-image="${product.primaryImg}">
+            <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}">
               <div class="image-frame">
-                <div class="primary-img" style="background-image: url('${product.primaryImg}');"></div>
-                <div class="secondary-img" style="background-image: url('${product.secondaryImg}');"></div>
-                <div class="image-actions">
-                  <button class="img-add" onclick="window.addToCart(${product.id})">
+                <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+                <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+                <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
+                  <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault(); event.stopPropagation();">
                     <i class="fa-solid fa-cart-plus"></i> add
                   </button>
-                  <button class="img-buy" onclick="window.buyNow(${product.id})">
+                  <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault(); event.stopPropagation();">
                     <i class="fa-solid fa-bolt"></i> buy
                   </button>
                 </div>
@@ -499,8 +779,11 @@
               <h3 class="product-title">${product.title}</h3>
               <p class="product-category">${product.category}</p>
               <div class="product-rating">${renderRating(product.rating)}</div>
-              <div class="product-price"><span class="inr-symbol">₹</span>${product.price.toLocaleString('en-IN')}</div>
-            </div>
+              <div class="product-price">
+                <span class="inr-symbol">₹</span>${formatPrice(product.price)}
+              </div>
+              ${getStockStatus(product.stock)}
+            </a>
           `;
         });
         
@@ -510,15 +793,24 @@
       renderAllProducts();
       
       if (sortSelect) {
+        // Remove existing event listener and add new one
+        sortSelect.removeEventListener('change', renderAllProducts);
         sortSelect.addEventListener('change', renderAllProducts);
       }
     }
 
+    // ========== INITIALIZATION ==========
     function initializeApp() {
       renderProducts();
       updateCartCount();
-      updateProfileIcon();
       setupEventListeners();
+      
+      // Check for existing user in localStorage
+      const savedUser = localStorage.getItem('MyEssantia_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateProfileIcon();
+      }
     }
 
     function setupEventListeners() {
@@ -565,6 +857,12 @@
       const checkoutBtn = document.getElementById('checkout-btn');
       if (checkoutBtn) {
         checkoutBtn.addEventListener('click', function() {
+          if (!currentUser) {
+            alert('Please login to checkout');
+            closeModal('cart-modal');
+            openProfile();
+            return;
+          }
           if (cart.length === 0) {
             alert('Your cart is empty!');
           } else {
@@ -601,6 +899,7 @@
       });
     }
 
+    // ========== MODAL FUNCTIONS ==========
     function openCart() {
       const cartModal = document.getElementById('cart-modal');
       if (cartModal) {
@@ -627,24 +926,52 @@
       }
     }
 
+    // ========== CART FUNCTIONS ==========
     window.addToCart = function(productId) {
       const product = products.find(p => p.id === productId);
       if (!product) return;
 
+      if (product.stock <= 0) {
+        alert('Sorry, this product is out of stock!');
+        return;
+      }
+
       const existingItem = cart.find(item => item.id === productId);
 
       if (existingItem) {
+        if (existingItem.quantity >= product.stock) {
+          alert('Sorry, not enough stock available!');
+          return;
+        }
         existingItem.quantity += 1;
       } else {
         cart.push({
-          ...product,
+          id: productId,
+          title: product.title,
+          category: product.category,
+          price: product.price,
+          primaryImg: product.primaryImg || (product.images && product.images[0]),
           quantity: 1
         });
       }
 
       saveCart();
       updateCartCount();
-      alert(`${product.title} added to cart!`);
+      
+      const btn = event?.target?.closest('button');
+      if (btn) {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+        btn.style.background = '#4CAF50';
+        btn.style.color = 'white';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          btn.style.color = '';
+        }, 1500);
+      } else {
+        alert(`${product.title} added to cart!`);
+      }
     };
 
     window.buyNow = function(productId) {
@@ -656,11 +983,15 @@
       const itemIndex = cart.findIndex(item => item.id === productId);
       if (itemIndex === -1) return;
 
+      const product = products.find(p => p.id === productId);
       const item = cart[itemIndex];
       const newQuantity = item.quantity + change;
 
       if (newQuantity <= 0) {
         cart.splice(itemIndex, 1);
+      } else if (product && newQuantity > product.stock) {
+        alert('Sorry, not enough stock available!');
+        return;
       } else {
         item.quantity = newQuantity;
       }
@@ -700,28 +1031,32 @@
       let total = 0;
       let totalItems = 0;
 
+      function formatPrice(price) {
+        return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      }
+
       cartItemsContainer.innerHTML = cart.map(item => {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
         totalItems += item.quantity;
 
         return `
-          <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.primaryImg}')"></div>
-            <div class="cart-item-details">
-              <h4 class="cart-item-title">${item.title}</h4>
-              <p class="cart-item-category">${item.category}</p>
-              <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
-              <div class="cart-item-actions">
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">
+          <div class="cart-item" style="display: flex; gap: 1rem; padding: 1rem; border-bottom: 1px solid #eee;">
+            <div class="cart-item-image" style="width: 60px; height: 60px; background-image: url('${item.primaryImg || 'https://via.placeholder.com/60'}'); background-size: cover; background-position: center; border-radius: 8px;"></div>
+            <div class="cart-item-details" style="flex: 1;">
+              <h4 style="font-size: 1rem; margin-bottom: 0.3rem;">${item.title}</h4>
+              <p style="font-size: 0.8rem; color: #666; margin-bottom: 0.3rem;">${item.category}</p>
+              <div style="font-weight: 600; color: #d4af37; margin-bottom: 0.5rem;">₹${formatPrice(item.price)}</div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button onclick="window.updateQuantity(${item.id}, -1)" style="background: #f0f0f0; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">
                   <i class="fa-solid fa-minus"></i>
                 </button>
-                <span class="item-quantity">${item.quantity}</span>
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">
+                <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
+                <button onclick="window.updateQuantity(${item.id}, 1)" style="background: #f0f0f0; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">
                   <i class="fa-solid fa-plus"></i>
                 </button>
-                <button class="remove-item" onclick="window.removeFromCart(${item.id})">
-                  Remove
+                <button onclick="window.removeFromCart(${item.id})" style="background: none; border: none; color: #f44336; margin-left: auto; cursor: pointer;">
+                  <i class="fa-regular fa-trash-can"></i>
                 </button>
               </div>
             </div>
@@ -730,7 +1065,7 @@
       }).join('');
 
       cartItemCount.textContent = totalItems;
-      cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
+      cartTotalAmount.textContent = `₹${formatPrice(total)}`;
     }
 
     function updateCartCount() {
@@ -745,6 +1080,7 @@
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
     }
 
+    // ========== AUTH FUNCTIONS ==========
     function renderProfileContent() {
       const profileContent = document.getElementById('profile-content');
       if (!profileContent) return;
@@ -753,7 +1089,7 @@
         profileContent.innerHTML = `
           <div class="profile-info">
             <div class="profile-avatar">
-              <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">
+              <img src="${currentUser.picture}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile" onerror="this.src='https://via.placeholder.com/80'">
             </div>
             <div class="profile-details">
               <p>
@@ -765,6 +1101,11 @@
                 <i class="fa-regular fa-envelope"></i>
                 <span class="label">Email:</span>
                 <span class="value">${currentUser.email}</span>
+              </p>
+              <p>
+                <i class="fa-regular fa-calendar"></i>
+                <span class="label">Member since:</span>
+                <span class="value">${new Date(currentUser.memberSince).toLocaleDateString()}</span>
               </p>
             </div>
             <button class="btn logout-btn" onclick="window.logout()">
@@ -782,9 +1123,15 @@
               <p>Sign in with Google to continue</p>
             </div>
             
-            <button class="btn google-login-btn" onclick="window.handleGoogleLogin()">
+            <button class="btn google-login-btn" onclick="window.loginWithGoogle()">
               <i class="fa-brands fa-google"></i>
               Sign in with Google
+            </button>
+            
+            <div style="margin: 1rem 0; text-align: center; color: #999;">or</div>
+            
+            <button class="btn" onclick="window.showEmailLogin()" style="background: #1a1a1a; color: white;">
+              <i class="fa-regular fa-envelope"></i> Sign in with Email
             </button>
             
             <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
@@ -794,6 +1141,285 @@
         `;
       }
     }
+
+    window.loginWithGoogle = async function() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      
+      try {
+        const result = await auth.signInWithPopup(provider);
+        closeModal('profile-modal');
+      } catch (error) {
+        console.error('Google login error:', error);
+        alert('Google login failed. Please try again.');
+      }
+    };
+
+    window.showEmailLogin = function() {
+      const profileContent = document.getElementById('profile-content');
+      profileContent.innerHTML = `
+        <div class="auth-container">
+          <div class="auth-tabs">
+            <button class="auth-tab active" onclick="window.switchAuthTab('login')" id="login-tab">Login</button>
+            <button class="auth-tab" onclick="window.switchAuthTab('signup')" id="signup-tab">Sign Up</button>
+          </div>
+          
+          <div id="login-form" class="auth-form">
+            <div class="form-group">
+              <label for="login-email">Email</label>
+              <input type="email" id="login-email" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" placeholder="Enter your password">
+            </div>
+            <div class="forgot-password">
+              <a href="#" onclick="window.showForgotPassword()">Forgot Password?</a>
+            </div>
+            <button class="btn" onclick="window.loginWithEmail()" id="login-btn">
+              <i class="fa-regular fa-envelope"></i> Login
+            </button>
+          </div>
+          
+          <div id="signup-form" class="auth-form" style="display: none;">
+            <div class="form-group">
+              <label for="signup-name">Full Name</label>
+              <input type="text" id="signup-name" placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+              <label for="signup-email">Email</label>
+              <input type="email" id="signup-email" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+              <label for="signup-password">Password</label>
+              <input type="password" id="signup-password" placeholder="Choose a password (min. 6 characters)">
+            </div>
+            <div class="form-group">
+              <label for="signup-confirm">Confirm Password</label>
+              <input type="password" id="signup-confirm" placeholder="Confirm your password">
+            </div>
+            <button class="btn" onclick="window.signUpWithEmail()" id="signup-btn">
+              <i class="fa-regular fa-user-plus"></i> Create Account
+            </button>
+          </div>
+          
+          <div id="forgot-password-form" class="auth-form" style="display: none;">
+            <div class="form-group">
+              <label for="reset-email">Email</label>
+              <input type="email" id="reset-email" placeholder="Enter your email">
+            </div>
+            <button class="btn" onclick="window.resetPassword()" id="reset-btn">
+              <i class="fa-regular fa-paper-plane"></i> Send Reset Link
+            </button>
+            <button class="btn btn-outline" onclick="window.backToLogin()" style="margin-top: 1rem;">
+              <i class="fa-regular fa-arrow-left"></i> Back to Login
+            </button>
+          </div>
+          
+          <div id="auth-message" class="auth-message"></div>
+          
+          <div style="margin-top: 1rem; text-align: center;">
+            <a href="#" onclick="window.backToMain()" style="color: #999; text-decoration: none;">
+              <i class="fa-regular fa-arrow-left"></i> Back to sign in options
+            </a>
+          </div>
+        </div>
+      `;
+    };
+
+    window.switchAuthTab = function(tab) {
+      const loginTab = document.getElementById('login-tab');
+      const signupTab = document.getElementById('signup-tab');
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const forgotForm = document.getElementById('forgot-password-form');
+      
+      if (forgotForm) forgotForm.style.display = 'none';
+      
+      if (tab === 'login') {
+        loginTab?.classList.add('active');
+        signupTab?.classList.remove('active');
+        if (loginForm) loginForm.style.display = 'block';
+        if (signupForm) signupForm.style.display = 'none';
+      } else {
+        loginTab?.classList.remove('active');
+        signupTab?.classList.add('active');
+        if (loginForm) loginForm.style.display = 'none';
+        if (signupForm) signupForm.style.display = 'block';
+      }
+      
+      clearAuthMessage();
+    };
+
+    window.showForgotPassword = function() {
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const forgotForm = document.getElementById('forgot-password-form');
+      const authTabs = document.querySelector('.auth-tabs');
+      
+      if (authTabs) authTabs.style.display = 'none';
+      if (loginForm) loginForm.style.display = 'none';
+      if (signupForm) signupForm.style.display = 'none';
+      if (forgotForm) forgotForm.style.display = 'block';
+      
+      clearAuthMessage();
+    };
+
+    window.backToLogin = function() {
+      const authTabs = document.querySelector('.auth-tabs');
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const forgotForm = document.getElementById('forgot-password-form');
+      
+      if (authTabs) authTabs.style.display = 'flex';
+      if (loginForm) loginForm.style.display = 'block';
+      if (signupForm) signupForm.style.display = 'none';
+      if (forgotForm) forgotForm.style.display = 'none';
+      
+      window.switchAuthTab('login');
+      clearAuthMessage();
+    };
+
+    window.backToMain = function() {
+      renderProfileContent();
+    };
+
+    function showAuthMessage(message, isError = true) {
+      const messageDiv = document.getElementById('auth-message');
+      if (messageDiv) {
+        messageDiv.className = isError ? 'auth-error' : 'auth-success';
+        messageDiv.textContent = message;
+      }
+    }
+
+    function clearAuthMessage() {
+      const messageDiv = document.getElementById('auth-message');
+      if (messageDiv) {
+        messageDiv.className = '';
+        messageDiv.textContent = '';
+      }
+    }
+
+    window.loginWithEmail = async function() {
+      const email = document.getElementById('login-email')?.value;
+      const password = document.getElementById('login-password')?.value;
+      
+      if (!email || !password) {
+        showAuthMessage('Please fill in all fields');
+        return;
+      }
+      
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        showAuthMessage('Login successful!', false);
+        setTimeout(() => {
+          closeModal('profile-modal');
+        }, 1500);
+      } catch (error) {
+        let errorMessage = 'Login failed. Please try again.';
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage = 'No account found with this email.';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = 'Incorrect password.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Invalid email address.';
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = 'Too many failed attempts. Please try again later.';
+            break;
+        }
+        showAuthMessage(errorMessage);
+      }
+    };
+
+    window.signUpWithEmail = async function() {
+      const name = document.getElementById('signup-name')?.value;
+      const email = document.getElementById('signup-email')?.value;
+      const password = document.getElementById('signup-password')?.value;
+      const confirm = document.getElementById('signup-confirm')?.value;
+      
+      if (!name || !email || !password || !confirm) {
+        showAuthMessage('Please fill in all fields');
+        return;
+      }
+      
+      if (password.length < 6) {
+        showAuthMessage('Password must be at least 6 characters');
+        return;
+      }
+      
+      if (password !== confirm) {
+        showAuthMessage('Passwords do not match');
+        return;
+      }
+      
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        
+        await userCredential.user.updateProfile({
+          displayName: name
+        });
+        
+        await db.collection('users').doc(userCredential.user.uid).set({
+          name: name,
+          email: email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        showAuthMessage('Account created successfully!', false);
+        setTimeout(() => {
+          closeModal('profile-modal');
+        }, 1500);
+      } catch (error) {
+        let errorMessage = 'Sign up failed. Please try again.';
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = 'An account already exists with this email.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Invalid email address.';
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'Password is too weak.';
+            break;
+        }
+        showAuthMessage(errorMessage);
+      }
+    };
+
+    window.resetPassword = async function() {
+      const email = document.getElementById('reset-email')?.value;
+      
+      if (!email) {
+        showAuthMessage('Please enter your email address');
+        return;
+      }
+      
+      try {
+        await auth.sendPasswordResetEmail(email);
+        showAuthMessage('Password reset email sent! Check your inbox.', false);
+      } catch (error) {
+        let errorMessage = 'Failed to send reset email.';
+        if (error.code === 'auth/user-not-found') {
+          errorMessage = 'No account found with this email.';
+        } else if (error.code === 'auth/invalid-email') {
+          errorMessage = 'Invalid email address.';
+        }
+        showAuthMessage(errorMessage);
+      }
+    };
+
+    window.logout = async function() {
+      try {
+        await auth.signOut();
+        closeModal('profile-modal');
+      } catch (error) {
+        console.error('Logout error:', error);
+        alert('Failed to logout. Please try again.');
+      }
+    };
 
     function updateProfileIcon() {
       const profileIcon = document.getElementById('profile-icon');
@@ -806,36 +1432,12 @@
       }
     }
 
-    window.handleGoogleLogin = function() {
-      const mockGoogleUser = {
-        name: 'John Doe',
-        email: 'john@gmail.com',
-        picture: 'https://via.placeholder.com/80',
-        provider: 'google',
-        memberSince: '2025'
-      };
-
-      localStorage.setItem('MyEssantia_user', JSON.stringify(mockGoogleUser));
-      currentUser = mockGoogleUser;
-      updateProfileIcon();
-      renderProfileContent();
-      closeModal('profile-modal');
-      alert('Successfully signed in with Google!');
-    };
-
-    window.logout = function() {
-      localStorage.removeItem('MyEssantia_user');
-      currentUser = null;
-      updateProfileIcon();
-      renderProfileContent();
-      alert('You have been logged out successfully');
-    };
-
+    // ========== INITIALIZATION ==========
     document.addEventListener('DOMContentLoaded', loadComponents);
   </script>
 
   <style>
-    /* Additional modal styles to match header.css */
+    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -864,6 +1466,7 @@
       display: flex;
       flex-direction: column;
       animation: slideDown 0.3s ease;
+      overflow-y: auto;
     }
 
     @keyframes slideDown {
@@ -946,11 +1549,16 @@
       cursor: pointer;
     }
 
-    .checkout-btn:hover {
+    .checkout-btn:hover:not(:disabled) {
       background: #c4a030;
       border-color: #c4a030;
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .checkout-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .empty-cart-message {
@@ -1080,6 +1688,122 @@
     .google-login-btn i {
       color: #DB4437;
       font-size: 1.2rem;
+    }
+
+    /* Auth Styles */
+    .auth-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 1rem;
+    }
+
+    .auth-tab {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #999;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .auth-tab.active {
+      color: #d4af37;
+      position: relative;
+    }
+
+    .auth-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1rem;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #d4af37;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #666;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .form-group input {
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .forgot-password {
+      text-align: right;
+      margin-top: 0.5rem;
+    }
+
+    .forgot-password a {
+      color: #666;
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #d4af37;
+      padding-bottom: 2px;
+    }
+
+    .forgot-password a:hover {
+      color: #d4af37;
+    }
+
+    .auth-error {
+      background: #fee;
+      color: #c00;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .auth-success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #1a1a1a;
+      border: 1px solid #1a1a1a;
+    }
+
+    .btn-outline:hover {
+      background: #1a1a1a;
+      color: #fff;
     }
   </style>
 </body>
