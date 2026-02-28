@@ -17,12 +17,12 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 // ========== GLOBAL VARIABLES ==========
-let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
+let cart = [];
 let currentUser = null;
-let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+let products = [];
 
 // ========== FIREBASE AUTH STATE OBSERVER ==========
-auth.onAuthStateChanged((user) => {
+auth.onAuthStateChanged(async (user) => {
   if (user) {
     currentUser = {
       uid: user.uid,
@@ -34,12 +34,20 @@ auth.onAuthStateChanged((user) => {
     };
     
     localStorage.setItem('MyEssantia_user', JSON.stringify(currentUser));
+    
+    // Load user's cart from Firestore
+    await loadUserCart(user.uid);
+    
+    // Load products from Firestore
+    await loadProducts();
+    
     updateProfileIcon();
     if (document.getElementById('profile-content')) {
       renderProfileContent();
     }
   } else {
     currentUser = null;
+    cart = []; // Clear cart when user logs out
     localStorage.removeItem('MyEssantia_user');
     updateProfileIcon();
     if (document.getElementById('profile-content')) {
@@ -47,6 +55,53 @@ auth.onAuthStateChanged((user) => {
     }
   }
 });
+
+// ========== FIREBASE DATA FUNCTIONS ==========
+async function loadUserCart(userId) {
+  try {
+    const cartDoc = await db.collection('carts').doc(userId).get();
+    if (cartDoc.exists) {
+      cart = cartDoc.data().items || [];
+    } else {
+      cart = [];
+    }
+    updateCartCount();
+    renderCartItems();
+  } catch (error) {
+    console.error('Error loading cart:', error);
+    cart = [];
+  }
+}
+
+async function saveCartToFirebase() {
+  if (!currentUser) return;
+  
+  try {
+    await db.collection('carts').doc(currentUser.uid).set({
+      items: cart,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch (error) {
+    console.error('Error saving cart:', error);
+  }
+}
+
+async function loadProducts() {
+  try {
+    const productsSnapshot = await db.collection('products').get();
+    products = productsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    
+    // Cache products in localStorage for offline access
+    localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+  } catch (error) {
+    console.error('Error loading products:', error);
+    // Fallback to localStorage if Firebase fails
+    products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+  }
+}
 
 // ========== UTILITY FUNCTIONS ==========
 function formatPrice(price) {
@@ -110,6 +165,9 @@ async function loadComponents() {
     const footerData = await footerResponse.text();
     document.getElementById('footer').innerHTML = footerData;
 
+    // Load products after components are loaded
+    await loadProducts();
+
     setTimeout(() => {
       if (typeof initializeApp === 'function') {
         initializeApp();
@@ -120,6 +178,10 @@ async function loadComponents() {
     console.error('Error loading components:', error);
     document.getElementById('header').innerHTML = getFallbackHeader();
     document.getElementById('footer').innerHTML = getFallbackFooter();
+    
+    // Fallback to cached products
+    products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+    
     setTimeout(() => {
       if (typeof initializeApp === 'function') {
         initializeApp();
@@ -244,7 +306,7 @@ function closeModal(modalId) {
 }
 
 // ========== CART FUNCTIONS ==========
-window.addToCart = function(productId) {
+window.addToCart = async function(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
 
@@ -272,7 +334,11 @@ window.addToCart = function(productId) {
     });
   }
 
-  saveCart();
+  // Save to Firebase if user is logged in
+  if (currentUser) {
+    await saveCartToFirebase();
+  }
+  
   updateCartCount();
   
   const btn = event?.target?.closest('button');
@@ -296,7 +362,7 @@ window.buyNow = function(productId) {
   openCart();
 };
 
-window.updateQuantity = function(productId, change) {
+window.updateQuantity = async function(productId, change) {
   const itemIndex = cart.findIndex(item => item.id === productId);
   if (itemIndex === -1) return;
 
@@ -313,14 +379,23 @@ window.updateQuantity = function(productId, change) {
     item.quantity = newQuantity;
   }
 
-  saveCart();
+  // Save to Firebase if user is logged in
+  if (currentUser) {
+    await saveCartToFirebase();
+  }
+  
   updateCartCount();
   renderCartItems();
 };
 
-window.removeFromCart = function(productId) {
+window.removeFromCart = async function(productId) {
   cart = cart.filter(item => item.id !== productId);
-  saveCart();
+  
+  // Save to Firebase if user is logged in
+  if (currentUser) {
+    await saveCartToFirebase();
+  }
+  
   updateCartCount();
   renderCartItems();
 };
@@ -361,14 +436,14 @@ function renderCartItems() {
           <p>${item.category}</p>
           <div class="cart-item-price">₹${formatPrice(item.price)}</div>
           <div class="cart-quantity-controls">
-            <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">
+            <button class="quantity-btn" onclick="window.updateQuantity('${item.id}', -1)">
               <i class="fa-solid fa-minus"></i>
             </button>
             <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
-            <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">
+            <button class="quantity-btn" onclick="window.updateQuantity('${item.id}', 1)">
               <i class="fa-solid fa-plus"></i>
             </button>
-            <button class="remove-btn" onclick="window.removeFromCart(${item.id})">
+            <button class="remove-btn" onclick="window.removeFromCart('${item.id}')">
               <i class="fa-regular fa-trash-can"></i>
             </button>
           </div>
@@ -387,10 +462,6 @@ function updateCartCount() {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = totalItems;
   }
-}
-
-function saveCart() {
-  localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
 }
 
 // ========== PROFILE FUNCTIONS ==========
@@ -495,261 +566,3 @@ function updateProfileIcon() {
     }
   }
 }
-
-// ========== AUTH FUNCTIONS ==========
-window.showEmailLogin = function() {
-  const profileContent = document.getElementById('profile-content');
-  profileContent.innerHTML = `
-    <div class="auth-container">
-      <div class="auth-tabs">
-        <button class="auth-tab active" onclick="window.switchAuthTab('login')" id="login-tab">Login</button>
-        <button class="auth-tab" onclick="window.switchAuthTab('signup')" id="signup-tab">Sign Up</button>
-      </div>
-      
-      <div id="login-form" class="auth-form">
-        <div class="form-group">
-          <label for="login-email">Email</label>
-          <input type="email" id="login-email" placeholder="Enter your email">
-        </div>
-        <div class="form-group">
-          <label for="login-password">Password</label>
-          <input type="password" id="login-password" placeholder="Enter your password">
-        </div>
-        <div class="forgot-password">
-          <a href="#" onclick="window.showForgotPassword()">Forgot Password?</a>
-        </div>
-        <button class="btn" onclick="window.loginWithEmail()" id="login-btn">
-          <i class="fa-regular fa-envelope"></i> Login
-        </button>
-      </div>
-      
-      <div id="signup-form" class="auth-form" style="display: none;">
-        <div class="form-group">
-          <label for="signup-name">Full Name</label>
-          <input type="text" id="signup-name" placeholder="Enter your full name">
-        </div>
-        <div class="form-group">
-          <label for="signup-email">Email</label>
-          <input type="email" id="signup-email" placeholder="Enter your email">
-        </div>
-        <div class="form-group">
-          <label for="signup-password">Password</label>
-          <input type="password" id="signup-password" placeholder="Choose a password (min. 6 characters)">
-        </div>
-        <div class="form-group">
-          <label for="signup-confirm">Confirm Password</label>
-          <input type="password" id="signup-confirm" placeholder="Confirm your password">
-        </div>
-        <button class="btn" onclick="window.signUpWithEmail()" id="signup-btn">
-          <i class="fa-regular fa-user-plus"></i> Create Account
-        </button>
-      </div>
-      
-      <div id="forgot-password-form" class="auth-form" style="display: none;">
-        <div class="form-group">
-          <label for="reset-email">Email</label>
-          <input type="email" id="reset-email" placeholder="Enter your email">
-        </div>
-        <button class="btn" onclick="window.resetPassword()" id="reset-btn">
-          <i class="fa-regular fa-paper-plane"></i> Send Reset Link
-        </button>
-        <button class="btn btn-outline" onclick="window.backToLogin()" style="margin-top: 1rem;">
-          <i class="fa-regular fa-arrow-left"></i> Back to Login
-        </button>
-      </div>
-      
-      <div id="auth-message" class="auth-message"></div>
-      
-      <div style="margin-top: 1rem; text-align: center;">
-        <a href="#" onclick="window.backToMain()" style="color: #999; text-decoration: none;">
-          <i class="fa-regular fa-arrow-left"></i> Back to sign in options
-        </a>
-      </div>
-    </div>
-  `;
-};
-
-window.switchAuthTab = function(tab) {
-  const loginTab = document.getElementById('login-tab');
-  const signupTab = document.getElementById('signup-tab');
-  const loginForm = document.getElementById('login-form');
-  const signupForm = document.getElementById('signup-form');
-  const forgotForm = document.getElementById('forgot-password-form');
-  
-  if (forgotForm) forgotForm.style.display = 'none';
-  
-  if (tab === 'login') {
-    loginTab?.classList.add('active');
-    signupTab?.classList.remove('active');
-    if (loginForm) loginForm.style.display = 'block';
-    if (signupForm) signupForm.style.display = 'none';
-  } else {
-    loginTab?.classList.remove('active');
-    signupTab?.classList.add('active');
-    if (loginForm) loginForm.style.display = 'none';
-    if (signupForm) signupForm.style.display = 'block';
-  }
-  
-  clearAuthMessage();
-};
-
-window.showForgotPassword = function() {
-  const loginForm = document.getElementById('login-form');
-  const signupForm = document.getElementById('signup-form');
-  const forgotForm = document.getElementById('forgot-password-form');
-  const authTabs = document.querySelector('.auth-tabs');
-  
-  if (authTabs) authTabs.style.display = 'none';
-  if (loginForm) loginForm.style.display = 'none';
-  if (signupForm) signupForm.style.display = 'none';
-  if (forgotForm) forgotForm.style.display = 'block';
-  
-  clearAuthMessage();
-};
-
-window.backToLogin = function() {
-  const authTabs = document.querySelector('.auth-tabs');
-  const loginForm = document.getElementById('login-form');
-  const signupForm = document.getElementById('signup-form');
-  const forgotForm = document.getElementById('forgot-password-form');
-  
-  if (authTabs) authTabs.style.display = 'flex';
-  if (loginForm) loginForm.style.display = 'block';
-  if (signupForm) signupForm.style.display = 'none';
-  if (forgotForm) forgotForm.style.display = 'none';
-  
-  window.switchAuthTab('login');
-  clearAuthMessage();
-};
-
-window.backToMain = function() {
-  renderProfileContent();
-};
-
-function showAuthMessage(message, isError = true) {
-  const messageDiv = document.getElementById('auth-message');
-  if (messageDiv) {
-    messageDiv.className = isError ? 'auth-error' : 'auth-success';
-    messageDiv.textContent = message;
-  }
-}
-
-function clearAuthMessage() {
-  const messageDiv = document.getElementById('auth-message');
-  if (messageDiv) {
-    messageDiv.className = '';
-    messageDiv.textContent = '';
-  }
-}
-
-window.loginWithEmail = async function() {
-  const email = document.getElementById('login-email')?.value;
-  const password = document.getElementById('login-password')?.value;
-  
-  if (!email || !password) {
-    showAuthMessage('Please fill in all fields');
-    return;
-  }
-  
-  try {
-    await auth.signInWithEmailAndPassword(email, password);
-    showAuthMessage('Login successful!', false);
-    setTimeout(() => {
-      closeModal('profile-modal');
-    }, 1500);
-  } catch (error) {
-    let errorMessage = 'Login failed. Please try again.';
-    switch (error.code) {
-      case 'auth/user-not-found':
-        errorMessage = 'No account found with this email.';
-        break;
-      case 'auth/wrong-password':
-        errorMessage = 'Incorrect password.';
-        break;
-      case 'auth/invalid-email':
-        errorMessage = 'Invalid email address.';
-        break;
-      case 'auth/too-many-requests':
-        errorMessage = 'Too many failed attempts. Please try again later.';
-        break;
-    }
-    showAuthMessage(errorMessage);
-  }
-};
-
-window.signUpWithEmail = async function() {
-  const name = document.getElementById('signup-name')?.value;
-  const email = document.getElementById('signup-email')?.value;
-  const password = document.getElementById('signup-password')?.value;
-  const confirm = document.getElementById('signup-confirm')?.value;
-  
-  if (!name || !email || !password || !confirm) {
-    showAuthMessage('Please fill in all fields');
-    return;
-  }
-  
-  if (password.length < 6) {
-    showAuthMessage('Password must be at least 6 characters');
-    return;
-  }
-  
-  if (password !== confirm) {
-    showAuthMessage('Passwords do not match');
-    return;
-  }
-  
-  try {
-    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-    
-    await userCredential.user.updateProfile({
-      displayName: name
-    });
-    
-    await db.collection('users').doc(userCredential.user.uid).set({
-      name: name,
-      email: email,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    
-    showAuthMessage('Account created successfully!', false);
-    setTimeout(() => {
-      closeModal('profile-modal');
-    }, 1500);
-  } catch (error) {
-    let errorMessage = 'Sign up failed. Please try again.';
-    switch (error.code) {
-      case 'auth/email-already-in-use':
-        errorMessage = 'An account already exists with this email.';
-        break;
-      case 'auth/invalid-email':
-        errorMessage = 'Invalid email address.';
-        break;
-      case 'auth/weak-password':
-        errorMessage = 'Password is too weak.';
-        break;
-    }
-    showAuthMessage(errorMessage);
-  }
-};
-
-window.resetPassword = async function() {
-  const email = document.getElementById('reset-email')?.value;
-  
-  if (!email) {
-    showAuthMessage('Please enter your email address');
-    return;
-  }
-  
-  try {
-    await auth.sendPasswordResetEmail(email);
-    showAuthMessage('Password reset email sent! Check your inbox.', false);
-  } catch (error) {
-    let errorMessage = 'Failed to send reset email.';
-    if (error.code === 'auth/user-not-found') {
-      errorMessage = 'No account found with this email.';
-    } else if (error.code === 'auth/invalid-email') {
-      errorMessage = 'Invalid email address.';
-    }
-    showAuthMessage(errorMessage);
-  }
-};
