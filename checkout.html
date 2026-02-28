@@ -13,47 +13,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Separate CSS Files (will be loaded dynamically) -->
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Common CSS -->
+  <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* -------------------- RESET & GLOBAL -------------------- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    /* -------------------- CHECKOUT PAGE SPECIFIC STYLES -------------------- */
     body {
       background-color: #faf9f7;
-      color: #1a1a1a;
-      line-height: 1.5;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* headings */
-    h1, h2, h3, .logo-style {
-      font-family: 'Playfair Display', serif;
-      font-weight: 400;
-      letter-spacing: -0.02em;
-    }
-
-    /* fluid container */
-    .container {
-      width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 clamp(0.8rem, 3vw, 1.5rem);
-    }
-
-    .bg-noise {
-      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
-      background-repeat: repeat;
-    }
-
-    /* --- checkout header (responsive) --- */
     .checkout-header {
       display: flex;
       justify-content: space-between;
@@ -83,6 +61,47 @@
     .secure-badge i {
       color: #2e7d32;
       margin-right: 0.4rem;
+    }
+
+    /* Empty cart message */
+    .empty-cart-checkout {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: #ffffff;
+      border-radius: 40px;
+      border: 1px solid #f2eee9;
+      margin: 2rem 0;
+    }
+    .empty-cart-checkout i {
+      font-size: 4rem;
+      color: #d4af37;
+      opacity: 0.5;
+      margin-bottom: 1rem;
+    }
+    .empty-cart-checkout h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+    .empty-cart-checkout p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+    .empty-cart-checkout .btn {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: #d4af37;
+      color: #0c0c0c;
+      text-decoration: none;
+      border-radius: 60px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .empty-cart-checkout .btn:hover {
+      background: #1a1a1a;
+      color: white;
+      transform: translateY(-2px);
     }
 
     /* --- main checkout grid (responsive) --- */
@@ -413,7 +432,7 @@
       color: #000000;
     }
 
-    .checkout-btn {
+    .place-order-btn {
       background: #d4af37;
       border: none;
       width: 100%;
@@ -432,10 +451,14 @@
       margin-bottom: 1.2rem;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    .checkout-btn:hover {
+    .place-order-btn:hover:not(:disabled) {
       background: #c5a231;
       transform: scale(1.01);
       box-shadow: 0 12px 24px -12px rgba(212,175,55,0.5);
+    }
+    .place-order-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .payment-icons-sm {
@@ -464,14 +487,16 @@
       margin-right: 0.2rem;
     }
 
+    footer {
+      margin-top: auto;
+    }
+
     /* Touch targets */
-    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add, .img-buy, select, .qty-btn, .promo-btn, .checkout-btn {
+    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add, .img-buy, select, .qty-btn, .promo-btn, .place-order-btn {
       touch-action: manipulation;
     }
 
     /* ---------- RESPONSIVE BREAKPOINTS ---------- */
-
-    /* tablet landscape and below */
     @media (max-width: 992px) {
       .checkout-grid {
         grid-template-columns: 1fr;
@@ -484,7 +509,6 @@
       }
     }
 
-    /* tablet portrait */
     @media (max-width: 768px) {
       .form-group {
         flex: 1 1 100%;
@@ -516,7 +540,6 @@
       }
     }
 
-    /* mobile */
     @media (max-width: 480px) {
       .checkout-header {
         flex-direction: column;
@@ -540,13 +563,12 @@
         font-size: 1.4rem;
         gap: 0.8rem;
       }
-      .checkout-btn {
+      .place-order-btn {
         padding: 1.2rem;
         font-size: 1rem;
       }
     }
 
-    /* extra small devices */
     @media (max-width: 360px) {
       .container {
         padding: 0 0.5rem;
@@ -559,12 +581,6 @@
         width: 100%;
         justify-content: flex-start;
       }
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      display: block;
     }
   </style>
 </head>
@@ -581,552 +597,227 @@
         <div class="secure-badge"><i class="fa-solid fa-lock"></i> secure checkout</div>
       </div>
 
-      <!-- main grid -->
-      <div class="checkout-grid">
-        <!-- LEFT COLUMN: contact, shipping address, shipping method -->
-        <div>
-          <!-- contact information -->
-          <div class="section-card">
-            <div class="section-title"><span class="step-number">1</span> Contact</div>
-            <div class="form-group full-width">
-              <label>Email</label>
-              <input type="email" placeholder="your@email.com" value="customer@essence.in">
-            </div>
-            <div class="checkbox-row">
-              <input type="checkbox" id="offers" checked>
-              <label for="offers">keep me updated on new arrivals & offers</label>
-            </div>
-          </div>
-
-          <!-- shipping address -->
-          <div class="section-card">
-            <div class="section-title"><span class="step-number">2</span> Shipping address</div>
-            <div class="form-row">
-              <div class="form-group"><label>First name</label><input placeholder="First name" value="Alex"></div>
-              <div class="form-group"><label>Last name</label><input placeholder="Last name" value="River"></div>
-            </div>
-            <div class="form-group full-width"><label>Address</label><input placeholder="Street, building" value="123 Main Street"></div>
-            <div class="form-row">
-              <div class="form-group"><label>City</label><input placeholder="City" value="Kochi"></div>
-              <div class="form-group"><label>PIN code</label><input placeholder="PIN" value="682001"></div>
-            </div>
-            <div class="form-row">
-              <div class="form-group"><label>State</label>
-                <select>
-                  <option>Select state</option>
-                  <option selected>Kerala</option>
-                  <option>Tamil Nadu</option>
-                  <option>Karnataka</option>
-                </select>
-              </div>
-              <div class="form-group"><label>Phone</label><input placeholder="+91 ..." value="9876543210"></div>
-            </div>
-          </div>
-
-          <!-- shipping method -->
-          <div class="section-card">
-            <div class="section-title"><span class="step-number">3</span> Shipping method</div>
-            
-            <label class="radio-card selected" id="radio-standard">
-              <input type="radio" name="shipping" value="standard" id="ship-standard" checked>
-              <div class="radio-content">
-                <span>Standard shipping (3–5 days) <span class="free-badge" id="freeBadge" style="display: none;">FREE</span></span>
-                <span class="radio-price" id="standard-price">₹40</span>
-              </div>
-            </label>
-
-            <label class="radio-card" id="radio-express">
-              <input type="radio" name="shipping" value="express">
-              <div class="radio-content">
-                <span>Express (1–2 days)</span>
-                <span class="radio-price">₹149</span>
-              </div>
-            </label>
-            <p style="font-size:0.75rem; margin-top:0.8rem; color:#8a7f75;"><i class="fa-solid fa-circle-info"></i> Standard shipping becomes FREE on orders above ₹499</p>
-          </div>
-        </div>
-
-        <!-- RIGHT COLUMN: order summary -->
-        <div>
-          <div class="order-summary">
-            <div class="summary-title">your <span>cart</span></div>
-            
-            <!-- product 1: leather cardholder -->
-            <div class="cart-item" id="product-1">
-              <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1594734417407-396c2f1bd4e5?q=80&w=1887&auto=format&fit=crop');"></div>
-              <div class="item-details">
-                <div class="item-header">
-                  <h4>leather cardholder</h4>
-                  <span class="item-price" id="price1-display">₹3,980</span>
-                </div>
-                <div class="item-meta">rfid blocking · cognac</div>
-                <div class="qty-control">
-                  <button class="qty-btn" data-product="1" data-delta="-1">−</button>
-                  <span style="font-size: 0.9rem;" id="qty1">2</span>
-                  <button class="qty-btn" data-product="1" data-delta="1">+</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- product 2: slim power bank -->
-            <div class="cart-item" id="product-2">
-              <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1622445275463-afa2ab738c34?q=80&w=1887&auto=format&fit=crop');"></div>
-              <div class="item-details">
-                <div class="item-header">
-                  <h4>slim power bank</h4>
-                  <span class="item-price" id="price2-display">₹3,590</span>
-                </div>
-                <div class="item-meta">10.000 mAh · sand</div>
-                <div class="qty-control">
-                  <button class="qty-btn" data-product="2" data-delta="-1">−</button>
-                  <span style="font-size: 0.9rem;" id="qty2">1</span>
-                  <button class="qty-btn" data-product="2" data-delta="1">+</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- product 3: universal adapter -->
-            <div class="cart-item" id="product-3">
-              <div class="item-image" style="background-image: url('https://images.unsplash.com/photo-1583864697784-a0efc8379f70?q=80&w=1887&auto=format&fit=crop');"></div>
-              <div class="item-details">
-                <div class="item-header">
-                  <h4>universal adapter</h4>
-                  <span class="item-price" id="price3-display">₹3,290</span>
-                </div>
-                <div class="item-meta">4 usb · black</div>
-                <div class="qty-control">
-                  <button class="qty-btn" data-product="3" data-delta="-1">−</button>
-                  <span style="font-size: 0.9rem;" id="qty3">1</span>
-                  <button class="qty-btn" data-product="3" data-delta="1">+</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- PROMO CODE SECTION -->
-            <div class="promo-inside">
-              <p>Apply promo code</p>
-              <div class="promo-flex">
-                <input type="text" placeholder="Enter code" id="promo-code">
-                <button class="promo-btn" onclick="applyPromo()">Apply</button>
-              </div>
-            </div>
-
-            <div style="margin: 0.5rem 0 1rem; border-top: 1px dashed #ddd;"></div>
-
-            <!-- dynamic price lines -->
-            <div class="price-line"><span>Subtotal</span> <span id="subtotal-value">₹10,860</span></div>
-            <div class="price-line"><span>Shipping</span> <span id="shipping-value">₹0</span></div>
-            <div class="price-line" style="color:#2e7d32;" id="discount-line"><span>Discount</span> <span id="discount-value">-₹0</span></div>
-
-            <!-- total -->
-            <div class="total-line">
-              <span>Total</span> <span id="total-value">₹10,860</span>
-            </div>
-
-            <button class="checkout-btn" onclick="placeOrder()">
-              <i class="fa-solid fa-lock fa-fade"></i> place order
-            </button>
-
-            <div class="payment-icons-sm">
-              <i class="fa-brands fa-cc-visa"></i>
-              <i class="fa-brands fa-cc-mastercard"></i>
-              <i class="fa-brands fa-cc-amex"></i>
-              <i class="fa-brands fa-cc-paypal"></i>
-              <i class="fa-regular fa-credit-card"></i>
-            </div>
-            <div class="notice">
-              <i class="fa-regular fa-circle-check"></i> No-returns · secure checkout
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Cart items will be loaded dynamically from localStorage -->
+      <div id="checkout-content"></div>
     </div>
   </main>
 
   <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
+  <!-- Common Modals -->
+  <div id="common-modals"></div>
+
+  <!-- Common JavaScript -->
+  <script src="common.js"></script>
+
   <script>
-    // Cart state - initialize from localStorage
-    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-    
-    // User state - initialize from localStorage
-    let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+    // ========== CHECKOUT PAGE SPECIFIC VARIABLES ==========
+    let subtotalSpan, shippingSpan, discountSpan, totalSpan;
+    let standardRadio, expressRadio, freeBadge, standardPriceSpan, radioStandard, radioExpress;
+    let cartItems = [];
 
-    // Load header and footer
-    Promise.all([
-      fetch('header.html').then(res => res.text()).catch(() => {
-        console.warn('header.html not found, using empty placeholder');
-        return '';
-      }),
-      fetch('footer.html').then(res => res.text()).catch(() => {
-        console.warn('footer.html not found, using empty placeholder');
-        return '';
-      })
-    ]).then(([headerData, footerData]) => {
-      document.getElementById('header').innerHTML = headerData || getDefaultHeader();
-      document.getElementById('footer').innerHTML = footerData || getDefaultFooter();
+    // ========== CHECKOUT FUNCTIONS ==========
+    function loadCartItems() {
+      // Get cart from localStorage
+      cartItems = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
       
-      // Initialize after components are loaded
-      setTimeout(() => {
-        initializeApp();
-      }, 100);
-    }).catch(error => {
-      console.error('Error loading components:', error);
-      // Use default header/footer if fetch fails
-      document.getElementById('header').innerHTML = getDefaultHeader();
-      document.getElementById('footer').innerHTML = getDefaultFooter();
-      setTimeout(() => {
-        initializeApp();
-      }, 100);
-    });
-
-    // Default header HTML in case header.html is not available
-    function getDefaultHeader() {
-      return `
-        <header style="background: #ffffff; border-bottom: 1px solid #f0f0f0; padding: 0.8rem 0;">
-          <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <div class="logo">
-              <a href="/" style="text-decoration: none; color: #1a1a1a;">
-                <span style="font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 500;">MyEssantia</span>
-                <span style="font-size: 0.7rem; color: #d4af37; display: block; line-height: 1;">premium essentials</span>
-              </a>
-            </div>
-            <nav style="display: flex; gap: 2rem;">
-              <a href="#" style="text-decoration: none; color: #1a1a1a;">shop</a>
-              <a href="#" style="text-decoration: none; color: #1a1a1a;">new</a>
-              <a href="#" style="text-decoration: none; color: #1a1a1a;">editorial</a>
-            </nav>
-            <div class="header-icons" style="display: flex; gap: 1.2rem; align-items: center;">
-              <a href="#" id="profile-icon" style="font-size: 1.3rem; color: #1a1a1a;">
-                <i class="fa-regular fa-user"></i>
-              </a>
-              <a href="#" id="cart-icon" style="font-size: 1.3rem; color: #1a1a1a; position: relative;">
-                <i class="fa-regular fa-bag-shopping"></i>
-                <span id="cart-count" style="position: absolute; top: -8px; right: -8px; background: #d4af37; color: #0c0c0c; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center;">0</span>
-              </a>
-            </div>
-          </div>
-        </header>
-
-        <!-- Cart Modal -->
-        <div id="cart-modal" class="modal" style="display: none;">
-          <div class="modal-content" style="background: white; border-radius: 30px;">
-            <div class="modal-header">
-              <h3>Your Cart</h3>
-              <button id="close-cart" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
-            </div>
-            <div id="cart-items" class="cart-items"></div>
-            <div class="cart-footer">
-              <div class="cart-total">
-                <span>Total:</span>
-                <span id="cart-total-amount">₹0</span>
-              </div>
-              <button id="checkout-btn" class="btn" style="width: 100%;">Checkout</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Profile Modal -->
-        <div id="profile-modal" class="modal" style="display: none;">
-          <div class="modal-content" style="background: white; border-radius: 30px;">
-            <div class="modal-header">
-              <h3>Account</h3>
-              <button id="close-profile" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
-            </div>
-            <div id="profile-content" class="profile-content"></div>
-          </div>
-        </div>
-      `;
-    }
-
-    // Default footer HTML
-    function getDefaultFooter() {
-      return `
-        <footer style="background: #fafafa; border-top: 1px solid #efefef; padding: 3rem 0 2rem; margin-top: 2rem;">
-          <div class="container">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
-              <div>
-                <h4 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem;">MyEssantia</h4>
-                <p style="color: #5f5b57;">Premium accessories & daily essentials.</p>
-              </div>
-              <div>
-                <h4>Shop</h4>
-                <ul style="list-style: none;">
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">New Arrivals</a></li>
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Bestsellers</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4>Support</h4>
-                <ul style="list-style: none;">
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Contact</a></li>
-                  <li><a href="#" style="color: #5f5b57; text-decoration: none;">Shipping</a></li>
-                </ul>
-              </div>
-            </div>
-            <div style="text-align: center; margin-top: 3rem; color: #a2a2a2;">
-              <p>&copy; 2025 MyEssantia. All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
-      `;
-    }
-
-    function initializeApp() {
-      initializeCart();
-      initializeProfile();
+      const checkoutContent = document.getElementById('checkout-content');
       
-      // Initialize checkout functionality
-      initializeCheckout();
-    }
-
-    // ==================== CART FUNCTIONS ====================
-    function initializeCart() {
-      updateCartCount();
-      setupCartEventListeners();
-    }
-
-    function setupCartEventListeners() {
-      const cartIcon = document.getElementById('cart-icon');
-      const closeCart = document.getElementById('close-cart');
-      const cartModal = document.getElementById('cart-modal');
-      const checkoutBtn = document.getElementById('checkout-btn');
-
-      if (cartIcon) {
-        cartIcon.addEventListener('click', (e) => {
-          e.preventDefault();
-          openCart();
-        });
-      }
-
-      if (closeCart) {
-        closeCart.addEventListener('click', () => {
-          closeModal('cart-modal');
-        });
-      }
-
-      window.addEventListener('click', (e) => {
-        if (e.target === cartModal) {
-          closeModal('cart-modal');
-        }
-      });
-
-      if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
-          if (cart.length === 0) {
-            alert('Your cart is empty!');
-          } else {
-            window.location.href = 'checkout.html';
-          }
-        });
-      }
-    }
-
-    function openCart() {
-      const cartModal = document.getElementById('cart-modal');
-      if (cartModal) {
-        renderCartItems();
-        cartModal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    // ==================== PROFILE FUNCTIONS ====================
-    function initializeProfile() {
-      updateProfileIcon();
-      setupProfileEventListeners();
-    }
-
-    function setupProfileEventListeners() {
-      const profileIcon = document.getElementById('profile-icon');
-      const closeProfile = document.getElementById('close-profile');
-      const profileModal = document.getElementById('profile-modal');
-
-      if (profileIcon) {
-        profileIcon.addEventListener('click', (e) => {
-          e.preventDefault();
-          openProfile();
-        });
-      }
-
-      if (closeProfile) {
-        closeProfile.addEventListener('click', () => {
-          closeModal('profile-modal');
-        });
-      }
-
-      window.addEventListener('click', (e) => {
-        if (e.target === profileModal) {
-          closeModal('profile-modal');
-        }
-      });
-    }
-
-    function openProfile() {
-      const profileModal = document.getElementById('profile-modal');
-      if (profileModal) {
-        renderProfileContent();
-        profileModal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function renderProfileContent() {
-      const profileContent = document.getElementById('profile-content');
-      if (!profileContent) return;
-
-      if (currentUser) {
-        profileContent.innerHTML = `
-          <div class="profile-info">
-            <div class="profile-avatar">
-              <i class="fa-regular fa-circle-user"></i>
-            </div>
-            <div class="profile-details">
-              <p><strong>Name:</strong> ${currentUser.name}</p>
-              <p><strong>Email:</strong> ${currentUser.email}</p>
-              <p><strong>Member since:</strong> ${currentUser.memberSince || '2025'}</p>
-            </div>
-            <button class="btn logout-btn" onclick="logout()">Logout</button>
+      if (cartItems.length === 0) {
+        // Show empty cart message
+        checkoutContent.innerHTML = `
+          <div class="empty-cart-checkout">
+            <i class="fa-regular fa-cart-shopping"></i>
+            <h3>Your cart is empty</h3>
+            <p>Looks like you haven't added any items to your cart yet.</p>
+            <a href="collection.html" class="btn">Continue Shopping</a>
           </div>
         `;
-      } else {
-        profileContent.innerHTML = `
-          <div class="login-form">
-            <h4>Welcome Back!</h4>
-            <p>Sign in to your account</p>
-            <div id="login-error" class="error-message"></div>
-            <form onsubmit="handleLogin(event)">
-              <div class="form-group">
-                <input type="email" id="email" placeholder="Email" required>
-              </div>
-              <div class="form-group">
-                <input type="password" id="password" placeholder="Password" required>
-              </div>
-              <button type="submit" class="btn login-btn">Sign In</button>
-            </form>
-            <p style="margin-top: 1rem;">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
-          </div>
-        `;
-      }
-    }
-
-    window.handleLogin = function(event) {
-      event.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      
-      if (!email || !password) {
-        alert('Please fill in all fields');
         return;
       }
 
-      const user = {
-        name: email.split('@')[0],
-        email: email,
-        memberSince: '2025'
-      };
-
-      localStorage.setItem('MyEssantia_user', JSON.stringify(user));
-      currentUser = user;
-      updateProfileIcon();
-      renderProfileContent();
-      alert('Login successful!');
-    };
-
-    window.logout = function() {
-      localStorage.removeItem('MyEssantia_user');
-      currentUser = null;
-      updateProfileIcon();
-      renderProfileContent();
-      alert('Logged out successfully');
-    };
-
-    window.showSignup = function() {
-      alert('Sign up functionality - please use login form for demo');
-    };
-
-    function updateProfileIcon() {
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon && currentUser) {
-        profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
-      } else if (profileIcon) {
-        profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
-      }
+      // Render checkout grid with cart items
+      checkoutContent.innerHTML = renderCheckoutGrid();
+      
+      // Initialize checkout after rendering
+      setTimeout(() => {
+        initializeCheckout();
+      }, 50);
     }
 
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = '';
-      }
+    function renderCheckoutGrid() {
+      // Generate cart items HTML
+      const cartItemsHtml = cartItems.map((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        const imageUrl = item.primaryImg || item.image || 'https://via.placeholder.com/80';
+        
+        return `
+          <div class="cart-item" id="product-${item.id}" data-price="${item.price}" data-index="${index}">
+            <div class="item-image" style="background-image: url('${imageUrl}');"></div>
+            <div class="item-details">
+              <div class="item-header">
+                <h4>${item.title}</h4>
+                <span class="item-price" id="price-${item.id}-display">₹${formatPrice(itemTotal)}</span>
+              </div>
+              <div class="item-meta">${item.category || 'Accessory'}</div>
+              <div class="qty-control">
+                <button class="qty-btn" data-product="${item.id}" data-delta="-1">−</button>
+                <span style="font-size: 0.9rem;" id="qty-${item.id}">${item.quantity}</span>
+                <button class="qty-btn" data-product="${item.id}" data-delta="1">+</button>
+                <button class="qty-btn" data-product="${item.id}" data-delta="remove" style="background: #fee; color: #c00; margin-left: 0.5rem;" title="Remove item">
+                  <i class="fa-solid fa-trash-can" style="font-size: 0.8rem;"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <!-- main grid -->
+        <div class="checkout-grid">
+          <!-- LEFT COLUMN: contact, shipping address, shipping method -->
+          <div>
+            <!-- contact information -->
+            <div class="section-card">
+              <div class="section-title"><span class="step-number">1</span> Contact</div>
+              <div class="form-group full-width">
+                <label>Email</label>
+                <input type="email" id="contact-email" placeholder="your@email.com" value="${currentUser?.email || ''}">
+              </div>
+              <div class="checkbox-row">
+                <input type="checkbox" id="offers" checked>
+                <label for="offers">keep me updated on new arrivals & offers</label>
+              </div>
+            </div>
+
+            <!-- shipping address -->
+            <div class="section-card">
+              <div class="section-title"><span class="step-number">2</span> Shipping address</div>
+              <div class="form-row">
+                <div class="form-group"><label>First name</label><input id="first-name" placeholder="First name" value=""></div>
+                <div class="form-group"><label>Last name</label><input id="last-name" placeholder="Last name" value=""></div>
+              </div>
+              <div class="form-group full-width"><label>Address</label><input id="address" placeholder="Street, building" value=""></div>
+              <div class="form-row">
+                <div class="form-group"><label>City</label><input id="city" placeholder="City" value=""></div>
+                <div class="form-group"><label>PIN code</label><input id="pin" placeholder="PIN" value=""></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>State</label>
+                  <select id="state">
+                    <option>Select state</option>
+                    <option>Kerala</option>
+                    <option>Tamil Nadu</option>
+                    <option>Karnataka</option>
+                    <option>Maharashtra</option>
+                    <option>Delhi</option>
+                  </select>
+                </div>
+                <div class="form-group"><label>Phone</label><input id="phone" placeholder="+91 ..." value=""></div>
+              </div>
+            </div>
+
+            <!-- shipping method -->
+            <div class="section-card">
+              <div class="section-title"><span class="step-number">3</span> Shipping method</div>
+              
+              <label class="radio-card selected" id="radio-standard">
+                <input type="radio" name="shipping" value="standard" id="ship-standard" checked>
+                <div class="radio-content">
+                  <span>Standard shipping (3–5 days) <span class="free-badge" id="freeBadge" style="display: none;">FREE</span></span>
+                  <span class="radio-price" id="standard-price">₹40</span>
+                </div>
+              </label>
+
+              <label class="radio-card" id="radio-express">
+                <input type="radio" name="shipping" value="express">
+                <div class="radio-content">
+                  <span>Express (1–2 days)</span>
+                  <span class="radio-price">₹149</span>
+                </div>
+              </label>
+              <p style="font-size:0.75rem; margin-top:0.8rem; color:#8a7f75;"><i class="fa-solid fa-circle-info"></i> Standard shipping becomes FREE on orders above ₹499</p>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: order summary -->
+          <div>
+            <div class="order-summary">
+              <div class="summary-title">your <span>cart</span></div>
+              
+              ${cartItemsHtml}
+
+              <!-- PROMO CODE SECTION -->
+              <div class="promo-inside">
+                <p>Apply promo code</p>
+                <div class="promo-flex">
+                  <input type="text" placeholder="Enter code" id="promo-code">
+                  <button class="promo-btn" onclick="applyPromo()">Apply</button>
+                </div>
+              </div>
+
+              <div style="margin: 0.5rem 0 1rem; border-top: 1px dashed #ddd;"></div>
+
+              <!-- dynamic price lines -->
+              <div class="price-line"><span>Subtotal</span> <span id="subtotal-value">₹0</span></div>
+              <div class="price-line"><span>Shipping</span> <span id="shipping-value">₹0</span></div>
+              <div class="price-line" style="color:#2e7d32;" id="discount-line"><span>Discount</span> <span id="discount-value">-₹0</span></div>
+
+              <!-- total -->
+              <div class="total-line">
+                <span>Total</span> <span id="total-value">₹0</span>
+              </div>
+
+              <button class="place-order-btn" onclick="placeOrder()" id="place-order-btn">
+                <i class="fa-solid fa-lock fa-fade"></i> place order
+              </button>
+
+              <div class="payment-icons-sm">
+                <i class="fa-brands fa-cc-visa"></i>
+                <i class="fa-brands fa-cc-mastercard"></i>
+                <i class="fa-brands fa-cc-amex"></i>
+                <i class="fa-brands fa-cc-paypal"></i>
+                <i class="fa-regular fa-credit-card"></i>
+              </div>
+              <div class="notice">
+                <i class="fa-regular fa-circle-check"></i> No-returns · secure checkout
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal('cart-modal');
-        closeModal('profile-modal');
-      }
-    });
-
-    // ==================== CHECKOUT FUNCTIONS ====================
     function initializeCheckout() {
-      // Base prices (INR)
-      window.basePrices = [1990, 3590, 3290];
-      
       // Get DOM elements
-      window.productContainers = [
-        document.getElementById('product-1'),
-        document.getElementById('product-2'),
-        document.getElementById('product-3')
-      ];
+      subtotalSpan = document.getElementById('subtotal-value');
+      shippingSpan = document.getElementById('shipping-value');
+      discountSpan = document.getElementById('discount-value');
+      totalSpan = document.getElementById('total-value');
       
-      window.qtySpans = [
-        document.getElementById('qty1'),
-        document.getElementById('qty2'),
-        document.getElementById('qty3')
-      ];
-      
-      window.priceDisplays = [
-        document.getElementById('price1-display'),
-        document.getElementById('price2-display'),
-        document.getElementById('price3-display')
-      ];
-      
-      window.subtotalSpan = document.getElementById('subtotal-value');
-      window.shippingSpan = document.getElementById('shipping-value');
-      window.discountSpan = document.getElementById('discount-value');
-      window.totalSpan = document.getElementById('total-value');
-      
-      window.standardRadio = document.getElementById('ship-standard');
-      window.expressRadio = document.querySelector('input[name="shipping"][value="express"]');
-      window.freeBadge = document.getElementById('freeBadge');
-      window.standardPriceSpan = document.getElementById('standard-price');
-      window.radioStandard = document.getElementById('radio-standard');
-      window.radioExpress = document.getElementById('radio-express');
+      standardRadio = document.getElementById('ship-standard');
+      expressRadio = document.querySelector('input[name="shipping"][value="express"]');
+      freeBadge = document.getElementById('freeBadge');
+      standardPriceSpan = document.getElementById('standard-price');
+      radioStandard = document.getElementById('radio-standard');
+      radioExpress = document.getElementById('radio-express');
 
       // Quantity button handlers
       document.querySelectorAll('.qty-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
-          const delta = parseInt(this.getAttribute('data-delta'));
+          const delta = this.getAttribute('data-delta');
           const productId = this.getAttribute('data-product');
           if (!productId) return;
           
-          const idx = parseInt(productId) - 1;
-          if (!productExists(idx)) return;
-          
-          const span = qtySpans[idx];
-          let val = parseInt(span.innerText) || 1;
-          const newVal = val + delta;
-          
-          if (newVal < 1) {
-            removeProduct(idx);
-          } else {
-            span.innerText = newVal;
+          if (delta === 'remove') {
+            removeFromCart(parseInt(productId));
+            return;
           }
           
-          updateAll();
+          const deltaNum = parseInt(delta);
+          updateCartItemQuantity(parseInt(productId), deltaNum);
         });
       });
 
@@ -1139,54 +830,87 @@
       updateAll();
     }
 
-    function productExists(idx) {
-      return window.productContainers[idx] && window.productContainers[idx].style.display !== 'none';
-    }
+    function updateCartItemQuantity(productId, change) {
+      const itemIndex = cartItems.findIndex(item => item.id === productId);
+      if (itemIndex === -1) return;
 
-    function removeProduct(idx) {
-      if (window.productContainers[idx]) {
-        window.productContainers[idx].style.display = 'none';
+      const item = cartItems[itemIndex];
+      const newQuantity = item.quantity + change;
+
+      if (newQuantity <= 0) {
+        // Remove item
+        cartItems.splice(itemIndex, 1);
+        const productElement = document.getElementById(`product-${productId}`);
+        if (productElement) {
+          productElement.remove();
+        }
+      } else {
+        // Update quantity
+        item.quantity = newQuantity;
+        const qtySpan = document.getElementById(`qty-${productId}`);
+        if (qtySpan) {
+          qtySpan.innerText = newQuantity;
+        }
+        
+        // Update price display
+        const priceSpan = document.getElementById(`price-${productId}-display`);
+        if (priceSpan) {
+          const itemTotal = item.price * newQuantity;
+          priceSpan.innerText = '₹' + formatPrice(itemTotal);
+        }
+      }
+
+      // Save to localStorage
+      localStorage.setItem('MyEssantia_cart', JSON.stringify(cartItems));
+      
+      // Update cart count in header
+      updateCartCount();
+      
+      // Check if cart is empty
+      if (cartItems.length === 0) {
+        // Reload page to show empty cart message
+        window.location.reload();
+      } else {
+        updateAll();
       }
     }
 
-    function updateAll() {
-      const qtys = window.qtySpans.map((span, idx) => {
-        if (!span || !productExists(idx)) return 0;
-        return parseInt(span.innerText) || 0;
-      });
-      
-      // Update individual product price displays
-      qtys.forEach((qty, idx) => {
-        if (productExists(idx) && qty > 0 && window.priceDisplays[idx]) {
-          const itemTotal = window.basePrices[idx] * qty;
-          window.priceDisplays[idx].innerText = '₹' + itemTotal.toLocaleString('en-IN');
-        }
-      });
-      
-      // Calculate subtotal
-      const subtotal = window.basePrices.reduce((sum, price, idx) => {
-        return sum + (qtys[idx] > 0 ? price * qtys[idx] : 0);
+    window.removeFromCart = function(productId) {
+      updateCartItemQuantity(productId, -Infinity);
+    };
+
+    function formatPrice(price) {
+      return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
+
+    function calculateSubtotal() {
+      return cartItems.reduce((total, item) => {
+        return total + (item.price * item.quantity);
       }, 0);
+    }
+
+    function updateAll() {
+      const subtotal = calculateSubtotal();
       
       // Determine shipping
       let shippingCost = 40;
       let shippingText = '₹40';
-      const isExpress = window.expressRadio ? window.expressRadio.checked : false;
+      const isExpress = expressRadio ? expressRadio.checked : false;
       
       if (subtotal > 499) {
-        if (window.standardRadio && window.standardRadio.checked) {
+        if (standardRadio && standardRadio.checked) {
           shippingCost = 0;
           shippingText = 'FREE';
         } else if (isExpress) {
           shippingCost = 149;
           shippingText = '₹149';
         }
-        if (window.standardPriceSpan) window.standardPriceSpan.innerText = 'FREE';
-        if (window.freeBadge) window.freeBadge.style.display = 'inline-block';
+        if (standardPriceSpan) standardPriceSpan.innerText = 'FREE';
+        if (freeBadge) freeBadge.style.display = 'inline-block';
       } else {
-        if (window.standardPriceSpan) window.standardPriceSpan.innerText = '₹40';
-        if (window.freeBadge) window.freeBadge.style.display = 'none';
-        if (window.standardRadio && window.standardRadio.checked) {
+        if (standardPriceSpan) standardPriceSpan.innerText = '₹40';
+        if (freeBadge) freeBadge.style.display = 'none';
+        if (standardRadio && standardRadio.checked) {
           shippingCost = 40;
           shippingText = '₹40';
         } else if (isExpress) {
@@ -1200,21 +924,21 @@
         shippingText = '₹149';
       }
 
-      window.shippingSpan.innerText = shippingText;
+      if (shippingSpan) shippingSpan.innerText = shippingText;
 
       const discount = 0;
-      window.discountSpan.innerText = '-₹' + discount;
+      if (discountSpan) discountSpan.innerText = '-₹' + discount;
 
       const total = subtotal - discount + shippingCost;
-      window.subtotalSpan.innerText = '₹' + subtotal.toLocaleString('en-IN');
-      window.totalSpan.innerText = '₹' + total.toLocaleString('en-IN');
+      if (subtotalSpan) subtotalSpan.innerText = '₹' + formatPrice(subtotal);
+      if (totalSpan) totalSpan.innerText = '₹' + formatPrice(total);
 
       // Highlight selected radio card
       document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
-      if (window.standardRadio && window.standardRadio.checked) {
-        window.radioStandard.classList.add('selected');
-      } else if (window.expressRadio && window.expressRadio.checked) {
-        window.radioExpress.classList.add('selected');
+      if (standardRadio && standardRadio.checked) {
+        if (radioStandard) radioStandard.classList.add('selected');
+      } else if (expressRadio && expressRadio.checked) {
+        if (radioExpress) radioExpress.classList.add('selected');
       }
     }
 
@@ -1228,314 +952,105 @@
     };
 
     window.placeOrder = function() {
-      alert('Order placed (demo) — thank you for shopping with MyEssantia!');
-    };
-
-    // ==================== CART FUNCTIONS (continued) ====================
-    function renderCartItems() {
-      const cartItemsContainer = document.getElementById('cart-items');
-      const cartItemCount = document.getElementById('cart-item-count');
-      const cartTotalAmount = document.getElementById('cart-total-amount');
-
-      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
-
-      if (cart.length === 0) {
-        cartItemsContainer.innerHTML = `
-          <div class="empty-cart-message">
-            <i class="fa-regular fa-cart-shopping"></i>
-            <p>Your cart is empty</p>
-          </div>
-        `;
-        cartItemCount.textContent = '0';
-        cartTotalAmount.textContent = '₹0';
+      if (!currentUser) {
+        alert('Please login to place your order');
+        openProfile();
         return;
       }
+      
+      if (cartItems.length === 0) {
+        alert('Your cart is empty!');
+        return;
+      }
+      
+      // Validate required fields
+      const firstName = document.getElementById('first-name').value;
+      const lastName = document.getElementById('last-name').value;
+      const address = document.getElementById('address').value;
+      const city = document.getElementById('city').value;
+      const pin = document.getElementById('pin').value;
+      const phone = document.getElementById('phone').value;
+      
+      if (!firstName || !lastName || !address || !city || !pin || !phone) {
+        alert('Please fill in all shipping address fields');
+        return;
+      }
+      
+      // Create order object
+      const order = {
+        orderId: 'ORD' + Date.now().toString().slice(-8),
+        userId: currentUser.uid,
+        email: currentUser.email,
+        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        status: 'processing',
+        items: cartItems.map(item => ({
+          id: item.id,
+          name: item.title,
+          qty: item.quantity,
+          price: item.price,
+          image: item.primaryImg || item.image
+        })),
+        total: calculateSubtotal(),
+        shippingAddress: {
+          firstName, lastName, address, city, pin, phone
+        },
+        timestamp: Date.now()
+      };
+      
+      // Save to Firestore
+      db.collection('orders').add(order).then(() => {
+        // Clear cart
+        localStorage.removeItem('MyEssantia_cart');
+        
+        alert(`Order placed successfully! Order ID: ${order.orderId}\n\nThank you for shopping with MyEssantia!`);
+        
+        // Redirect to order tracking
+        window.location.href = 'order-tracking.html';
+      }).catch(error => {
+        console.error('Error placing order:', error);
+        alert('Failed to place order. Please try again.');
+      });
+    };
 
-      let total = 0;
-      let totalItems = 0;
-
-      cartItemsContainer.innerHTML = cart.map(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        totalItems += item.quantity;
-
-        return `
-          <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
-            <div class="cart-item-details">
-              <h4>${item.title}</h4>
-              <p>${item.category}</p>
-              <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
-              <div class="cart-item-actions">
-                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
-                <span>${item.quantity}</span>
-                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
-                <button class="remove-item" onclick="removeFromCart(${item.id})">Remove</button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      cartItemCount.textContent = totalItems;
-      cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
-    }
-
-    function updateCartCount() {
-      const cartCount = document.getElementById('cart-count');
-      if (cartCount) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCount.textContent = totalItems;
+    function prefillUserData() {
+      if (!currentUser) return;
+      
+      // Pre-fill email field
+      const emailInput = document.getElementById('contact-email');
+      if (emailInput && currentUser.email) {
+        emailInput.value = currentUser.email;
       }
     }
 
-    window.updateQuantity = function(productId, change) {
-      const itemIndex = cart.findIndex(item => item.id === productId);
-      if (itemIndex === -1) return;
-
-      const item = cart[itemIndex];
-      const newQuantity = item.quantity + change;
-
-      if (newQuantity <= 0) {
-        cart.splice(itemIndex, 1);
-      } else {
-        item.quantity = newQuantity;
+    // ========== INITIALIZATION ==========
+    function initializeApp() {
+      updateCartCount();
+      updateProfileIcon();
+      loadCartItems();
+      
+      const savedUser = localStorage.getItem('MyEssantia_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateProfileIcon();
+        setTimeout(() => prefillUserData(), 100);
       }
-
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-    };
-
-    window.removeFromCart = function(productId) {
-      cart = cart.filter(item => item.id !== productId);
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-    };
-
-    function saveCart() {
-      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
     }
+
+    // Load common modals
+    async function loadCommonModals() {
+      try {
+        const response = await fetch('common.html');
+        const data = await response.text();
+        document.getElementById('common-modals').innerHTML = data;
+      } catch (error) {
+        console.error('Error loading common modals:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCommonModals();
+      loadComponents();
+    });
   </script>
-
-  <style>
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      overflow-y: auto;
-    }
-    
-    .modal-content {
-      position: relative;
-      max-width: 500px;
-      margin: 50px auto;
-      background: white;
-      border-radius: 30px;
-      padding: 2rem;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    }
-    
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    
-    .modal-header h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-    }
-    
-    .modal-header button {
-      background: none;
-      border: none;
-      font-size: 2rem;
-      cursor: pointer;
-      color: #666;
-    }
-    
-    .cart-items {
-      max-height: 400px;
-      overflow-y: auto;
-      margin-bottom: 1.5rem;
-    }
-    
-    .cart-item {
-      display: flex;
-      gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .cart-item-image {
-      width: 80px;
-      height: 80px;
-      background-size: cover;
-      background-position: center;
-      border-radius: 12px;
-    }
-    
-    .cart-item-details {
-      flex: 1;
-    }
-    
-    .cart-item-details h4 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1rem;
-      margin-bottom: 0.3rem;
-    }
-    
-    .cart-item-details p {
-      font-size: 0.8rem;
-      color: #a2a2a2;
-      margin-bottom: 0.5rem;
-    }
-    
-    .cart-item-price {
-      font-weight: 600;
-      color: #d4af37;
-      margin-bottom: 0.5rem;
-    }
-    
-    .cart-item-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .quantity-btn {
-      width: 30px;
-      height: 30px;
-      border: 1px solid #ddd;
-      background: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    
-    .quantity-btn:hover {
-      background: #f5f5f5;
-    }
-    
-    .remove-item {
-      background: none;
-      border: none;
-      color: #ff4444;
-      cursor: pointer;
-      font-size: 0.8rem;
-      margin-left: 0.5rem;
-    }
-    
-    .cart-footer {
-      border-top: 1px solid #f0f0f0;
-      padding-top: 1.5rem;
-    }
-    
-    .cart-total {
-      display: flex;
-      justify-content: space-between;
-      font-weight: 600;
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-    }
-    
-    .empty-cart-message {
-      text-align: center;
-      padding: 2rem;
-      color: #a2a2a2;
-    }
-    
-    .empty-cart-message i {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-    
-    .profile-info {
-      text-align: center;
-    }
-    
-    .profile-avatar {
-      font-size: 4rem;
-      color: #d4af37;
-      margin-bottom: 1rem;
-    }
-    
-    .profile-details {
-      text-align: left;
-      margin-bottom: 1.5rem;
-    }
-    
-    .profile-details p {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .login-form {
-      text-align: center;
-    }
-    
-    .login-form h4 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      margin-bottom: 0.5rem;
-    }
-    
-    .login-form p {
-      color: #5f5b57;
-      margin-bottom: 1.5rem;
-    }
-    
-    .form-group {
-      margin-bottom: 1rem;
-    }
-    
-    .form-group input {
-      width: 100%;
-      padding: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 30px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1rem;
-    }
-    
-    .form-group input:focus {
-      outline: none;
-      border-color: #d4af37;
-    }
-    
-    .login-btn {
-      width: 100%;
-      margin-top: 1rem;
-    }
-    
-    .error-message {
-      background: #ffe6e6;
-      color: #ff4444;
-      padding: 0.8rem;
-      border-radius: 30px;
-      margin-bottom: 1rem;
-      display: none;
-    }
-    
-    .error-message.show {
-      display: block;
-    }
-    
-    .logout-btn {
-      background: #ff4444 !important;
-      border-color: #ff4444 !important;
-      color: white !important;
-      width: 100%;
-    }
-  </style>
 </body>
 </html>
