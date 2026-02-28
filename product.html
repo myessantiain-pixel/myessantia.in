@@ -1106,7 +1106,7 @@
       box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
     }
 
-    /* Modal Styles */
+    /* Modal Styles - Existing */
     .modal {
       display: none;
       position: fixed;
@@ -1187,6 +1187,231 @@
 
     .google-login-btn i { color: #DB4437; }
 
+    /* New Priority Access Modal Styles */
+    .priority-modal {
+      display: none;
+      position: fixed;
+      z-index: 1100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      animation: fadeInBg 0.3s ease;
+    }
+
+    @keyframes fadeInBg {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .priority-modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .priority-modal-content {
+      background: white;
+      border-radius: 30px;
+      width: 90%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .priority-modal-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #999;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s;
+      z-index: 10;
+    }
+
+    .priority-modal-close:hover {
+      background: #f0f0f0;
+      color: #d4af37;
+      transform: rotate(90deg);
+    }
+
+    .priority-modal-header {
+      padding: 2rem 2rem 1rem;
+      text-align: center;
+    }
+
+    .priority-product-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 20px;
+      margin: 0 auto 1rem;
+      overflow: hidden;
+      border: 3px solid #f4f2ef;
+      box-shadow: 0 10px 20px -10px rgba(0,0,0,0.2);
+    }
+
+    .priority-product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .priority-product-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+      padding: 0 1rem;
+    }
+
+    .priority-message {
+      background: #fef9e7;
+      padding: 1rem 1.5rem;
+      border-radius: 20px;
+      margin: 0 2rem 1.5rem;
+      border-left: 4px solid #d4af37;
+      text-align: center;
+      color: #5f4b1f;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .priority-form {
+      padding: 0 2rem 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #334155;
+      font-size: 0.9rem;
+    }
+
+    .form-label i {
+      color: #d4af37;
+      margin-right: 0.3rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 1rem;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+
+    .form-input.error {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .error-message {
+      color: #ef4444;
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .priority-submit-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: linear-gradient(135deg, #d4af37, #c4a030);
+      border: none;
+      border-radius: 60px;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 2rem;
+    }
+
+    .priority-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px -10px #d4af37;
+      background: linear-gradient(135deg, #c4a030, #b18a2a);
+    }
+
+    .priority-submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .priority-success {
+      text-align: center;
+      padding: 2rem;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .priority-success i {
+      font-size: 4rem;
+      color: #22c55e;
+      margin-bottom: 1rem;
+    }
+
+    .priority-success h3 {
+      font-size: 1.5rem;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .priority-success p {
+      color: #64748b;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
     /* Responsive */
     @media (max-width: 1024px) {
       .related-grid {
@@ -1253,6 +1478,19 @@
         opacity: 1;
         transform: translateY(0);
       }
+
+      .priority-modal-content {
+        width: 95%;
+        margin: 1rem;
+      }
+
+      .priority-message {
+        margin: 0 1rem 1.5rem;
+      }
+
+      .priority-form {
+        padding: 0 1.5rem 1.5rem;
+      }
     }
 
     @media (max-width: 480px) {
@@ -1260,6 +1498,19 @@
       .related-grid { grid-template-columns: 1fr; }
       .delivery-header { flex-direction: column; align-items: flex-start; }
       .product-meta { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      
+      .priority-product-image {
+        width: 80px;
+        height: 80px;
+      }
+      
+      .priority-product-title {
+        font-size: 1rem;
+      }
+      
+      .priority-message {
+        font-size: 0.85rem;
+      }
     }
   </style>
 </head>
@@ -1308,52 +1559,27 @@
     </div>
   </div>
 
+  <!-- New Priority Access Modal -->
+  <div id="priority-modal" class="priority-modal">
+    <div class="priority-modal-content" id="priority-modal-content">
+      <button class="priority-modal-close" id="close-priority-modal">&times;</button>
+      <div id="priority-modal-body"></div>
+    </div>
+  </div>
+
   <script>
     let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
     let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
     let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
 
-    // Sample products if none exist
-    if (products.length === 0) {
-      products = [
-        {
-          id: 1,
-          title: "Handcrafted Ceramic Vase",
-          category: "Home Decor",
-          price: 2499,
-          rating: 4.5,
-          stock: 15,
-          brand: "Artisan House",
-          description: "Beautiful handcrafted ceramic vase with unique glaze patterns. Perfect for your living room decor.",
-          shortDesc: "Handcrafted ceramic vase with unique design",
-          primaryImg: "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600",
-          images: [
-            "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600",
-            "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600",
-            "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600",
-            "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600"
-          ]
-        },
-        {
-          id: 2,
-          title: "Premium Cotton Bedsheet",
-          category: "Bedding",
-          price: 3999,
-          rating: 4.8,
-          stock: 8,
-          brand: "Essentia Home",
-          description: "Luxury cotton bedsheet with high thread count for ultimate comfort.",
-          shortDesc: "Premium quality cotton bedsheet",
-          primaryImg: "https://images.unsplash.com/photo-1584102272773-3b0a58a3cfb5?w=600",
-          images: [
-            "https://images.unsplash.com/photo-1584102272773-3b0a58a3cfb5?w=600",
-            "https://images.unsplash.com/photo-1584102272773-3b0a58a3cfb5?w=600",
-            "https://images.unsplash.com/photo-1584102272773-3b0a58a3cfb5?w=600",
-            "https://images.unsplash.com/photo-1584102272773-3b0a58a3cfb5?w=600"
-          ]
-        }
-      ];
-      localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+    // Facebook Pixel helper function (safe execution)
+    function trackFacebookEvent(eventName, params = {}) {
+      if (typeof fbq === 'function') {
+        fbq('track', eventName, params);
+        console.log(`Facebook Pixel: ${eventName} tracked`, params);
+      } else {
+        console.log(`Facebook Pixel simulation: ${eventName}`, params);
+      }
     }
 
     async function loadComponents() {
@@ -1385,7 +1611,7 @@
 
     function getProductId() {
       const urlParams = new URLSearchParams(window.location.search);
-      return parseInt(urlParams.get('id')) || 1; // Default to first product if no ID
+      return parseInt(urlParams.get('id')) || 1;
     }
 
     function getCurrentCartTotal() {
@@ -1415,8 +1641,29 @@
 
     function renderProduct(product) {
       const container = document.getElementById('product-container');
-      const images = product.images && product.images.length ? product.images : 
-                     [product.primaryImg, product.secondaryImg].filter(Boolean);
+      const images = [];
+      
+      // Collect all media in correct order
+      if (product.media) {
+        // First images, then videos as per order
+        if (product.media.images) {
+          product.media.images.forEach(img => {
+            if (img && img.url) images.push(img.url);
+          });
+        }
+        if (product.media.videos) {
+          product.media.videos.forEach(video => {
+            if (video && video.url) images.push(video.url);
+          });
+        }
+      }
+      
+      // Fallback if no media
+      if (images.length === 0) {
+        images.push(product.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600');
+        if (product.secondaryImg) images.push(product.secondaryImg);
+      }
+      
       const mainImage = images[0] || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600';
       const stock = product.stock || 10;
       
@@ -1427,12 +1674,20 @@
       const thisProductTotal = product.price * initialQuantity;
       const totalWithProduct = currentCartTotal + thisProductTotal;
 
-      const specs = product.specs && product.specs.length ? product.specs : [
-        `Material: Premium Quality`,
-        `Brand: ${product.brand || 'MyEssantia'}`,
-        `Care: Dry Clean Only`,
-        `Origin: Made in India`
-      ];
+      // Get specs
+      let specs = [];
+      if (product.specs && Array.isArray(product.specs)) {
+        specs = product.specs;
+      } else if (product.specs && typeof product.specs === 'string') {
+        specs = product.specs.split('\n').filter(s => s.trim());
+      } else {
+        specs = [
+          `Material: Premium Quality`,
+          `Brand: ${product.brand || 'MyEssantia'}`,
+          `Care: Dry Clean Only`,
+          `Origin: Made in India`
+        ];
+      }
 
       const description = product.description || product.shortDesc || 'No description available.';
       const originalPrice = Math.round(product.price * 1.2);
@@ -1467,7 +1722,7 @@
                 <div class="stars">
                   ${getStarRating(product.rating)}
                 </div>
-                <span class="rating-value">${product.rating.toFixed(1)}</span>
+                <span class="rating-value">${product.rating ? product.rating.toFixed(1) : '0.0'}</span>
                 <span class="reviews-count">(128 reviews)</span>
               </div>
             </div>
@@ -1526,9 +1781,9 @@
 
             <div class="price-section">
               <span class="current-price">
-                <span class="inr-symbol">₹</span>${product.price.toLocaleString()}
+                <span class="inr-symbol">₹</span>${product.price ? product.price.toFixed(2) : '0.00'}
               </span>
-              <span class="original-price">₹${originalPrice.toLocaleString()}</span>
+              <span class="original-price">₹${originalPrice.toFixed(2)}</span>
               <span class="discount-badge">${discount}% OFF</span>
               <div>
                 <span class="stock-status ${stock > 10 ? 'in-stock' : (stock > 0 ? 'low-stock' : 'out-of-stock')}">
@@ -1557,7 +1812,7 @@
                   <span id="delivery-text">
                     ${totalWithProduct >= 1299 
                       ? 'Congratulations! You get FREE delivery' 
-                      : `Add <span class="cart-value">₹${(1299 - totalWithProduct).toLocaleString()}</span> more for free delivery`}
+                      : `Add <span class="cart-value">₹${(1299 - totalWithProduct).toFixed(2)}</span> more for free delivery`}
                   </span>
                 </div>
               </div>
@@ -1611,7 +1866,7 @@
               <button class="btn btn-add-to-cart" onclick="addToCart(${product.id})" ${stock === 0 ? 'disabled' : ''}>
                 <i class="fa-solid fa-cart-plus"></i> Add to Cart
               </button>
-              <button class="btn btn-buy-now" onclick="buyNow(${product.id})" ${stock === 0 ? 'disabled' : ''}>
+              <button class="btn btn-buy-now" onclick="handleBuyNow(${product.id})" ${stock === 0 ? 'disabled' : ''}>
                 <i class="fa-solid fa-bolt"></i> Buy Now
               </button>
             </div>
@@ -1708,7 +1963,12 @@
             <h2 class="related-title">You May Also Like</h2>
             <div class="related-grid">
               ${related.map(p => {
-                const img = p.images && p.images[0] ? p.images[0] : (p.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200');
+                let img = '';
+                if (p.media && p.media.images && p.media.images[0]) {
+                  img = p.media.images[0].url;
+                } else {
+                  img = p.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200';
+                }
                 return `
                   <div class="related-card" onclick="window.location='product.html?id=${p.id}'">
                     <div class="related-share" onclick="shareRelatedProduct(event, ${p.id})">
@@ -1721,10 +1981,10 @@
                     <div class="related-title-small">${p.title}</div>
                     <div class="related-rating">
                       ${getStarRating(p.rating)}
-                      <span style="margin-left: 0.2rem;">${p.rating.toFixed(1)}</span>
+                      <span style="margin-left: 0.2rem;">${p.rating ? p.rating.toFixed(1) : '0.0'}</span>
                     </div>
                     <div class="related-price">
-                      <span class="inr-symbol">₹</span>${p.price.toLocaleString()}
+                      <span class="inr-symbol">₹</span>${p.price ? p.price.toFixed(2) : '0.00'}
                     </div>
                     <div class="quick-add" onclick="event.stopPropagation(); addToCart(${p.id})">
                       <i class="fa-solid fa-cart-plus"></i> Quick Add
@@ -1742,9 +2002,10 @@
 
     function getStarRating(rating) {
       let stars = '';
+      const numRating = parseFloat(rating) || 0;
       for (let i = 1; i <= 5; i++) {
-        if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
-        else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+        if (numRating >= i) stars += '<i class="fa-solid fa-star"></i>';
+        else if (numRating > i - 1 && numRating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
         else stars += '<i class="fa-regular fa-star"></i>';
       }
       return stars;
@@ -1803,7 +2064,13 @@
       const url = encodeURIComponent(`${window.location.origin}/product.html?id=${productId}`);
       const title = encodeURIComponent(product.title);
       const description = encodeURIComponent(product.shortDesc || product.description || 'Check out this product on MyEssantia');
-      const image = encodeURIComponent(product.primaryImg || (product.images && product.images[0]) || '');
+      let image = '';
+      
+      if (product.media && product.media.images && product.media.images[0]) {
+        image = encodeURIComponent(product.media.images[0].url);
+      } else {
+        image = encodeURIComponent(product.primaryImg || '');
+      }
       
       let shareUrl = '';
       
@@ -1956,7 +2223,7 @@
         } else {
           deliveryMessage.className = 'delivery-message not-eligible';
           icon.className = 'fa-solid fa-circle-info';
-          deliveryText.innerHTML = `Add <span class="cart-value">₹${(1299 - totalWithProduct).toLocaleString()}</span> more for free delivery`;
+          deliveryText.innerHTML = `Add <span class="cart-value">₹${(1299 - totalWithProduct).toFixed(2)}</span> more for free delivery`;
         }
       }
     }
@@ -1969,6 +2236,13 @@
       const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
       const existingItem = cart.find(item => item.id === productId);
 
+      let primaryImg = '';
+      if (product.media && product.media.images && product.media.images[0]) {
+        primaryImg = product.media.images[0].url;
+      } else {
+        primaryImg = product.primaryImg || '';
+      }
+
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
@@ -1977,7 +2251,7 @@
           title: product.title,
           category: product.category,
           price: product.price,
-          primaryImg: product.primaryImg || (product.images && product.images[0]),
+          primaryImg: primaryImg,
           quantity: quantity
         });
       }
@@ -1999,10 +2273,161 @@
       }
     };
 
-    window.buyNow = function(productId) {
-      addToCart(productId);
-      openCart();
+    // New Buy Now handler
+    window.handleBuyNow = function(productId) {
+      // Track Facebook InitiateCheckout event
+      const product = products.find(p => p.id === productId);
+      trackFacebookEvent('InitiateCheckout', {
+        content_ids: [productId],
+        content_type: 'product',
+        value: product?.price || 0,
+        currency: 'INR'
+      });
+
+      // Open priority access modal
+      openPriorityModal(productId);
     };
+
+    // Priority Modal Functions
+    function openPriorityModal(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      const modal = document.getElementById('priority-modal');
+      const modalBody = document.getElementById('priority-modal-body');
+      
+      let productImage = '';
+      if (product.media && product.media.images && product.media.images[0]) {
+        productImage = product.media.images[0].url;
+      } else {
+        productImage = product.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200';
+      }
+
+      modalBody.innerHTML = `
+        <div class="priority-modal-header">
+          <div class="priority-product-image">
+            <img src="${productImage}" alt="${product.title}">
+          </div>
+          <h3 class="priority-product-title">${product.title}</h3>
+        </div>
+        
+        <div class="priority-message">
+          <i class="fa-solid fa-clock" style="margin-right: 0.5rem;"></i>
+          Due to high demand, this product is launching in a limited first batch. Enter your details to secure priority access.
+        </div>
+        
+        <form class="priority-form" id="priority-form" onsubmit="submitPriorityForm(event, ${product.id})">
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fa-solid fa-envelope"></i> Email Address *
+            </label>
+            <input type="email" class="form-input" id="priority-email" placeholder="Enter your email address" required>
+            <div class="error-message" id="email-error">Please enter a valid email address</div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">
+              <i class="fa-solid fa-phone"></i> Phone Number (Optional)
+            </label>
+            <input type="tel" class="form-input" id="priority-phone" placeholder="Enter 10-digit mobile number">
+            <div class="error-message" id="phone-error">Please enter a valid 10-digit phone number</div>
+          </div>
+          
+          <button type="submit" class="priority-submit-btn" id="priority-submit-btn">
+            <i class="fa-regular fa-circle-check"></i> Secure My Spot
+          </button>
+        </form>
+      `;
+
+      modal.classList.add('show');
+      document.body.classList.add('modal-open');
+    }
+
+    window.submitPriorityForm = function(event, productId) {
+      event.preventDefault();
+
+      const emailInput = document.getElementById('priority-email');
+      const email = emailInput.value.trim();
+      const phoneInput = document.getElementById('priority-phone');
+      const phone = phoneInput.value.trim();
+      const emailError = document.getElementById('email-error');
+      const phoneError = document.getElementById('phone-error');
+      const submitBtn = document.getElementById('priority-submit-btn');
+
+      // Validate email (required)
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        emailInput.classList.add('error');
+        emailError.classList.add('show');
+        return;
+      } else {
+        emailInput.classList.remove('error');
+        emailError.classList.remove('show');
+      }
+
+      // Validate phone if provided (optional)
+      if (phone) {
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(phone)) {
+          phoneInput.classList.add('error');
+          phoneError.classList.add('show');
+          return;
+        } else {
+          phoneInput.classList.remove('error');
+          phoneError.classList.remove('show');
+        }
+      }
+
+      // Track Facebook Lead event
+      trackFacebookEvent('Lead', {
+        content_name: products.find(p => p.id === productId)?.title,
+        content_category: products.find(p => p.id === productId)?.category,
+        value: 1,
+        currency: 'INR'
+      });
+
+      // Disable submit button
+      submitBtn.disabled = true;
+
+      // Show success message
+      const modalBody = document.getElementById('priority-modal-body');
+      modalBody.innerHTML = `
+        <div class="priority-success">
+          <i class="fa-regular fa-circle-check"></i>
+          <h3>Thank You!</h3>
+          <p>We will contact you before dispatch.</p>
+        </div>
+      `;
+
+      // Auto-close modal after 2 seconds
+      setTimeout(() => {
+        closePriorityModal();
+      }, 2000);
+    };
+
+    function closePriorityModal() {
+      const modal = document.getElementById('priority-modal');
+      modal.classList.remove('show');
+      document.body.classList.remove('modal-open');
+      
+      // Reset modal content after animation
+      setTimeout(() => {
+        const modalBody = document.getElementById('priority-modal-body');
+        if (!modal.classList.contains('show')) {
+          modalBody.innerHTML = '';
+        }
+      }, 300);
+    }
+
+    // Close modal with ESC key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closePriorityModal();
+        closeModal('cart-modal');
+        closeModal('profile-modal');
+        closeShareMenu();
+      }
+    });
 
     window.switchTab = function(tab) {
       document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active'));
@@ -2072,9 +2497,16 @@
         });
       }
 
+      // Priority modal close button
+      const closePriorityBtn = document.getElementById('close-priority-modal');
+      if (closePriorityBtn) {
+        closePriorityBtn.addEventListener('click', closePriorityModal);
+      }
+
       window.addEventListener('click', function(e) {
         const cartModal = document.getElementById('cart-modal');
         const profileModal = document.getElementById('profile-modal');
+        const priorityModal = document.getElementById('priority-modal');
         
         if (e.target === cartModal) {
           closeModal('cart-modal');
@@ -2082,13 +2514,8 @@
         if (e.target === profileModal) {
           closeModal('profile-modal');
         }
-      });
-
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeModal('cart-modal');
-          closeModal('profile-modal');
-          closeShareMenu();
+        if (e.target === priorityModal) {
+          closePriorityModal();
         }
       });
     }
@@ -2152,7 +2579,7 @@
             <div class="cart-item-details" style="flex: 1;">
               <h4 style="margin-bottom: 0.3rem;">${item.title}</h4>
               <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">${item.category}</p>
-              <div class="cart-item-price" style="font-weight: 600; color: #d4af37; margin-bottom: 0.5rem;">₹${item.price.toLocaleString()}</div>
+              <div class="cart-item-price" style="font-weight: 600; color: #d4af37; margin-bottom: 0.5rem;">₹${item.price ? item.price.toFixed(2) : '0.00'}</div>
               <div class="cart-item-actions" style="display: flex; align-items: center; gap: 0.8rem;">
                 <button class="quantity-btn" style="width: 30px; height: 30px; font-size: 1rem;" onclick="updateQuantity(${item.id}, -1)">-</button>
                 <span style="font-weight: 600;">${item.quantity}</span>
@@ -2167,7 +2594,7 @@
       }).join('');
 
       cartItemCount.textContent = totalItems;
-      cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
+      cartTotalAmount.textContent = `₹${total.toFixed(2)}`;
     }
 
     window.updateQuantity = function(productId, change) {
