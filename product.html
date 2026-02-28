@@ -1809,7 +1809,7 @@
       `;
 
       // Set the share link
-      const shareLink = `${window.location.origin}/product.html?id=${product.id}`;
+const shareLink = `${window.location.origin}${window.location.pathname}?id=${product.id}`;
       const shareInput = document.getElementById('product-share-link');
       if (shareInput) shareInput.value = shareLink;
     }
