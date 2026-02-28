@@ -13,45 +13,23 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- CSS Files -->
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Common CSS -->
+  <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* -------------------- RESET & GLOBAL -------------------- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    /* -------------------- ORDER TRACKING PAGE SPECIFIC STYLES -------------------- */
     body {
       background-color: #fafafa;
-      color: #1a1a1a;
-      line-height: 1.5;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-weight: 300;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-    }
-
-    h1, h2, h3 {
-      font-family: 'Playfair Display', serif;
-      font-weight: 400;
-      letter-spacing: -0.02em;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 clamp(1rem, 4vw, 2rem);
-    }
-
-    .bg-noise {
-      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wMjUiIC8+PC9zdmc+');
-      background-repeat: repeat;
     }
 
     .page-title {
@@ -155,10 +133,15 @@
       margin-top: 1rem;
     }
 
-    .track-btn:hover {
+    .track-btn:hover:not(:disabled) {
       background: #d4af37;
       color: #0c0c0c;
       transform: scale(1.02);
+    }
+
+    .track-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .track-btn i {
@@ -228,6 +211,25 @@
       color: #4e4b47;
       white-space: nowrap;
     }
+
+    /* Make ordered date green */
+    .order-date-large i {
+      color: #2e7d32;
+      margin-right: 4px;
+    }
+
+    .order-status {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    .status-processing { background: #fff3e0; color: #ef6c00; }
+    .status-shipped { background: #e3f2fd; color: #0d47a1; }
+    .status-delivered { background: #e8f5e9; color: #2e7d32; }
+    .status-cancelled { background: #ffebee; color: #c62828; }
 
     .order-items-container {
       display: flex;
@@ -325,6 +327,26 @@
       color: #1a1a1a;
     }
 
+    .tracking-info {
+      background: #f9f9f9;
+      border-radius: 20px;
+      padding: 1.2rem;
+      margin: 1rem 0;
+      border-left: 4px solid #d4af37;
+    }
+
+    .tracking-info p {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #333;
+    }
+
+    .tracking-info i {
+      color: #d4af37;
+      width: 20px;
+    }
+
     .tracking-actions {
       display: flex;
       gap: 1rem;
@@ -352,7 +374,7 @@
       min-width: 140px;
     }
 
-    .action-btn:hover {
+    .action-btn:hover:not(:disabled) {
       background: #d4af37;
       color: #0c0c0c;
       border-color: #d4af37;
@@ -363,10 +385,15 @@
       border-color: #1a1a1a;
       color: white;
     }
-    .action-btn.primary:hover {
+    .action-btn.primary:hover:not(:disabled) {
       background: #d4af37;
       border-color: #d4af37;
       color: #0c0c0c;
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .hidden {
@@ -387,6 +414,20 @@
       display: block;
     }
 
+    .success-message {
+      text-align: center;
+      background: #e8f5e9;
+      border-radius: 60px;
+      padding: 1rem;
+      margin: 1rem 0;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+      display: none;
+    }
+    .success-message.show {
+      display: block;
+    }
+
     .info-note {
       text-align: center;
       color: #8f8b85;
@@ -395,6 +436,61 @@
     }
     .info-note i {
       color: #d4af37;
+    }
+
+    .recent-orders {
+      margin: 3rem 0;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 32px;
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+    }
+
+    .recent-orders h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .recent-order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .recent-order-item:hover {
+      background: #f9f9f9;
+    }
+
+    .recent-order-item:last-child {
+      border-bottom: none;
+    }
+
+    .recent-order-info {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .recent-order-id {
+      font-weight: 600;
+      color: #d4af37;
+    }
+
+    .recent-order-date {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .recent-order-total {
+      font-weight: 600;
     }
 
     footer {
@@ -422,6 +518,11 @@
       }
       .action-btn {
         width: 100%;
+      }
+      .recent-order-info {
+        gap: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
 
@@ -458,10 +559,23 @@
         text-align: left;
       }
     }
+
+    /* Support Form Styles */
+    .support-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .support-form .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
   </style>
 </head>
 <body class="bg-noise">
   
+  <!-- Header loaded dynamically -->
   <div id="header"></div>
 
   <main>
@@ -475,15 +589,16 @@
         <h2><i class="fa-solid fa-magnifying-glass"></i> track your order</h2>
         <div class="input-group">
           <label>order number</label>
-          <input type="text" id="order-number" placeholder="e.g. ESS-9876" value="ESS-9876">
+          <input type="text" id="order-number" placeholder="e.g. ESS-1234">
         </div>
         <div class="input-group">
           <label>email / phone</label>
-          <input type="text" id="order-email" placeholder="you@example.com" value="customer@essence.in">
+          <input type="text" id="order-email" placeholder="you@example.com">
         </div>
         <button class="track-btn" id="track-order-btn"><i class="fa-solid fa-location-dot"></i> find order</button>
         <p class="order-note">We'll display your order if the details match.</p>
-        <div class="error-message" id="error-message">Order not found. Please check your order number and email.</div>
+        <div class="error-message" id="error-message"></div>
+        <div class="success-message" id="success-message"></div>
       </div>
     </div>
 
@@ -491,382 +606,88 @@
       <div class="order-result-card" id="orderResultCard"></div>
     </div>
 
+    <div class="container" id="recentOrdersContainer" style="display: none;">
+      <div class="recent-orders">
+        <h3><i class="fa-regular fa-clock"></i> recent orders</h3>
+        <div id="recentOrdersList"></div>
+      </div>
+    </div>
+
     <div class="container" style="text-align: center; margin: 2rem auto 3rem;">
       <p style="color: #8f8b85; font-size: 0.9rem;">
         <i class="fa-regular fa-circle-question" style="color: #d4af37;"></i> 
-        need help? <a href="#" style="color: #1a1a1a; font-weight: 500;" onclick="alert('Contact support: support@essence.in')">contact support</a>
+        need help? <a href="#" style="color: #1a1a1a; font-weight: 500;" onclick="showSupportModal()">contact support</a>
       </p>
     </div>
   </main>
 
+  <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
+  <!-- Common Modals -->
+  <div id="common-modals"></div>
+
+  <!-- Support Modal (specific to order tracking page) -->
+  <div id="support-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Contact Support</h3>
+        <button class="close-modal" onclick="closeSupportModal()">&times;</button>
+      </div>
+      <div class="support-form">
+        <p style="text-align: center; margin-bottom: 1.5rem;">How can we help you today?</p>
+        <div class="form-group">
+          <label for="support-name">Name</label>
+          <input type="text" id="support-name" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label for="support-email">Email</label>
+          <input type="email" id="support-email" placeholder="Your email">
+        </div>
+        <div class="form-group">
+          <label for="support-message">Message</label>
+          <textarea id="support-message" rows="4" placeholder="Describe your issue..."></textarea>
+        </div>
+        <button class="btn" onclick="submitSupport()" style="width: 100%;">
+          <i class="fa-regular fa-paper-plane"></i> Send Message
+        </button>
+        <div id="support-message-status" class="auth-message" style="margin-top: 1rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Common JavaScript -->
+  <script src="common.js"></script>
+
   <script>
-    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-    let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
-    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+    // ========== ORDER TRACKING PAGE SPECIFIC VARIABLES ==========
+    let orders = [];
 
-    async function loadComponents() {
-      try {
-        const headerResponse = await fetch('header.html');
-        const headerData = await headerResponse.text();
-        document.getElementById('header').innerHTML = headerData;
-
-        const footerResponse = await fetch('footer.html');
-        const footerData = await footerResponse.text();
-        document.getElementById('footer').innerHTML = footerData;
-
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
-      } catch (error) {
-        console.error('Error loading components:', error);
-      }
-    }
-
-    function initializeApp() {
-      updateCartCount();
-      updateProfileIcon();
-      setupEventListeners();
-      initializeOrderTracking();
-    }
-
-    function setupEventListeners() {
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const navMenu = document.getElementById('nav-menu');
-      
-      if (mobileMenuToggle && navMenu) {
-        mobileMenuToggle.addEventListener('click', function(e) {
-          e.stopPropagation();
-          navMenu.classList.toggle('show');
-        });
-      }
-
-      const cartIcon = document.getElementById('cart-icon');
-      if (cartIcon) {
-        cartIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openCart();
-        });
-      }
-
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        profileIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openProfile();
-        });
-      }
-
-      const closeCart = document.getElementById('close-cart');
-      if (closeCart) {
-        closeCart.addEventListener('click', function() {
-          closeModal('cart-modal');
-        });
-      }
-
-      const closeProfile = document.getElementById('close-profile');
-      if (closeProfile) {
-        closeProfile.addEventListener('click', function() {
-          closeModal('profile-modal');
-        });
-      }
-
-      const checkoutBtn = document.getElementById('checkout-btn');
-      if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', function() {
-          if (cart.length === 0) {
-            alert('Your cart is empty!');
-          } else {
-            alert('Proceeding to checkout...');
-          }
-        });
-      }
-
-      window.addEventListener('click', function(e) {
-        const cartModal = document.getElementById('cart-modal');
-        const profileModal = document.getElementById('profile-modal');
-        
-        if (e.target === cartModal) {
-          closeModal('cart-modal');
-        }
-        if (e.target === profileModal) {
-          closeModal('profile-modal');
-        }
-      });
-
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeModal('cart-modal');
-          closeModal('profile-modal');
-        }
-      });
-
-      document.addEventListener('click', function(e) {
-        if (navMenu && navMenu.classList.contains('show')) {
-          if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-            navMenu.classList.remove('show');
-          }
-        }
-      });
-    }
-
-    function openCart() {
-      const cartModal = document.getElementById('cart-modal');
-      if (cartModal) {
-        renderCartItems();
-        cartModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function openProfile() {
-      const profileModal = document.getElementById('profile-modal');
-      if (profileModal) {
-        renderProfileContent();
-        profileModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-      }
-    }
-
-    function renderCartItems() {
-      const cartItemsContainer = document.getElementById('cart-items');
-      const cartItemCount = document.getElementById('cart-item-count');
-      const cartTotalAmount = document.getElementById('cart-total-amount');
-
-      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
-
-      if (cart.length === 0) {
-        cartItemsContainer.innerHTML = `
-          <div class="empty-cart-message">
-            <i class="fa-regular fa-cart-shopping"></i>
-            <p>Your cart is empty</p>
-            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Start shopping to add items!</p>
-          </div>
-        `;
-        cartItemCount.textContent = '0';
-        cartTotalAmount.textContent = '₹0.00';
-        return;
-      }
-
-      let total = 0;
-      let totalItems = 0;
-
-      cartItemsContainer.innerHTML = cart.map(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        totalItems += item.quantity;
-
-        return `
-          <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.primaryImg}')"></div>
-            <div class="cart-item-details">
-              <h4 class="cart-item-title">${item.title}</h4>
-              <p class="cart-item-category">${item.category}</p>
-              <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
-              <div class="cart-item-actions">
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, -1)">
-                  <i class="fa-solid fa-minus"></i>
-                </button>
-                <span class="item-quantity">${item.quantity}</span>
-                <button class="quantity-btn" onclick="window.updateQuantity(${item.id}, 1)">
-                  <i class="fa-solid fa-plus"></i>
-                </button>
-                <button class="remove-item" onclick="window.removeFromCart(${item.id})">
-                  Remove
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      cartItemCount.textContent = totalItems;
-      cartTotalAmount.textContent = `₹${total.toLocaleString()}`;
-    }
-
-    function updateCartCount() {
-      const cartCount = document.getElementById('cart-count');
-      if (cartCount) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCount.textContent = totalItems;
-      }
-    }
-
-    window.updateQuantity = function(productId, change) {
-      const itemIndex = cart.findIndex(item => item.id === productId);
-      if (itemIndex === -1) return;
-
-      const item = cart[itemIndex];
-      const newQuantity = item.quantity + change;
-
-      if (newQuantity <= 0) {
-        cart.splice(itemIndex, 1);
-      } else {
-        item.quantity = newQuantity;
-      }
-
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-    };
-
-    window.removeFromCart = function(productId) {
-      cart = cart.filter(item => item.id !== productId);
-      saveCart();
-      updateCartCount();
-      renderCartItems();
-    };
-
-    function saveCart() {
-      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-    }
-
-    function renderProfileContent() {
-      const profileContent = document.getElementById('profile-content');
-      if (!profileContent) return;
-
-      if (currentUser) {
-        profileContent.innerHTML = `
-          <div class="profile-info">
-            <div class="profile-avatar">
-              <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">
-            </div>
-            <div class="profile-details">
-              <p>
-                <i class="fa-regular fa-user"></i>
-                <span class="label">Name:</span>
-                <span class="value">${currentUser.name}</span>
-              </p>
-              <p>
-                <i class="fa-regular fa-envelope"></i>
-                <span class="label">Email:</span>
-                <span class="value">${currentUser.email}</span>
-              </p>
-            </div>
-            <button class="btn logout-btn" onclick="window.logout()">
-              <i class="fa-solid fa-sign-out-alt"></i>
-              Logout
-            </button>
-          </div>
-        `;
-      } else {
-        profileContent.innerHTML = `
-          <div class="login-form">
-            <div class="login-header">
-              <i class="fa-brands fa-google" style="font-size: 3rem; color: #d4af37;"></i>
-              <h4>Welcome Back!</h4>
-              <p>Sign in with Google to continue</p>
-            </div>
-            
-            <button class="btn google-login-btn" onclick="window.handleGoogleLogin()">
-              <i class="fa-brands fa-google"></i>
-              Sign in with Google
-            </button>
-            
-            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: #999;">
-              By signing in, you agree to our Terms of Service and Privacy Policy.
-            </p>
-          </div>
-        `;
-      }
-    }
-
-    function updateProfileIcon() {
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        if (currentUser) {
-          profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
-        } else {
-          profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
-        }
-      }
-    }
-
-    window.handleGoogleLogin = function() {
-      const mockGoogleUser = {
-        name: 'John Doe',
-        email: 'john@gmail.com',
-        picture: 'https://via.placeholder.com/80',
-        provider: 'google',
-        memberSince: '2025'
-      };
-
-      localStorage.setItem('MyEssantia_user', JSON.stringify(mockGoogleUser));
-      currentUser = mockGoogleUser;
-      updateProfileIcon();
-      renderProfileContent();
-      closeModal('profile-modal');
-      alert('Successfully signed in with Google!');
-    };
-
-    window.logout = function() {
-      localStorage.removeItem('MyEssantia_user');
-      currentUser = null;
-      updateProfileIcon();
-      renderProfileContent();
-      alert('You have been logged out successfully');
-    };
-
+    // ========== ORDER TRACKING FUNCTIONS ==========
     function initializeOrderTracking() {
-      window.ordersDB = [
-        {
-          orderId: 'ESS-9876',
-          email: 'customer@essence.in',
-          date: '15 Mar 2025',
-          items: [
-            { name: 'leather cardholder', qty: 1, price: 1990, image: '👜' },
-            { name: 'minimal watch', qty: 1, price: 4490, image: '⌚' }
-          ],
-          total: 6480
-        },
-        {
-          orderId: 'ESS-5432',
-          email: 'alex@essence.in',
-          date: '10 Apr 2025',
-          items: [
-            { name: 'slim power bank', qty: 2, price: 7180, image: '🔋' },
-            { name: 'universal adapter', qty: 1, price: 3290, image: '🔌' }
-          ],
-          total: 10470
-        },
-        {
-          orderId: 'ESS-2468',
-          email: 'jordan@essence.in',
-          date: '18 Apr 2025',
-          items: [
-            { name: 'aviator sunglasses', qty: 1, price: 2990, image: '🕶️' },
-            { name: 'tech organizer', qty: 1, price: 2490, image: '🧳' }
-          ],
-          total: 5480
-        },
-        {
-          orderId: 'ESS-1357',
-          email: 'sam@essence.in',
-          date: '22 Apr 2025',
-          items: [
-            { name: 'leather backpack', qty: 1, price: 6490, image: '🎒' },
-            { name: 'wireless charger', qty: 1, price: 2190, image: '⚡' }
-          ],
-          total: 8680
+      // Load orders from localStorage
+      const storedOrders = localStorage.getItem('MyEssantia_orders');
+      if (storedOrders) {
+        try {
+          orders = JSON.parse(storedOrders);
+        } catch (e) {
+          orders = [];
         }
-      ];
+      } else {
+        orders = [];
+        localStorage.setItem('MyEssantia_orders', JSON.stringify(orders));
+      }
 
       const trackBtn = document.getElementById('track-order-btn');
       const orderNumberInput = document.getElementById('order-number');
       const orderEmailInput = document.getElementById('order-email');
-      const resultCard = document.getElementById('orderResultCard');
       const errorDiv = document.getElementById('error-message');
+      const successDiv = document.getElementById('success-message');
 
       if (errorDiv) errorDiv.classList.remove('show');
+      if (successDiv) successDiv.classList.remove('show');
+      
+      const resultCard = document.getElementById('orderResultCard');
       if (resultCard) resultCard.classList.remove('visible');
 
       if (trackBtn) {
@@ -886,77 +707,204 @@
           });
         });
       }
+
+      // Load user's orders if logged in
+      if (currentUser) {
+        loadUserOrdersFromFirestore();
+      }
+    }
+
+    async function loadUserOrdersFromFirestore() {
+      if (!currentUser) return;
+
+      try {
+        const ordersRef = db.collection('orders')
+          .where('email', '==', currentUser.email)
+          .orderBy('date', 'desc');
+        
+        const snapshot = await ordersRef.get();
+        
+        if (!snapshot.empty) {
+          const userOrders = [];
+          snapshot.forEach(doc => {
+            userOrders.push({ id: doc.id, ...doc.data() });
+          });
+          
+          displayRecentOrders(userOrders);
+        }
+      } catch (error) {
+        console.error('Error loading orders from Firestore:', error);
+      }
+    }
+
+    function displayRecentOrders(userOrders) {
+      const container = document.getElementById('recentOrdersContainer');
+      const list = document.getElementById('recentOrdersList');
+      
+      if (!container || !list) return;
+
+      if (userOrders.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+
+      container.style.display = 'block';
+      
+      list.innerHTML = userOrders.slice(0, 3).map(order => {
+        let statusClass = '';
+        if (order.status === 'processing') statusClass = 'status-processing';
+        else if (order.status === 'shipped') statusClass = 'status-shipped';
+        else if (order.status === 'delivered') statusClass = 'status-delivered';
+        else if (order.status === 'cancelled') statusClass = 'status-cancelled';
+
+        return `
+          <div class="recent-order-item" onclick="quickTrackOrder('${order.orderId}', '${order.email}')">
+            <div class="recent-order-info">
+              <span class="recent-order-id">${order.orderId}</span>
+              <span class="recent-order-date">${order.date}</span>
+              <span class="order-status ${statusClass}">${order.status}</span>
+            </div>
+            <div class="recent-order-total">₹${order.total.toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.quickTrackOrder = function(orderId, email) {
+      document.getElementById('order-number').value = orderId;
+      document.getElementById('order-email').value = email;
+      findOrder();
+    };
+
+    function hideRecentOrders() {
+      const container = document.getElementById('recentOrdersContainer');
+      if (container) {
+        container.style.display = 'none';
+      }
     }
 
     function findOrder() {
       const orderNumberInput = document.getElementById('order-number');
       const orderEmailInput = document.getElementById('order-email');
       const errorDiv = document.getElementById('error-message');
-      const resultCard = document.getElementById('orderResultCard');
+      const successDiv = document.getElementById('success-message');
+      const trackBtn = document.getElementById('track-order-btn');
 
       const orderNumber = orderNumberInput.value.trim().toUpperCase();
       const email = orderEmailInput.value.trim().toLowerCase();
 
       if (errorDiv) errorDiv.classList.remove('show');
+      if (successDiv) successDiv.classList.remove('show');
       
       if (!orderNumber || !email) {
         if (errorDiv) {
           errorDiv.textContent = 'Please enter both order number and email/phone.';
           errorDiv.classList.add('show');
         }
+        const resultCard = document.getElementById('orderResultCard');
         if (resultCard) resultCard.classList.remove('visible');
         return;
       }
 
-      const foundOrder = window.ordersDB.find(o => o.orderId === orderNumber && o.email.toLowerCase() === email);
-      
-      if (foundOrder) {
-        renderOrder(foundOrder);
-        scrollToResult();
-      } else {
-        if (resultCard) resultCard.classList.remove('visible');
-        if (errorDiv) {
-          errorDiv.textContent = 'Order not found. Please check your order number and email.';
-          errorDiv.classList.add('show');
+      // Show loading state
+      trackBtn.disabled = true;
+      trackBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> searching...';
+
+      // Search in orders array
+      setTimeout(() => {
+        const foundOrder = orders.find(o => 
+          o.orderId === orderNumber && 
+          (o.email.toLowerCase() === email || o.phone === email)
+        );
+        
+        if (foundOrder) {
+          renderOrder(foundOrder);
+          if (successDiv) {
+            successDiv.textContent = 'Order found!';
+            successDiv.classList.add('show');
+            setTimeout(() => successDiv.classList.remove('show'), 3000);
+          }
+          scrollToResult();
+        } else {
+          const resultCard = document.getElementById('orderResultCard');
+          if (resultCard) resultCard.classList.remove('visible');
+          if (errorDiv) {
+            errorDiv.textContent = 'Order not found. Please check your order number and email.';
+            errorDiv.classList.add('show');
+          }
         }
-      }
+
+        // Reset button
+        trackBtn.disabled = false;
+        trackBtn.innerHTML = '<i class="fa-solid fa-location-dot"></i> find order';
+      }, 800);
     }
 
     function renderOrder(order) {
       const resultCard = document.getElementById('orderResultCard');
       
+      let statusClass = '';
+      if (order.status === 'processing') statusClass = 'status-processing';
+      else if (order.status === 'shipped') statusClass = 'status-shipped';
+      else if (order.status === 'delivered') statusClass = 'status-delivered';
+      else if (order.status === 'cancelled') statusClass = 'status-cancelled';
+
+      function formatPrice(price) {
+        return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      }
+
       const itemsHtml = order.items.map(item => {
         return `
           <div class="product-row">
             <div class="product-image-placeholder">
-              <span>${item.image}</span>
+              <span>${item.image || '📦'}</span>
             </div>
             <div class="product-info">
               <span class="product-name">${item.name}</span>
               <div class="product-meta">
                 <span class="product-qty">x${item.qty}</span>
-                <span class="product-price">₹${item.price.toLocaleString()}</span>
+                <span class="product-price">₹${formatPrice(item.price)}</span>
               </div>
             </div>
           </div>
         `;
       }).join('');
 
+      // Add tracking info if available
+      const trackingHtml = order.trackingNumber ? `
+        <div class="tracking-info">
+          <p><i class="fa-solid fa-truck"></i> <strong>Carrier:</strong> ${order.carrier || 'Standard Shipping'}</p>
+          <p><i class="fa-solid fa-barcode"></i> <strong>Tracking #:</strong> ${order.trackingNumber}</p>
+          <p><i class="fa-regular fa-calendar"></i> <strong>Est. Delivery:</strong> ${order.estimatedDelivery || 'To be updated'}</p>
+        </div>
+      ` : '';
+
       const html = `
         <div class="result-header">
           <span class="order-id-large">${order.orderId}</span>
-          <span class="order-date-large">ordered ${order.date}</span>
+          <span class="order-date-large"><i class="fa-regular fa-calendar-check"></i> ordered ${order.date}</span>
         </div>
+        <div style="margin-bottom: 1rem;">
+          <span class="order-status ${statusClass}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span>
+        </div>
+        ${trackingHtml}
         <div class="order-items-container">
           ${itemsHtml}
         </div>
         <div class="order-summary">
           <div class="summary-left"><span>total amount</span></div>
-          <div class="summary-right">₹${order.total.toLocaleString()}</div>
+          <div class="summary-right">₹${formatPrice(order.total)}</div>
         </div>
         <div class="tracking-actions">
-          <button class="action-btn primary" id="simulateTrackBtn"><i class="fa-solid fa-truck"></i> track shipment</button>
-          <a href="index.html" class="action-btn"><i class="fa-solid fa-house"></i> home</a>
+          ${order.trackingNumber ? 
+            `<button class="action-btn primary" onclick="trackShipment('${order.trackingNumber}', '${order.carrier || 'Standard Shipping'}')">
+              <i class="fa-solid fa-truck"></i> track package
+            </button>` : 
+            `<button class="action-btn" disabled>
+              <i class="fa-regular fa-clock"></i> awaiting shipment
+            </button>`
+          }
+          <a href="index.html" class="action-btn"><i class="fa-solid fa-house"></i> continue shopping</a>
         </div>
       `;
       
@@ -964,15 +912,12 @@
         resultCard.innerHTML = html;
         resultCard.classList.add('visible');
       }
-      
-      const errorDiv = document.getElementById('error-message');
-      if (errorDiv) errorDiv.classList.remove('show');
-
-      document.getElementById('simulateTrackBtn')?.addEventListener('click', function(e) {
-        e.preventDefault();
-        alert(`🚚 tracking simulation for order ${order.orderId} – your package is on its way!`);
-      });
     }
+
+    window.trackShipment = function(trackingNumber, carrier) {
+      // Simulate tracking - in real app, this would link to carrier's tracking page
+      alert(`🔍 Tracking ${trackingNumber} with ${carrier}\n\nYour package is in transit and on schedule.`);
+    };
 
     function scrollToResult() {
       const resultSection = document.getElementById('resultContainer');
@@ -983,255 +928,111 @@
       }, 100);
     }
 
-    document.addEventListener('DOMContentLoaded', loadComponents);
+    // ========== SUPPORT FUNCTIONS ==========
+    window.showSupportModal = function() {
+      const supportModal = document.getElementById('support-modal');
+      if (supportModal) {
+        supportModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    };
+
+    window.closeSupportModal = function() {
+      const supportModal = document.getElementById('support-modal');
+      if (supportModal) {
+        supportModal.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    };
+
+    window.submitSupport = function() {
+      const name = document.getElementById('support-name')?.value;
+      const email = document.getElementById('support-email')?.value;
+      const message = document.getElementById('support-message')?.value;
+      const statusDiv = document.getElementById('support-message-status');
+
+      if (!name || !email || !message) {
+        if (statusDiv) {
+          statusDiv.className = 'auth-error';
+          statusDiv.textContent = 'Please fill in all fields';
+        }
+        return;
+      }
+
+      // Simulate sending support request
+      if (statusDiv) {
+        statusDiv.className = 'auth-success';
+        statusDiv.textContent = 'Support request sent! We\'ll respond within 24 hours.';
+      }
+
+      // Clear form
+      document.getElementById('support-message').value = '';
+
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        closeSupportModal();
+      }, 2000);
+    };
+
+    // ========== INITIALIZATION ==========
+    function initializeApp() {
+      updateCartCount();
+      updateProfileIcon();
+      initializeOrderTracking();
+      
+      const savedUser = localStorage.getItem('MyEssantia_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateProfileIcon();
+      }
+    }
+
+    // Override updateProfileIcon to handle order tracking specific UI
+    const originalUpdateProfileIcon = updateProfileIcon;
+    updateProfileIcon = function() {
+      if (originalUpdateProfileIcon) {
+        originalUpdateProfileIcon();
+      }
+      // Additional order tracking specific UI updates
+      if (currentUser) {
+        loadUserOrdersFromFirestore();
+      } else {
+        hideRecentOrders();
+      }
+    };
+
+    // Load common modals
+    async function loadCommonModals() {
+      try {
+        const response = await fetch('common.html');
+        const data = await response.text();
+        document.getElementById('common-modals').innerHTML = data;
+      } catch (error) {
+        console.error('Error loading common modals:', error);
+      }
+    }
+
+    // Setup support modal listeners
+    function setupSupportModalListeners() {
+      window.addEventListener('click', function(e) {
+        const supportModal = document.getElementById('support-modal');
+        if (e.target === supportModal) {
+          closeSupportModal();
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeSupportModal();
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCommonModals();
+      loadComponents();
+      setupSupportModalListeners();
+    });
   </script>
-
-  <style>
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
-    }
-
-    .modal.show {
-      display: block;
-    }
-
-    .modal-content {
-      background-color: #fff;
-      margin: 2rem auto;
-      padding: 2rem;
-      width: 90%;
-      max-width: 500px;
-      border-radius: 30px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      max-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-      from {
-        transform: translateY(-20px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .modal-header h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin: 0;
-    }
-
-    .close-modal {
-      background: none;
-      border: none;
-      font-size: 2rem;
-      cursor: pointer;
-      color: #999;
-      transition: color 0.2s;
-      line-height: 1;
-      padding: 0 0.5rem;
-    }
-
-    .close-modal:hover {
-      color: #1a1a1a;
-    }
-
-    .modal-footer {
-      border-top: 1px solid #f0f0f0;
-      padding-top: 1.5rem;
-    }
-
-    .cart-total {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: #1a1a1a;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    #cart-total-amount {
-      color: #d4af37;
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      font-weight: 600;
-    }
-
-    .checkout-btn {
-      width: 100%;
-      background: #d4af37;
-      border: 1px solid #d4af37;
-      color: #0c0c0c;
-      font-weight: 700;
-      padding: 1rem;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.3s;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .checkout-btn:hover {
-      background: #c4a030;
-      border-color: #c4a030;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
-    }
-
-    .empty-cart-message {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: #999;
-    }
-
-    .empty-cart-message i {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: #ddd;
-    }
-
-    .profile-avatar {
-      width: 80px;
-      height: 80px;
-      background: #f5f5f5;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.5rem;
-      font-size: 2.5rem;
-      color: #d4af37;
-      border: 2px solid #d4af37;
-      overflow: hidden;
-    }
-
-    .profile-details {
-      text-align: left;
-      background: #f9f9f9;
-      padding: 1.5rem;
-      border-radius: 20px;
-      margin-bottom: 1.5rem;
-    }
-
-    .profile-details p {
-      margin-bottom: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      color: #333;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.95rem;
-    }
-
-    .profile-details .label {
-      font-weight: 400;
-      color: #666;
-      min-width: 70px;
-    }
-
-    .profile-details .value {
-      font-weight: 600;
-      color: #1a1a1a;
-      font-family: 'Playfair Display', serif;
-    }
-
-    .logout-btn {
-      width: 100%;
-      background: #fff;
-      border: 1px solid #d4af37;
-      color: #1a1a1a;
-      padding: 1rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      transition: all 0.3s;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .logout-btn:hover {
-      background: #d4af37;
-      color: #fff;
-    }
-
-    .login-header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .login-header i {
-      font-size: 3rem;
-      color: #d4af37;
-      margin-bottom: 1rem;
-    }
-
-    .login-header h4 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 0.5rem;
-    }
-
-    .google-login-btn {
-      background: #fff;
-      color: #333;
-      border: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      width: 100%;
-      padding: 1rem;
-      font-weight: 600;
-      transition: all 0.3s;
-      border-radius: 40px;
-      cursor: pointer;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .google-login-btn:hover {
-      background: #f8f8f8;
-      border-color: #d4af37;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
-    }
-
-    .google-login-btn i {
-      color: #DB4437;
-      font-size: 1.2rem;
-    }
-  </style>
 </body>
 </html>
