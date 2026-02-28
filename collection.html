@@ -10,9 +10,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="header.css">
-  <link rel="stylesheet" href="footer.css">
-  
   <style>
     * {
       margin: 0;
@@ -141,12 +138,27 @@
       text-decoration: none;
       color: inherit;
       display: block;
+      position: relative;
     }
 
     .product-card:hover {
       transform: translateY(-8px);
       box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
       border-color: #d4af37;
+    }
+
+    .new-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: #ffbb33;
+      color: #0c0c0c;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .image-frame {
@@ -299,6 +311,7 @@
     let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
     let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
 
+    // Load header and footer components
     async function loadComponents() {
       try {
         const headerResponse = await fetch('header.html');
@@ -314,6 +327,10 @@
         }, 50);
       } catch (error) {
         console.error('Error loading components:', error);
+        // If components fail to load, still initialize the page
+        setTimeout(() => {
+          initializeApp();
+        }, 50);
       }
     }
 
@@ -322,6 +339,39 @@
       updateProfileIcon();
       setupEventListeners();
       renderProducts();
+      
+      // Start New In monitor
+      startNewInMonitor();
+    }
+
+    // Check and update New In status
+    function updateNewInStatus() {
+      const now = new Date();
+      let changed = false;
+
+      products.forEach(product => {
+        if (product.creationDate) {
+          const creationDate = new Date(product.creationDate);
+          const hoursDiff = (now - creationDate) / (1000 * 60 * 60);
+          
+          // If product is older than 24 hours, remove from New In
+          if (hoursDiff >= 24 && product.showOnNew) {
+            product.showOnNew = false;
+            changed = true;
+          }
+        }
+      });
+
+      if (changed) {
+        localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+        renderProducts(); // Re-render if changes occurred
+      }
+    }
+
+    // Check New In status every minute
+    function startNewInMonitor() {
+      updateNewInStatus(); // Initial check
+      setInterval(updateNewInStatus, 60000); // Check every minute
     }
 
     function updateCartCount() {
@@ -411,6 +461,7 @@
         }
       });
 
+      // Filter and search listeners
       document.getElementById('category-filter')?.addEventListener('change', renderProducts);
       document.getElementById('sort-filter')?.addEventListener('change', renderProducts);
       document.getElementById('search-input')?.addEventListener('input', renderProducts);
@@ -570,25 +621,50 @@
       closeModal('profile-modal');
     };
 
+    // Main product rendering function
     function renderProducts() {
       const grid = document.getElementById('product-grid');
       const categoryFilter = document.getElementById('category-filter').value;
       const sortFilter = document.getElementById('sort-filter').value;
       const searchTerm = document.getElementById('search-input').value.toLowerCase();
 
-      let filteredProducts = [...products];
+      // Filter products based on page visibility and category
+      let filteredProducts = products.filter(product => {
+        // Check if product should be visible on this page
+        const now = new Date();
+        const isNewIn = product.creationDate && 
+                        (now - new Date(product.creationDate)) < (24 * 60 * 60 * 1000);
+        
+        // For New Arrivals category, show products marked as New In
+        if (categoryFilter === 'newarrival') {
+          return isNewIn;
+        }
+        
+        // For other categories, check page visibility
+        switch(categoryFilter) {
+          case 'accessories':
+            return product.showOnAccessories === true;
+          case 'essentials':
+            return product.showOnEssentials === true;
+          default:
+            // For 'all', show products that are visible on at least one page
+            return product.showOnHome || 
+                   product.showOnAccessories || 
+                   product.showOnEssentials || 
+                   isNewIn;
+        }
+      });
 
-      if (categoryFilter !== 'all') {
-        filteredProducts = filteredProducts.filter(p => p.category === categoryFilter);
-      }
-
+      // Apply search filter
       if (searchTerm) {
         filteredProducts = filteredProducts.filter(p => 
           p.title.toLowerCase().includes(searchTerm) || 
-          (p.category && p.category.toLowerCase().includes(searchTerm))
+          (p.category && p.category.toLowerCase().includes(searchTerm)) ||
+          (p.brand && p.brand.toLowerCase().includes(searchTerm))
         );
       }
 
+      // Apply sorting
       switch(sortFilter) {
         case 'price-low':
           filteredProducts.sort((a, b) => a.price - b.price);
@@ -601,6 +677,7 @@
           break;
       }
 
+      // Handle empty results
       if (filteredProducts.length === 0) {
         grid.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 4rem;">
@@ -612,6 +689,7 @@
         return;
       }
 
+      // Helper function to render rating stars
       function renderRating(rating) {
         let stars = '';
         for (let i = 1; i <= 5; i++) {
@@ -622,19 +700,35 @@
         return stars + `<span>(${rating.toFixed(1)})</span>`;
       }
 
+      // Helper function to get stock status
       function getStockStatus(stock) {
         if (stock > 10) return '<span class="stock-badge in-stock">In Stock</span>';
         if (stock > 0) return '<span class="stock-badge low-stock">Low Stock</span>';
         return '<span class="stock-badge out-of-stock">Out of Stock</span>';
       }
 
+      // Check if product is new (within 24 hours)
+      function isProductNew(creationDate) {
+        if (!creationDate) return false;
+        const now = new Date();
+        const productDate = new Date(creationDate);
+        return (now - productDate) < (24 * 60 * 60 * 1000);
+      }
+
+      // Render product grid
       grid.innerHTML = filteredProducts.map(product => {
-        const mainImage = product.images && product.images[0] ? product.images[0] : product.primaryImg || 'https://via.placeholder.com/300';
+        const mainImage = product.primaryImg || 
+                         (product.media?.images?.[0]?.url) || 
+                         (product.media?.videos?.[0]?.url) || 
+                         'https://via.placeholder.com/300';
+        
+        const isNew = isProductNew(product.creationDate);
         
         return `
           <a href="product.html?id=${product.id}" class="product-card">
+            ${isNew ? '<span class="new-badge"><i class="fa-regular fa-clock"></i> NEW</span>' : ''}
             <div class="image-frame">
-              <img src="${mainImage}" alt="${product.title}" class="product-image">
+              <img src="${mainImage}" alt="${product.title}" class="product-image" loading="lazy">
             </div>
             <h3 class="product-title">${product.title}</h3>
             <p class="product-category">${product.category}</p>
@@ -650,9 +744,11 @@
       }).join('');
     }
 
+    // Initialize on page load
     document.addEventListener('DOMContentLoaded', loadComponents);
   </script>
 
+  <!-- Modal Styles (same as before) -->
   <style>
     .modal {
       display: none;
