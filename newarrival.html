@@ -471,7 +471,7 @@
   <!-- Common JavaScript -->
   <script src="common.js"></script>
 
-  <script>
+<script>
     // ========== NEW ARRIVALS PAGE SPECIFIC VARIABLES ==========
     let newProducts = [];
 
@@ -548,6 +548,20 @@
         return (now - productDate) < 24 * 60 * 60 * 1000;
       }
 
+      function formatPrice(price) {
+        return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      }
+
+      function renderRating(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+          if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
+          else if (rating > i - 1 && rating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+          else stars += '<i class="fa-regular fa-star"></i>';
+        }
+        return stars;
+      }
+
       function getSortedProducts() {
         let sorted = [...newProducts];
         switch (sortSelect.value) {
@@ -599,10 +613,10 @@
                 <div class="primary-img" style="background-image: url('${mainImage}');"></div>
                 <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
                 <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
-                  <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault(); event.stopPropagation();">
+                  <button class="img-add" onclick="window.addToCart('${product.id}'); event.preventDefault(); event.stopPropagation();">
                     <i class="fa-solid fa-cart-plus"></i> add
                   </button>
-                  <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault(); event.stopPropagation();">
+                  <button class="img-buy" onclick="window.buyNow('${product.id}'); event.preventDefault(); event.stopPropagation();">
                     <i class="fa-solid fa-bolt"></i> buy
                   </button>
                 </div>
@@ -640,11 +654,8 @@
       updateCartCount();
       renderProducts();
       
-      const savedUser = localStorage.getItem('MyEssantia_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateProfileIcon();
-      }
+      // currentUser is now managed by Firebase in common.js
+      // No need to load from localStorage
       
       // Update new arrivals every minute
       setInterval(renderProducts, 60000);
@@ -661,9 +672,29 @@
       }
     }
 
+    // Listen for product updates from Firebase
+    firebase.auth().onAuthStateChanged((user) => {
+      // When auth state changes, products might be reloaded
+      // Re-render products if they're already loaded
+      if (products.length > 0) {
+        renderProducts();
+      }
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
       loadCommonModals();
       loadComponents();
+    });
+
+    // Add fallback for products
+    window.addEventListener('load', () => {
+      if (products.length === 0) {
+        const cachedProducts = localStorage.getItem('MyEssantia_products');
+        if (cachedProducts) {
+          products = JSON.parse(cachedProducts);
+          renderProducts();
+        }
+      }
     });
   </script>
 </body>
