@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>MyEssantia | best · premium essentials</title>
+  <title>MyEssantia · accessories</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -24,151 +24,85 @@
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* ---------- HOME PAGE SPECIFIC STYLES ---------- */
-    /* HERO SECTION */
-    .hero {
-      background: #f8f6f2;
-      min-height: auto;
-      padding: 3rem 0;
-      position: relative;
-      overflow: hidden;
+    /* -------------------- ACCESSORIES PAGE SPECIFIC STYLES -------------------- */
+    .page-title {
+      text-align: center;
+      padding: clamp(1.5rem, 4vw, 2rem) 0 clamp(0.5rem, 2vw, 1rem);
     }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background-image: url('https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=2070&auto=format&fit=crop');
-      background-size: cover;
-      background-position: 60% 40%;
-      opacity: 0.2;
-    }
-
-    .hero .container { 
-      position: relative; 
-      z-index: 2;
-      display: flex;
-      justify-content: flex-start;
-    }
-
-    .hero-content {
-      background: rgba(255,255,255,0.8);
-      backdrop-filter: blur(12px);
-      padding: 2rem 1.8rem;
-      border-radius: 40px;
-      box-shadow: 0 30px 50px -30px rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.6);
-      max-width: 700px;
-      width: fit-content;
-      margin-left: 0;
-      margin-right: auto;
-    }
-
-    .hero-sub {
-      font-size: 0.7rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #6f6b63;
-      margin-bottom: 1rem;
-    }
-
-    .hero-title {
-      font-size: 2.6rem;
+    .page-title h1 {
+      font-size: clamp(2.2rem, 6vw, 3.2rem);
       font-weight: 400;
-      line-height: 1.1;
-      color: #1a1714;
-      margin-bottom: 1.2rem;
+      color: #1a1a1a;
+      line-height: 1.2;
     }
-
-    .hero-title strong {
-      font-weight: 600;
+    .page-title h1 span {
       color: #d4af37;
+      font-weight: 500;
       font-style: italic;
     }
+    .page-title p {
+      color: #5f5b57;
+      max-width: 600px;
+      margin: 1rem auto 0;
+      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+      padding: 0 1rem;
+    }
 
-    .hero-desc {
-      font-size: 1rem;
-      color: #3e3a35;
+    /* SORT BAR */
+    .sort-bar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 1.5rem 0 1rem;
+      border-bottom: 1px solid #f0f0f0;
       margin-bottom: 2rem;
-    }
-
-    .hero-buttons {
-      display: flex;
       flex-wrap: wrap;
-      gap: 0.8rem;
-      align-items: center;
+      gap: 1rem;
     }
-
-    /* VALUE STRIP */
-    .value-strip {
-      background: #ffffff;
-      padding: 1.2rem 0;
-      border-bottom: 1px solid #eeeeee;
-    }
-
-    .value-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1.2rem 1.8rem;
-    }
-
-    .value-item {
+    .sort-select {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      font-size: 0.9rem;
-      color: #2b2b2b;
-      font-weight: 300;
+      gap: 0.75rem;
+      background: #fafafa;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      border: 1px solid #eaeaea;
+      cursor: pointer;
+      transition: 0.2s;
+      width: fit-content;
     }
-
-    .value-item i { color: #d4af37; width: 1.2rem; text-align: center; }
-
-    /* SECTION HEADER */
-    .section-header {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-      margin: 2rem 0 1.5rem;
+    .sort-select:hover {
+      border-color: #d4af37;
     }
-
-    .section-title {
-      font-size: 2.2rem;
-      font-weight: 400;
-      letter-spacing: -0.02em;
-    }
-
-    .section-title span {
-      font-weight: 600;
+    .sort-select i {
       color: #d4af37;
-      border-bottom: 2px solid #ece8e2;
-      padding-bottom: 0.2rem;
-    }
-
-    .view-all-link {
-      text-decoration: none;
-      color: #1a1a1a;
-      font-weight: 400;
       font-size: 1rem;
-      border-bottom: 1px solid #d4af37;
-      padding-bottom: 3px;
-      align-self: flex-start;
+    }
+    .sort-select select {
+      background: transparent;
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: #1a1a1a;
+      outline: none;
+      cursor: pointer;
     }
 
     /* PRODUCT GRID */
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.2rem;
-      margin: 1rem 0 3rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(1rem, 2.5vw, 2rem);
+      margin: 2rem 0 4rem;
     }
 
     .product-card {
       background: #fff;
-      border-radius: 24px;
-      padding: 0.8rem 0.6rem 1.2rem;
+      border-radius: 28px;
+      padding: 1.2rem 1rem 1.8rem;
       box-shadow: 0 8px 22px -8px rgba(0,0,0,0.05);
-      transition: all 0.25s;
+      transition: all 0.25s ease;
       text-align: center;
       border: 1px solid #f5f5f5;
       display: flex;
@@ -178,7 +112,6 @@
       color: inherit;
       cursor: pointer;
     }
-
     .product-card:hover {
       box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
       border-color: #e0d9d0;
@@ -189,9 +122,9 @@
       position: relative;
       width: 100%;
       aspect-ratio: 1 / 1;
-      border-radius: 20px;
+      border-radius: 24px;
       overflow: hidden;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
       background-color: #f4f2ef;
     }
 
@@ -203,29 +136,38 @@
       height: 100%;
       background-size: cover;
       background-position: center;
-      transition: opacity 0.35s;
+      transition: opacity 0.35s ease;
     }
 
-    .primary-img { opacity: 1; z-index: 2; }
-    .secondary-img { opacity: 0; z-index: 1; }
-    .image-frame:hover .primary-img { opacity: 0; }
-    .image-frame:hover .secondary-img { opacity: 1; }
+    .primary-img {
+      opacity: 1;
+      z-index: 2;
+    }
+    .secondary-img {
+      opacity: 0;
+      z-index: 1;
+    }
+    .image-frame:hover .primary-img {
+      opacity: 0;
+    }
+    .image-frame:hover .secondary-img {
+      opacity: 1;
+    }
 
     .image-actions {
       position: absolute;
-      bottom: 10px;
+      bottom: 16px;
       left: 0;
       width: 100%;
       display: flex;
-      gap: 8px;
+      gap: 10px;
       justify-content: center;
-      padding: 0 8px;
+      padding: 0 12px;
       z-index: 10;
       opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.25s, transform 0.25s;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
-
     .image-frame:hover .image-actions {
       opacity: 1;
       transform: translateY(0);
@@ -236,69 +178,94 @@
       background: rgba(255,255,255,0.9);
       backdrop-filter: blur(4px);
       border: none;
-      border-radius: 30px;
-      padding: 0.6rem 0.2rem;
-      font-size: 0.75rem;
+      border-radius: 40px;
+      padding: 0.7rem 0.2rem;
+      font-size: 0.8rem;
       font-weight: 600;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 6px;
       cursor: pointer;
+      transition: all 0.2s;
       border: 1px solid rgba(0,0,0,0.1);
       color: #1a1a1a;
       font-family: 'Plus Jakarta Sans', sans-serif;
       pointer-events: auto;
     }
-
+    .img-add i, .img-buy i {
+      font-size: 0.85rem;
+    }
     .img-add:hover {
       background: #ffffff;
       border-color: #d4af37;
+      transform: scale(1.03);
     }
-
     .img-buy {
       background: rgba(212,175,55,0.9);
       color: #0c0c0c;
       border-color: #d4af37;
     }
-
     .img-buy:hover {
       background: #d4af37;
+      transform: scale(1.03);
+      box-shadow: 0 4px 10px rgba(212,175,55,0.3);
+    }
+
+    .product-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: clamp(1.1rem, 2vw, 1.3rem);
+      margin-bottom: 0.3rem;
+      color: #1e1e1e;
+      letter-spacing: -0.01em;
     }
 
     .product-category {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       color: #a2a2a2;
       text-transform: uppercase;
-      letter-spacing: 0.3px;
-      margin: 0.2rem 0;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.4rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 300;
     }
 
     .product-rating {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 4px;
+      margin: 0.3rem 0 0.3rem;
       flex-wrap: wrap;
-      margin: 0.2rem 0;
     }
-
-    .product-rating i { color: #d4af37; font-size: 0.8rem; }
-    .product-rating span { margin-left: 2px; color: #5f5b57; font-size: 0.7rem; }
+    .product-rating i {
+      color: #d4af37;
+      font-size: 0.9rem;
+    }
+    .product-rating span {
+      margin-left: 4px;
+      color: #5f5b57;
+      font-size: 0.8rem;
+      font-weight: 300;
+    }
 
     .product-price {
       color: #d4af37;
       font-weight: 600;
-      font-size: 1.4rem;
-      margin: 0.2rem 0 0;
+      font-size: clamp(1.4rem, 3vw, 1.6rem);
+      margin: 0.4rem 0 0.2rem;
       font-family: 'Montserrat', sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 2px;
     }
-
-    .product-price .inr-symbol { font-size: 1.2rem; font-weight: 500; }
+    .product-price .inr-symbol {
+      font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+      font-weight: 500;
+      margin-right: 2px;
+    }
 
     .stock-badge {
       font-size: 0.8rem;
@@ -312,62 +279,78 @@
     .low-stock { color: #FF9800; }
     .out-of-stock { color: #f44336; }
 
-    /* FEATURED COLLECTION */
-    .featured-collection {
-      background: #f8f5f1;
-      border-radius: 40px;
-      padding: 2rem 2rem 2.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      margin: 2rem 0;
-    }
-
-    .featured-text h2 { font-size: 2.2rem; }
-    .gold { color: #d4af37; }
-
-    .featured-image {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background-image: url('https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=1972&auto=format&fit=crop');
-      background-size: cover;
-      border-radius: 30px;
-    }
-
-    /* TESTIMONIALS */
-    .testimonials {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.2rem;
-      margin: 2rem 0 3rem;
-    }
-
-    .testimonial {
-      background: #ffffff;
-      padding: 1.8rem 1.5rem;
-      border-radius: 28px;
-      border: 1px solid #f2eee9;
-    }
-
     /* RESPONSIVE BREAKPOINTS */
-    @media (min-width: 640px) {
-      .hero-title { font-size: 3.2rem; }
-      .hero-content { padding: 2.5rem; }
-      .product-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-      .testimonials { grid-template-columns: repeat(2, 1fr); }
+    @media (min-width: 1200px) {
+      .container {
+        padding: 0 3rem;
+      }
+      .page-title h1 {
+        font-size: 3.2rem;
+      }
     }
 
-    @media (min-width: 900px) {
-      .product-grid { grid-template-columns: repeat(4, 1fr); }
-      .featured-collection { flex-direction: row; align-items: center; padding: 3rem; }
-      .featured-image { flex: 1; aspect-ratio: auto; height: 320px; }
-      .featured-text { flex: 1; }
+    @media (max-width: 992px) {
+      .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+      }
     }
 
-    @media (min-width: 1100px) {
-      .hero-title { font-size: 3.8rem; }
-      .section-header { flex-direction: row; justify-content: space-between; align-items: center; }
-      .testimonials { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 768px) {
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+      }
+      .container {
+        padding: 0 1.5rem;
+      }
+      .page-title h1 {
+        font-size: clamp(2rem, 7vw, 2.8rem);
+      }
+      .sort-bar {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .container {
+        padding: 0 1rem;
+      }
+      .sort-bar {
+        justify-content: stretch;
+      }
+      .sort-select {
+        width: 100%;
+        justify-content: center;
+      }
+      .sort-select select {
+        flex: 1;
+      }
+      .product-card {
+        padding: 1rem 0.8rem 1.5rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .image-actions {
+        flex-direction: column;
+        gap: 6px;
+        bottom: 10px;
+      }
+      .img-add, .img-buy {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+      }
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
     }
   </style>
 </head>
@@ -377,77 +360,28 @@
   <div id="header"></div>
 
   <main>
-    <!-- HERO SECTION -->
-    <section class="hero">
-      <div class="hero-bg"></div>
-      <div class="container">
-        <div class="hero-content">
-          <div class="hero-sub">best · premium essentials</div>
-          <h1 class="hero-title">curated <strong>accessories</strong> <br>shipped worldwide</h1>
-          <p class="hero-desc">Partner with vetted suppliers. Daily essentials, minimalist design, and fast fulfillment.</p>
-          <div class="hero-buttons">
-            <a href="#" class="btn">start shopping</a>
-            <a href="collection.html" class="btn btn-outline">view all</a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <div class="container page-title">
+      <h1>all <span>accessories</span></h1>
+      <p>Minimal, premium & daily essentials — curated for the modern lifestyle.</p>
+    </div>
 
-    <!-- VALUE STRIP -->
-    <div class="value-strip">
-      <div class="container">
-        <div class="value-grid">
-          <div class="value-item"><i class="fa-solid fa-bolt"></i> <span>fast dispatch · 2–5 days</span></div>
-          <div class="value-item"><i class="fa-regular fa-handshake"></i> <span>vetted suppliers IN/Asia</span></div>
-          <div class="value-item"><i class="fa-regular fa-credit-card"></i> <span>secure payment</span></div>
-          <div class="value-item"><i class="fa-regular fa-comment-dots"></i> <span>24/7 support</span></div>
+    <div class="container">
+      <div class="sort-bar">
+        <div class="sort-select">
+          <i class="fa-solid fa-arrow-down-wide-short"></i>
+          <select id="sort-select" aria-label="Sort products">
+            <option value="popular">sort by: popular</option>
+            <option value="price-low">price: low to high</option>
+            <option value="price-high">price: high to low</option>
+            <option value="rating">top rated</option>
+          </select>
         </div>
       </div>
     </div>
 
-    <!-- PRODUCTS SECTION -->
     <div class="container">
-      <div class="section-header">
-        <h2 class="section-title"><span>accessories & essentials</span> — new arrivals</h2>
-        <a href="accessories.html" class="view-all-link">view all products <i class="fa-solid fa-arrow-right"></i></a>
-      </div>
-
-      <div class="product-grid" id="product-grid-container">
-        <!-- Products will be loaded dynamically -->
-      </div>
-    </div>
-
-    <!-- FEATURED COLLECTION -->
-    <div class="container">
-      <div class="featured-collection">
-        <div class="featured-text">
-          <h2><span class="gold">premium supplier</span> <br>tech & travel kit</h2>
-          <p style="margin: 1.5rem 0; color: #4f4a44;">Curated from Germany & Korea — power banks, multi-chargers, and organizers tested for quality.</p>
-          <a href="#" class="btn" style="background: #d4af37; border-color: #d4af37; color: #0c0c0c;">explore tech essentials</a>
-        </div>
-        <div class="featured-image"></div>
-      </div>
-    </div>
-
-    <!-- TESTIMONIALS -->
-    <div class="container">
-      <h2 class="section-title"><span>why <span class="italic-gold">people</span></span> trust us </h2>
-      <div class="testimonials">
-        <div class="testimonial">
-          <i class="fa-solid fa-quote-left"></i>
-          <p>“Reliable <span class="italic-gold">suppliers</span> & fast shipping. The quality exceeds expectations.”</p>
-          <h5>— roy, kottayam</h5>
-        </div>
-        <div class="testimonial">
-          <i class="fa-solid fa-quote-left"></i>
-          <p>“I use MyEssantia for my accessory niche. best & premium products.”</p>
-          <h5>— maria, kochi</h5>
-        </div>
-        <div class="testimonial">
-          <i class="fa-solid fa-quote-left"></i>
-          <p>“The accessories collection is a bestseller. good & consistent quality.”</p>
-          <h5>— sofia, idukki</h5>
-        </div>
+      <div id="product-grid-container" class="product-grid">
+        <!-- products injected via JS -->
       </div>
     </div>
   </main>
@@ -462,55 +396,88 @@
   <script src="common.js"></script>
 
   <script>
-    // ========== HOME PAGE SPECIFIC FUNCTIONS ==========
+    // ========== ACCESSORIES PAGE SPECIFIC FUNCTIONS ==========
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
+      const sortSelect = document.getElementById('sort-select');
+      
       if (!gridContainer) return;
 
-      const homeProducts = products.filter(p => p.showOnHome === true);
+      const accessoriesProducts = products.filter(p => 
+        p.showOnAccessories === true && p.category === 'Accessories'
+      );
 
-      if (homeProducts.length === 0) {
+      if (accessoriesProducts.length === 0) {
         gridContainer.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
             <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-            <h3>No products on homepage</h3>
+            <h3>No accessories found</h3>
             <p>Check back later for new arrivals!</p>
           </div>
         `;
         return;
       }
 
-      let gridHtml = '';
-      homeProducts.forEach(product => {
-        const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
-        const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
+      function getSortedProducts() {
+        let sorted = [...accessoriesProducts];
+        switch (sortSelect.value) {
+          case 'price-low':
+            sorted.sort((a, b) => a.price - b.price);
+            break;
+          case 'price-high':
+            sorted.sort((a, b) => b.price - a.price);
+            break;
+          case 'rating':
+            sorted.sort((a, b) => b.rating - a.rating);
+            break;
+          default:
+            break;
+        }
+        return sorted;
+      }
+
+      function renderAllProducts() {
+        const sortedProducts = getSortedProducts();
         
-        gridHtml += `
-          <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}">
-            <div class="image-frame">
-              <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-              <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
-              <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
-                <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault(); event.stopPropagation();">
-                  <i class="fa-solid fa-cart-plus"></i> add
-                </button>
-                <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault(); event.stopPropagation();">
-                  <i class="fa-solid fa-bolt"></i> buy
-                </button>
+        let gridHtml = '';
+        sortedProducts.forEach(product => {
+          const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
+          const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
+          
+          gridHtml += `
+            <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}">
+              <div class="image-frame">
+                <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+                <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+                <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
+                  <button class="img-add" onclick="window.addToCart(${product.id}); event.preventDefault(); event.stopPropagation();">
+                    <i class="fa-solid fa-cart-plus"></i> add
+                  </button>
+                  <button class="img-buy" onclick="window.buyNow(${product.id}); event.preventDefault(); event.stopPropagation();">
+                    <i class="fa-solid fa-bolt"></i> buy
+                  </button>
+                </div>
               </div>
-            </div>
-            <h3 class="product-title">${product.title}</h3>
-            <p class="product-category">${product.category}</p>
-            <div class="product-rating">${renderRating(product.rating)}</div>
-            <div class="product-price">
-              <span class="inr-symbol">₹</span>${formatPrice(product.price)}
-            </div>
-            ${getStockStatus(product.stock)}
-          </a>
-        `;
-      });
+              <h3 class="product-title">${product.title}</h3>
+              <p class="product-category">${product.category}</p>
+              <div class="product-rating">${renderRating(product.rating)}</div>
+              <div class="product-price">
+                <span class="inr-symbol">₹</span>${formatPrice(product.price)}
+              </div>
+              ${getStockStatus(product.stock)}
+            </a>
+          `;
+        });
+        
+        gridContainer.innerHTML = gridHtml;
+      }
+
+      renderAllProducts();
       
-      gridContainer.innerHTML = gridHtml;
+      if (sortSelect) {
+        sortSelect.removeEventListener('change', renderAllProducts);
+        sortSelect.addEventListener('change', renderAllProducts);
+      }
     }
 
     function initializeApp() {
