@@ -15,12 +15,9 @@
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
   
   <style>
-    /* (Keep all existing styles exactly as they were) */
     * {
       margin: 0;
       padding: 0;
@@ -181,89 +178,6 @@
         font-size: var(--font-size-xs);
         color: var(--color-text-light);
       }
-    }
-
-    .logout-btn {
-      background: transparent;
-      border: 2px solid var(--color-border);
-      padding: var(--spacing-sm) var(--spacing-lg);
-      border-radius: 40px;
-      cursor: pointer;
-      transition: all var(--transition-base);
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
-
-    .logout-btn:hover {
-      border-color: var(--color-danger);
-      background: var(--color-danger-light);
-      color: var(--color-danger);
-    }
-
-    /* Login required overlay */
-    .login-required {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(10px);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: var(--spacing-xl);
-    }
-
-    .login-card {
-      background: var(--color-surface);
-      border-radius: var(--border-radius-2xl);
-      padding: var(--spacing-2xl);
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
-      box-shadow: var(--shadow-xl);
-      border: 1px solid var(--color-border);
-    }
-
-    .login-card i {
-      font-size: 4rem;
-      color: var(--color-primary);
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .login-card h2 {
-      font-family: 'Playfair Display', serif;
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .login-card p {
-      color: var(--color-text-light);
-      margin-bottom: var(--spacing-xl);
-    }
-
-    .login-btn {
-      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-      color: var(--color-secondary);
-      border: none;
-      padding: var(--spacing-md) var(--spacing-xl);
-      border-radius: 60px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--transition-base);
-      width: 100%;
-      font-size: var(--font-size-base);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--spacing-sm);
-    }
-
-    .login-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px -10px var(--color-primary);
     }
 
     /* Quick Actions */
@@ -614,7 +528,7 @@
 
     .media-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: var(--spacing-md);
     }
 
@@ -645,6 +559,36 @@
     .upload-box span {
       font-size: var(--font-size-xs);
       text-align: center;
+    }
+
+    .url-input-box {
+      aspect-ratio: 1;
+      border: 2px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      display: flex;
+      flex-direction: column;
+      padding: var(--spacing-sm);
+      background: var(--color-background);
+    }
+
+    .url-input-box input {
+      width: 100%;
+      padding: var(--spacing-xs);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-sm);
+      margin-bottom: var(--spacing-xs);
+      font-size: var(--font-size-xs);
+    }
+
+    .url-input-box button {
+      background: var(--color-primary);
+      color: var(--color-secondary);
+      border: none;
+      padding: var(--spacing-xs);
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-size: var(--font-size-xs);
+      font-weight: 600;
     }
 
     .media-preview {
@@ -994,56 +938,27 @@
       body { padding: var(--spacing-sm); }
       .form-body { padding: var(--spacing-lg); }
     }
-
-    /* Media URL Input Styles */
-    .media-url-input {
-      display: flex;
-      gap: var(--spacing-xs);
-      margin-top: var(--spacing-xs);
-    }
-
-    .media-url-input input {
-      flex: 1;
-      padding: var(--spacing-xs) var(--spacing-sm);
-      border: 2px solid var(--color-border);
-      border-radius: var(--border-radius-md);
-      font-size: var(--font-size-xs);
-    }
-
-    .media-url-input button {
-      padding: var(--spacing-xs) var(--spacing-sm);
-      background: var(--color-primary);
-      color: var(--color-secondary);
-      border: none;
-      border-radius: var(--border-radius-md);
-      cursor: pointer;
-      font-size: var(--font-size-xs);
-    }
   </style>
 </head>
 <body>
 
-
-<div class="admin-container" id="admin-content" style="display: flex;">    <!-- Header with Admin Info -->
+<div class="admin-container" id="admin-content">
+    <!-- Header -->
     <div class="header">
       <div class="brand">
         <h1>MyEssantia · Admin</h1>
         <span>Product Manager</span>
       </div>
       <div style="display: flex; align-items: center; gap: var(--spacing-md);">
-        <div class="admin-info" id="admin-info">
-          <div class="admin-avatar" id="admin-avatar">
+        <div class="admin-info">
+          <div class="admin-avatar">
             <i class="fa-regular fa-user"></i>
           </div>
           <div class="admin-details">
-            <div class="name" id="admin-name"></div>
-            <div class="email" id="admin-email"></div>
+            <div class="name">Admin</div>
+            <div class="email">Product Manager</div>
           </div>
         </div>
-        <button class="logout-btn" id="logout-btn">
-          <i class="fa-solid fa-sign-out-alt"></i>
-          <span>Logout</span>
-        </button>
       </div>
     </div>
 
@@ -1108,6 +1023,7 @@
       <div class="form-body">
         <form id="product-form">
           <input type="hidden" id="product-id">
+          <input type="hidden" id="product-creation-date">
 
           <!-- Section 1: Basic Information -->
           <div class="form-section">
@@ -1122,7 +1038,6 @@
                   <i class="input-icon fa-solid fa-pen"></i>
                   <input type="text" id="product-title" placeholder="e.g. Premium Leather Cardholder" required>
                 </div>
-                <div class="field-hint"><i class="fa-regular fa-lightbulb"></i> Use a clear, descriptive title</div>
               </div>
               <div class="form-group">
                 <label><i class="fa-solid fa-building"></i> Brand</label>
@@ -1176,7 +1091,6 @@
                   <i class="input-icon fa-solid fa-star"></i>
                   <input type="number" id="product-rating" step="0.1" min="0" max="5" placeholder="4.5" required>
                 </div>
-                <div class="field-hint"><i class="fa-regular fa-lightbulb"></i> Average customer rating</div>
               </div>
             </div>
           </div>
@@ -1198,9 +1112,6 @@
               </div>
               <div id="images-grid" class="media-grid"></div>
               <div id="videos-grid" class="media-grid" style="display:none;"></div>
-            </div>
-            <div class="field-hint" style="margin-top: var(--spacing-sm);">
-              <i class="fa-regular fa-lightbulb"></i> Enter image/video URLs (up to 4 each). Drag to reorder.
             </div>
           </div>
 
@@ -1337,26 +1248,18 @@
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
     const db = firebase.firestore();
-    const storage = firebase.storage();
 
     // ========== GLOBAL VARIABLES ==========
-    let currentUser = null;
     let products = [];
     let productMedia = { images: [], videos: [] };
     let currentMediaTab = 'images';
+    let newInCheckInterval = null;
 
     // DOM Elements
-    const loginRequired = document.getElementById('login-required');
-    const adminContent = document.getElementById('admin-content');
-    const logoutBtn = document.getElementById('logout-btn');
-    const adminName = document.getElementById('admin-name');
-    const adminEmail = document.getElementById('admin-email');
-    const adminAvatar = document.getElementById('admin-avatar');
-    
     const productForm = document.getElementById('product-form');
     const productId = document.getElementById('product-id');
+    const productCreationDate = document.getElementById('product-creation-date');
     const productTitle = document.getElementById('product-title');
     const productCategory = document.getElementById('product-category');
     const productPrice = document.getElementById('product-price');
@@ -1384,144 +1287,18 @@
     const imagesGrid = document.getElementById('images-grid');
     const videosGrid = document.getElementById('videos-grid');
     const autoAssignMessage = document.getElementById('auto-assign-message');
-    const saveProductBtn = document.getElementById('save-product-btn');
-    const exportBtn = document.getElementById('export-btn');
-    const importBtn = document.getElementById('import-btn');
 
-    let filteredProducts = [];
-    let newInCheckInterval = null;
-
-// ========== INITIALIZE ADMIN WITHOUT AUTH ==========
-// Set a default admin user for display purposes
-currentUser = {
-  uid: 'local-admin',
-  name: 'Local Admin',
-  email: 'admin@myessantia.local',
-  picture: null,
-  provider: 'local'
-};
-
-// Hide login overlay and show admin content
-loginRequired.style.display = 'none';
-adminContent.style.display = 'flex';
-
-// Update admin info
-updateAdminInfo();
-
-// Load products from Firestore
-loadProducts().then(() => {
-    // Initialize admin interface
-    initializeAdmin();
-});
-
-
-logoutBtn.addEventListener('click', async () => {
-  try {
-    // Just clear local data since there's no actual logout
-    currentUser = {
-      uid: 'local-admin',
-      name: 'Local Admin',
-      email: 'admin@myessantia.local',
-      picture: null
-    };
-    updateAdminInfo();
-    showNotification('Session reset', 'info');
-  } catch (error) {
-    console.error('Logout error:', error);
-    showNotification('Failed to reset', 'error');
-  }
-});
-
-    // ========== UPDATE ADMIN INFO ==========
-    function updateAdminInfo() {
-      if (currentUser) {
-        adminName.textContent = currentUser.name;
-        adminEmail.textContent = currentUser.email;
-        
-        if (currentUser.picture) {
-          adminAvatar.innerHTML = `<img src="${currentUser.picture}" alt="Admin">`;
-        } else {
-          adminAvatar.innerHTML = '<i class="fa-regular fa-user"></i>';
-        }
-      }
-    }
-
-    // ========== FIREBASE PRODUCT FUNCTIONS ==========
-    async function loadProducts() {
-      try {
-        const productsSnapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
-        products = productsSnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        
-        // Also cache in localStorage for offline access
-        localStorage.setItem('MyEssantia_products', JSON.stringify(products));
-        
-        filteredProducts = [...products];
-        renderProducts();
-        updateStats();
-        updateNewInStatus();
-      } catch (error) {
-        console.error('Error loading products:', error);
-        // Fallback to localStorage
-        products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
-        filteredProducts = [...products];
-        renderProducts();
-        updateStats();
-        updateNewInStatus();
-        showNotification('Using cached data. Firebase connection failed.', 'warning');
-      }
-    }
-
-    async function saveProductToFirebase(productData, isNew = true) {
-      try {
-        if (isNew) {
-          // Add new product
-          const docRef = await db.collection('products').add({
-            ...productData,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-          productData.id = docRef.id;
-          showNotification('Product added successfully!', 'success');
-        } else {
-          // Update existing product
-          await db.collection('products').doc(productData.id).update({
-            ...productData,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-          showNotification('Product updated successfully!', 'success');
-        }
-        
-        // Reload products to get latest data
-        await loadProducts();
-      } catch (error) {
-        console.error('Error saving product:', error);
-        showNotification('Failed to save product: ' + error.message, 'error');
-        throw error;
-      }
-    }
-
-    async function deleteProductFromFirebase(productId) {
-      try {
-        await db.collection('products').doc(productId).delete();
-        showNotification('Product deleted successfully!', 'success');
-        await loadProducts();
-      } catch (error) {
-        console.error('Error deleting product:', error);
-        showNotification('Failed to delete product: ' + error.message, 'error');
-        throw error;
-      }
-    }
-
-    // ========== INITIALIZE ADMIN ==========
-    function initializeAdmin() {
+    // ========== INITIALIZE ==========
+    document.addEventListener('DOMContentLoaded', () => {
       initializeMediaArrays();
-      renderMediaGrid();
-      updateCategorySync();
-      startNewInMonitor();
+      loadProducts();
       setupEventListeners();
+    });
+
+    function initializeMediaArrays() {
+      productMedia.images = new Array(4).fill(null);
+      productMedia.videos = new Array(4).fill(null);
+      renderMediaGrid();
     }
 
     function setupEventListeners() {
@@ -1531,11 +1308,157 @@ logoutBtn.addEventListener('click', async () => {
       searchInput.addEventListener('input', filterProducts);
     }
 
-    // Initialize media arrays
-    function initializeMediaArrays() {
-      productMedia.images = new Array(4).fill(null);
-      productMedia.videos = new Array(4).fill(null);
+    // ========== FIREBASE FUNCTIONS ==========
+    async function loadProducts() {
+      try {
+        const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
+        products = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        renderProducts();
+        updateStats();
+        startNewInMonitor();
+      } catch (error) {
+        console.error('Error loading products:', error);
+        showNotification('Failed to load products', 'error');
+      }
     }
+
+    async function saveProduct(productData) {
+      try {
+        if (productData.id) {
+          // Update existing product
+          const { id, ...data } = productData;
+          await db.collection('products').doc(id).update({
+            ...data,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          showNotification('Product updated successfully!', 'success');
+        } else {
+          // Add new product
+          await db.collection('products').add({
+            ...productData,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          showNotification('Product added successfully!', 'success');
+        }
+        loadProducts(); // Reload products
+        resetForm();
+      } catch (error) {
+        console.error('Error saving product:', error);
+        showNotification('Failed to save product', 'error');
+      }
+    }
+
+    async function deleteProductFromFirebase(id) {
+      try {
+        await db.collection('products').doc(id).delete();
+        showNotification('Product deleted successfully!', 'success');
+        loadProducts(); // Reload products
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        showNotification('Failed to delete product', 'error');
+      }
+    }
+
+    // ========== MEDIA FUNCTIONS ==========
+    window.switchMediaTab = function(tab) {
+      currentMediaTab = tab;
+      document.getElementById('images-tab').classList.toggle('active', tab === 'images');
+      document.getElementById('videos-tab').classList.toggle('active', tab === 'videos');
+      imagesGrid.style.display = tab === 'images' ? 'grid' : 'none';
+      videosGrid.style.display = tab === 'videos' ? 'grid' : 'none';
+      renderMediaGrid();
+    };
+
+    function renderMediaGrid() {
+      const media = currentMediaTab === 'images' ? productMedia.images : productMedia.videos;
+      const grid = currentMediaTab === 'images' ? imagesGrid : videosGrid;
+      
+      let html = '';
+      for (let i = 0; i < 4; i++) {
+        if (media[i]) {
+          const isVideo = media[i].type === 'video';
+          html += `<div class="media-preview">
+            ${isVideo ? 
+              `<video src="${media[i].url}" controls></video>` : 
+              `<img src="${media[i].url}" alt="Media">`
+            }
+            <div class="media-position">Pos ${i+1}</div>
+            <div class="position-controls">
+              <button onclick="moveMedia(${i}, 'up')" ${i === 0 ? 'disabled' : ''}>
+                <i class="fa-solid fa-arrow-up"></i>
+              </button>
+              <button onclick="moveMedia(${i}, 'down')" ${i === 3 ? 'disabled' : ''}>
+                <i class="fa-solid fa-arrow-down"></i>
+              </button>
+            </div>
+            <div class="remove-media" onclick="removeMedia(${i})">
+              <i class="fa-solid fa-times"></i>
+            </div>
+          </div>`;
+        } else {
+          html += `<div class="url-input-box">
+            <input type="text" id="${currentMediaTab}-url-${i}" placeholder="Enter ${currentMediaTab === 'images' ? 'image' : 'video'} URL" value="${media[i]?.url || ''}">
+            <button onclick="addMediaUrl(${i})">Add ${currentMediaTab === 'images' ? 'Image' : 'Video'}</button>
+          </div>`;
+        }
+      }
+      grid.innerHTML = html;
+    }
+
+    window.addMediaUrl = function(index) {
+      const urlInput = document.getElementById(`${currentMediaTab}-url-${index}`);
+      const url = urlInput.value.trim();
+      
+      if (!url) {
+        showNotification('Please enter a URL', 'error');
+        return;
+      }
+
+      // Basic URL validation
+      try {
+        new URL(url);
+      } catch {
+        showNotification('Please enter a valid URL', 'error');
+        return;
+      }
+
+      const mediaItem = {
+        url: url,
+        type: currentMediaTab === 'images' ? 'image' : 'video'
+      };
+
+      if (currentMediaTab === 'images') {
+        productMedia.images[index] = mediaItem;
+      } else {
+        productMedia.videos[index] = mediaItem;
+      }
+
+      renderMediaGrid();
+      showNotification(`${currentMediaTab === 'images' ? 'Image' : 'Video'} URL added successfully!`, 'success');
+    };
+
+    window.moveMedia = function(index, direction) {
+      const media = currentMediaTab === 'images' ? productMedia.images : productMedia.videos;
+      if (direction === 'up' && index > 0) {
+        [media[index], media[index - 1]] = [media[index - 1], media[index]];
+      } else if (direction === 'down' && index < 3) {
+        [media[index], media[index + 1]] = [media[index + 1], media[index]];
+      }
+      renderMediaGrid();
+    };
+
+    window.removeMedia = function(index) {
+      if (currentMediaTab === 'images') {
+        productMedia.images[index] = null;
+      } else {
+        productMedia.videos[index] = null;
+      }
+      renderMediaGrid();
+    };
 
     // ========== NEW IN MANAGEMENT ==========
     function updateNewInStatus() {
@@ -1547,29 +1470,20 @@ logoutBtn.addEventListener('click', async () => {
           const creationDate = product.createdAt.toDate ? product.createdAt.toDate() : new Date(product.createdAt);
           const hoursDiff = (now - creationDate) / (1000 * 60 * 60);
           
-          if (hoursDiff >= 24 && product.showOnNew) {
-            product.showOnNew = false;
+          const shouldBeNew = hoursDiff < 24;
+          if (product.showOnNew !== shouldBeNew) {
+            product.showOnNew = shouldBeNew;
             changed = true;
-          } else if (hoursDiff < 24 && !product.showOnNew) {
-            product.showOnNew = true;
-            changed = true;
+            
+            // Update in Firebase
+            db.collection('products').doc(product.id).update({
+              showOnNew: shouldBeNew
+            }).catch(error => console.error('Error updating new status:', error));
           }
         }
       });
 
       if (changed) {
-        // Update products in Firestore
-        products.forEach(async (product) => {
-          if (product.id) {
-            try {
-              await db.collection('products').doc(product.id).update({
-                showOnNew: product.showOnNew
-              });
-            } catch (error) {
-              console.error('Error updating New In status:', error);
-            }
-          }
-        });
         renderProducts();
         updateStats();
       }
@@ -1578,7 +1492,7 @@ logoutBtn.addEventListener('click', async () => {
     function startNewInMonitor() {
       if (newInCheckInterval) clearInterval(newInCheckInterval);
       updateNewInStatus();
-      newInCheckInterval = setInterval(updateNewInStatus, 60000);
+      newInCheckInterval = setInterval(updateNewInStatus, 60000); // Check every minute
     }
 
     function getTimeRemaining(creationDate) {
@@ -1591,23 +1505,6 @@ logoutBtn.addEventListener('click', async () => {
       const hours = Math.floor(diffMs / (1000 * 60 * 60));
       const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
       return `${hours}h ${minutes}m`;
-    }
-
-    function updateCurrentProductTimer() {
-      if (productId.value && showOnNew.checked) {
-        const product = products.find(p => p.id === productId.value);
-        if (product && product.createdAt) {
-          const timeLeft = getTimeRemaining(product.createdAt);
-          if (timeLeft) {
-            newinStatusContainer.style.display = 'block';
-            newinTimer.textContent = timeLeft;
-          } else {
-            newinStatusContainer.style.display = 'none';
-          }
-        }
-      } else {
-        newinStatusContainer.style.display = 'none';
-      }
     }
 
     // ========== PRODUCT CRUD ==========
@@ -1627,28 +1524,28 @@ logoutBtn.addEventListener('click', async () => {
 
     function filterProducts() {
       const term = searchInput.value.toLowerCase();
-      filteredProducts = products.filter(p => 
+      const filtered = products.filter(p => 
         p.title.toLowerCase().includes(term) ||
         p.category.toLowerCase().includes(term) ||
         (p.brand && p.brand.toLowerCase().includes(term))
       );
-      renderProducts();
+      renderProducts(filtered);
     }
 
-    function renderProducts() {
-      if (filteredProducts.length === 0 && products.length === 0) {
+    function renderProducts(productsToRender = products) {
+      if (productsToRender.length === 0 && products.length === 0) {
         emptyProducts.style.display = 'block';
         productsList.innerHTML = '';
         return;
       }
+      
       emptyProducts.style.display = 'none';
       
-      productsList.innerHTML = filteredProducts.map(product => {
+      productsList.innerHTML = productsToRender.map(product => {
         const pages = [];
         if (product.showOnHome) pages.push('<span class="page-badge home"><i class="fa-solid fa-house"></i> Home</span>');
         if (product.showOnAccessories) pages.push('<span class="page-badge accessories"><i class="fa-solid fa-bag-shopping"></i> Acc</span>');
         if (product.showOnEssentials) pages.push('<span class="page-badge essentials"><i class="fa-solid fa-bolt"></i> Ess</span>');
-        if (product.showOnNew) pages.push('<span class="page-badge new"><i class="fa-regular fa-clock"></i> New</span>');
         
         const isNewIn = product.createdAt && 
                         (new Date() - (product.createdAt.toDate ? product.createdAt.toDate() : new Date(product.createdAt))) < (24 * 60 * 60 * 1000);
@@ -1697,6 +1594,8 @@ logoutBtn.addEventListener('click', async () => {
           </td>
         </tr>`;
       }).join('');
+      
+      updateStats();
     }
 
     function updateCategorySync() {
@@ -1713,76 +1612,47 @@ logoutBtn.addEventListener('click', async () => {
 
     async function handleProductSubmit(e) {
       e.preventDefault();
-      saveProductBtn.disabled = true;
-      saveProductBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
 
-      try {
-        // Filter out null media items
-        const filteredImages = productMedia.images.filter(i => i !== null).map(img => ({
-          url: img.url,
-          type: 'image'
-        }));
-        const filteredVideos = productMedia.videos.filter(v => v !== null).map(vid => ({
-          url: vid.url,
-          type: 'video'
-        }));
+      const filteredImages = productMedia.images.filter(i => i !== null);
+      const filteredVideos = productMedia.videos.filter(v => v !== null);
+      const price = parseFloat(productPrice.value);
+      const rating = parseFloat(productRating.value);
+      
+      const productData = {
+        title: productTitle.value,
+        category: productCategory.value,
+        price: price,
+        rating: rating,
+        stock: parseInt(productStock.value) || 10,
+        brand: productBrand.value || 'MyEssantia',
+        media: {
+          images: filteredImages,
+          videos: filteredVideos
+        },
+        primaryImg: filteredImages[0]?.url || filteredVideos[0]?.url || '',
+        shortDesc: productShortDesc.value,
+        description: productDescription.value,
+        specs: productSpecs.value ? productSpecs.value.split('\n').filter(s => s.trim()) : [],
+        showOnHome: showOnHome.checked,
+        showOnAccessories: showOnAccessories.checked,
+        showOnEssentials: showOnEssentials.checked,
+        showOnNew: true // Always true for new products
+      };
 
-        const price = parseFloat(productPrice.value);
-        const rating = parseFloat(productRating.value);
-        const stock = parseInt(productStock.value) || 10;
-        
-        // Parse specifications
-        const specs = productSpecs.value 
-          ? productSpecs.value.split('\n')
-              .filter(s => s.trim())
-              .map(s => s.trim())
-          : [];
-
-        const productData = {
-          title: productTitle.value.trim(),
-          category: productCategory.value,
-          price: isNaN(price) ? 0 : price,
-          rating: isNaN(rating) ? 0 : rating,
-          stock: isNaN(stock) ? 10 : stock,
-          brand: productBrand.value.trim() || 'MyEssantia',
-          media: {
-            images: filteredImages,
-            videos: filteredVideos
-          },
-          primaryImg: filteredImages[0]?.url || filteredVideos[0]?.url || '',
-          shortDesc: productShortDesc.value.trim(),
-          description: productDescription.value.trim(),
-          specs: specs,
-          showOnHome: showOnHome.checked,
-          showOnAccessories: showOnAccessories.checked || productCategory.value === 'accessories',
-          showOnEssentials: showOnEssentials.checked || productCategory.value === 'essentials',
-          showOnNew: true // Always true for new products, will be managed by timer
-        };
-
-        if (productId.value) {
-          // Update existing product
-          await saveProductToFirebase({ id: productId.value, ...productData }, false);
-        } else {
-          // Add new product
-          await saveProductToFirebase(productData, true);
-        }
-
-        resetForm();
-      } catch (error) {
-        console.error('Error saving product:', error);
-        showNotification('Failed to save product', 'error');
-      } finally {
-        saveProductBtn.disabled = false;
-        saveProductBtn.innerHTML = '<i class="fa-solid fa-save"></i> Save Product';
+      // Add ID if editing
+      if (productId.value) {
+        productData.id = productId.value;
       }
+
+      await saveProduct(productData);
     }
 
     window.editProduct = async function(id) {
       const product = products.find(p => p.id === id);
       if (!product) return;
 
-      // Fill form fields
       productId.value = product.id;
+      productCreationDate.value = product.createdAt || '';
       productTitle.value = product.title;
       productCategory.value = product.category;
       productPrice.value = product.price;
@@ -1794,36 +1664,44 @@ logoutBtn.addEventListener('click', async () => {
       productSpecs.value = product.specs ? product.specs.join('\n') : '';
 
       // Load media
-      productMedia.images = product.media?.images ? [...product.media.images] : [];
-      productMedia.videos = product.media?.videos ? [...product.media.videos] : [];
+      productMedia.images = product.media?.images ? [...product.media.images] : new Array(4).fill(null);
+      productMedia.videos = product.media?.videos ? [...product.media.videos] : new Array(4).fill(null);
+      
+      // Ensure arrays have 4 elements
       while (productMedia.images.length < 4) productMedia.images.push(null);
       while (productMedia.videos.length < 4) productMedia.videos.push(null);
       
       renderMediaGrid();
 
-      // Set page visibility
       showOnHome.checked = product.showOnHome || false;
       showOnAccessories.checked = product.showOnAccessories || false;
       showOnEssentials.checked = product.showOnEssentials || false;
       showOnNew.checked = product.showOnNew || false;
 
       formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> Edit Product';
-      updateCurrentProductTimer();
+      
+      // Update timer if needed
+      if (product.createdAt) {
+        const timeLeft = getTimeRemaining(product.createdAt);
+        if (timeLeft) {
+          newinStatusContainer.style.display = 'block';
+          newinTimer.textContent = timeLeft;
+        }
+      }
+      
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.deleteProduct = async function(id) {
+    window.deleteProduct = function(id) {
       if (confirm('Are you sure you want to delete this product?')) {
-        await deleteProductFromFirebase(id);
-        if (productId.value === id) {
-          resetForm();
-        }
+        deleteProductFromFirebase(id);
       }
     };
 
     function resetForm() {
       productForm.reset();
       productId.value = '';
+      productCreationDate.value = '';
       productMedia = { images: new Array(4).fill(null), videos: new Array(4).fill(null) };
       renderMediaGrid();
       showOnHome.checked = false;
@@ -1834,148 +1712,6 @@ logoutBtn.addEventListener('click', async () => {
       formTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add New Product';
       updateCategorySync();
     }
-
-    // ========== MEDIA FUNCTIONS ==========
-    window.switchMediaTab = function(tab) {
-      currentMediaTab = tab;
-      document.getElementById('images-tab').classList.toggle('active', tab === 'images');
-      document.getElementById('videos-tab').classList.toggle('active', tab === 'videos');
-      imagesGrid.style.display = tab === 'images' ? 'grid' : 'none';
-      videosGrid.style.display = tab === 'videos' ? 'grid' : 'none';
-      renderMediaGrid();
-    };
-
-    function renderMediaGrid() {
-      const media = currentMediaTab === 'images' ? productMedia.images : productMedia.videos;
-      const grid = currentMediaTab === 'images' ? imagesGrid : videosGrid;
-      
-      let html = '';
-      for (let i = 0; i < 4; i++) {
-        if (media[i]) {
-          const isVideo = media[i].type === 'video';
-          html += `<div class="media-preview">
-            ${isVideo ? 
-              `<video src="${media[i].url}" controls></video>` : 
-              `<img src="${media[i].url}" alt="Media">`
-            }
-            <div class="media-position">Pos ${i+1}</div>
-            <div class="position-controls">
-              <button onclick="moveMedia(${i}, 'up')" ${i === 0 ? 'disabled' : ''}>
-                <i class="fa-solid fa-arrow-up"></i>
-              </button>
-              <button onclick="moveMedia(${i}, 'down')" ${i === 3 ? 'disabled' : ''}>
-                <i class="fa-solid fa-arrow-down"></i>
-              </button>
-            </div>
-            <div class="remove-media" onclick="removeMedia(${i})">
-              <i class="fa-solid fa-times"></i>
-            </div>
-            <div class="media-url-input">
-              <input type="url" id="media-url-${i}" placeholder="Enter URL" value="${media[i].url}">
-              <button onclick="updateMediaUrl(${i})"><i class="fa-solid fa-check"></i></button>
-            </div>
-          </div>`;
-        } else {
-          html += `<div class="upload-box" onclick="showUrlInput(${i})">
-            <i class="fa-solid fa-${currentMediaTab === 'images' ? 'image' : 'video'}"></i>
-            <span>Add ${currentMediaTab === 'images' ? 'Image' : 'Video'} URL</span>
-            <div id="url-input-${i}" style="display:none; margin-top:8px;">
-              <input type="url" id="new-url-${i}" placeholder="Enter URL" style="width:100%; padding:4px; border-radius:4px; border:1px solid #ddd;">
-              <button onclick="addMediaUrl(${i}, event)" style="margin-top:4px; width:100%;">Add</button>
-            </div>
-          </div>`;
-        }
-      }
-      grid.innerHTML = html;
-    }
-
-    window.showUrlInput = function(index) {
-      const inputDiv = document.getElementById(`url-input-${index}`);
-      inputDiv.style.display = 'block';
-    };
-
-    window.addMediaUrl = function(index, event) {
-      event.stopPropagation();
-      const urlInput = document.getElementById(`new-url-${index}`);
-      const url = urlInput.value.trim();
-      
-      if (!url) {
-        showNotification('Please enter a URL', 'error');
-        return;
-      }
-
-      // Basic URL validation
-      try {
-        new URL(url);
-      } catch {
-        showNotification('Please enter a valid URL', 'error');
-        return;
-      }
-
-      const mediaItem = { 
-        url: url, 
-        type: currentMediaTab === 'images' ? 'image' : 'video'
-      };
-
-      if (currentMediaTab === 'images') {
-        productMedia.images[index] = mediaItem;
-      } else {
-        productMedia.videos[index] = mediaItem;
-      }
-
-      renderMediaGrid();
-      showNotification(`${currentMediaTab === 'images' ? 'Image' : 'Video'} added successfully`, 'success');
-    };
-
-    window.updateMediaUrl = function(index) {
-      const urlInput = document.getElementById(`media-url-${index}`);
-      const newUrl = urlInput.value.trim();
-      
-      if (!newUrl) {
-        showNotification('Please enter a URL', 'error');
-        return;
-      }
-
-      // Basic URL validation
-      try {
-        new URL(newUrl);
-      } catch {
-        showNotification('Please enter a valid URL', 'error');
-        return;
-      }
-
-      if (currentMediaTab === 'images') {
-        if (productMedia.images[index]) {
-          productMedia.images[index].url = newUrl;
-        }
-      } else {
-        if (productMedia.videos[index]) {
-          productMedia.videos[index].url = newUrl;
-        }
-      }
-
-      renderMediaGrid();
-      showNotification('URL updated successfully', 'success');
-    };
-
-    window.moveMedia = function(index, direction) {
-      const media = currentMediaTab === 'images' ? productMedia.images : productMedia.videos;
-      if (direction === 'up' && index > 0) {
-        [media[index], media[index - 1]] = [media[index - 1], media[index]];
-      } else if (direction === 'down' && index < 3) {
-        [media[index], media[index + 1]] = [media[index + 1], media[index]];
-      }
-      renderMediaGrid();
-    };
-
-    window.removeMedia = function(index) {
-      if (currentMediaTab === 'images') {
-        productMedia.images[index] = null;
-      } else {
-        productMedia.videos[index] = null;
-      }
-      renderMediaGrid();
-    };
 
     // ========== EXPORT / IMPORT ==========
     window.exportProducts = function() {
@@ -1994,14 +1730,14 @@ logoutBtn.addEventListener('click', async () => {
       const input = document.createElement('input');
       input.type = 'file';
       input.accept = '.json';
-      input.onchange = (e) => {
+      input.onchange = async (e) => {
         const file = e.target.files[0];
         const reader = new FileReader();
         reader.onload = async (ev) => {
           try {
             const imported = JSON.parse(ev.target.result);
             if (Array.isArray(imported)) {
-              // Import each product to Firestore
+              // Import each product to Firebase
               for (const product of imported) {
                 const { id, ...productData } = product;
                 await db.collection('products').add({
@@ -2010,11 +1746,10 @@ logoutBtn.addEventListener('click', async () => {
                   updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
               }
-              await loadProducts();
               showNotification('Products imported successfully!', 'success');
+              loadProducts(); // Reload products
             }
-          } catch (error) {
-            console.error('Import error:', error);
+          } catch {
             showNotification('Invalid file format', 'error');
           }
         };
