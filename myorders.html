@@ -659,23 +659,28 @@
   <!-- Common JavaScript -->
   <script src="common.js"></script>
 
-  <script>
+ <script>
     // ========== ORDER TRACKING PAGE SPECIFIC VARIABLES ==========
     let orders = [];
 
     // ========== ORDER TRACKING FUNCTIONS ==========
-    function initializeOrderTracking() {
-      // Load orders from localStorage
-      const storedOrders = localStorage.getItem('MyEssantia_orders');
-      if (storedOrders) {
-        try {
-          orders = JSON.parse(storedOrders);
-        } catch (e) {
-          orders = [];
-        }
+    async function initializeOrderTracking() {
+      // Load orders from Firebase first if user is logged in
+      if (currentUser) {
+        await loadUserOrdersFromFirestore();
       } else {
-        orders = [];
-        localStorage.setItem('MyEssantia_orders', JSON.stringify(orders));
+        // Load guest orders from localStorage
+        const storedOrders = localStorage.getItem('MyEssantia_orders');
+        if (storedOrders) {
+          try {
+            orders = JSON.parse(storedOrders);
+          } catch (e) {
+            orders = [];
+          }
+        } else {
+          orders = [];
+          localStorage.setItem('MyEssantia_orders', JSON.stringify(orders));
+        }
       }
 
       const trackBtn = document.getElementById('track-order-btn');
@@ -707,17 +712,13 @@
           });
         });
       }
-
-      // Load user's orders if logged in
-      if (currentUser) {
-        loadUserOrdersFromFirestore();
-      }
     }
 
     async function loadUserOrdersFromFirestore() {
       if (!currentUser) return;
 
       try {
+        // Load orders from Firestore
         const ordersRef = db.collection('orders')
           .where('email', '==', currentUser.email)
           .orderBy('date', 'desc');
@@ -725,15 +726,76 @@
         const snapshot = await ordersRef.get();
         
         if (!snapshot.empty) {
-          const userOrders = [];
+          const firestoreOrders = [];
           snapshot.forEach(doc => {
-            userOrders.push({ id: doc.id, ...doc.data() });
+            firestoreOrders.push({ id: doc.id, ...doc.data() });
           });
           
-          displayRecentOrders(userOrders);
+          // Update orders array with Firestore data
+          orders = firestoreOrders;
+          
+          // Cache to localStorage for offline access
+          localStorage.setItem('MyEssantia_orders', JSON.stringify(orders));
+          
+          displayRecentOrders(orders);
+        } else {
+          // Check localStorage for any orders that might need to be synced
+          const storedOrders = localStorage.getItem('MyEssantia_orders');
+          if (storedOrders) {
+            try {
+              const localOrders = JSON.parse(storedOrders);
+              const userLocalOrders = localOrders.filter(o => o.email === currentUser.email);
+              
+              if (userLocalOrders.length > 0) {
+                // Sync local orders to Firestore
+                for (const order of userLocalOrders) {
+                  await db.collection('orders').add({
+                    ...order,
+                    syncedAt: firebase.firestore.FieldValue.serverTimestamp()
+                  });
+                }
+                
+                // Reload from Firestore after sync
+                const newSnapshot = await ordersRef.get();
+                const syncedOrders = [];
+                newSnapshot.forEach(doc => {
+                  syncedOrders.push({ id: doc.id, ...doc.data() });
+                });
+                orders = syncedOrders;
+                localStorage.setItem('MyEssantia_orders', JSON.stringify(orders));
+                displayRecentOrders(orders);
+              }
+            } catch (e) {
+              console.error('Error syncing local orders:', e);
+            }
+          }
         }
       } catch (error) {
         console.error('Error loading orders from Firestore:', error);
+        // Fallback to localStorage
+        const storedOrders = localStorage.getItem('MyEssantia_orders');
+        if (storedOrders) {
+          try {
+            orders = JSON.parse(storedOrders);
+            displayRecentOrders(orders.filter(o => o.email === currentUser?.email));
+          } catch (e) {
+            orders = [];
+          }
+        }
+      }
+    }
+
+    async function saveOrderToFirestore(order) {
+      if (!currentUser) return;
+
+      try {
+        await db.collection('orders').add({
+          ...order,
+          userId: currentUser.uid,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (error) {
+        console.error('Error saving order to Firestore:', error);
       }
     }
 
@@ -743,7 +805,7 @@
       
       if (!container || !list) return;
 
-      if (userOrders.length === 0) {
+      if (!userOrders || userOrders.length === 0) {
         container.style.display = 'none';
         return;
       }
@@ -764,7 +826,7 @@
               <span class="recent-order-date">${order.date}</span>
               <span class="order-status ${statusClass}">${order.status}</span>
             </div>
-            <div class="recent-order-total">₹${order.total.toLocaleString()}</div>
+            <div class="recent-order-total">₹${order.total?.toLocaleString() || '0'}</div>
           </div>
         `;
       }).join('');
@@ -783,7 +845,7 @@
       }
     }
 
-    function findOrder() {
+    async function findOrder() {
       const orderNumberInput = document.getElementById('order-number');
       const orderEmailInput = document.getElementById('order-email');
       const errorDiv = document.getElementById('error-message');
@@ -810,12 +872,30 @@
       trackBtn.disabled = true;
       trackBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> searching...';
 
-      // Search in orders array
-      setTimeout(() => {
-        const foundOrder = orders.find(o => 
+      try {
+        // First search in local orders array
+        let foundOrder = orders.find(o => 
           o.orderId === orderNumber && 
-          (o.email.toLowerCase() === email || o.phone === email)
+          (o.email?.toLowerCase() === email || o.phone === email)
         );
+
+        // If not found locally and user is logged in, try Firestore
+        if (!foundOrder && currentUser) {
+          const ordersRef = db.collection('orders')
+            .where('orderId', '==', orderNumber)
+            .where('email', '==', email);
+          
+          const snapshot = await ordersRef.get();
+          
+          if (!snapshot.empty) {
+            const doc = snapshot.docs[0];
+            foundOrder = { id: doc.id, ...doc.data() };
+            
+            // Add to local orders array for future searches
+            orders.push(foundOrder);
+            localStorage.setItem('MyEssantia_orders', JSON.stringify(orders));
+          }
+        }
         
         if (foundOrder) {
           renderOrder(foundOrder);
@@ -833,11 +913,17 @@
             errorDiv.classList.add('show');
           }
         }
-
+      } catch (error) {
+        console.error('Error finding order:', error);
+        if (errorDiv) {
+          errorDiv.textContent = 'Error searching for order. Please try again.';
+          errorDiv.classList.add('show');
+        }
+      } finally {
         // Reset button
         trackBtn.disabled = false;
         trackBtn.innerHTML = '<i class="fa-solid fa-location-dot"></i> find order';
-      }, 800);
+      }
     }
 
     function renderOrder(order) {
@@ -850,10 +936,10 @@
       else if (order.status === 'cancelled') statusClass = 'status-cancelled';
 
       function formatPrice(price) {
-        return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        return price?.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') || '0.00';
       }
 
-      const itemsHtml = order.items.map(item => {
+      const itemsHtml = order.items?.map(item => {
         return `
           <div class="product-row">
             <div class="product-image-placeholder">
@@ -862,13 +948,13 @@
             <div class="product-info">
               <span class="product-name">${item.name}</span>
               <div class="product-meta">
-                <span class="product-qty">x${item.qty}</span>
+                <span class="product-qty">x${item.qty || item.quantity || 1}</span>
                 <span class="product-price">₹${formatPrice(item.price)}</span>
               </div>
             </div>
           </div>
         `;
-      }).join('');
+      }).join('') || '<p>No items found</p>';
 
       // Add tracking info if available
       const trackingHtml = order.trackingNumber ? `
@@ -945,7 +1031,7 @@
       }
     };
 
-    window.submitSupport = function() {
+    window.submitSupport = async function() {
       const name = document.getElementById('support-name')?.value;
       const email = document.getElementById('support-email')?.value;
       const message = document.getElementById('support-message')?.value;
@@ -959,7 +1045,22 @@
         return;
       }
 
-      // Simulate sending support request
+      // Save support request to Firebase if user is logged in
+      if (currentUser) {
+        try {
+          await db.collection('support').add({
+            name,
+            email,
+            message,
+            userId: currentUser.uid,
+            status: 'pending',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        } catch (error) {
+          console.error('Error saving support request:', error);
+        }
+      }
+
       if (statusDiv) {
         statusDiv.className = 'auth-success';
         statusDiv.textContent = 'Support request sent! We\'ll respond within 24 hours.';
@@ -980,16 +1081,13 @@
       updateProfileIcon();
       initializeOrderTracking();
       
-      const savedUser = localStorage.getItem('MyEssantia_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateProfileIcon();
-      }
+      // currentUser is now managed by Firebase in common.js
+      // No need to load from localStorage
     }
 
     // Override updateProfileIcon to handle order tracking specific UI
-    const originalUpdateProfileIcon = updateProfileIcon;
-    updateProfileIcon = function() {
+    const originalUpdateProfileIcon = window.updateProfileIcon;
+    window.updateProfileIcon = function() {
       if (originalUpdateProfileIcon) {
         originalUpdateProfileIcon();
       }
@@ -1027,6 +1125,24 @@
         }
       });
     }
+
+    // Listen for auth state changes
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        loadUserOrdersFromFirestore();
+      } else {
+        hideRecentOrders();
+        // Load guest orders from localStorage
+        const storedOrders = localStorage.getItem('MyEssantia_orders');
+        if (storedOrders) {
+          try {
+            orders = JSON.parse(storedOrders);
+          } catch (e) {
+            orders = [];
+          }
+        }
+      }
+    });
 
     document.addEventListener('DOMContentLoaded', () => {
       loadCommonModals();
