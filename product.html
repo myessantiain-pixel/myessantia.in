@@ -5,34 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Product Details · MyEssantia</title>
   
+  <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Common CSS -->
+  <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background-color: #ffffff;
-      color: #1a1a1a;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 300;
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
+    /* -------------------- PRODUCT PAGE SPECIFIC STYLES -------------------- */
     /* Breadcrumb */
     .breadcrumb {
       display: flex;
@@ -1106,87 +1098,6 @@
       box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
     }
 
-    /* Modal Styles - Existing */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(5px);
-    }
-
-    .modal.show { display: block; }
-
-    .modal-content {
-      background: white;
-      margin: 2rem auto;
-      padding: 2rem;
-      width: 90%;
-      max-width: 500px;
-      border-radius: 30px;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .close-modal {
-      background: none;
-      border: none;
-      font-size: 2rem;
-      cursor: pointer;
-      color: #999;
-    }
-
-    .cart-item {
-      display: flex;
-      gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .cart-item-image {
-      width: 80px;
-      height: 80px;
-      border-radius: 12px;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .profile-avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin: 0 auto 1rem;
-      overflow: hidden;
-    }
-
-    .google-login-btn {
-      background: white;
-      border: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      width: 100%;
-      padding: 1rem;
-      border-radius: 40px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .google-login-btn i { color: #DB4437; }
-
     /* New Priority Access Modal Styles */
     .priority-modal {
       display: none;
@@ -1373,7 +1284,7 @@
       margin-top: 2rem;
     }
 
-    .priority-submit-btn:hover {
+    .priority-submit-btn:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 15px 30px -10px #d4af37;
       background: linear-gradient(135deg, #c4a030, #b18a2a);
@@ -1514,7 +1425,8 @@
     }
   </style>
 </head>
-<body>
+<body class="bg-noise">
+  <!-- Header loaded dynamically -->
   <div id="header"></div>
 
   <main>
@@ -1531,33 +1443,11 @@
     <div class="container" id="product-container"></div>
   </main>
 
+  <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
-  <!-- Cart Modal -->
-  <div id="cart-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Your Cart</h2>
-        <button class="close-modal" id="close-cart">&times;</button>
-      </div>
-      <div id="cart-items"></div>
-      <div class="cart-total">
-        <h3>Total: <span id="cart-total-amount">₹0</span></h3>
-      </div>
-      <button class="btn btn-buy-now" style="width: 100%;">Checkout</button>
-    </div>
-  </div>
-
-  <!-- Profile Modal -->
-  <div id="profile-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Profile</h2>
-        <button class="close-modal" id="close-profile">&times;</button>
-      </div>
-      <div id="profile-content"></div>
-    </div>
-  </div>
+  <!-- Common Modals -->
+  <div id="common-modals"></div>
 
   <!-- New Priority Access Modal -->
   <div id="priority-modal" class="priority-modal">
@@ -1567,11 +1457,12 @@
     </div>
   </div>
 
-  <script>
-    let products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
-    let cart = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-    let currentUser = JSON.parse(localStorage.getItem('MyEssantia_user')) || null;
+  <!-- Common JavaScript -->
+  <script src="common.js"></script>
 
+  <script>
+    // ========== PRODUCT PAGE SPECIFIC FUNCTIONS ==========
+    
     // Facebook Pixel helper function (safe execution)
     function trackFacebookEvent(eventName, params = {}) {
       if (typeof fbq === 'function') {
@@ -1580,33 +1471,6 @@
       } else {
         console.log(`Facebook Pixel simulation: ${eventName}`, params);
       }
-    }
-
-    async function loadComponents() {
-      try {
-        const headerResponse = await fetch('header.html');
-        const headerData = await headerResponse.text();
-        document.getElementById('header').innerHTML = headerData;
-
-        const footerResponse = await fetch('footer.html');
-        const footerData = await footerResponse.text();
-        document.getElementById('footer').innerHTML = footerData;
-
-        setTimeout(() => {
-          initializeApp();
-        }, 50);
-      } catch (error) {
-        console.error('Error loading components:', error);
-        // Continue without header/footer if files not found
-        initializeApp();
-      }
-    }
-
-    function initializeApp() {
-      updateCartCount();
-      updateProfileIcon();
-      setupEventListeners();
-      loadProduct();
     }
 
     function getProductId() {
@@ -2273,7 +2137,7 @@
       }
     };
 
-    // New Buy Now handler
+    // Buy Now handler
     window.handleBuyNow = function(productId) {
       // Track Facebook InitiateCheckout event
       const product = products.find(p => p.id === productId);
@@ -2419,16 +2283,7 @@
       }, 300);
     }
 
-    // Close modal with ESC key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        closePriorityModal();
-        closeModal('cart-modal');
-        closeModal('profile-modal');
-        closeShareMenu();
-      }
-    });
-
+    // Tabs
     window.switchTab = function(tab) {
       document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -2437,64 +2292,27 @@
       document.getElementById(`tab-${tab}`).classList.add('active');
     };
 
-    function updateCartCount() {
-      const cartCount = document.getElementById('cart-count');
-      if (cartCount) {
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCount.textContent = totalItems;
+    // Override updateCartCount to use common function but add delivery bar update
+    const originalUpdateCartCount = updateCartCount;
+    updateCartCount = function() {
+      if (originalUpdateCartCount) {
+        originalUpdateCartCount();
       }
-    }
-
-    function updateProfileIcon() {
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        if (currentUser) {
-          profileIcon.innerHTML = '<i class="fa-solid fa-circle-user" style="color: #d4af37;"></i>';
-        } else {
-          profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
-        }
+      if (window.location.pathname.includes('product.html')) {
+        updateDeliveryBar();
       }
-    }
+    };
 
-    function setupEventListeners() {
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const navMenu = document.getElementById('nav-menu');
+    // Initialize
+    function initializeApp() {
+      updateCartCount();
+      updateProfileIcon();
+      loadProduct();
       
-      if (mobileMenuToggle && navMenu) {
-        mobileMenuToggle.addEventListener('click', function(e) {
-          e.stopPropagation();
-          navMenu.classList.toggle('show');
-        });
-      }
-
-      const cartIcon = document.getElementById('cart-icon');
-      if (cartIcon) {
-        cartIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openCart();
-        });
-      }
-
-      const profileIcon = document.getElementById('profile-icon');
-      if (profileIcon) {
-        profileIcon.addEventListener('click', function(e) {
-          e.preventDefault();
-          openProfile();
-        });
-      }
-
-      const closeCart = document.getElementById('close-cart');
-      if (closeCart) {
-        closeCart.addEventListener('click', function() {
-          closeModal('cart-modal');
-        });
-      }
-
-      const closeProfile = document.getElementById('close-profile');
-      if (closeProfile) {
-        closeProfile.addEventListener('click', function() {
-          closeModal('profile-modal');
-        });
+      const savedUser = localStorage.getItem('MyEssantia_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateProfileIcon();
       }
 
       // Priority modal close button
@@ -2503,188 +2321,30 @@
         closePriorityBtn.addEventListener('click', closePriorityModal);
       }
 
+      // Close priority modal on outside click
       window.addEventListener('click', function(e) {
-        const cartModal = document.getElementById('cart-modal');
-        const profileModal = document.getElementById('profile-modal');
         const priorityModal = document.getElementById('priority-modal');
-        
-        if (e.target === cartModal) {
-          closeModal('cart-modal');
-        }
-        if (e.target === profileModal) {
-          closeModal('profile-modal');
-        }
         if (e.target === priorityModal) {
           closePriorityModal();
         }
       });
     }
 
-    function openCart() {
-      const cartModal = document.getElementById('cart-modal');
-      if (cartModal) {
-        renderCartItems();
-        cartModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
+    // Load common modals
+    async function loadCommonModals() {
+      try {
+        const response = await fetch('common.html');
+        const data = await response.text();
+        document.getElementById('common-modals').innerHTML = data;
+      } catch (error) {
+        console.error('Error loading common modals:', error);
       }
     }
 
-    function openProfile() {
-      const profileModal = document.getElementById('profile-modal');
-      if (profileModal) {
-        renderProfileContent();
-        profileModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-      }
-    }
-
-    function renderCartItems() {
-      const cartItemsContainer = document.getElementById('cart-items');
-      const cartItemCount = document.getElementById('cart-item-count');
-      const cartTotalAmount = document.getElementById('cart-total-amount');
-
-      if (!cartItemsContainer || !cartItemCount || !cartTotalAmount) return;
-
-      if (cart.length === 0) {
-        cartItemsContainer.innerHTML = `
-          <div class="empty-cart-message" style="text-align: center; padding: 2rem;">
-            <i class="fa-regular fa-cart-shopping" style="font-size: 3rem; color: #ccc;"></i>
-            <p style="margin-top: 1rem; color: #666;">Your cart is empty</p>
-          </div>
-        `;
-        cartItemCount.textContent = '0';
-        cartTotalAmount.textContent = '₹0';
-        return;
-      }
-
-      let total = 0;
-      let totalItems = 0;
-
-      cartItemsContainer.innerHTML = cart.map(item => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        totalItems += item.quantity;
-
-        return `
-          <div class="cart-item">
-            <div class="cart-item-image" style="background-image: url('${item.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=80'}')"></div>
-            <div class="cart-item-details" style="flex: 1;">
-              <h4 style="margin-bottom: 0.3rem;">${item.title}</h4>
-              <p style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">${item.category}</p>
-              <div class="cart-item-price" style="font-weight: 600; color: #d4af37; margin-bottom: 0.5rem;">₹${item.price ? item.price.toFixed(2) : '0.00'}</div>
-              <div class="cart-item-actions" style="display: flex; align-items: center; gap: 0.8rem;">
-                <button class="quantity-btn" style="width: 30px; height: 30px; font-size: 1rem;" onclick="updateQuantity(${item.id}, -1)">-</button>
-                <span style="font-weight: 600;">${item.quantity}</span>
-                <button class="quantity-btn" style="width: 30px; height: 30px; font-size: 1rem;" onclick="updateQuantity(${item.id}, 1)">+</button>
-                <button class="remove-item" style="background: none; border: none; color: #ef4444; cursor: pointer; margin-left: auto;" onclick="removeFromCart(${item.id})">
-                  <i class="fa-regular fa-trash-can"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      cartItemCount.textContent = totalItems;
-      cartTotalAmount.textContent = `₹${total.toFixed(2)}`;
-    }
-
-    window.updateQuantity = function(productId, change) {
-      const itemIndex = cart.findIndex(item => item.id === productId);
-      if (itemIndex === -1) return;
-
-      const item = cart[itemIndex];
-      const newQuantity = item.quantity + change;
-
-      if (newQuantity <= 0) {
-        cart.splice(itemIndex, 1);
-      } else {
-        item.quantity = newQuantity;
-      }
-
-      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-      updateCartCount();
-      renderCartItems();
-      
-      if (window.location.pathname.includes('product.html')) {
-        updateDeliveryBar();
-      }
-    };
-
-    window.removeFromCart = function(productId) {
-      cart = cart.filter(item => item.id !== productId);
-      localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-      updateCartCount();
-      renderCartItems();
-      
-      if (window.location.pathname.includes('product.html')) {
-        updateDeliveryBar();
-      }
-    };
-
-    function renderProfileContent() {
-      const profileContent = document.getElementById('profile-content');
-      if (!profileContent) return;
-
-      if (currentUser) {
-        profileContent.innerHTML = `
-          <div class="profile-info">
-            <div class="profile-avatar">
-              <img src="${currentUser.picture || 'https://via.placeholder.com/80'}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-            </div>
-            <div class="profile-details" style="text-align: center; margin: 1rem 0;">
-              <p style="margin-bottom: 0.5rem;"><strong>Name:</strong> ${currentUser.name}</p>
-              <p><strong>Email:</strong> ${currentUser.email}</p>
-            </div>
-            <button class="btn logout-btn" onclick="logout()" style="background: #ef4444; color: white; width: 100%;">Logout</button>
-          </div>
-        `;
-      } else {
-        profileContent.innerHTML = `
-          <div class="login-form">
-            <div class="login-header" style="text-align: center; margin-bottom: 2rem;">
-              <i class="fa-brands fa-google" style="font-size: 3rem; color: #DB4437; margin-bottom: 1rem;"></i>
-              <h4 style="margin-bottom: 0.5rem;">Welcome Back!</h4>
-              <p style="color: #666;">Sign in with Google</p>
-            </div>
-            <button class="btn google-login-btn" onclick="handleGoogleLogin()">
-              <i class="fa-brands fa-google"></i> Sign in with Google
-            </button>
-          </div>
-        `;
-      }
-    }
-
-    window.handleGoogleLogin = function() {
-      const mockGoogleUser = {
-        name: 'John Doe',
-        email: 'john@gmail.com',
-        picture: 'https://via.placeholder.com/80'
-      };
-      localStorage.setItem('MyEssantia_user', JSON.stringify(mockGoogleUser));
-      currentUser = mockGoogleUser;
-      updateProfileIcon();
-      renderProfileContent();
-      closeModal('profile-modal');
-    };
-
-    window.logout = function() {
-      localStorage.removeItem('MyEssantia_user');
-      currentUser = null;
-      updateProfileIcon();
-      renderProfileContent();
-      closeModal('profile-modal');
-    };
-
-    document.addEventListener('DOMContentLoaded', loadComponents);
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCommonModals();
+      loadComponents();
+    });
   </script>
 </body>
 </html>
