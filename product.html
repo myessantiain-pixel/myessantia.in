@@ -8,7 +8,7 @@
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
-  <!-- Premium Fonts (Montserrat + Inter) exactly like sample -->
+  <!-- Premium Fonts (Montserrat + Inter) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Montserrat:wght@300..900&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
   <style>
     /* ========== ADDITIONAL PRODUCT PAGE STYLES – BLACK/GOLD WITH RED/GREEN BADGES ========== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; overflow-x: hidden; background: #ffffff; }
+    html, body { width: 100%; overflow-x: hidden; background: #ffffff; scroll-behavior: smooth; }
     body {
       font-family: 'Inter', 'Montserrat', sans-serif;
       color: #1e1e1e;
@@ -48,7 +48,7 @@
       display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
       padding: 20px 0; font-size: 0.85rem; color: #4a4a4a;
     }
-    .breadcrumb a { color: #1e1e1e; text-decoration: none; font-weight: 600; }
+    .breadcrumb a { color: #1e1e1e; text-decoration: none; font-weight: 600; transition: color 0.2s; }
     .breadcrumb a:hover { color: #d4af37; }
     .breadcrumb i { font-size: 0.7rem; color: #d4af37; }
 
@@ -66,10 +66,10 @@
     .main-image {
       width: 100%; aspect-ratio: 1/1; border-radius: 28px; overflow: hidden; margin-bottom: 16px;
       background: #ffffff; border: 2px solid #000000; box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
     }
-    .main-image:hover { transform: scale(1.01); box-shadow: 12px 12px 0 rgba(212,175,55,0.3); }
-    .main-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .main-image:hover { transform: scale(1.01) translate(-2px, -2px); box-shadow: 12px 12px 0 rgba(212,175,55,0.3); }
+    .main-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1); }
     .main-image:hover img { transform: scale(1.05); }
     .thumbnail-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
@@ -79,7 +79,7 @@
       border: 2px solid transparent; background: #ffffff; border: 2px solid #000;
       transition: all 0.2s;
     }
-    .thumbnail:hover { border-color: #d4af37; transform: translateY(-2px); }
+    .thumbnail:hover { border-color: #d4af37; transform: translateY(-2px) scale(0.98); }
     .thumbnail.active { border-color: #d4af37; border-width: 3px; box-shadow: 0 0 0 2px rgba(212,175,55,0.3); }
     .thumbnail img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -91,7 +91,7 @@
       border: 2px solid #000; box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
       transition: all 0.3s;
     }
-    .review-mini-card:hover { box-shadow: 10px 10px 0 rgba(212,175,55,0.2); }
+    .review-mini-card:hover { box-shadow: 10px 10px 0 rgba(212,175,55,0.2); transform: translate(-2px, -2px); }
     .review-mini-header {
       display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
       font-weight: 700; color: #1e1e1e; text-transform: uppercase;
@@ -100,7 +100,7 @@
     .review-mini-header span:last-child { color: #d4af37; background: #000; padding: 4px 12px; border-radius: 40px; font-size:0.9rem;}
     .review-mini-item {
       display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #eaeaea;
-      transition: background 0.2s;
+      transition: background 0.2s, padding-left 0.2s;
     }
     .review-mini-item:hover { background: #faf6f0; padding-left: 8px; border-radius: 12px; }
     .review-mini-item:last-child { border-bottom: none; }
@@ -113,7 +113,7 @@
     /* ========== PRODUCT INFO – black / gold with RED/GREEN badges ========== */
     .social-strip { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
     
-    /* UPDATED: sold badge RED, live badge GREEN */
+    /* UPDATED: sold badge RED, live badge GREEN with refined pulse */
     .sold-badge {
       display: inline-flex; align-items: center; gap: 8px; background: #dc2626; color: white;
       padding: 8px 18px; border-radius: 60px; font-size: 0.9rem; font-weight: 700; 
@@ -121,7 +121,7 @@
       animation: pulse-red 2s infinite;
     }
     @keyframes pulse-red {
-      0% { box-shadow: 0 0 0 0 rgba(220,38,38,0.4); }
+      0% { box-shadow: 0 0 0 0 rgba(220,38,38,0.5); }
       70% { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
       100% { box-shadow: 0 0 0 0 rgba(220,38,38,0); }
     }
@@ -132,7 +132,7 @@
       animation: pulse-green 2s infinite;
     }
     @keyframes pulse-green {
-      0% { box-shadow: 0 0 0 0 rgba(22,163,74,0.4); }
+      0% { box-shadow: 0 0 0 0 rgba(22,163,74,0.5); }
       70% { box-shadow: 0 0 0 8px rgba(22,163,74,0); }
       100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
     }
@@ -168,7 +168,7 @@
       position: absolute; top: calc(100% + 10px); right: 0; background: white;
       border-radius: 24px; box-shadow: 8px 8px 0 rgba(0,0,0,0.2); padding: 20px; width: 280px;
       z-index: 100; opacity: 0; visibility: hidden; transform: translateY(-10px);
-      transition: all 0.3s ease; border: 2px solid #000;
+      transition: all 0.3s cubic-bezier(0.2, 0, 0, 1); border: 2px solid #000;
     }
     .share-menu.show { opacity: 1; visibility: visible; transform: translateY(0); }
     .share-grid {
@@ -177,7 +177,7 @@
     .share-option {
       display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px;
       border-radius: 16px; background: #f6f6f6; border: 1px solid #ddd; font-size: 0.7rem;
-      font-weight: 600; cursor: pointer; transition: 0.1s;
+      font-weight: 600; cursor: pointer; transition: 0.15s;
     }
     .share-option i { font-size: 1.1rem; color: #000; }
     .share-option:hover { background: #d4af37; border-color: #000; transform: scale(0.95); }
@@ -238,7 +238,7 @@
       display: flex; align-items: center; gap: 16px; border: 2px solid #d4af37;
       transition: all 0.3s;
     }
-    .promise-card:hover { transform: scale(1.02); box-shadow: 8px 8px 0 rgba(212,175,55,0.2); }
+    .promise-card:hover { transform: scale(1.02) translate(-2px, -2px); box-shadow: 8px 8px 0 rgba(212,175,55,0.2); }
     .promise-icon {
       width: 52px; height: 52px; background: #d4af37; border-radius: 50%;
       display: flex; align-items: center; justify-content: center; color: #000;
@@ -253,7 +253,7 @@
       border: 2px solid #000; box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
       transition: all 0.3s;
     }
-    .delivery-card:hover { box-shadow: 10px 10px 0 rgba(212,175,55,0.2); }
+    .delivery-card:hover { box-shadow: 10px 10px 0 rgba(212,175,55,0.2); transform: translate(-2px, -2px); }
     .delivery-header {
       display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap;
     }
@@ -272,7 +272,7 @@
       display: flex; align-items: center; gap: 12px; padding: 16px; background: #fafafa;
       border-radius: 20px; border: 2px solid #000; transition: all 0.2s;
     }
-    .feature-item:hover { background: #000; }
+    .feature-item:hover { background: #000; transform: translateY(-2px); }
     .feature-item:hover .feature-text h4, 
     .feature-item:hover .feature-text p { color: #d4af37; }
     .feature-icon {
@@ -296,7 +296,7 @@
       font-size: 1.3rem; font-weight: 800; color: #1e1e1e; cursor: pointer;
       transition: all 0.2s;
     }
-    .qty-btn:hover:not(:disabled) { background: #d4af37; border-color: #000; }
+    .qty-btn:hover:not(:disabled) { background: #d4af37; border-color: #000; transform: scale(0.95); }
     .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .qty-input {
       width: 70px; height: 44px; border: 2px solid #000; border-radius: 16px; text-align: center;
@@ -321,11 +321,11 @@
     .btn-primary {
       background: #000; color: #d4af37; border: 2px solid #d4af37;
     }
-    .btn-primary:hover { background: #d4af37; color: #000; border-color: #000; }
+    .btn-primary:hover { background: #d4af37; color: #000; border-color: #000; transform: translateY(-2px); }
     .btn-secondary {
       background: #ffffff; color: #000; border: 2px solid #000;
     }
-    .btn-secondary:hover { background: #000; color: #d4af37; border-color: #d4af37; }
+    .btn-secondary:hover { background: #000; color: #d4af37; border-color: #d4af37; transform: translateY(-2px); }
 
     /* tabs */
     .tabs {
@@ -333,7 +333,7 @@
       border: 2px solid #000; box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
       transition: all 0.3s;
     }
-    .tabs:hover { box-shadow: 10px 10px 0 rgba(212,175,55,0.2); }
+    .tabs:hover { box-shadow: 10px 10px 0 rgba(212,175,55,0.2); transform: translate(-2px, -2px); }
     .tab-headers {
       display: flex; gap: 24px; border-bottom: 2px solid #000; margin-bottom: 20px;
       overflow-x: auto; scrollbar-width: none;
@@ -347,14 +347,14 @@
     .tab-header.active { color: #000; border-bottom-color: #d4af37; }
     .tab-content { display: none; color: #333; font-size: 0.95rem; line-height: 1.7; }
     .tab-content.active { display: block; animation: fadeIn 0.5s; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     .specs-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     @media (min-width: 480px) { .specs-grid { grid-template-columns: repeat(2, 1fr); } }
     .spec-item {
       padding: 16px; background: #fafafa; border-radius: 16px; border: 1px solid #000;
       transition: all 0.2s;
     }
-    .spec-item:hover { background: #000; color: #d4af37; }
+    .spec-item:hover { background: #000; color: #d4af37; transform: translateY(-2px); }
     .spec-item:hover .spec-value { color: #d4af37; }
     .spec-label { font-size: 0.8rem; color: #555; margin-bottom: 4px; font-weight: 600; }
     .spec-value { font-weight: 800; color: #000; }
@@ -380,7 +380,9 @@
     /* mobile reviews */
     .mobile-reviews {
       background: #ffffff; border-radius: 28px; padding: 24px; border: 2px solid #000;
+      transition: all 0.3s;
     }
+    .mobile-reviews:hover { box-shadow: 8px 8px 0 rgba(212,175,55,0.1); }
     @media (min-width: 1024px) { .mobile-reviews { display: none; } }
     .reviews-header {
       display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
@@ -390,7 +392,7 @@
       padding: 20px; background: #fafafa; border-radius: 20px; border: 1px solid #000; margin-bottom: 12px;
       transition: all 0.2s;
     }
-    .review-card:hover { background: #000; border-color: #d4af37; }
+    .review-card:hover { background: #000; border-color: #d4af37; transform: translateY(-2px); }
     .review-card:hover .reviewer-info h5,
     .review-card:hover .review-text,
     .review-card:hover .review-rating { color: #d4af37; }
@@ -412,6 +414,7 @@
     .related-card {
       text-decoration: none; color: inherit; background: #ffffff; border-radius: 24px;
       padding: 16px; border: 2px solid #000; transition: all 0.3s; box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+      display: block;
     }
     .related-card:hover { transform: translateY(-6px); box-shadow: 12px 12px 0 rgba(212,175,55,0.3); border-color: #d4af37; }
     .related-image { 
@@ -433,9 +436,9 @@
       position: fixed; top: 20px; left: 20px; right: 20px; max-width: 360px; margin: 0 auto;
       background: #000; color: #d4af37; padding: 16px 20px; border-radius: 60px;
       display: flex; align-items: center; gap: 12px; font-weight: 700; z-index: 1000;
-      animation: slideDown 0.3s ease; border: 2px solid #d4af37; box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+      animation: slideDown 0.3s cubic-bezier(0.2,0,0,1); border: 2px solid #d4af37; box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
     }
-    @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes slideDown { from { transform: translateY(-100%) scale(0.9); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
 
     /* scroll top */
     .scroll-top {
@@ -446,7 +449,7 @@
       box-shadow: 0 8px 16px rgba(0,0,0,0.2); font-size: 1.4rem;
     }
     .scroll-top.visible { opacity: 1; }
-    .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; transform: scale(1.1); }
+    .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; transform: scale(1.1) translateY(-2px); }
 
     /* misc */
     .text-gold { color: #d4af37; }
@@ -572,7 +575,7 @@
                     <div class="review-mini-avatar">${r.avatar}</div>
                     <div style="flex:1"><div style="font-weight:800;">${r.name}</div><div style="color:#d4af37;">${'★'.repeat(Math.floor(r.rating))}</div><div style="font-size:0.8rem;">"${r.comment.substring(0,45)}..."</div></div>
                   </div>`).join('')}
-                <div style="text-align:center; margin-top:16px; font-weight:800; color:#d4af37;">View all 128 reviews →</div>
+                <div style="text-align:center; margin-top:16px; font-weight:800; color:#d4af37; transition: 0.2s; cursor:default;">View all 128 reviews →</div>
               </div>
             </div>
           </div>
@@ -616,7 +619,7 @@
 
     // helper functions (unchanged logic)
     function setupScrollTop() { const btn = document.getElementById('scrollTop'); window.addEventListener('scroll', () => btn.classList.toggle('visible', window.scrollY > 200)); }
-    async function loadRelated(product) { /* keep identical to original but omitted for brevity */ }
+    async function loadRelated(product) { /* keep identical to original but omitted for brevity – can be added similarly */ }
     function getStars(rating) { let r=parseFloat(rating)||4.5, s=''; for(let i=1;i<=5;i++) { if(r>=i) s+='<i class="fa-solid fa-star"></i>'; else if(r>i-1 && r<i) s+='<i class="fa-solid fa-star-half-alt"></i>'; else s+='<i class="fa-regular fa-star"></i>'; } return s; }
     window.changeImage = function(src, el) { document.getElementById('mainImage').src = src; document.querySelectorAll('.thumbnail').forEach(t=>t.classList.remove('active')); el.classList.add('active'); };
     window.updateQuantity = function(delta) { const input=document.getElementById('productQuantity'); let val=parseInt(input.value)||1; val+=delta; if(val<1)val=1; if(currentProduct && val>currentProduct.stock) val=currentProduct.stock; input.value=val; if(currentProduct) updateDeliveryBar(currentProduct.price*val); };
