@@ -885,64 +885,6 @@ function renderProducts() {
   });
   
   gridContainer.innerHTML = gridHtml;
-  
-  // Add hover effect listeners for product images
-  addProductHoverEffects();
-}
-
-// Function to add hover effects for product images
-function addProductHoverEffects() {
-  const productCards = document.querySelectorAll('.product-card');
-  
-  productCards.forEach(card => {
-    const imageFrame = card.querySelector('.image-frame');
-    const primaryImg = card.querySelector('.primary-img');
-    const secondaryImg = card.querySelector('.secondary-img');
-    
-    if (!imageFrame || !primaryImg || !secondaryImg) return;
-    
-    // Remove any existing listeners
-    card.removeEventListener('mouseenter', handleProductMouseEnter);
-    card.removeEventListener('mouseleave', handleProductMouseLeave);
-    
-    // Add new listeners
-    card.addEventListener('mouseenter', handleProductMouseEnter);
-    card.addEventListener('mouseleave', handleProductMouseLeave);
-  });
-}
-
-// Product hover enter handler
-function handleProductMouseEnter(e) {
-  const card = e.currentTarget;
-  const imageFrame = card.querySelector('.image-frame');
-  const primaryImg = card.querySelector('.primary-img');
-  const secondaryImg = card.querySelector('.secondary-img');
-  
-  if (imageFrame && primaryImg && secondaryImg) {
-    // Smooth transition for image swap
-    primaryImg.style.opacity = '0';
-    secondaryImg.style.opacity = '1';
-    
-    // Add subtle scale effect to the image frame
-    imageFrame.style.transform = 'scale(1.02)';
-  }
-}
-
-// Product hover leave handler
-function handleProductMouseLeave(e) {
-  const card = e.currentTarget;
-  const imageFrame = card.querySelector('.image-frame');
-  const primaryImg = card.querySelector('.primary-img');
-  const secondaryImg = card.querySelector('.secondary-img');
-  
-  if (imageFrame && primaryImg && secondaryImg) {
-    // Reset to primary image
-    primaryImg.style.opacity = '1';
-    secondaryImg.style.opacity = '0';
-    
-    // Reset scale effect
-    imageFrame.style.transform = 'scale(1)';
-  }
 }
 
 function renderRating(rating) {
