@@ -46,7 +46,7 @@
       position: absolute; inset: 0;
       background-image: url('https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=2070&auto=format&fit=crop');
       background-size: cover; background-position: 60% 30%; opacity: 0.15;
-      transition: transform 0.1s linear; /* will be used by parallax */
+      transition: transform 0.1s linear;
     }
     .hero .container { position: relative; z-index: 2; display: flex; justify-content: flex-start; }
     .hero-content {
@@ -71,7 +71,7 @@
     .hero-desc { font-size: 1rem; color: #4a4640; margin-bottom: 1.8rem; max-width: 480px; line-height: 1.5; }
     .hero-buttons { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
 
-    /* ===== VALUE STRIP – now refined with smooth infinite slide ===== */
+    /* ===== VALUE STRIP ===== */
     .value-strip { background: #ffffff; padding: 0.9rem 0; border-bottom: 1px solid #eae8e4; overflow: hidden; position: relative; }
     .value-grid {
       display: flex;
@@ -103,7 +103,7 @@
     }
     .value-item i { color: #d4af37; font-size: 1rem; }
 
-    /* ===== SECTION HEADER (refined) ===== */
+    /* ===== SECTION HEADER ===== */
     .section-header {
       display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
       gap: 0.5rem 1rem; margin: 3.5rem 0 2rem;
@@ -120,7 +120,7 @@
     }
     .view-all-link:hover { color: #d4af37; gap: 8px; }
 
-    /* ===== PRODUCT GRID – more breathing, cleaner cards without borders ===== */
+    /* ===== PRODUCT GRID ===== */
     .product-grid {
       display: grid; grid-template-columns: 1fr; gap: 2.5rem; margin: 1.5rem 0 3rem;
     }
@@ -134,7 +134,7 @@
       display: flex; flex-direction: column; height: 100%;
       text-decoration: none; color: inherit; position: relative;
       animation: fadeInUp 0.5s ease backwards;
-      border: none; /* Removed border */
+      border: none;
     }
     .product-card:hover {
       box-shadow: 0 30px 45px -15px rgba(212,175,55,0.25);
@@ -188,13 +188,27 @@
     .stock-badge { font-size: 0.75rem; margin-top: 0.3rem; }
     .in-stock { color: #2e7d32; }
 
-    /* ===== TWO-SLIDE ABOUT – refined with thin black border ===== */
+    /* ===== TWO-SLIDE ABOUT – 2D architectural black borders ===== */
     .about-slides {
       margin: 4rem 0 2.5rem; background: #fbf9f7; border-radius: 56px;
       padding: 3rem 2.5rem; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.05);
-      border: 1px solid #000000; /* Thin black border */
+      border: 2px solid #000000; /* Thicker 2D border */
+      position: relative;
+      transition: all 0.2s ease;
     }
-    .slides-container { display: flex; flex-direction: column; gap: 2.5rem; }
+    
+    /* 2D effect with inset shadow and double border style */
+    .about-slides::after {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid #000000;
+      border-radius: 52px;
+      pointer-events: none;
+      opacity: 0.3;
+    }
+    
+    .slides-container { display: flex; flex-direction: column; gap: 2.5rem; position: relative; z-index: 2; }
     .slide-item {
       display: flex; flex-direction: column; gap: 1rem; opacity: 0;
       transform: translateY(12px); animation: slideFadeIn 0.5s ease forwards;
@@ -210,14 +224,14 @@
     .slide-content h3 { font-size: 2.2rem; font-weight: 400; margin: 0 0 0.3rem; font-family: 'Playfair Display', serif; }
     .slide-content h3 span { color: #d4af37; font-weight: 600; }
     .slide-content p { color: #4f4a44; max-width: 420px; font-size: 1.1rem; line-height: 1.6; }
-    .slide-divider { width: 80px; height: 2px; background: linear-gradient(90deg, #000000, transparent); } /* Black gradient */
+    .slide-divider { width: 80px; height: 2px; background: linear-gradient(90deg, #000000, transparent); }
     @media (min-width: 700px) {
       .slides-container { flex-direction: row; align-items: stretch; gap: 2rem; }
       .slide-item { flex: 1; }
-      .slide-divider { width: 2px; height: auto; background: linear-gradient(180deg, #000000, transparent); } /* Black gradient */
+      .slide-divider { width: 2px; height: auto; background: linear-gradient(180deg, #000000, transparent); }
     }
 
-    /* ===== TESTIMONIALS – more personality with thin black border ===== */
+    /* ===== TESTIMONIALS – 2D architectural black borders ===== */
     .testimonials-section { margin: 5rem 0 4rem; }
     .testimonials-header {
       font-size: 2.4rem; font-weight: 400; margin-bottom: 3rem;
@@ -231,28 +245,69 @@
     @media (min-width: 1000px) { .testimonials-grid { grid-template-columns: repeat(3, 1fr); } }
     .testimonial-card {
       background: #ffffff; padding: 2.5rem 2.2rem; border-radius: 40px;
-      border: 1px solid #000000; /* Thin black border */
+      border: 2px solid #000000; /* 2D black border */
       box-shadow: 0 15px 30px -12px rgba(0,0,0,0.03);
       transition: 0.25s; position: relative;
     }
+    
+    /* Inner border for 2D effect */
+    .testimonial-card::after {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid #000000;
+      border-radius: 36px;
+      pointer-events: none;
+      opacity: 0.2;
+    }
+    
     .testimonial-card:hover {
       border-color: #000000;
       transform: translateY(-4px);
       box-shadow: 0 25px 35px -15px rgba(0,0,0,0.1);
     }
+    
+    /* Add a subtle diagonal line pattern for architectural feel */
+    .testimonial-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(0,0,0,0.02) 10px,
+        rgba(0,0,0,0.02) 20px
+      );
+      border-radius: 40px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .testimonial-card:hover::before {
+      opacity: 1;
+    }
+    
     .testimonial-card i.fa-quote-left {
       color: #d4af37; opacity: 0.2; font-size: 3.5rem; position: absolute; top: 1.2rem; right: 1.8rem;
+      z-index: 2;
     }
     .testimonial-card p {
       font-size: 1.1rem; line-height: 1.7; margin: 1rem 0 1.8rem; color: #2e2b27; font-style: italic;
+      position: relative; z-index: 2;
     }
     .testimonial-card h5 { 
       font-weight: 600; margin: 0; color: #1a1a1a; font-size: 1rem;
       border-top: 1px solid #eeeeee; padding-top: 1.2rem;
+      position: relative; z-index: 2;
     }
     .testimonial-card h5::before { content: '— '; color: #d4af37; font-weight: 400; }
 
-    /* scroll top button (refined) */
+    /* scroll top button */
     .scroll-top {
       position: fixed; bottom: 24px; right: 24px; background: #d4af37; color: #0c0c0c;
       width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center;
