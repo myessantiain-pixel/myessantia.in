@@ -2150,28 +2150,38 @@
       }
     }
 
-    // Show cart notification
-    function showCartNotification(message) {
-      // Remove any existing notification
-      const existingNotification = document.querySelector('.cart-notification');
-      if (existingNotification) {
-        existingNotification.remove();
-      }
+  // Show cart notification with View Cart button that opens the modal
+function showCartNotification(message) {
+  // Remove any existing notification
+  const existingNotification = document.querySelector('.cart-notification');
+  if (existingNotification) {
+    existingNotification.remove();
+  }
 
-      const notification = document.createElement('div');
-      notification.className = 'cart-notification';
-      notification.innerHTML = `
-        <i class="fa-solid fa-check-circle"></i>
-        <span>${message}</span>
-        <button onclick="window.location.href='cart.html'">View Cart</button>
-      `;
-      
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.remove();
-      }, 3000);
+  const notification = document.createElement('div');
+  notification.className = 'cart-notification';
+  notification.innerHTML = `
+    <i class="fa-solid fa-check-circle"></i>
+    <span>${message}</span>
+    <button onclick="openCart()">View Cart</button>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Auto remove after 3 seconds
+  setTimeout(() => {
+    if (notification.parentNode) {
+      notification.remove();
     }
+  }, 3000);
+  
+  // Allow manual close by clicking anywhere on notification except the button
+  notification.addEventListener('click', function(e) {
+    if (!e.target.matches('button')) {
+      this.remove();
+    }
+  });
+}
 
     // Updated addToCart function
     window.addToCart = async function(productId, showNotification = true) {
