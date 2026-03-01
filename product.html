@@ -2230,31 +2230,33 @@
       }
     };
 
-    // Updated Buy Now handler - conditional logic
-    window.handleBuyNow = function(productId) {
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
+// Updated Buy Now handler - conditional logic
+window.handleBuyNow = function(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
 
-      // Track Facebook InitiateCheckout event
-      trackFacebookEvent('InitiateCheckout', {
-        content_ids: [productId],
-        content_type: 'product',
-        value: product?.price || 0,
-        currency: 'INR'
-      });
+  // Track Facebook InitiateCheckout event
+  trackFacebookEvent('InitiateCheckout', {
+    content_ids: [productId],
+    content_type: 'product',
+    value: product?.price || 0,
+    currency: 'INR'
+  });
 
-      // Check if product is marked as high demand by admin
-      if (product.highDemand) {
-        // Show priority access modal for high demand products
-        openPriorityModal(productId);
-      } else {
-        // Normal buy now flow - add to cart and open cart
-        addToCart(productId, false); // Add to cart without showing notification
-        setTimeout(() => {
-          window.location.href = 'cart.html'; // Redirect to cart page
-        }, 300);
-      }
-    };
+  // Check if product is marked as high demand by admin
+  if (product.highDemand) {
+    // Show priority access modal for high demand products
+    openPriorityModal(productId);
+  } else {
+    // Normal buy now flow - add to cart and OPEN CART MODAL
+    addToCart(productId, false); // Add to cart without showing notification
+    
+    // Open the cart modal
+    setTimeout(() => {
+      openCart(); // This opens the cart modal that's already in your header
+    }, 100);
+  }
+};
 
     // Priority Modal Functions
     function openPriorityModal(productId) {
