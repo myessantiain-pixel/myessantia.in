@@ -18,7 +18,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
-  <!-- Common CSS (unchanged) -->
+  <!-- Common CSS -->
   <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
@@ -37,7 +37,7 @@
     .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 20px; }
     @media (min-width: 640px) { .container { padding: 0 32px; } }
 
-    /* ===== ACTIVE NAV (preserved) ===== */
+    /* ===== ACTIVE NAV ===== */
     .nav-link.active { color: #d4af37 !important; font-weight: 700; position: relative; }
     .nav-link.active::after {
       content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px;
@@ -45,7 +45,7 @@
     }
     @keyframes slideIn { from { width: 0; opacity: 0; } to { width: 100%; opacity: 1; } }
 
-    /* ===== HERO – balanced, no cutoff ===== */
+    /* ===== HERO ===== */
     .hero {
       background: #fcfaf7;
       padding: 1.5rem 0 1rem;
@@ -214,7 +214,7 @@
     .card-add-btn:hover { background: #d4af37; color: #000; border-color: #d4af37; }
     .card-add-btn:hover i { color: #000; }
 
-    /* ===== ABOUT SLIDES (unchanged) ===== */
+    /* ===== ABOUT SLIDES ===== */
     .about-slides {
       margin: 4rem 0 2rem; background: #fbf9f7; border-radius: 40px;
       padding: 2.5rem 2rem; position: relative;
@@ -243,130 +243,280 @@
       .slide-divider { width: 3px; height: auto; background: #000; }
     }
 
-    /* ===== REFINED TRUST CAROUSEL – BETTER HEADLINE ===== */
-    .trust-carousel-section {
+    /* ===== REVIEWS CAROUSEL – Enhanced styling with sliding on all devices ===== */
+    .reviews-section {
       margin: 5rem 0 4rem;
+      padding: 3rem 0;
+      background: linear-gradient(180deg, #fcfaf7 0%, #ffffff 100%);
+      border-radius: 60px;
     }
-    .trust-header {
-      font-size: 2.2rem; font-weight: 700; margin-bottom: 2.5rem;
-      font-family: 'Montserrat', sans-serif; text-transform: uppercase;
+    
+    .reviews-header {
+      font-size: 2.4rem;
+      font-weight: 800;
+      margin-bottom: 3rem;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
       line-height: 1.2;
       text-align: center;
+      letter-spacing: -0.02em;
     }
-    .trust-header span { 
-      color: #d4af37; font-weight: 900; 
-      border-bottom: 3px solid #000; padding-bottom: 0.2rem; 
-    }
-    /* new engaging sub-header */
-    .trust-sub {
-      text-align: center;
-      font-size: 1.2rem;
-      color: #4a4a4a;
-      margin-top: -1.5rem;
-      margin-bottom: 2.5rem;
-      font-weight: 400;
-      letter-spacing: 0.3px;
-    }
-
-    /* single sliding frame */
-    .trust-frame {
-      background: #ffffff;
-      border: 2px solid #000;
-      border-radius: 48px;
-      padding: 2.8rem 2.5rem;
-      box-shadow: 12px 12px 0 rgba(0,0,0,0.1);
-      max-width: 800px;
-      margin: 0 auto;
+    
+    .reviews-header span { 
+      color: #d4af37; 
+      font-weight: 900;
       position: relative;
-      transition: box-shadow 0.2s;
-      min-height: 280px;
-      display: flex;
-      align-items: center;
+      display: inline-block;
     }
-    .trust-frame:hover {
-      box-shadow: 16px 16px 0 rgba(212,175,55,0.2);
+    
+    .reviews-header span::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 10%;
+      width: 80%;
+      height: 4px;
+      background: #000;
+      border-radius: 4px;
     }
 
-    .trust-slide-container {
-      width: 100%;
+    /* Carousel container */
+    .reviews-carousel-wrapper {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .reviews-carousel-container {
       overflow: hidden;
+      border-radius: 30px;
     }
 
-    .trust-slides-track {
+    .reviews-carousel-track {
       display: flex;
-      transition: transform 0.5s ease-in-out;
+      transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+      gap: 24px;
+      padding: 10px 0 20px 0;
     }
 
-    .trust-slide {
-      flex: 0 0 100%;
+    /* Review card styling - enhanced */
+    .review-card {
+      flex: 0 0 calc(33.333% - 16px);
+      background: #ffffff;
+      padding: 2.5rem 2rem 2rem;
+      border-radius: 32px;
+      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1), 
+                  0 0 0 1px rgba(212, 175, 55, 0.2);
+      transition: all 0.4s ease;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 0.5rem 1rem;
+      position: relative;
+      border: 1px solid rgba(0,0,0,0.05);
     }
 
-    .trust-icon {
-      font-size: 3rem;
+    .review-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 30px 45px -12px rgba(212, 175, 55, 0.25), 
+                  0 0 0 2px #d4af37;
+    }
+
+    /* Quote icon styling */
+    .review-card .quote-icon {
       color: #d4af37;
-      background: #000;
-      width: 100px;
-      height: 100px;
+      opacity: 0.15;
+      font-size: 4rem;
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      line-height: 1;
+    }
+
+    /* Rating stars */
+    .review-rating {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 1.2rem;
+      color: #d4af37;
+      font-size: 1rem;
+    }
+
+    .review-rating i {
+      filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.3));
+    }
+
+    /* Review text */
+    .review-card p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: #1e1e1e;
+      margin: 0.5rem 0 1.8rem;
+      font-style: italic;
+      font-weight: 400;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+      padding-right: 1rem;
+    }
+
+    /* Reviewer info */
+    .reviewer-info {
+      border-top: 2px solid #f0f0f0;
+      padding-top: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .reviewer-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #000 0%, #333 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d4af37;
+      font-weight: 700;
+      font-size: 1.2rem;
+      border: 2px solid #d4af37;
+    }
+
+    .reviewer-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .reviewer-details h5 {
+      font-weight: 800;
+      color: #000;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .reviewer-location {
+      font-size: 0.85rem;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .reviewer-location i {
+      color: #d4af37;
+      font-size: 0.7rem;
+    }
+
+    /* Navigation arrows */
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      background: #ffffff;
+      border: 2px solid #000;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1.8rem;
-      border: 4px solid #d4af37;
-    }
-
-    .trust-slide h3 {
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 0.75rem;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
       color: #000;
-    }
-
-    .trust-slide p {
       font-size: 1.2rem;
-      line-height: 1.6;
-      color: #2a2a2a;
-      max-width: 600px;
-      margin: 0 auto;
-      font-weight: 400;
     }
 
-    /* slide indicators (dots) */
-    .trust-dots {
+    .carousel-arrow:hover {
+      background: #d4af37;
+      border-color: #d4af37;
+      color: #000;
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 10px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .carousel-arrow.prev {
+      left: -20px;
+    }
+
+    .carousel-arrow.next {
+      right: -20px;
+    }
+
+    /* Dots indicator */
+    .reviews-dots {
       display: flex;
       justify-content: center;
-      gap: 12px;
-      margin-top: 2rem;
+      gap: 14px;
+      margin-top: 2.5rem;
     }
-    .trust-dot {
+
+    .review-dot {
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #ccc;
-      border: 1px solid #000;
+      background: #ddd;
+      border: 2px solid transparent;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.3s ease;
     }
-    .trust-dot.active {
+
+    .review-dot.active {
       background: #d4af37;
       transform: scale(1.3);
       border-color: #000;
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
     }
 
-    @media (max-width: 600px) {
-      .trust-frame { padding: 2rem 1.5rem; min-height: 240px; }
-      .trust-icon { width: 80px; height: 80px; font-size: 2.4rem; }
-      .trust-slide h3 { font-size: 1.6rem; }
-      .trust-slide p { font-size: 1rem; }
-      .trust-header { font-size: 1.8rem; }
-      .trust-sub { font-size: 1rem; }
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .reviews-section {
+        margin: 3rem 0;
+        padding: 2rem 0;
+        border-radius: 40px;
+      }
+      
+      .reviews-header {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+      }
+      
+      .reviews-carousel-wrapper {
+        padding: 0 20px;
+      }
+      
+      .review-card {
+        flex: 0 0 100%;
+        padding: 2rem 1.5rem;
+      }
+      
+      .carousel-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+      
+      .carousel-arrow.prev {
+        left: -10px;
+      }
+      
+      .carousel-arrow.next {
+        right: -10px;
+      }
+      
+      .review-card p {
+        font-size: 1rem;
+      }
+    }
+
+    /* Tablet */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .review-card {
+        flex: 0 0 calc(50% - 12px);
+      }
     }
 
     /* ===== SCROLL TOP ===== */
@@ -385,7 +535,7 @@
     @media (min-width: 1280px) {
       .hero-title { font-size: 3.2rem; }
       .section-title { font-size: 2.8rem; }
-      .trust-header { font-size: 2.8rem; }
+      .reviews-header { font-size: 3rem; }
     }
   </style>
 </head>
@@ -395,7 +545,7 @@
   <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
 
   <main>
-    <!-- HERO (no cutoff) -->
+    <!-- HERO -->
     <section class="hero">
       <div class="hero-bg" id="heroBg"></div>
       <div class="container">
@@ -432,7 +582,7 @@
       <div class="product-grid" id="product-grid-container"></div>
     </div>
 
-    <!-- TWO-SLIDE ABOUT (supplier & returns) -->
+    <!-- TWO-SLIDE ABOUT -->
     <div class="container">
       <div class="about-slides">
         <div class="slides-container">
@@ -455,40 +605,102 @@
       </div>
     </div>
 
-    <!-- TRUST & QUALITY AUTO-SLIDE – REFINED HEADLINE -->
-    <div class="container trust-carousel-section">
-      <h2 class="trust-header"><span>built on trust,</span> delivered with care</h2>
-      <div class="trust-sub">every detail reflects our commitment to you</div>
-      
-      <div class="trust-frame">
-        <div class="trust-slide-container">
-          <div class="trust-slides-track" id="trustTrack">
-            <!-- slide 1 -->
-            <div class="trust-slide">
-              <div class="trust-icon"><i class="fa-solid fa-medal"></i></div>
-              <h3>certified quality</h3>
-              <p>Every product is tested against 30+ durability & safety checks. We only ship what we'd use ourselves.</p>
-            </div>
-            <!-- slide 2 -->
-            <div class="trust-slide">
-              <div class="trust-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
-              <h3>ethical sourcing</h3>
-              <p>We partner with B-corp certified manufacturers & small artisan co-ops. Fair wages, clean materials.</p>
-            </div>
-            <!-- slide 3 -->
-            <div class="trust-slide">
-              <div class="trust-icon"><i class="fa-solid fa-shield"></i></div>
-              <h3>secure & protected</h3>
-              <p>256-bit encrypted checkout & purchase protection. Your data and money are always safe.</p>
+    <!-- REVIEWS SECTION – Enhanced sliding carousel for all devices -->
+    <div class="reviews-section">
+      <div class="container">
+        <h2 class="reviews-header"><span>why people</span> trust us</h2>
+        
+        <div class="reviews-carousel-wrapper">
+          <button class="carousel-arrow prev" id="reviewPrev"><i class="fa-solid fa-chevron-left"></i></button>
+          <button class="carousel-arrow next" id="reviewNext"><i class="fa-solid fa-chevron-right"></i></button>
+          
+          <div class="reviews-carousel-container">
+            <div class="reviews-carousel-track" id="reviewsTrack">
+              <!-- Review 1 -->
+              <div class="review-card">
+                <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
+                <div class="review-rating">
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                </div>
+                <p>"Reliable suppliers & fast shipping. The quality exceeds expectations. My go-to for premium accessories."</p>
+                <div class="reviewer-info">
+                  <div class="reviewer-avatar">R</div>
+                  <div class="reviewer-details">
+                    <h5>Roy Mathew</h5>
+                    <span class="reviewer-location"><i class="fa-solid fa-location-dot"></i> Kottayam</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Review 2 -->
+              <div class="review-card">
+                <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
+                <div class="review-rating">
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                </div>
+                <p>"I use MyEssantia for my accessory business. Best & premium products. My customers love the quality."</p>
+                <div class="reviewer-info">
+                  <div class="reviewer-avatar">M</div>
+                  <div class="reviewer-details">
+                    <h5>Maria Joseph</h5>
+                    <span class="reviewer-location"><i class="fa-solid fa-location-dot"></i> Kochi</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Review 3 -->
+              <div class="review-card">
+                <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
+                <div class="review-rating">
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-regular fa-star"></i>
+                </div>
+                <p>"The accessories collection is a bestseller. Good & consistent quality. Fast delivery every time."</p>
+                <div class="reviewer-info">
+                  <div class="reviewer-avatar">S</div>
+                  <div class="reviewer-details">
+                    <h5>Sofia Philip</h5>
+                    <span class="reviewer-location"><i class="fa-solid fa-location-dot"></i> Idukki</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Review 4 (extra for better sliding) -->
+              <div class="review-card">
+                <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
+                <div class="review-rating">
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                </div>
+                <p>"Outstanding customer service and premium quality. Highly recommend MyEssantia for daily essentials."</p>
+                <div class="reviewer-info">
+                  <div class="reviewer-avatar">A</div>
+                  <div class="reviewer-details">
+                    <h5>Arun Kumar</h5>
+                    <span class="reviewer-location"><i class="fa-solid fa-location-dot"></i> Trivandrum</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <!-- dots indicator -->
-      <div class="trust-dots" id="trustDots">
-        <span class="trust-dot active" data-index="0"></span>
-        <span class="trust-dot" data-index="1"></span>
-        <span class="trust-dot" data-index="2"></span>
+        
+        <!-- Dots indicator -->
+        <div class="reviews-dots" id="reviewsDots"></div>
       </div>
     </div>
   </main>
@@ -498,7 +710,7 @@
 
   <script src="common.js"></script>
   <script>
-    // ----- EXISTING PRODUCT & UI FUNCTIONS (preserved) -----
+    // ----- EXISTING PRODUCT & UI FUNCTIONS -----
     function renderRating(rating) {
       if (!rating || rating === 0) return '<span>★ 0.0</span>';
       const full = Math.floor(rating);
@@ -508,14 +720,17 @@
       }
       return stars + `<span> ${rating.toFixed(1)}</span>`;
     }
+    
     function formatPrice(price) {
       return price?.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') || '0.00';
     }
+    
     function getStockStatus(stock) {
       if (stock > 5) return '<div class="stock-badge in-stock"><i class="fa-regular fa-circle-check"></i> in stock</div>';
       if (stock > 0) return '<div class="stock-badge" style="color:#f57c00;"><i class="fa-regular fa-clock"></i> low stock</div>';
       return '<div class="stock-badge" style="color:#c62828;"><i class="fa-regular fa-circle-xmark"></i> out of stock</div>';
     }
+    
     function renderProducts() {
       const grid = document.getElementById('product-grid-container');
       if (!grid) return;
@@ -555,13 +770,16 @@
       });
       grid.innerHTML = html;
     }
+    
     function scrollToProducts() {
       document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
     }
+    
     function setActiveNav() {
       document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
       document.querySelectorAll('.nav-link[href="index.html"]').forEach(l => l.classList.add('active'));
     }
+    
     function handleScroll() {
       const btn = document.getElementById('scrollTop');
       if (btn) btn.classList.toggle('visible', window.scrollY > 200);
@@ -569,59 +787,154 @@
       if (bg) bg.style.transform = `scale(1.1) translateY(${window.scrollY * 0.02}px)`;
     }
 
-    // ----- AUTO-SLIDE TRUST CAROUSEL (5s) -----
-    function initTrustCarousel() {
-      const track = document.getElementById('trustTrack');
-      const dots = document.querySelectorAll('.trust-dot');
-      if (!track || dots.length === 0) return;
+    // ----- REVIEWS CAROUSEL (auto-slide on all devices) -----
+    function initReviewsCarousel() {
+      const track = document.getElementById('reviewsTrack');
+      const prevBtn = document.getElementById('reviewPrev');
+      const nextBtn = document.getElementById('reviewNext');
+      const dotsContainer = document.getElementById('reviewsDots');
       
-      const slides = document.querySelectorAll('.trust-slide');
-      const totalSlides = slides.length;
+      if (!track || !prevBtn || !nextBtn || !dotsContainer) return;
+      
+      const cards = document.querySelectorAll('.review-card');
+      const totalCards = cards.length;
       let currentIndex = 0;
       let interval;
-
-      function updateSlide(index) {
-        if (index < 0) index = 0;
-        if (index >= totalSlides) index = totalSlides - 1;
-        currentIndex = index;
-        const shift = -currentIndex * 100;
-        track.style.transform = `translateX(${shift}%)`;
+      let cardsPerView = getCardsPerView();
+      
+      // Create dots
+      function createDots() {
+        const numDots = Math.ceil(totalCards / cardsPerView);
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < numDots; i++) {
+          const dot = document.createElement('span');
+          dot.className = `review-dot ${i === 0 ? 'active' : ''}`;
+          dot.setAttribute('data-index', i);
+          dot.addEventListener('click', () => {
+            currentIndex = i * cardsPerView;
+            if (currentIndex >= totalCards) currentIndex = totalCards - cardsPerView;
+            updateSlide();
+            resetInterval();
+          });
+          dotsContainer.appendChild(dot);
+        }
+      }
+      
+      // Get number of cards to show based on screen width
+      function getCardsPerView() {
+        if (window.innerWidth <= 768) return 1;
+        if (window.innerWidth <= 1024) return 2;
+        return 3;
+      }
+      
+      // Update slide position
+      function updateSlide() {
+        const cardWidth = cards[0].offsetWidth + 24; // including gap
+        const maxIndex = totalCards - cardsPerView;
+        if (currentIndex > maxIndex) currentIndex = maxIndex;
+        if (currentIndex < 0) currentIndex = 0;
+        
+        const shift = -currentIndex * cardWidth;
+        track.style.transform = `translateX(${shift}px)`;
+        
+        // Update dots
+        const dots = document.querySelectorAll('.review-dot');
+        const dotIndex = Math.floor(currentIndex / cardsPerView);
         dots.forEach((dot, i) => {
-          dot.classList.toggle('active', i === currentIndex);
+          dot.classList.toggle('active', i === dotIndex);
         });
       }
-
+      
+      // Next slide
       function nextSlide() {
-        currentIndex = (currentIndex + 1) % totalSlides;
-        updateSlide(currentIndex);
+        const maxIndex = totalCards - cardsPerView;
+        if (currentIndex < maxIndex) {
+          currentIndex += cardsPerView;
+        } else {
+          currentIndex = 0; // Loop back to start
+        }
+        updateSlide();
       }
-
-      // auto slide every 5 seconds
+      
+      // Previous slide
+      function prevSlide() {
+        const maxIndex = totalCards - cardsPerView;
+        if (currentIndex > 0) {
+          currentIndex -= cardsPerView;
+        } else {
+          currentIndex = maxIndex; // Loop to end
+        }
+        updateSlide();
+      }
+      
+      // Reset auto-slide interval
+      function resetInterval() {
+        clearInterval(interval);
+        interval = setInterval(nextSlide, 5000);
+      }
+      
+      // Handle window resize
+      function handleResize() {
+        const newCardsPerView = getCardsPerView();
+        if (newCardsPerView !== cardsPerView) {
+          cardsPerView = newCardsPerView;
+          currentIndex = 0;
+          createDots();
+          updateSlide();
+        } else {
+          updateSlide(); // Just reposition
+        }
+      }
+      
+      // Initialize
+      createDots();
+      updateSlide();
+      
+      // Auto slide every 5 seconds
       interval = setInterval(nextSlide, 5000);
-
-      // dot click manual control
-      dots.forEach((dot) => {
-        dot.addEventListener('click', (e) => {
-          const index = parseInt(e.target.getAttribute('data-index'), 10);
-          if (!isNaN(index)) {
-            currentIndex = index;
-            updateSlide(currentIndex);
-            // reset interval
-            clearInterval(interval);
-            interval = setInterval(nextSlide, 5000);
-          }
-        });
+      
+      // Event listeners
+      prevBtn.addEventListener('click', () => {
+        prevSlide();
+        resetInterval();
       });
-
-      // optional pause on hover
-      const frame = document.querySelector('.trust-frame');
-      if (frame) {
-        frame.addEventListener('mouseenter', () => clearInterval(interval));
-        frame.addEventListener('mouseleave', () => {
-          clearInterval(interval);
-          interval = setInterval(nextSlide, 5000);
-        });
-      }
+      
+      nextBtn.addEventListener('click', () => {
+        nextSlide();
+        resetInterval();
+      });
+      
+      // Pause on hover
+      track.addEventListener('mouseenter', () => clearInterval(interval));
+      track.addEventListener('mouseleave', () => {
+        clearInterval(interval);
+        interval = setInterval(nextSlide, 5000);
+      });
+      
+      // Touch events for mobile
+      let touchStartX = 0;
+      let touchEndX = 0;
+      
+      track.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+      
+      track.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].clientX;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) {
+            nextSlide();
+          } else {
+            prevSlide();
+          }
+          resetInterval();
+        }
+      });
+      
+      // Resize listener
+      window.addEventListener('resize', handleResize);
     }
 
     // ----- INITIALIZATION -----
@@ -629,7 +942,7 @@
       loadCommonModals();
       if (typeof loadComponents === 'function') loadComponents();
       if (window.products?.length) renderProducts();
-      initTrustCarousel(); // start trust slider
+      initReviewsCarousel();
     });
 
     window.addEventListener('load', () => {
@@ -638,7 +951,7 @@
         if (cached) { window.products = JSON.parse(cached); renderProducts(); }
       }
       setTimeout(setActiveNav, 200);
-      initTrustCarousel(); // ensure it runs after full load
+      initReviewsCarousel();
     });
 
     async function loadCommonModals() {
