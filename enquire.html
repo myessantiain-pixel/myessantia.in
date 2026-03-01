@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ESSENCE · enquire</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>MyEssantia · enquire now</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -11,7 +11,7 @@
   <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Montserrat:wght@300..900&display=swap" rel="stylesheet">
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -24,79 +24,156 @@
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* -------------------- ENQUIRY PAGE SPECIFIC STYLES -------------------- */
-    body {
-      background-color: #fafafa;
+    /* ===== GLOBAL & RESETS ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { 
+      font-family: 'Inter', 'Montserrat', sans-serif; 
+      background: #ffffff; 
+      color: #1e1e1e; 
+      overflow-x: hidden;
+      line-height: 1.5;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
+    .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+    @media (min-width: 1600px) { .container { max-width: 1600px; padding: 0 40px; } }
+    @media (min-width: 640px) { .container { padding: 0 32px; } }
+
+    /* ===== ACTIVE NAV ===== */
+    .nav-link.active { color: #d4af37 !important; font-weight: 700; position: relative; }
+    .nav-link.active::after {
+      content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px;
+      background: #d4af37; animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn { from { width: 0; opacity: 0; } to { width: 100%; opacity: 1; } }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: #fcfaf7;
+      padding: 1.5rem 0 1rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 3px solid #000;
+    }
+    .page-header-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover; background-position: 60% 30%; opacity: 0.1;
+    }
+    .page-header .container { position: relative; z-index: 2; }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .breadcrumbs a {
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .breadcrumbs a:hover {
+      color: #d4af37;
+    }
+    .breadcrumbs i {
+      color: #d4af37;
+      font-size: 0.7rem;
+    }
+    .breadcrumbs span {
+      color: #000;
+    }
 
     .page-title {
-      text-align: center;
-      padding: 1rem 0 2rem;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      line-height: 1.1;
+      color: #000;
+      margin-bottom: 0.25rem;
     }
-    .page-title h1 {
-      font-size: clamp(2.2rem, 6vw, 2.8rem);
-      font-weight: 400;
-      color: #1a1a1a;
-    }
-    .page-title h1 span {
+    .page-title span {
       color: #d4af37;
-      font-weight: 500;
-      font-style: italic;
+      font-weight: 900;
+      background: linear-gradient(145deg, #d4af37, #b07e2e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .page-title p {
-      color: #5f5b57;
-      max-width: 500px;
-      margin: 0.5rem auto 0;
-      font-size: clamp(0.9rem, 2.5vw, 1rem);
+    .page-desc {
+      color: #2a2a2a;
+      font-size: 1rem;
+      max-width: 600px;
+      font-weight: 400;
+      line-height: 1.5;
     }
 
+    /* ===== LOGIN PROMPT ===== */
     .login-prompt {
-      background: #fff9e6;
-      border: 1px solid #d4af37;
+      background: #fcfaf7;
+      border: 2px solid #000;
       border-radius: 60px;
       padding: 1rem 2rem;
-      margin-bottom: 2rem;
+      margin: 2rem 0 1.5rem;
       text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 1rem;
       flex-wrap: wrap;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+    }
+
+    .login-prompt span {
+      font-weight: 600;
+      color: #000;
     }
 
     .login-prompt button {
-      background: #d4af37;
-      border: none;
-      padding: 0.5rem 1.5rem;
-      border-radius: 40px;
+      background: #000;
+      border: 2px solid #000;
+      padding: 0.6rem 1.8rem;
+      border-radius: 60px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
+      color: #fff;
+      text-transform: uppercase;
+      font-size: 0.9rem;
     }
 
+    .login-prompt button i { color: #d4af37; }
     .login-prompt button:hover {
-      background: #1a1a1a;
-      color: white;
+      background: #d4af37;
+      color: #000;
+      border-color: #d4af37;
     }
+    .login-prompt button:hover i { color: #000; }
 
+    /* ===== ENQUIRY CARD ===== */
     .enquiry-card {
       background: #ffffff;
-      border-radius: 32px;
+      border-radius: 40px;
       padding: clamp(1.8rem, 5vw, 2.5rem);
-      box-shadow: 0 15px 35px -10px rgba(0,0,0,0.05);
-      border: 1px solid #f0f0f0;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
       max-width: 700px;
-      margin: 0 auto 3rem;
+      margin: 2rem auto 3rem;
     }
 
     .enquiry-card h2 {
       font-size: clamp(1.5rem, 4vw, 1.8rem);
       margin-bottom: 1.5rem;
       text-align: center;
-      font-weight: 400;
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
     }
     .enquiry-card h2 i {
       color: #d4af37;
@@ -109,23 +186,23 @@
 
     .form-row label {
       display: block;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: #5f5b57;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #000;
       margin-bottom: 0.4rem;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
     }
 
     .form-row input, .form-row textarea {
       width: 100%;
       padding: 1rem 1.2rem;
-      border: 1px solid #e5e5e5;
-      border-radius: 30px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      border: 2px solid #000;
+      border-radius: 60px;
+      font-family: 'Inter', sans-serif;
       font-size: 1rem;
       transition: all 0.2s;
-      background: #fcfcfc;
+      background: #fff;
     }
 
     .form-row textarea {
@@ -137,12 +214,12 @@
     .form-row input:focus, .form-row textarea:focus {
       outline: none;
       border-color: #d4af37;
-      box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
       background: #ffffff;
     }
 
+    /* ===== FILE UPLOAD ===== */
     .file-upload-area {
-      background: #f9f7f4;
+      background: #fcfaf7;
       border: 2px dashed #d4af37;
       border-radius: 40px;
       padding: 2rem;
@@ -150,6 +227,7 @@
       cursor: pointer;
       transition: background 0.2s;
       margin-bottom: 1.5rem;
+      border: 2px dashed #d4af37;
     }
 
     .file-upload-area:hover {
@@ -163,8 +241,9 @@
     }
 
     .file-upload-area p {
-      color: #7f7a74;
+      color: #666;
       font-size: 0.95rem;
+      font-weight: 600;
     }
 
     .file-upload-area input {
@@ -183,19 +262,20 @@
       height: 70px;
       border-radius: 20px;
       object-fit: cover;
-      border: 2px solid #e0d9d0;
+      border: 2px solid #000;
     }
 
+    /* ===== SUBMIT BUTTON ===== */
     .submit-btn {
-      background: #1a1a1a;
-      color: white;
+      background: #000;
+      color: #fff;
       width: 100%;
       padding: 1.2rem;
-      border: none;
+      border: 2px solid #000;
       border-radius: 60px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 1.1rem;
-      font-weight: 500;
+      font-weight: 600;
       letter-spacing: 0.5px;
       cursor: pointer;
       transition: all 0.2s;
@@ -204,26 +284,30 @@
       justify-content: center;
       gap: 10px;
       margin-top: 1rem;
+      text-transform: uppercase;
     }
 
+    .submit-btn i { color: #d4af37; }
     .submit-btn:hover:not(:disabled) {
       background: #d4af37;
-      color: #0c0c0c;
-      transform: scale(1.02);
+      color: #000;
+      border-color: #d4af37;
     }
+    .submit-btn:hover:not(:disabled) i { color: #000; }
 
     .submit-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
 
+    /* ===== SUCCESS MESSAGE ===== */
     .success-message {
-      background: #e3f1e3;
+      background: #e8f5e9;
+      border: 2px solid #2e7d32;
       border-radius: 40px;
       padding: 1.5rem;
       text-align: center;
       margin: 1.5rem 0 0;
-      border: 1px solid #b6d7b6;
       display: none;
     }
 
@@ -234,51 +318,55 @@
 
     .success-message i {
       font-size: 2.5rem;
-      color: #1e7a44;
+      color: #2e7d32;
       margin-bottom: 0.5rem;
     }
 
     .success-message h3 {
       font-size: 1.6rem;
-      font-weight: 400;
+      font-weight: 800;
       margin-bottom: 0.5rem;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
     }
 
     .success-message p {
-      color: #2b5e2b;
+      color: #2e7d32;
+      font-weight: 600;
     }
 
+    /* ===== ENQUIRIES SECTION ===== */
     .enquiries-title {
       font-size: clamp(1.8rem, 4vw, 2rem);
-      font-weight: 400;
+      font-weight: 800;
       margin: 3rem 0 2rem;
       text-align: center;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
     }
     .enquiries-title span {
       color: #d4af37;
-      border-bottom: 2px solid #ece8e2;
-      padding-bottom: 0.2rem;
     }
 
     .enquiries-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 2rem;
       margin-bottom: 3rem;
     }
 
     .enquiry-item {
-      background: #ffffff;
-      border-radius: 28px;
+      background: #fcfaf7;
+      border-radius: 40px;
       padding: 1.8rem;
-      box-shadow: 0 8px 22px -8px rgba(0,0,0,0.05);
-      border: 1px solid #f5f5f5;
-      transition: 0.2s;
+      border: 2px solid #000;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+      transition: transform 0.2s;
       position: relative;
     }
 
     .enquiry-item:hover {
-      box-shadow: 0 18px 30px -12px rgba(0,0,0,0.1);
+      transform: translateY(-4px);
     }
 
     .delete-btn {
@@ -288,9 +376,9 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: #ffebee;
-      border: none;
-      color: #b71c1c;
+      background: #fff;
+      border: 2px solid #000;
+      color: #c62828;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -304,9 +392,9 @@
     }
 
     .delete-btn:hover {
-      background: #b71c1c;
-      color: white;
-      transform: scale(1.1);
+      background: #c62828;
+      color: #fff;
+      border-color: #c62828;
     }
 
     .enquiry-header {
@@ -315,37 +403,40 @@
       align-items: center;
       margin-bottom: 1rem;
       padding-bottom: 0.8rem;
-      border-bottom: 1px dashed #f0f0f0;
+      border-bottom: 2px solid #000;
       flex-wrap: wrap;
       gap: 0.5rem;
       padding-right: 2.5rem;
     }
 
     .enquiry-name {
-      font-weight: 600;
+      font-weight: 800;
       font-size: 1.2rem;
       font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
     }
 
     .status-badge {
       padding: 0.3rem 1rem;
       border-radius: 60px;
       font-size: 0.7rem;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.3px;
+      border: 2px solid transparent;
     }
 
-    .status-received { background: #e8eaf6; color: #3f51b5; }
-    .status-processing { background: #fff0db; color: #b85b1a; }
-    .status-completed { background: #e3f1e3; color: #1e7a44; }
-    .status-invalid { background: #ffebee; color: #b71c1c; }
+    .status-received { background: #e8eaf6; color: #3f51b5; border-color: #3f51b5; }
+    .status-processing { background: #fff3e0; color: #ef6c00; border-color: #ef6c00; }
+    .status-completed { background: #e8f5e9; color: #2e7d32; border-color: #2e7d32; }
+    .status-cancelled { background: #ffebee; color: #c62828; border-color: #c62828; }
 
     .enquiry-contact {
       font-size: 0.9rem;
-      color: #5f5b57;
+      color: #666;
       margin-bottom: 1rem;
       word-break: break-word;
+      font-weight: 600;
     }
 
     .enquiry-contact i {
@@ -365,21 +456,28 @@
       height: 60px;
       border-radius: 18px;
       object-fit: cover;
-      border: 1px solid #eee;
-      background: #f9f7f4;
+      border: 2px solid #000;
+      background: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 2rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .enquiry-image-thumb:hover {
+      transform: scale(1.05);
     }
 
     .enquiry-message {
-      background: #faf9f7;
-      border-radius: 18px;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 30px;
       padding: 0.8rem 1rem;
       font-size: 0.9rem;
       margin: 0.8rem 0;
-      color: #3e3a36;
+      color: #000;
+      font-weight: 500;
     }
 
     .enquiry-footer {
@@ -388,25 +486,63 @@
       align-items: center;
       margin-top: 0.8rem;
       font-size: 0.8rem;
-      color: #8f8b85;
+      color: #666;
       flex-wrap: wrap;
       gap: 0.5rem;
+      font-weight: 600;
     }
 
     .empty-enquiries {
       text-align: center;
-      padding: 3rem;
-      background: #ffffff;
+      padding: 4rem 2rem;
+      background: #fcfaf7;
       border-radius: 40px;
-      border: 1px solid #f0f0f0;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
       grid-column: 1 / -1;
     }
 
     .empty-enquiries i {
       font-size: 3rem;
       color: #d4af37;
-      opacity: 0.5;
       margin-bottom: 1rem;
+    }
+
+    .empty-enquiries p {
+      color: #666;
+      font-size: 1.1rem;
+    }
+
+    /* ===== SCROLL TOP ===== */
+    .scroll-top {
+      position: fixed; bottom: 20px; right: 20px; 
+      background: #000; color: #d4af37; width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; 
+      border: 2px solid #d4af37; box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      opacity: 0; transform: translateY(15px); transition: 0.2s; z-index: 100;
+      font-size: 1.2rem; cursor: pointer;
+    }
+    .scroll-top.visible { opacity: 1; transform: translateY(0); }
+    .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .delete-btn {
+        opacity: 1;
+      }
+      .enquiry-header {
+        padding-right: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .enquiry-card {
+        padding: 1.5rem;
+      }
+      .login-prompt {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
 
     button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .submit-btn, .file-upload-area, .delete-btn {
@@ -417,35 +553,36 @@
       from { opacity: 0; transform: translateY(-10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
-    @media (max-width: 600px) {
-      .container { padding: 0 1.2rem; }
-      .enquiry-card { padding: 1.5rem; }
-      .delete-btn {
-        opacity: 1;
-        background: #ffebee;
-      }
-    }
   </style>
 </head>
-<body class="bg-noise">
-  
-  <!-- Header loaded dynamically -->
+<body>
+
   <div id="header"></div>
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
 
   <main>
-    <div class="container page-title">
-      <h1>enquire <span>now</span></h1>
-      <p>Upload product images & tell us what you need</p>
-    </div>
+    <!-- PAGE HEADER -->
+    <section class="page-header">
+      <div class="page-header-bg"></div>
+      <div class="container">
+        <div class="breadcrumbs">
+          <a href="index.html">home</a>
+          <i class="fa-solid fa-chevron-right"></i>
+          <span>enquire</span>
+        </div>
+        <h1 class="page-title">enquire <span>now</span></h1>
+        <p class="page-desc">Upload product images & tell us what you need</p>
+      </div>
+    </section>
 
     <div class="container">
       <!-- login prompt (hidden by default) -->
       <div class="login-prompt" id="loginPrompt" style="display: none;">
-        <span>🔐 Sign in to track your enquiries across devices</span>
-        <button onclick="openProfile()">Login / Sign up</button>
+        <span><i class="fa-regular fa-lock" style="color: #d4af37;"></i> Sign in to track your enquiries across devices</span>
+        <button onclick="openProfile()"><i class="fa-regular fa-user"></i> login / sign up</button>
       </div>
 
+      <!-- ENQUIRY CARD -->
       <div class="enquiry-card">
         <h2><i class="fa-regular fa-message"></i> submit enquiry</h2>
         
@@ -486,6 +623,7 @@
       </div>
     </div>
 
+    <!-- ENQUIRIES SECTION -->
     <div class="container">
       <h2 class="enquiries-title"><span>your</span> enquiries</h2>
       <div class="enquiries-grid" id="enquiriesGrid"></div>
@@ -498,14 +636,18 @@
   <!-- Common Modals -->
   <div id="common-modals"></div>
 
-  <!-- Common JavaScript -->
   <script src="common.js"></script>
-
   <script>
-    // ========== ENQUIRY PAGE SPECIFIC VARIABLES ==========
+    // ===== UTILITY FUNCTIONS =====
+    function handleScroll() {
+      const btn = document.getElementById('scrollTop');
+      if (btn) btn.classList.toggle('visible', window.scrollY > 200);
+    }
+
+    // ===== ENQUIRY PAGE SPECIFIC VARIABLES =====
     let enquiries = [];
 
-    // ========== ENQUIRY FUNCTIONS ==========
+    // ===== ENQUIRY FUNCTIONS =====
     async function loadUserEnquiries() {
       if (!currentUser) return;
       
@@ -673,7 +815,7 @@
         let statusClass = 'status-received';
         if (e.status === 'processing') statusClass = 'status-processing';
         else if (e.status === 'completed') statusClass = 'status-completed';
-        else if (e.status === 'invalid') statusClass = 'status-invalid';
+        else if (e.status === 'cancelled') statusClass = 'status-cancelled';
 
         const date = e.timestamp ? new Date(e.timestamp).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : 'just now';
 
@@ -737,20 +879,6 @@
         reader.readAsDataURL(file);
       });
     }
-
-    // Add this to handle potential Firebase initialization issues
-if (typeof firebase === 'undefined' || !firebase.apps.length) {
-  console.warn('Firebase not initialized, using localStorage only');
-  // Fallback to localStorage-only mode
-  const originalLoadUserEnquiries = loadUserEnquiries;
-  loadUserEnquiries = async function() {
-    if (!currentUser) return;
-    const storageKey = `enquiries_${currentUser.uid}`;
-    const stored = localStorage.getItem(storageKey);
-    enquiries = stored ? JSON.parse(stored) : [];
-    renderEnquiries();
-  };
-}
 
     function initializeEnquiry() {
       const fileInput = document.getElementById('imageUpload');
@@ -848,8 +976,7 @@ if (typeof firebase === 'undefined' || !firebase.apps.length) {
       }
     }
 
-    // ========== OVERRIDE PROFILE ICON UPDATE ==========
-    // Keep the original updateProfileIcon but add login prompt update
+    // ===== OVERRIDE PROFILE ICON UPDATE =====
     const originalUpdateProfileIcon = window.updateProfileIcon;
     window.updateProfileIcon = function() {
       if (originalUpdateProfileIcon) {
@@ -858,27 +985,31 @@ if (typeof firebase === 'undefined' || !firebase.apps.length) {
       updateLoginPrompt();
     };
 
-    // ========== INITIALIZATION ==========
-    function initializeApp() {
-      updateCartCount();
-      updateProfileIcon();
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCommonModals();
+      if (typeof loadComponents === 'function') loadComponents();
+      
+      // Set active nav
+      setTimeout(() => {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.nav-link[href="enquire.html"]').forEach(l => l.classList.add('active'));
+      }, 200);
+
+      // Initialize enquiry page
       updateLoginPrompt();
       initializeEnquiry();
-      
-      // currentUser is now managed by Firebase in common.js
-      // No need to load from localStorage
-    }
+    });
 
-    // Load common modals
     async function loadCommonModals() {
       try {
-        const response = await fetch('common.html');
-        const data = await response.text();
+        const res = await fetch('common.html');
+        const data = await res.text();
         document.getElementById('common-modals').innerHTML = data;
-      } catch (error) {
-        console.error('Error loading common modals:', error);
-      }
+      } catch (e) { console.warn('modals not loaded'); }
     }
+
+    window.addEventListener('scroll', handleScroll);
 
     // Listen for auth state changes to reload enquiries
     firebase.auth().onAuthStateChanged((user) => {
@@ -891,10 +1022,14 @@ if (typeof firebase === 'undefined' || !firebase.apps.length) {
       updateLoginPrompt();
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      loadCommonModals();
-      loadComponents();
-    });
+    // ===== MODAL CLOSE FUNCTIONS =====
+    window.closeModal = function(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    };
   </script>
 </body>
 </html>
