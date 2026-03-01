@@ -1674,996 +1674,424 @@ body.modal-open {
   <script src="common.js"></script>
 
 <script>
-    // ========== PRODUCT PAGE SPECIFIC FUNCTIONS ==========
-    
-    // Facebook Pixel helper function (safe execution)
-    function trackFacebookEvent(eventName, params = {}) {
-      if (typeof fbq === 'function') {
-        fbq('track', eventName, params);
-        console.log(`Facebook Pixel: ${eventName} tracked`, params);
-      } else {
-        console.log(`Facebook Pixel simulation: ${eventName}`, params);
-      }
-    }
+  // ========== HOME PAGE SPECIFIC FUNCTIONS ==========
+let scrollTimeout;
+let products = []; // Global products array
 
-    function getProductId() {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('id'); // Return as string, not parseInt
-    }
+function renderProducts() {
+  const gridContainer = document.getElementById('product-grid-container');
+  if (!gridContainer) return;
 
-    function getCurrentCartTotal() {
-      return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    }
+  // Use the global products array from common.js (loaded from Firebase)
+  const homeProducts = products.filter(p => p.showOnHome === true);
 
-    function loadProduct() {
-      const productId = getProductId();
-      const product = products.find(p => p.id === productId); // Compare as string
-
-      if (!product) {
-        document.getElementById('product-container').innerHTML = `
-          <div style="text-align: center; padding: 4rem;">
-            <i class="fa-solid fa-box-open" style="font-size: 4rem; color: #ccc;"></i>
-            <h2 style="margin: 1rem 0;">Product Not Found</h2>
-            <p>The product you're looking for doesn't exist or has been removed.</p>
-            <a href="collection.html" class="btn" style="display: inline-block; margin-top: 2rem; padding: 1rem 2rem; background: #d4af37; color: #0c0c0c; text-decoration: none; border-radius: 40px;">Browse Collection</a>
-          </div>
-        `;
-        return;
-      }
-
-      document.getElementById('breadcrumb-product').textContent = product.title;
-      renderProduct(product);
-      renderRelatedProducts(product);
-    }
-
-    function renderProduct(product) {
-      const container = document.getElementById('product-container');
-      const images = [];
-      
-      // Collect all media in correct order
-      if (product.media) {
-        // First images, then videos as per order
-        if (product.media.images) {
-          product.media.images.forEach(img => {
-            if (img && img.url) images.push(img.url);
-          });
-        }
-        if (product.media.videos) {
-          product.media.videos.forEach(video => {
-            if (video && video.url) images.push(video.url);
-          });
-        }
-      }
-      
-      // Fallback if no media
-      if (images.length === 0) {
-        images.push(product.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600');
-        if (product.secondaryImg) images.push(product.secondaryImg);
-      }
-      
-      const mainImage = images[0] || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600';
-      const stock = product.stock || 10;
-      
-      const cartItem = cart.find(item => item.id === product.id);
-      const initialQuantity = cartItem ? cartItem.quantity : 1;
-      
-      const currentCartTotal = getCurrentCartTotal();
-      const thisProductTotal = product.price * initialQuantity;
-      const totalWithProduct = currentCartTotal + thisProductTotal;
-
-      // Get specs
-      let specs = [];
-      if (product.specs && Array.isArray(product.specs)) {
-        specs = product.specs;
-      } else if (product.specs && typeof product.specs === 'string') {
-        specs = product.specs.split('\n').filter(s => s.trim());
-      } else {
-        specs = [
-          `Material: Premium Quality`,
-          `Brand: ${product.brand || 'MyEssantia'}`,
-          `Care: Dry Clean Only`,
-          `Origin: Made in India`
-        ];
-      }
-
-      const description = product.description || product.shortDesc || 'No description available.';
-      const originalPrice = Math.round(product.price * 1.2);
-      const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
-
-      container.innerHTML = `
-        <div class="product-container">
-          <div class="gallery-section">
-            <div class="main-image" onclick="zoomImage(this)">
-              <img src="${mainImage}" alt="${product.title}" id="main-product-image">
-            </div>
-            <div class="thumbnail-grid" id="thumbnail-grid">
-              ${images.map((img, index) => `
-                <div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMainImage('${img}', this)">
-                  <img src="${img}" alt="Thumbnail ${index + 1}">
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <div class="product-info">
-            <div class="product-category">${product.category}</div>
-            <h1 class="product-title">${product.title}</h1>
-            
-            <div class="product-meta">
-              <div class="product-brand">
-                <i class="fa-regular fa-building"></i> 
-                ${product.brand || 'MyEssantia'}
-              </div>
-              
-              <div class="rating-reviews">
-                <div class="stars">
-                  ${getStarRating(product.rating)}
-                </div>
-                <span class="rating-value">${product.rating ? product.rating.toFixed(1) : '0.0'}</span>
-                <span class="reviews-count">(128 reviews)</span>
-              </div>
-            </div>
-
-            <!-- Share Button - Properly aligned -->
-            <div class="share-container">
-              <button class="share-main-btn" onclick="toggleShareMenu(event)">
-                <i class="fa-solid fa-share-alt"></i>
-                <span>Share</span>
-              </button>
-              
-              <div class="share-menu" id="share-menu">
-                <div class="share-menu-header">
-                  <span>Share this product</span>
-                  <button onclick="closeShareMenu()"><i class="fa-solid fa-times"></i></button>
-                </div>
-                <div class="share-options">
-                  <button onclick="shareOnPlatform('facebook')" class="share-option facebook">
-                    <i class="fa-brands fa-facebook-f"></i>
-                    <span>Facebook</span>
-                  </button>
-                  <button onclick="shareOnPlatform('twitter')" class="share-option twitter">
-                    <i class="fa-brands fa-x-twitter"></i>
-                    <span>Twitter</span>
-                  </button>
-                  <button onclick="shareOnPlatform('whatsapp')" class="share-option whatsapp">
-                    <i class="fa-brands fa-whatsapp"></i>
-                    <span>WhatsApp</span>
-                  </button>
-                  <button onclick="shareOnPlatform('telegram')" class="share-option telegram">
-                    <i class="fa-brands fa-telegram"></i>
-                    <span>Telegram</span>
-                  </button>
-                  <button onclick="shareOnPlatform('email')" class="share-option email">
-                    <i class="fa-regular fa-envelope"></i>
-                    <span>Email</span>
-                  </button>
-                  <button onclick="shareOnPlatform('pinterest')" class="share-option pinterest">
-                    <i class="fa-brands fa-pinterest"></i>
-                    <span>Pinterest</span>
-                  </button>
-                </div>
-                
-                <div class="share-link-container">
-                  <p class="share-link-label">Or copy link</p>
-                  <div class="share-link-box">
-                    <input type="text" id="product-share-link" value="" readonly>
-                    <button onclick="copyShareLink()" class="copy-link-btn" id="copy-link-btn">
-                      <i class="fa-regular fa-copy"></i>
-                      <span>Copy</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="price-section">
-              <span class="current-price">
-                <span class="inr-symbol">₹</span>${product.price ? product.price.toFixed(2) : '0.00'}
-              </span>
-              <span class="original-price">₹${originalPrice.toFixed(2)}</span>
-              <span class="discount-badge">${discount}% OFF</span>
-              <div style="display: flex; align-items: center; flex-wrap: wrap;">
-                <span class="stock-status ${stock > 10 ? 'in-stock' : (stock > 0 ? 'low-stock' : 'out-of-stock')}">
-                  ${stock > 10 ? '✓ In Stock' : (stock > 0 ? `⚠ Only ${stock} left` : '✗ Out of Stock')}
-                </span>
-                ${product.highDemand ? '<span class="high-demand-badge"><i class="fa-solid fa-fire"></i> High Demand</span>' : ''}
-              </div>
-            </div>
-
-            <!-- Free Delivery Card -->
-            <div class="delivery-card" id="delivery-card">
-              <div class="delivery-header">
-                <div class="delivery-title">
-                  <i class="fa-solid fa-truck-fast"></i>
-                  <span>Free Delivery</span>
-                </div>
-                <div class="delivery-threshold">Min. ₹1,299</div>
-              </div>
-              
-              <div class="progress-container">
-                <div class="progress-bar">
-                  <div class="progress-fill" id="delivery-progress" style="width: ${Math.min(100, (totalWithProduct / 1299) * 100)}%"></div>
-                </div>
-                
-                <div class="delivery-message ${totalWithProduct >= 1299 ? 'eligible' : 'not-eligible'}" id="delivery-message">
-                  <i class="fa-solid ${totalWithProduct >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}"></i>
-                  <span id="delivery-text">
-                    ${totalWithProduct >= 1299 
-                      ? 'Congratulations! You get FREE delivery' 
-                      : `Add <span class="cart-value">₹${(1299 - totalWithProduct).toFixed(2)}</span> more for free delivery`}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Product Highlights -->
-            <div class="product-highlights">
-              <div class="highlight-card">
-                <div class="highlight-icon">
-                  <i class="fa-solid fa-truck"></i>
-                </div>
-                <div class="highlight-text">
-                  <h4>Free Shipping</h4>
-                  <p>On orders above ₹1,299</p>
-                </div>
-              </div>
-              <div class="highlight-card">
-                <div class="highlight-icon">
-                  <i class="fa-solid fa-rotate-left"></i>
-                </div>
-                <div class="highlight-text">
-                  <h4>Easy Returns</h4>
-                  <p>48-hour return window</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Quantity Selector -->
-            <div class="quantity-section">
-              <div class="quantity-label">
-                <i class="fa-solid fa-cubes"></i>
-                <span>Select Quantity</span>
-              </div>
-              <div class="quantity-controls">
-                <button class="quantity-btn" onclick="decrementQuantity()" ${stock === 0 ? 'disabled' : ''}>
-                  <i class="fa-solid fa-minus"></i>
-                </button>
-                <input type="text" class="quantity-input" id="product-quantity" value="${initialQuantity}" readonly>
-                <button class="quantity-btn" onclick="incrementQuantity()" ${stock === 0 || initialQuantity >= stock ? 'disabled' : ''}>
-                  <i class="fa-solid fa-plus"></i>
-                </button>
-              </div>
-              <div class="stock-info">
-                <i class="fa-regular fa-clock"></i> 
-                ${stock} units available
-              </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-              <button class="btn btn-add-to-cart" onclick="addToCart('${product.id}')" ${stock === 0 ? 'disabled' : ''}>
-                <i class="fa-solid fa-cart-plus"></i> Add to Cart
-              </button>
-              <button class="btn btn-buy-now" onclick="handleBuyNow('${product.id}')" ${stock === 0 ? 'disabled' : ''}>
-                <i class="fa-solid fa-bolt"></i> Buy Now
-              </button>
-            </div>
-
-            <!-- Product Details Tabs -->
-            <div class="product-details-tabs">
-              <div class="tab-headers">
-                <div class="tab-header active" onclick="switchTab('description')">Description</div>
-                <div class="tab-header" onclick="switchTab('specifications')">Specifications</div>
-                <div class="tab-header" onclick="switchTab('shipping')">Shipping Info</div>
-              </div>
-              
-              <div class="tab-content active" id="tab-description">
-                <p>${description}</p>
-              </div>
-              
-              <div class="tab-content" id="tab-specifications">
-                <div class="specs-grid">
-                  ${specs.map(spec => {
-                    const [key, value] = spec.split(':');
-                    return `
-                      <div class="spec-item">
-                        <div class="spec-label">${key}</div>
-                        <div class="spec-value">${value || ''}</div>
-                      </div>
-                    `;
-                  }).join('')}
-                </div>
-              </div>
-              
-              <div class="tab-content" id="tab-shipping">
-                <p>We offer free shipping on all orders above ₹1,299. Orders are dispatched within 24 hours and delivered within 3-5 business days. International shipping takes 5-7 business days.</p>
-              </div>
-            </div>
-
-            <!-- Easy Return Policy -->
-            <div class="return-section">
-              <div class="return-header">
-                <i class="fa-solid fa-shield-halved"></i>
-                <h3>Easy Return Policy</h3>
-              </div>
-              
-              <div class="return-grid">
-                <div class="return-card">
-                  <div class="return-icon">
-                    <i class="fa-regular fa-clock"></i>
-                  </div>
-                  <h4>48 Hours Return</h4>
-                  <p>Return within 48 hours of delivery if product is damaged</p>
-                </div>
-                <div class="return-card">
-                  <div class="return-icon">
-                    <i class="fa-solid fa-video"></i>
-                  </div>
-                  <h4>Video Proof Required</h4>
-                  <p>Keep unboxing video for damage claims</p>
-                </div>
-                <div class="return-card">
-                  <div class="return-icon">
-                    <i class="fa-solid fa-rotate-left"></i>
-                  </div>
-                  <h4>Full Refund</h4>
-                  <p>100% money back for damaged products</p>
-                </div>
-              </div>
-
-              <div class="return-note">
-                <i class="fa-solid fa-circle-exclamation"></i>
-                <div>
-                  <strong>Important:</strong> Always record an unboxing video. Returns without video proof cannot be processed.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      // Set the share link
-      const shareLink = `${window.location.origin}${window.location.pathname}?id=${product.id}`;
-      const shareInput = document.getElementById('product-share-link');
-      if (shareInput) shareInput.value = shareLink;
-    }
-
-    function renderRelatedProducts(currentProduct) {
-      const related = products
-        .filter(p => p.category === currentProduct.category && p.id !== currentProduct.id)
-        .slice(0, 4);
-
-      if (related.length === 0) return;
-
-      const relatedHtml = `
-        <div class="related-section">
-          <div class="container">
-            <h2 class="related-title">You May Also Like</h2>
-            <div class="related-grid">
-              ${related.map(p => {
-                let img = '';
-                if (p.media && p.media.images && p.media.images[0]) {
-                  img = p.media.images[0].url;
-                } else {
-                  img = p.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200';
-                }
-                return `
-                  <div class="related-card" onclick="window.location='product.html?id=${p.id}'">
-                    <div class="related-share" onclick="shareRelatedProduct(event, '${p.id}')">
-                      <i class="fa-regular fa-share-from-square"></i>
-                    </div>
-                    <div class="related-image">
-                      <img src="${img}" alt="${p.title}">
-                    </div>
-                    <div class="related-category">${p.category}</div>
-                    <div class="related-title-small">${p.title}</div>
-                    <div class="related-rating">
-                      ${getStarRating(p.rating)}
-                      <span style="margin-left: 0.2rem;">${p.rating ? p.rating.toFixed(1) : '0.0'}</span>
-                    </div>
-                    <div class="related-price">
-                      <span class="inr-symbol">₹</span>${p.price ? p.price.toFixed(2) : '0.00'}
-                    </div>
-                    <div class="quick-add" onclick="event.stopPropagation(); addToCart('${p.id}')">
-                      <i class="fa-solid fa-cart-plus"></i> Quick Add
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        </div>
-      `;
-
-      document.getElementById('product-container').insertAdjacentHTML('beforeend', relatedHtml);
-    }
-
-    function getStarRating(rating) {
-      let stars = '';
-      const numRating = parseFloat(rating) || 0;
-      for (let i = 1; i <= 5; i++) {
-        if (numRating >= i) stars += '<i class="fa-solid fa-star"></i>';
-        else if (numRating > i - 1 && numRating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
-        else stars += '<i class="fa-regular fa-star"></i>';
-      }
-      return stars;
-    }
-
-    // Image gallery functions
-    window.changeMainImage = function(src, element) {
-      document.getElementById('main-product-image').src = src;
-      document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
-      element.classList.add('active');
-    };
-
-    window.zoomImage = function(element) {
-      element.classList.toggle('zoomed');
-    };
-
-    // Share functionality
-    window.toggleShareMenu = function(event) {
-      event.stopPropagation();
-      const shareMenu = document.getElementById('share-menu');
-      shareMenu.classList.toggle('show');
-      
-      if (shareMenu.classList.contains('show')) {
-        setTimeout(() => {
-          document.addEventListener('click', closeShareMenuOutside);
-        }, 100);
-      }
-    };
-
-    window.closeShareMenu = function() {
-      const shareMenu = document.getElementById('share-menu');
-      shareMenu.classList.remove('show');
-      document.removeEventListener('click', closeShareMenuOutside);
-      
-      const copyBtn = document.getElementById('copy-link-btn');
-      if (copyBtn) {
-        copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i><span>Copy</span>';
-        copyBtn.classList.remove('copied');
-      }
-    };
-
-    function closeShareMenuOutside(event) {
-      const shareMenu = document.getElementById('share-menu');
-      const shareBtn = document.querySelector('.share-main-btn');
-      
-      if (!shareMenu.contains(event.target) && !shareBtn.contains(event.target)) {
-        closeShareMenu();
-      }
-    }
-
-    window.shareOnPlatform = function(platform) {
-      const productId = getProductId();
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
-      
-      const url = encodeURIComponent(`${window.location.origin}/product.html?id=${productId}`);
-      const title = encodeURIComponent(product.title);
-      const description = encodeURIComponent(product.shortDesc || product.description || 'Check out this product on MyEssantia');
-      let image = '';
-      
-      if (product.media && product.media.images && product.media.images[0]) {
-        image = encodeURIComponent(product.media.images[0].url);
-      } else {
-        image = encodeURIComponent(product.primaryImg || '');
-      }
-      
-      let shareUrl = '';
-      
-      switch(platform) {
-        case 'facebook':
-          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-          break;
-        case 'twitter':
-          shareUrl = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
-          break;
-        case 'whatsapp':
-          shareUrl = `https://wa.me/?text=${title}%20${url}`;
-          break;
-        case 'telegram':
-          shareUrl = `https://t.me/share/url?url=${url}&text=${title}`;
-          break;
-        case 'email':
-          shareUrl = `mailto:?subject=${title}&body=${description}%0A%0A${url}`;
-          break;
-        case 'pinterest':
-          shareUrl = `https://pinterest.com/pin/create/button/?url=${url}&media=${image}&description=${title}`;
-          break;
-      }
-      
-      window.open(shareUrl, '_blank', 'width=600,height=400');
-      closeShareMenu();
-    };
-
-    window.copyShareLink = function() {
-      const linkInput = document.getElementById('product-share-link');
-      linkInput.select();
-      linkInput.setSelectionRange(0, 99999);
-      
-      navigator.clipboard.writeText(linkInput.value).then(() => {
-        const copyBtn = document.getElementById('copy-link-btn');
-        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>Copied!</span>';
-        copyBtn.classList.add('copied');
-        
-        setTimeout(() => {
-          copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i><span>Copy</span>';
-          copyBtn.classList.remove('copied');
-        }, 2000);
-      });
-    };
-
-    window.shareRelatedProduct = function(event, productId) {
-      event.preventDefault();
-      event.stopPropagation();
-      
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
-      
-      const url = encodeURIComponent(`${window.location.origin}/product.html?id=${productId}`);
-      const title = encodeURIComponent(product.title);
-      
-      if (navigator.share) {
-        navigator.share({
-          title: product.title,
-          text: product.shortDesc || 'Check out this product on MyEssantia',
-          url: `${window.location.origin}/product.html?id=${productId}`
-        }).catch(console.error);
-      } else {
-        window.open(`https://wa.me/?text=${title}%20${url}`, '_blank');
-      }
-    };
-
-    // Quantity functions
-    window.incrementQuantity = function() {
-      const input = document.getElementById('product-quantity');
-      if (!input) return;
-      
-      let value = parseInt(input.value) || 1;
-      const productId = getProductId();
-      const product = products.find(p => p.id === productId);
-      
-      if (!product) return;
-      
-      if (value < product.stock) {
-        value++;
-        input.value = value;
-        updateDeliveryBar();
-        
-        const plusBtn = document.querySelector('.quantity-btn[onclick="incrementQuantity()"]');
-        if (plusBtn && value >= product.stock) {
-          plusBtn.disabled = true;
-        }
-        
-        const minusBtn = document.querySelector('.quantity-btn[onclick="decrementQuantity()"]');
-        if (minusBtn) {
-          minusBtn.disabled = false;
-        }
-      }
-    };
-
-    window.decrementQuantity = function() {
-      const input = document.getElementById('product-quantity');
-      if (!input) return;
-      
-      let value = parseInt(input.value) || 1;
-      const productId = getProductId();
-      const product = products.find(p => p.id === productId);
-      
-      if (!product) return;
-      
-      if (value > 1) {
-        value--;
-        input.value = value;
-        updateDeliveryBar();
-        
-        const plusBtn = document.querySelector('.quantity-btn[onclick="incrementQuantity()"]');
-        if (plusBtn) {
-          plusBtn.disabled = false;
-        }
-        
-        const minusBtn = document.querySelector('.quantity-btn[onclick="decrementQuantity()"]');
-        if (minusBtn && value <= 1) {
-          minusBtn.disabled = true;
-        }
-      }
-    };
-
-    function updateDeliveryBar() {
-      const productId = getProductId();
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
-
-      const quantityInput = document.getElementById('product-quantity');
-      if (!quantityInput) return;
-      
-      const quantity = parseInt(quantityInput.value) || 1;
-      const currentCartTotal = getCurrentCartTotal();
-      const thisProductTotal = product.price * quantity;
-      const totalWithProduct = currentCartTotal + thisProductTotal;
-      
-      const progressBar = document.getElementById('delivery-progress');
-      const deliveryMessage = document.getElementById('delivery-message');
-      const deliveryText = document.getElementById('delivery-text');
-
-      if (progressBar) {
-        const percentage = Math.min(100, (totalWithProduct / 1299) * 100);
-        progressBar.style.width = percentage + '%';
-      }
-
-      if (deliveryMessage && deliveryText) {
-        const icon = deliveryMessage.querySelector('i');
-        if (totalWithProduct >= 1299) {
-          deliveryMessage.className = 'delivery-message eligible';
-          icon.className = 'fa-solid fa-circle-check';
-          deliveryText.innerHTML = 'Congratulations! You get FREE delivery';
-        } else {
-          deliveryMessage.className = 'delivery-message not-eligible';
-          icon.className = 'fa-solid fa-circle-info';
-          deliveryText.innerHTML = `Add <span class="cart-value">₹${(1299 - totalWithProduct).toFixed(2)}</span> more for free delivery`;
-        }
-      }
-    }
-
-  // Show cart notification with View Cart button that opens the modal
-function showCartNotification(message) {
-  // Remove any existing notification
-  const existingNotification = document.querySelector('.cart-notification');
-  if (existingNotification) {
-    existingNotification.remove();
+  if (homeProducts.length === 0) {
+    gridContainer.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
+        <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+        <h3>No products on homepage</h3>
+        <p>Check back later for new arrivals!</p>
+      </div>
+    `;
+    return;
   }
 
-  const notification = document.createElement('div');
-  notification.className = 'cart-notification';
-  notification.innerHTML = `
-    <i class="fa-solid fa-check-circle"></i>
-    <span>${message}</span>
-    <button onclick="openCart()">View Cart</button>
-  `;
+  let gridHtml = '';
+  homeProducts.forEach((product, index) => {
+    const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
+    const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
+    
+    gridHtml += `
+      <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}" style="animation-delay: ${index * 0.1}s">
+        <div class="image-frame">
+          <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+          <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+          <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
+            <button class="img-add" onclick="window.addToCart('${product.id}'); event.preventDefault(); event.stopPropagation();">
+              <i class="fa-solid fa-cart-plus"></i> add
+            </button>
+            <button class="img-buy" onclick="window.buyNow('${product.id}'); event.preventDefault(); event.stopPropagation();">
+              <i class="fa-solid fa-bolt"></i> buy
+            </button>
+          </div>
+        </div>
+        <h3 class="product-title">${product.title}</h3>
+        <p class="product-category">${product.category}</p>
+        <div class="product-rating">${renderRating(product.rating)}</div>
+        <div class="product-price">
+          <span class="inr-symbol">₹</span>${formatPrice(product.price)}
+        </div>
+        ${getStockStatus(product.stock)}
+      </a>
+    `;
+  });
   
-  document.body.appendChild(notification);
+  gridContainer.innerHTML = gridHtml;
   
-  // Auto remove after 3 seconds
-  setTimeout(() => {
-    if (notification.parentNode) {
-      notification.remove();
-    }
-  }, 3000);
+  // Add hover effect listeners for product images
+  addProductHoverEffects();
+}
+
+// Function to add hover effects for product images
+function addProductHoverEffects() {
+  const productCards = document.querySelectorAll('.product-card');
   
-  // Allow manual close by clicking anywhere on notification except the button
-  notification.addEventListener('click', function(e) {
-    if (!e.target.matches('button')) {
-      this.remove();
-    }
+  productCards.forEach(card => {
+    const imageFrame = card.querySelector('.image-frame');
+    const primaryImg = card.querySelector('.primary-img');
+    const secondaryImg = card.querySelector('.secondary-img');
+    
+    if (!imageFrame || !primaryImg || !secondaryImg) return;
+    
+    // Remove any existing listeners
+    card.removeEventListener('mouseenter', handleProductMouseEnter);
+    card.removeEventListener('mouseleave', handleProductMouseLeave);
+    
+    // Add new listeners
+    card.addEventListener('mouseenter', handleProductMouseEnter);
+    card.addEventListener('mouseleave', handleProductMouseLeave);
   });
 }
 
-    // Updated addToCart function
-    window.addToCart = async function(productId, showNotification = true) {
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
-
-      const quantityInput = document.getElementById('product-quantity');
-      const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
-      const existingItem = cart.find(item => item.id === productId);
-
-      let primaryImg = '';
-      if (product.media && product.media.images && product.media.images[0]) {
-        primaryImg = product.media.images[0].url;
-      } else {
-        primaryImg = product.primaryImg || '';
-      }
-
-      if (existingItem) {
-        existingItem.quantity += quantity;
-      } else {
-        cart.push({
-          id: productId,
-          title: product.title,
-          category: product.category,
-          price: product.price,
-          primaryImg: primaryImg,
-          quantity: quantity
-        });
-      }
-
-      // Save to Firebase if user is logged in
-      if (currentUser) {
-        await saveCartToFirebase();
-      } else {
-        // Fallback to localStorage for guests
-        localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-      }
-      
-      updateCartCount();
-
-      if (showNotification) {
-        showCartNotification('Product added to cart!');
-      }
-
-      const btn = event?.target?.closest('button');
-      if (btn && btn.classList.contains('btn-add-to-cart')) {
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Added!';
-        btn.style.background = '#22c55e';
-        btn.style.color = 'white';
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.style.background = '';
-          btn.style.color = '';
-        }, 2000);
-      }
-    };
-
-// Updated Buy Now handler - conditional logic
-window.handleBuyNow = function(productId) {
-  const product = products.find(p => p.id === productId);
-  if (!product) return;
-
-  // Track Facebook InitiateCheckout event
-  trackFacebookEvent('InitiateCheckout', {
-    content_ids: [productId],
-    content_type: 'product',
-    value: product?.price || 0,
-    currency: 'INR'
-  });
-
-  // Check if product is marked as high demand by admin
-  if (product.highDemand) {
-    // Show priority access modal for high demand products
-    openPriorityModal(productId);
-  } else {
-    // Normal buy now flow - add to cart and OPEN CART MODAL
-    addToCart(productId, false); // Add to cart without showing notification
+// Product hover enter handler
+function handleProductMouseEnter(e) {
+  const card = e.currentTarget;
+  const imageFrame = card.querySelector('.image-frame');
+  const primaryImg = card.querySelector('.primary-img');
+  const secondaryImg = card.querySelector('.secondary-img');
+  
+  if (imageFrame && primaryImg && secondaryImg) {
+    // Smooth transition for image swap
+    primaryImg.style.opacity = '0';
+    secondaryImg.style.opacity = '1';
     
-    // Open the cart modal
-    setTimeout(() => {
-      openCart(); // This opens the cart modal that's already in your header
-    }, 100);
+    // Add subtle scale effect to the image frame
+    imageFrame.style.transform = 'scale(1.02)';
   }
+}
+
+// Product hover leave handler
+function handleProductMouseLeave(e) {
+  const card = e.currentTarget;
+  const imageFrame = card.querySelector('.image-frame');
+  const primaryImg = card.querySelector('.primary-img');
+  const secondaryImg = card.querySelector('.secondary-img');
+  
+  if (imageFrame && primaryImg && secondaryImg) {
+    // Reset to primary image
+    primaryImg.style.opacity = '1';
+    secondaryImg.style.opacity = '0';
+    
+    // Reset scale effect
+    imageFrame.style.transform = 'scale(1)';
+  }
+}
+
+function renderRating(rating) {
+  if (!rating) return '<span>No ratings</span>';
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - Math.ceil(rating);
+  
+  let stars = '';
+  for (let i = 0; i < fullStars; i++) stars += '<i class="fa-solid fa-star"></i>';
+  if (halfStar) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+  for (let i = 0; i < emptyStars; i++) stars += '<i class="fa-regular fa-star"></i>';
+  
+  return stars + `<span>(${rating.toFixed(1)})</span>`;
+}
+
+function formatPrice(price) {
+  return price ? price.toLocaleString('en-IN') : '0';
+}
+
+function getStockStatus(stock) {
+  if (stock > 10) return '<div class="stock-badge in-stock"><i class="fa-solid fa-check-circle"></i> In Stock</div>';
+  if (stock > 0) return '<div class="stock-badge low-stock"><i class="fa-solid fa-exclamation-circle"></i> Low Stock</div>';
+  return '<div class="stock-badge out-of-stock"><i class="fa-solid fa-times-circle"></i> Out of Stock</div>';
+}
+
+// Scroll to products function
+function scrollToProducts() {
+  const productsSection = document.getElementById('products-section');
+  if (productsSection) {
+    productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// Set active navigation
+function setActiveNav() {
+  // Set Home as active
+  const homeLinks = document.querySelectorAll('.nav-link[href="index.html"]');
+  homeLinks.forEach(link => {
+    link.classList.add('active');
+  });
+  
+  // Remove active from others
+  const otherLinks = document.querySelectorAll('.nav-link:not([href="index.html"])');
+  otherLinks.forEach(link => {
+    link.classList.remove('active');
+  });
+}
+
+// Scroll to top button visibility and button reset
+function handleScroll() {
+  const scrollTop = document.getElementById('scrollTop');
+  if (scrollTop) {
+    if (window.scrollY > 300) {
+      scrollTop.classList.add('visible');
+    } else {
+      scrollTop.classList.remove('visible');
+    }
+  }
+  
+  // Reset button states after scrolling
+  clearTimeout(scrollTimeout);
+  
+  // Add scrolling class to prevent animation sticking
+  const buttons = document.querySelectorAll('.hero-buttons .btn, .view-all-link');
+  buttons.forEach(button => {
+    button.classList.add('scrolling');
+    
+    // Force remove any hover styles
+    button.style.transform = '';
+    button.style.boxShadow = '';
+    button.style.backgroundColor = '';
+    button.style.color = '';
+  });
+  
+  scrollTimeout = setTimeout(() => {
+    buttons.forEach(button => {
+      button.classList.remove('scrolling');
+      // Force a reflow to ensure normal state
+      void button.offsetHeight;
+    });
+  }, 100);
+}
+
+// Parallax effect on scroll
+function handleParallax() {
+  const heroBg = document.querySelector('.hero-bg');
+  if (heroBg) {
+    const scrolled = window.scrollY;
+    heroBg.style.transform = `scale(1.1) translateY(${scrolled * 0.1}px)`;
+  }
+}
+
+// Add ripple effect to button
+function createRipple(event, button) {
+  const ripple = document.createElement('span');
+  ripple.classList.add('ripple');
+  
+  const rect = button.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  
+  ripple.style.width = ripple.style.height = `${size}px`;
+  ripple.style.left = `${event.clientX - rect.left - size/2}px`;
+  ripple.style.top = `${event.clientY - rect.top - size/2}px`;
+  
+  button.appendChild(ripple);
+  
+  setTimeout(() => {
+    ripple.remove();
+  }, 600);
+}
+
+// Update cart count (to be implemented based on your cart system)
+function updateCartCount() {
+  // Implement your cart count logic here
+  console.log('Cart count updated');
+}
+
+// Load common components (header, footer)
+async function loadComponents() {
+  try {
+    // Load header
+    const headerResponse = await fetch('header.html');
+    const headerData = await headerResponse.text();
+    document.getElementById('header').innerHTML = headerData;
+    
+    // Load footer
+    const footerResponse = await fetch('footer.html');
+    const footerData = await footerResponse.text();
+    document.getElementById('footer').innerHTML = footerData;
+    
+    // Set active nav after components are loaded
+    setTimeout(setActiveNav, 100);
+  } catch (error) {
+    console.error('Error loading components:', error);
+  }
+}
+
+// Load common modals
+async function loadCommonModals() {
+  try {
+    const response = await fetch('common.html');
+    const data = await response.text();
+    document.getElementById('common-modals').innerHTML = data;
+  } catch (error) {
+    console.error('Error loading common modals:', error);
+  }
+}
+
+// Initialize everything
+function initializeApp() {
+  // Products are already loaded from Firebase in common.js
+  renderProducts();
+  updateCartCount();
+  
+  // Set active navigation
+  setActiveNav();
+  
+  // Add click handler for start shopping button with ripple effect
+  const startShoppingBtn = document.getElementById('startShoppingBtn');
+  if (startShoppingBtn) {
+    // Remove any existing listeners
+    const newStartShoppingBtn = startShoppingBtn.cloneNode(true);
+    startShoppingBtn.parentNode.replaceChild(newStartShoppingBtn, startShoppingBtn);
+    
+    newStartShoppingBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      // Add ripple effect
+      createRipple(e, newStartShoppingBtn);
+      
+      // Ensure button returns to normal after click
+      newStartShoppingBtn.style.transform = 'translateY(-1px) scale(1.02)';
+      
+      setTimeout(() => {
+        newStartShoppingBtn.style.transform = '';
+        newStartShoppingBtn.style.boxShadow = '';
+        scrollToProducts();
+      }, 150);
+      
+      setTimeout(() => {
+        newStartShoppingBtn.style.transition = '';
+      }, 300);
+    });
+  }
+  
+  // Add hover effect handlers for view all link
+  const viewAllLink = document.querySelector('.view-all-link');
+  if (viewAllLink) {
+    viewAllLink.addEventListener('mouseenter', () => {
+      if (!viewAllLink.classList.contains('scrolling')) {
+        viewAllLink.style.transform = 'translateX(8px)';
+        viewAllLink.style.color = '#d4af37';
+      }
+    });
+    
+    viewAllLink.addEventListener('mouseleave', () => {
+      viewAllLink.style.transform = '';
+      viewAllLink.style.color = '';
+    });
+  }
+  
+  // Add scroll event listeners
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('scroll', handleParallax, { passive: true });
+  
+  // Animate value items on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '50px' });
+
+  document.querySelectorAll('.value-item').forEach(item => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(20px)';
+    item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(item);
+  });
+  
+  // Add transition end handler for all buttons
+  const buttons = document.querySelectorAll('.hero-buttons .btn, .view-all-link');
+  buttons.forEach(button => {
+    button.addEventListener('transitionend', () => {
+      if (!button.matches(':hover') && !button.classList.contains('scrolling')) {
+        button.style.transform = '';
+        button.style.boxShadow = '';
+        button.style.backgroundColor = '';
+        button.style.color = '';
+      }
+    });
+    
+    // Ensure button resets on mouse leave
+    button.addEventListener('mouseleave', () => {
+      if (!button.classList.contains('scrolling')) {
+        button.style.transform = '';
+        button.style.boxShadow = '';
+        button.style.backgroundColor = '';
+        button.style.color = '';
+      }
+    });
+  });
+  
+  // Add scroll to top button click handler
+  const scrollTopBtn = document.getElementById('scrollTop');
+  if (scrollTopBtn) {
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+}
+
+// Document ready handler
+document.addEventListener('DOMContentLoaded', () => {
+  loadCommonModals();
+  loadComponents();
+  
+  // Initialize after a short delay to ensure components are loaded
+  setTimeout(initializeApp, 500);
+});
+
+// Window load handler for fallback
+window.addEventListener('load', () => {
+  // If products array is empty but we have cached products, use them as fallback
+  if (products.length === 0) {
+    const cachedProducts = localStorage.getItem('MyEssantia_products');
+    if (cachedProducts) {
+      try {
+        products = JSON.parse(cachedProducts);
+        renderProducts();
+      } catch (e) {
+        console.error('Error parsing cached products:', e);
+      }
+    }
+  }
+  
+  // Re-initialize to ensure everything is set up
+  setTimeout(() => {
+    setActiveNav();
+    initializeApp();
+  }, 200);
+});
+
+// Clean up event listeners on page unload
+window.addEventListener('beforeunload', () => {
+  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener('scroll', handleParallax);
+});
+
+// Export functions for global use
+window.addToCart = function(productId) {
+  console.log('Add to cart:', productId);
+  // Implement your add to cart logic here
 };
 
-    // Priority Modal Functions
-    function openPriorityModal(productId) {
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
+window.buyNow = function(productId) {
+  console.log('Buy now:', productId);
+  // Implement your buy now logic here
+};
 
-      const modal = document.getElementById('priority-modal');
-      const modalBody = document.getElementById('priority-modal-body');
-      
-      let productImage = '';
-      if (product.media && product.media.images && product.media.images[0]) {
-        productImage = product.media.images[0].url;
-      } else {
-        productImage = product.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200';
-      }
-
-      // Custom message based on high demand
-      const priorityMessage = `
-        <i class="fa-solid fa-fire" style="margin-right: 0.5rem; color: #ff6b6b;"></i>
-        <strong>High Demand Alert!</strong> This product is in high demand. 
-        Due to limited stock, we're launching in batches. Enter your details to secure priority access and get notified before the next batch release.
-      `;
-
-      modalBody.innerHTML = `
-        <div class="priority-modal-header">
-          <div class="priority-product-image">
-            <img src="${productImage}" alt="${product.title}">
-          </div>
-          <h3 class="priority-product-title">${product.title}</h3>
-        </div>
-        
-        <div class="priority-message">
-          ${priorityMessage}
-        </div>
-        
-        <form class="priority-form" id="priority-form" onsubmit="submitPriorityForm(event, '${product.id}')">
-          <div class="form-group">
-            <label class="form-label">
-              <i class="fa-solid fa-envelope"></i> Email Address *
-            </label>
-            <input type="email" class="form-input" id="priority-email" placeholder="Enter your email address" required>
-            <div class="error-message" id="email-error">Please enter a valid email address</div>
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label">
-              <i class="fa-solid fa-phone"></i> Phone Number (Optional)
-            </label>
-            <input type="tel" class="form-input" id="priority-phone" placeholder="Enter 10-digit mobile number">
-            <div class="error-message" id="phone-error">Please enter a valid 10-digit phone number</div>
-          </div>
-          
-          <button type="submit" class="priority-submit-btn" id="priority-submit-btn">
-            <i class="fa-regular fa-circle-check"></i> Secure My Spot
-          </button>
-        </form>
-      `;
-
-      modal.classList.add('show');
-      document.body.classList.add('modal-open');
-    }
-
-    window.submitPriorityForm = async function(event, productId) {
-      event.preventDefault();
-
-      const emailInput = document.getElementById('priority-email');
-      const email = emailInput.value.trim();
-      const phoneInput = document.getElementById('priority-phone');
-      const phone = phoneInput.value.trim();
-      const emailError = document.getElementById('email-error');
-      const phoneError = document.getElementById('phone-error');
-      const submitBtn = document.getElementById('priority-submit-btn');
-
-      // Validate email (required)
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        emailInput.classList.add('error');
-        emailError.classList.add('show');
-        return;
-      } else {
-        emailInput.classList.remove('error');
-        emailError.classList.remove('show');
-      }
-
-      // Validate phone if provided (optional)
-      if (phone) {
-        const phoneRegex = /^\d{10}$/;
-        if (!phoneRegex.test(phone)) {
-          phoneInput.classList.add('error');
-          phoneError.classList.add('show');
-          return;
-        } else {
-          phoneInput.classList.remove('error');
-          phoneError.classList.remove('show');
-        }
-      }
-
-      // Save priority access request to Firebase if user is logged in
-      if (currentUser) {
-        try {
-          await db.collection('priority_requests').add({
-            productId: productId,
-            productTitle: products.find(p => p.id === productId)?.title,
-            email: email,
-            phone: phone || null,
-            userId: currentUser.uid,
-            status: 'pending',
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        } catch (error) {
-          console.error('Error saving priority request:', error);
-        }
-      } else {
-        // Save to localStorage for guests
-        const priorityRequests = JSON.parse(localStorage.getItem('MyEssantia_priority_requests') || '[]');
-        priorityRequests.push({
-          productId,
-          email,
-          phone,
-          timestamp: Date.now()
-        });
-        localStorage.setItem('MyEssantia_priority_requests', JSON.stringify(priorityRequests));
-      }
-
-      // Track Facebook Lead event
-      trackFacebookEvent('Lead', {
-        content_name: products.find(p => p.id === productId)?.title,
-        content_category: products.find(p => p.id === productId)?.category,
-        value: 1,
-        currency: 'INR'
-      });
-
-      // Disable submit button
-      submitBtn.disabled = true;
-
-      // Show success message
-      const modalBody = document.getElementById('priority-modal-body');
-      modalBody.innerHTML = `
-        <div class="priority-success">
-          <i class="fa-regular fa-circle-check"></i>
-          <h3>Thank You!</h3>
-          <p>We will contact you before dispatch.</p>
-        </div>
-      `;
-
-      // Auto-close modal after 2 seconds
-      setTimeout(() => {
-        closePriorityModal();
-      }, 2000);
-    };
-
-    function closePriorityModal() {
-      const modal = document.getElementById('priority-modal');
-      modal.classList.remove('show');
-      document.body.classList.remove('modal-open');
-      
-      // Reset modal content after animation
-      setTimeout(() => {
-        const modalBody = document.getElementById('priority-modal-body');
-        if (!modal.classList.contains('show')) {
-          modalBody.innerHTML = '';
-        }
-      }, 300);
-    }
-
-    // Tabs
-    window.switchTab = function(tab) {
-      document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      
-      document.querySelector(`.tab-header[onclick="switchTab('${tab}')"]`).classList.add('active');
-      document.getElementById(`tab-${tab}`).classList.add('active');
-    };
-
-    // Override updateCartCount to use common function but add delivery bar update
-    const originalUpdateCartCount = window.updateCartCount;
-    window.updateCartCount = function() {
-      if (originalUpdateCartCount) {
-        originalUpdateCartCount();
-      }
-      if (window.location.pathname.includes('product.html')) {
-        updateDeliveryBar();
-      }
-    };
-
-    // Initialize
-    function initializeApp() {
-      updateCartCount();
-      updateProfileIcon();
-      loadProduct();
-      
-      // Priority modal close button
-      const closePriorityBtn = document.getElementById('close-priority-modal');
-      if (closePriorityBtn) {
-        closePriorityBtn.addEventListener('click', closePriorityModal);
-      }
-
-      // Close priority modal on outside click
-      window.addEventListener('click', function(e) {
-        const priorityModal = document.getElementById('priority-modal');
-        if (e.target === priorityModal) {
-          closePriorityModal();
-        }
-      });
-    }
-
-    // Load common modals
-    async function loadCommonModals() {
-      try {
-        const response = await fetch('common.html');
-        const data = await response.text();
-        document.getElementById('common-modals').innerHTML = data;
-      } catch (error) {
-        console.error('Error loading common modals:', error);
-      }
-    }
-
-    // Listen for auth state changes
-    firebase.auth().onAuthStateChanged((user) => {
-      // Re-render product if needed
-      if (window.location.pathname.includes('product.html')) {
-        // Cart might have changed due to login/logout
-        updateCartCount();
-      }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      loadCommonModals();
-      loadComponents();
-    });
-
-    // Add fallback for products
-    window.addEventListener('load', () => {
-      if (products.length === 0) {
-        const cachedProducts = localStorage.getItem('MyEssantia_products');
-        if (cachedProducts) {
-          products = JSON.parse(cachedProducts);
-          loadProduct();
-        }
-      }
-    });
+window.scrollToProducts = scrollToProducts;
   </script>
 </body>
 </html>
