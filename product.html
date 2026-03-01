@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>MyEssantia · product · essential</title>
+  <title>MyEssantia · product</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
-  <!-- Premium Fonts (Montserrat + Inter) exactly like sample -->
+  <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Montserrat:wght@300..900&display=swap" rel="stylesheet">
@@ -18,363 +18,289 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
+  <!-- Common CSS -->
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="footer.css">
+  
   <style>
-    /* ========== RESET & GLOBAL – BLACK/GOLD PALETTE ========== */
+    /* ========== SIMPLE, CLEAN DESIGN ========== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; overflow-x: hidden; background: #ffffff; }
     body {
-      font-family: 'Inter', 'Montserrat', sans-serif;
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
       color: #1e1e1e;
       line-height: 1.5;
     }
-    .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 20px; }
-    @media (min-width: 640px) { .container { padding: 0 32px; } }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
-    /* ========== DYNAMIC HEADER/FOOTER PLACEHOLDERS (will be loaded) ========== */
-    /* active nav style (to match sample) */
-    .nav-link.active { color: #d4af37 !important; font-weight: 700; position: relative; }
-    .nav-link.active::after {
-      content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px;
-      background: #d4af37; animation: slideIn 0.3s ease;
-    }
-    @keyframes slideIn { from { width: 0; opacity: 0; } to { width: 100%; opacity: 1; } }
-
-    /* ========== BREADCRUMB – refined ========== */
+    /* ========== BREADCRUMB ========== */
     .breadcrumb {
-      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
-      padding: 20px 0; font-size: 0.85rem; color: #4a4a4a;
+      display: flex; align-items: center; gap: 8px;
+      padding: 24px 0; font-size: 0.9rem; color: #666;
     }
-    .breadcrumb a { color: #1e1e1e; text-decoration: none; font-weight: 600; }
+    .breadcrumb a { color: #1e1e1e; text-decoration: none; }
     .breadcrumb a:hover { color: #d4af37; }
     .breadcrumb i { font-size: 0.7rem; color: #d4af37; }
 
-    /* ========== MAIN PRODUCT GRID ========== */
+    /* ========== PRODUCT LAYOUT ========== */
     .product-grid {
-      display: grid; grid-template-columns: 1fr; gap: 32px; padding-bottom: 60px;
+      display: grid; grid-template-columns: 1fr; gap: 48px; padding-bottom: 80px;
     }
-    @media (min-width: 1024px) {
-      .product-grid { grid-template-columns: 1fr 1fr; gap: 60px; }
-    }
+    @media (min-width: 1024px) { .product-grid { grid-template-columns: 1fr 1fr; gap: 80px; } }
 
-    /* ========== GALLERY – bold black/gold frames ========== */
+    /* ========== GALLERY – CLEAN ========== */
     .gallery-section { width: 100%; }
-    @media (min-width: 1024px) { .gallery-section { position: sticky; top: 20px; height: fit-content; } }
+    @media (min-width: 1024px) { .gallery-section { position: sticky; top: 24px; } }
     .main-image {
-      width: 100%; aspect-ratio: 1/1; border-radius: 28px; overflow: hidden; margin-bottom: 16px;
-      background: #ffffff; border: 2px solid #000000; box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
+      width: 100%; aspect-ratio: 1/1; border-radius: 24px; overflow: hidden;
+      background: #f8f8f8; margin-bottom: 16px;
     }
     .main-image img { width: 100%; height: 100%; object-fit: cover; }
     .thumbnail-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
     }
     .thumbnail {
-      aspect-ratio: 1/1; border-radius: 16px; overflow: hidden; cursor: pointer;
-      border: 2px solid transparent; background: #ffffff; border: 2px solid #000;
+      aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; cursor: pointer;
+      border: 2px solid transparent; background: #f8f8f8;
     }
-    .thumbnail.active { border-color: #d4af37; border-width: 3px; }
+    .thumbnail.active { border-color: #d4af37; }
     .thumbnail img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* desktop reviews card – gold accent */
-    .desktop-reviews { display: none; margin-top: 24px; }
-    @media (min-width: 1024px) { .desktop-reviews { display: block; } }
-    .review-mini-card {
-      background: #ffffff; border-radius: 28px; padding: 24px;
-      border: 2px solid #000; box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
-    }
-    .review-mini-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-      font-weight: 700; color: #1e1e1e; text-transform: uppercase;
-    }
-    .review-mini-header span:first-child { font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px; }
-    .review-mini-header span:last-child { color: #d4af37; background: #000; padding: 4px 12px; border-radius: 40px; font-size:0.9rem;}
-    .review-mini-item {
-      display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #eaeaea;
-    }
-    .review-mini-item:last-child { border-bottom: none; }
-    .review-mini-avatar {
-      width: 44px; height: 44px; background: #000; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-weight: 700;
-      color: #d4af37; border: 2px solid #d4af37; flex-shrink: 0;
-    }
-
-    /* ========== PRODUCT INFO – black / gold ========== */
-    .social-strip { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+    /* ========== PRODUCT INFO – SIMPLIFIED ========== */
+    .social-strip { display: flex; gap: 16px; margin-bottom: 20px; }
     .sold-badge {
-      display: inline-flex; align-items: center; gap: 8px; background: #000; color: #d4af37;
-      padding: 6px 16px; border-radius: 60px; font-size: 0.85rem; font-weight: 700; border: 1px solid #d4af37;
+      display: inline-flex; align-items: center; gap: 8px; background: #fee2e2; color: #dc2626;
+      padding: 6px 16px; border-radius: 40px; font-size: 0.9rem; font-weight: 600;
     }
     .live-badge {
-      display: inline-flex; align-items: center; gap: 8px; background: #d4af37; color: #000;
-      padding: 6px 16px; border-radius: 60px; font-size: 0.85rem; font-weight: 700; border: 1px solid #000;
+      display: inline-flex; align-items: center; gap: 8px; background: #dcfce7; color: #16a34a;
+      padding: 6px 16px; border-radius: 40px; font-size: 0.9rem; font-weight: 600;
     }
-    .live-badge i { font-size: 0.6rem; animation: blink 1.5s infinite; color: #000; }
-    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+    .live-badge i { animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
     .product-category {
-      font-size: 0.85rem; font-weight: 700; color: #d4af37; text-transform: uppercase;
-      letter-spacing: 1px; margin-bottom: 8px; font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem; font-weight: 600; color: #d4af37; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
     }
     .product-title {
-      font-size: 2.4rem; font-weight: 800; line-height: 1.1; margin-bottom: 16px;
-      color: #000; font-family: 'Montserrat', sans-serif; text-transform: uppercase;
+      font-size: 2.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: #1e1e1e;
+      font-family: 'Montserrat', sans-serif;
     }
-    @media (min-width: 768px) { .product-title { font-size: 3.2rem; } }
+    @media (min-width: 768px) { .product-title { font-size: 3rem; } }
 
-    /* rating row */
+    /* ========== COMBINED INFO CARD ========== */
+    .info-card {
+      background: #ffffff; border-radius: 24px; padding: 32px;
+      border: 1px solid #eaeaea; margin: 24px 0;
+    }
+
     .rating-row {
-      display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-bottom: 24px;
+      display: flex; align-items: center; gap: 16px; margin-bottom: 24px; padding-bottom: 24px;
+      border-bottom: 1px solid #eaeaea;
     }
-    .stars { display: flex; gap: 4px; color: #d4af37; font-size: 1rem; }
+    .stars { color: #d4af37; display: flex; gap: 4px; }
 
-    /* share – gold details */
-    .share-wrapper { position: relative; margin-left: auto; }
-    .share-btn {
-      background: #ffffff; border: 2px solid #000; padding: 8px 20px; border-radius: 60px;
-      font-size: 0.9rem; font-weight: 700; color: #1e1e1e; display: flex; align-items: center; gap: 8px;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .share-btn:hover { border-color: #d4af37; background: #000; color: #d4af37; }
-    .share-menu {
-      position: absolute; top: calc(100% + 10px); right: 0; background: white;
-      border-radius: 24px; box-shadow: 8px 8px 0 rgba(0,0,0,0.2); padding: 20px; width: 280px;
-      z-index: 100; opacity: 0; visibility: hidden; transform: translateY(-10px);
-      transition: all 0.3s ease; border: 2px solid #000;
-    }
-    .share-menu.show { opacity: 1; visibility: visible; transform: translateY(0); }
-    .share-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;
-    }
-    .share-option {
-      display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px;
-      border-radius: 16px; background: #f6f6f6; border: 1px solid #ddd; font-size: 0.7rem;
-      font-weight: 600; cursor: pointer; transition: 0.1s;
-    }
-    .share-option i { font-size: 1.1rem; color: #000; }
-    .share-option:hover { background: #d4af37; border-color: #000; }
-    .copy-link { display: flex; gap: 8px; }
-    .copy-link input {
-      flex: 1; padding: 10px; border: 2px solid #000; border-radius: 16px;
-      font-size: 0.8rem; font-weight: 500;
-    }
-    .copy-btn {
-      padding: 10px 16px; background: #000; color: #d4af37; border: none;
-      border-radius: 16px; font-weight: 700; font-size: 0.8rem; cursor: pointer; border: 2px solid #000;
-    }
-    .copy-btn:hover { background: #d4af37; color: #000; }
-
-    /* price card – heavy black/gold */
-    .price-card {
-      background: #ffffff; border-radius: 28px; padding: 24px; margin-bottom: 24px;
-      border: 2px solid #000; box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
-    }
-    .price-header {
-      display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;
+    /* price section – clean */
+    .price-section {
+      display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
     }
     .current-price {
-      font-size: 3rem; font-weight: 900; color: #000; line-height: 1; font-family: 'Montserrat', sans-serif;
+      font-size: 2.5rem; font-weight: 700; color: #1e1e1e;
     }
-    .inr-symbol { font-size: 2rem; font-weight: 700; color: #d4af37; }
-    .original-price { font-size: 1.3rem; color: #777; text-decoration: line-through; }
-    .discount {
-      background: #000; color: #d4af37; padding: 4px 14px; border-radius: 60px;
-      font-weight: 800; font-size: 1rem; border: 2px solid #d4af37;
-    }
-    .price-options {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
-    }
-    .price-option {
-      padding: 16px; border-radius: 20px; text-align: center; border: 2px solid;
-    }
-    .price-option.prepaid { background: #fcf8f0; border-color: #d4af37; }
-    .price-option.cod { background: #f4f4f4; border-color: #000; }
-    .option-label { font-size: 0.8rem; font-weight: 700; color: #1e1e1e; text-transform: uppercase; margin-bottom: 6px; }
-    .price-option.prepaid .option-label { color: #d4af37; }
-    .option-price { font-size: 1.8rem; font-weight: 800; color: #000; line-height: 1.2; }
-    .stock-badge {
-      display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px;
-      background: #ffffff; border-radius: 60px; font-size: 0.9rem; font-weight: 700;
-      color: #1e1e1e; border: 2px solid #000;
+    .original-price { font-size: 1.2rem; color: #999; text-decoration: line-through; }
+    .discount-badge {
+      background: #d4af37; color: #1e1e1e; padding: 4px 12px; border-radius: 40px;
+      font-weight: 600; font-size: 0.9rem;
     }
 
-    /* promise card – black/gold */
-    .promise-card {
-      background: #000; border-radius: 28px; padding: 20px; margin-bottom: 24px;
-      display: flex; align-items: center; gap: 16px; border: 2px solid #d4af37;
+    /* payment options – compact */
+    .payment-options {
+      display: flex; gap: 16px; margin-bottom: 24px; background: #f8f8f8;
+      padding: 16px; border-radius: 16px;
+    }
+    .payment-option { flex: 1; text-align: center; }
+    .payment-label { font-size: 0.8rem; color: #666; margin-bottom: 4px; }
+    .payment-price { font-weight: 700; font-size: 1.2rem; color: #1e1e1e; }
+    .payment-save { font-size: 0.8rem; color: #d4af37; }
+
+    /* delivery + promise combined */
+    .delivery-promise {
+      display: flex; align-items: center; gap: 24px; padding: 20px 0;
+      border-top: 1px solid #eaeaea; border-bottom: 1px solid #eaeaea; margin-bottom: 24px;
+    }
+    .promise-item {
+      display: flex; align-items: center; gap: 12px;
     }
     .promise-icon {
-      width: 52px; height: 52px; background: #d4af37; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; color: #000;
-      font-size: 1.5rem; flex-shrink: 0; border: 2px solid #000;
+      width: 40px; height: 40px; background: #f8f8f8; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; color: #d4af37;
     }
-    .promise-content h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; color: #d4af37; }
-    .promise-content p { font-size: 0.9rem; color: #eee; }
+    .promise-text h4 { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+    .promise-text p { font-size: 0.8rem; color: #666; }
 
-    /* delivery card */
-    .delivery-card {
-      background: #ffffff; border-radius: 28px; padding: 20px; margin-bottom: 24px;
-      border: 2px solid #000; box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+    /* progress bar – simple */
+    .delivery-progress { margin: 20px 0; }
+    .progress-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;
+      font-size: 0.9rem;
     }
-    .delivery-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap;
+    .progress-bar {
+      height: 6px; background: #eaeaea; border-radius: 3px; overflow: hidden;
     }
-    .delivery-title { display: flex; align-items: center; gap: 8px; font-weight: 700; color: #1e1e1e; }
-    .delivery-title i { color: #d4af37; }
-    .delivery-min { background: #000; color: #d4af37; padding: 4px 14px; border-radius: 60px; font-weight: 600; }
-    .progress-bar { height: 10px; background: #eaeaea; border-radius: 10px; overflow: hidden; margin: 12px 0; border: 1px solid #000; }
-    .progress-fill { height: 100%; background: #d4af37; width: 0%; transition: width 0.3s; }
-    .delivery-message { display: flex; align-items: center; gap: 8px; color: #1e1e1e; font-weight: 600; }
+    .progress-fill {
+      height: 100%; background: #d4af37; width: 0%; transition: width 0.3s;
+    }
 
-    /* features */
-    .features-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;
+    /* features – inline */
+    .features-row {
+      display: flex; gap: 24px; margin: 24px 0; padding: 16px 0;
     }
-    .feature-item {
-      display: flex; align-items: center; gap: 12px; padding: 16px; background: #fafafa;
-      border-radius: 20px; border: 2px solid #000;
+    .feature {
+      display: flex; align-items: center; gap: 8px; color: #666; font-size: 0.9rem;
     }
-    .feature-icon {
-      width: 40px; height: 40px; background: #000; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center; color: #d4af37; border: 1px solid #d4af37;
-    }
-    .feature-text h4 { font-size: 0.9rem; font-weight: 800; color: #1e1e1e; margin-bottom: 2px; }
-    .feature-text p { font-size: 0.75rem; color: #555; font-weight: 500; }
+    .feature i { color: #d4af37; }
 
-    /* quantity */
-    .quantity-wrapper {
-      background: #ffffff; border-radius: 28px; padding: 20px; margin-bottom: 24px;
-      border: 2px solid #000; box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+    /* quantity and buttons */
+    .quantity-row {
+      display: flex; align-items: center; gap: 24px; margin: 24px 0; padding: 16px 0;
+      border-top: 1px solid #eaeaea; border-bottom: 1px solid #eaeaea;
     }
-    .quantity-label { display: flex; align-items: center; gap: 8px; font-weight: 700; color: #1e1e1e; margin-bottom: 16px; }
-    .quantity-controls { display: flex; align-items: center; gap: 12px; }
+    .quantity-label { font-weight: 600; }
+    .quantity-controls {
+      display: flex; align-items: center; gap: 8px;
+    }
     .qty-btn {
-      width: 44px; height: 44px; border: 2px solid #000; background: #ffffff; border-radius: 16px;
-      font-size: 1.3rem; font-weight: 800; color: #1e1e1e; cursor: pointer;
+      width: 40px; height: 40px; border: 1px solid #eaeaea; background: white;
+      border-radius: 8px; font-size: 1.2rem; font-weight: 600; cursor: pointer;
     }
-    .qty-btn:disabled { opacity: 0.4; }
     .qty-input {
-      width: 70px; height: 44px; border: 2px solid #000; border-radius: 16px; text-align: center;
-      font-size: 1.2rem; font-weight: 700; background: #ffffff;
+      width: 60px; height: 40px; border: 1px solid #eaeaea; border-radius: 8px;
+      text-align: center; font-weight: 600;
     }
 
-    /* action buttons – black/gold */
-    .action-buttons { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
-    @media (min-width: 480px) { .action-buttons { flex-direction: row; } }
+    .action-buttons {
+      display: flex; gap: 16px; margin-top: 24px;
+    }
     .btn {
-      flex: 1; padding: 16px; border: none; border-radius: 60px; font-weight: 800; font-size: 1rem;
+      flex: 1; padding: 16px; border: none; border-radius: 50px; font-weight: 600;
       cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: all 0.2s; text-transform: uppercase; border: 2px solid transparent;
+      transition: all 0.2s;
     }
     .btn-primary {
-      background: #000; color: #d4af37; border: 2px solid #d4af37;
+      background: #1e1e1e; color: white;
     }
-    .btn-primary:hover { background: #d4af37; color: #000; border-color: #000; }
+    .btn-primary:hover { background: #d4af37; color: #1e1e1e; }
     .btn-secondary {
-      background: #ffffff; color: #000; border: 2px solid #000;
+      background: white; border: 1px solid #1e1e1e; color: #1e1e1e;
     }
-    .btn-secondary:hover { background: #000; color: #d4af37; border-color: #d4af37; }
+    .btn-secondary:hover { border-color: #d4af37; background: #fafafa; }
 
-    /* tabs */
+    /* ========== TABS – MINIMAL ========== */
     .tabs {
-      background: #ffffff; border-radius: 28px; padding: 24px; margin-bottom: 24px;
-      border: 2px solid #000; box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+      margin: 40px 0 24px; border-bottom: 1px solid #eaeaea;
     }
     .tab-headers {
-      display: flex; gap: 24px; border-bottom: 2px solid #000; margin-bottom: 20px;
-      overflow-x: auto; scrollbar-width: none;
+      display: flex; gap: 32px;
     }
     .tab-header {
-      padding: 12px 0; cursor: pointer; font-weight: 700; color: #777;
-      font-size: 0.95rem; white-space: nowrap; border-bottom: 3px solid transparent; text-transform: uppercase;
+      padding: 16px 0; cursor: pointer; font-weight: 600; color: #999;
+      border-bottom: 2px solid transparent;
     }
-    .tab-header.active { color: #000; border-bottom-color: #d4af37; }
-    .tab-content { display: none; color: #333; font-size: 0.95rem; line-height: 1.7; }
+    .tab-header.active { color: #1e1e1e; border-bottom-color: #d4af37; }
+    .tab-content { display: none; padding: 24px 0; color: #666; line-height: 1.7; }
     .tab-content.active { display: block; }
-    .specs-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 480px) { .specs-grid { grid-template-columns: repeat(2, 1fr); } }
-    .spec-item {
-      padding: 16px; background: #fafafa; border-radius: 16px; border: 1px solid #000;
-    }
-    .spec-label { font-size: 0.8rem; color: #555; margin-bottom: 4px; font-weight: 600; }
-    .spec-value { font-weight: 800; color: #000; }
-    .video-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 480px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
-    .video-item {
-      aspect-ratio: 16/9; border-radius: 18px; overflow: hidden; position: relative;
-      border: 2px solid #000; background: #000;
-    }
-    .video-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-    .video-item i {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: 44px; height: 44px; background: #d4af37; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; color: #000;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); border: 2px solid #000;
-    }
 
-    /* mobile reviews */
-    .mobile-reviews {
-      background: #ffffff; border-radius: 28px; padding: 24px; border: 2px solid #000;
+    /* specs grid – clean */
+    .specs-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
     }
-    @media (min-width: 1024px) { .mobile-reviews { display: none; } }
+    .spec-item {
+      padding: 16px; background: #f8f8f8; border-radius: 12px;
+    }
+    .spec-label { font-size: 0.8rem; color: #999; margin-bottom: 4px; }
+    .spec-value { font-weight: 600; color: #1e1e1e; }
+
+    /* reviews – simplified */
+    .reviews-section {
+      margin: 40px 0;
+    }
     .reviews-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-      font-weight: 800; color: #1e1e1e; font-family: 'Montserrat', sans-serif;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
     }
     .review-card {
-      padding: 20px; background: #fafafa; border-radius: 20px; border: 1px solid #000; margin-bottom: 12px;
+      padding: 20px; background: #f8f8f8; border-radius: 16px; margin-bottom: 12px;
+    }
+    .reviewer {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
     }
     .reviewer-avatar {
-      width: 44px; height: 44px; background: #000; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-weight: 700; color: #d4af37; border: 2px solid #d4af37;
+      width: 40px; height: 40px; background: #d4af37; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-weight: 600; color: #1e1e1e;
     }
+    .review-rating { color: #d4af37; margin-bottom: 8px; }
 
-    /* related products */
-    .related { margin-top: 48px; padding-top: 32px; }
+    /* related – clean */
+    .related {
+      margin: 60px 0 40px;
+    }
     .related-title {
-      font-size: 2rem; font-weight: 800; margin-bottom: 24px; color: #000;
-      font-family: 'Montserrat', sans-serif; text-transform: uppercase;
+      font-size: 1.8rem; font-weight: 600; margin-bottom: 24px;
+      font-family: 'Montserrat', sans-serif;
     }
     .related-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
     }
     @media (min-width: 640px) { .related-grid { grid-template-columns: repeat(4, 1fr); } }
     .related-card {
-      text-decoration: none; color: inherit; background: #ffffff; border-radius: 24px;
-      padding: 16px; border: 2px solid #000; transition: all 0.2s; box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+      text-decoration: none; color: inherit; border: 1px solid #eaeaea;
+      border-radius: 16px; padding: 16px; transition: all 0.2s;
     }
-    .related-card:hover { transform: translateY(-4px); box-shadow: 8px 8px 0 rgba(212,175,55,0.3); }
-    .related-image { aspect-ratio: 1/1; border-radius: 20px; overflow: hidden; margin-bottom: 12px; border: 1px solid #000; }
-    .related-name { font-weight: 800; color: #000; margin-bottom: 4px; text-transform: uppercase; font-size:0.9rem; }
-    .related-price { font-weight: 800; color: #d4af37; font-size: 1.1rem; }
-    .related-add { padding: 10px; background: #000; border-radius: 60px; text-align: center; font-size: 0.8rem; font-weight: 700; color: #d4af37; border: 2px solid #d4af37; margin-top: 8px; }
+    .related-card:hover { border-color: #d4af37; }
+    .related-image {
+      aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; margin-bottom: 12px;
+      background: #f8f8f8;
+    }
+    .related-image img { width: 100%; height: 100%; object-fit: cover; }
+    .related-name { font-weight: 600; margin-bottom: 4px; }
+    .related-price { font-weight: 600; color: #d4af37; }
+
+    /* share button – simple */
+    .share-wrapper { position: relative; margin-left: auto; }
+    .share-btn {
+      background: none; border: 1px solid #eaeaea; padding: 8px 16px; border-radius: 40px;
+      font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 8px;
+    }
+    .share-menu {
+      position: absolute; top: calc(100% + 8px); right: 0; background: white;
+      border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); padding: 16px;
+      width: 260px; z-index: 100; opacity: 0; visibility: hidden; transition: all 0.2s;
+      border: 1px solid #eaeaea;
+    }
+    .share-menu.show { opacity: 1; visibility: visible; }
 
     /* notification */
     .notification {
-      position: fixed; top: 20px; left: 20px; right: 20px; max-width: 360px; margin: 0 auto;
-      background: #000; color: #d4af37; padding: 16px 20px; border-radius: 60px;
-      display: flex; align-items: center; gap: 12px; font-weight: 700; z-index: 1000;
-      animation: slideDown 0.3s ease; border: 2px solid #d4af37; box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+      position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+      background: #1e1e1e; color: white; padding: 12px 24px; border-radius: 50px;
+      display: flex; align-items: center; gap: 12px; z-index: 1000;
+      animation: slideDown 0.3s; border: 1px solid #d4af37;
     }
-    @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
     /* scroll top */
     .scroll-top {
-      position: fixed; bottom: 20px; right: 20px; width: 52px; height: 52px;
-      background: #000; color: #d4af37; border-radius: 50%; display: flex;
-      align-items: center; justify-content: center; border: 2px solid #d4af37;
-      cursor: pointer; opacity: 0; transition: opacity 0.3s; z-index: 90;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2); font-size: 1.4rem;
+      position: fixed; bottom: 24px; right: 24px; width: 48px; height: 48px;
+      background: white; border: 1px solid #eaeaea; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      opacity: 0; transition: opacity 0.2s; z-index: 90;
     }
     .scroll-top.visible { opacity: 1; }
-    .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
-
-    /* misc */
-    .text-gold { color: #d4af37; }
-    .bg-black { background: #000; }
+    .scroll-top:hover { border-color: #d4af37; }
   </style>
 </head>
 <body>
 
-  <!-- header & footer will be loaded dynamically (exactly like sample) -->
   <div id="header"></div>
   <div class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></div>
 
@@ -396,7 +322,6 @@
   <div id="common-modals"></div>
 
   <script>
-    // ========== FIREBASE CONFIG (unchanged) ==========
     const firebaseConfig = {
       apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
       authDomain: "myessantia.firebaseapp.com",
@@ -408,67 +333,39 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // ========== GLOBAL ==========
     let currentProduct = null;
-    let cart = JSON.parse(localStorage.getItem('myessantia_cart')) || [];
 
     function getRandomSold() { return Math.floor(Math.random() * (2000 - 500 + 1)) + 500; }
     function getRandomViewers() { return Math.floor(Math.random() * (35 - 8 + 1)) + 8; }
 
     function generateReviews() {
-      const users = [
-        { name: 'Priya Sharma', city: 'Mumbai', avatar: 'PS' },
-        { name: 'Rahul Verma', city: 'Delhi', avatar: 'RV' },
-        { name: 'Ananya Patel', city: 'Bangalore', avatar: 'AP' },
-        { name: 'Karthik Iyer', city: 'Chennai', avatar: 'KI' }
+      return [
+        { name: 'Priya Sharma', avatar: 'PS', rating: 5, comment: 'Absolutely love this! Quality is amazing.', time: '2 days ago' },
+        { name: 'Rahul Verma', avatar: 'RV', rating: 5, comment: 'Perfect product, exceeded my expectations.', time: '1 week ago' },
+        { name: 'Ananya Patel', avatar: 'AP', rating: 4, comment: 'Great quality and beautiful design.', time: '2 weeks ago' }
       ];
-      const comments = [
-        "Absolutely love this! Quality is amazing and delivery was super fast.",
-        "Perfect product, exceeded my expectations. Worth every penny!",
-        "Great quality and beautiful design. Highly recommend!",
-        "Excellent value for money. Will buy again."
-      ];
-      return users.map((user, i) => ({
-        ...user, comment: comments[i % comments.length],
-        rating: (4 + Math.random() * 0.9).toFixed(1),
-        time: Math.floor(Math.random() * 48) + 1, helpful: Math.floor(Math.random() * 30) + 10
-      }));
     }
 
     function getProductId() { return new URLSearchParams(window.location.search).get('id'); }
 
     async function loadProduct() {
       const productId = getProductId();
-      if (!productId) return showNotFound();
+      if (!productId) return;
       try {
         const doc = await db.collection('products').doc(productId).get();
-        if (!doc.exists) return showNotFound();
+        if (!doc.exists) return;
         currentProduct = { id: doc.id, ...doc.data() };
         document.getElementById('breadcrumb-product').textContent = currentProduct.title;
         renderProduct(currentProduct);
-        loadRelated(currentProduct);
-      } catch (error) { console.error(error); showNotFound(); }
-    }
-
-    function showNotFound() {
-      document.getElementById('product-container').innerHTML = `
-        <div style="text-align:center; padding:60px 20px; background:white; border-radius:28px; border:2px solid #000; box-shadow:8px 8px 0 rgba(0,0,0,0.1);">
-          <i class="fa-solid fa-box-open" style="font-size:48px; color:#d4af37;"></i>
-          <h2 style="font-size:1.8rem; margin:16px 0; color:#000;">Product Not Found</h2>
-          <a href="collection.html" style="display:inline-block; padding:12px 32px; background:#000; color:#d4af37; text-decoration:none; border-radius:60px; font-weight:800; border:2px solid #d4af37;">Browse Collection</a>
-        </div>
-      `;
+      } catch (error) { console.error(error); }
     }
 
     function renderProduct(product) {
-      const images = [];
-      if (product.media?.images) images.push(...product.media.images.map(i => i.url));
-      if (images.length === 0) images.push(product.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600');
+      const images = product.media?.images?.map(i => i.url) || [product.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600'];
       const stock = product.stock || 10;
       const originalPrice = Math.round(product.price * 1.25);
       const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
       const prepaidPrice = Math.round(product.price * 0.92);
-      const codPrice = Math.round(product.price * 1.04);
       const soldCount = getRandomSold();
       const liveViewers = getRandomViewers();
       const reviews = generateReviews();
@@ -476,85 +373,268 @@
       const container = document.getElementById('product-container');
       container.innerHTML = `
         <div class="product-grid">
-          <!-- GALLERY -->
+          <!-- Gallery -->
           <div class="gallery-section">
             <div class="main-image"><img src="${images[0]}" alt="${product.title}" id="mainImage"></div>
             <div class="thumbnail-grid">
-              ${images.map((img, i) => `<div class="thumbnail ${i === 0 ? 'active' : ''}" onclick="changeImage('${img}', this)"><img src="${img}" alt="thumb"></div>`).join('')}
+              ${images.map((img, i) => `<div class="thumbnail ${i === 0 ? 'active' : ''}" onclick="changeImage('${img}', this)"><img src="${img}" alt=""></div>`).join('')}
             </div>
-            <!-- desktop reviews -->
-            <div class="desktop-reviews">
-              <div class="review-mini-card">
-                <div class="review-mini-header"><span>Customer Reviews</span><span>★ ${(product.rating || 4.5).toFixed(1)}</span></div>
-                ${reviews.slice(0,3).map(r => `
-                  <div class="review-mini-item">
-                    <div class="review-mini-avatar">${r.avatar}</div>
-                    <div style="flex:1"><div style="font-weight:800;">${r.name}</div><div style="color:#d4af37;">${'★'.repeat(Math.floor(r.rating))}</div><div style="font-size:0.8rem;">"${r.comment.substring(0,45)}..."</div></div>
-                  </div>`).join('')}
-                <div style="text-align:center; margin-top:16px; font-weight:800; color:#d4af37;">View all 128 reviews →</div>
+          </div>
+
+          <!-- Product Info - Simplified -->
+          <div class="product-info">
+            <div class="social-strip">
+              <span class="sold-badge"><i class="fa-solid fa-fire"></i> ${soldCount}+ sold</span>
+              <span class="live-badge"><i class="fa-solid fa-circle"></i> ${liveViewers} viewing</span>
+            </div>
+            
+            <div class="product-category">${product.category || 'Accessories'}</div>
+            <h1 class="product-title">${product.title}</h1>
+
+            <div class="rating-row">
+              <div class="stars">${getStars(product.rating)}</div>
+              <span>${(product.rating || 4.5).toFixed(1)} (128 reviews)</span>
+              <div class="share-wrapper">
+                <button class="share-btn" onclick="toggleShare(event)"><i class="fa-regular fa-share-from-square"></i> Share</button>
+                <div class="share-menu" id="shareMenu"></div>
+              </div>
+            </div>
+
+            <!-- Combined Info Card -->
+            <div class="info-card">
+              <!-- Price -->
+              <div class="price-section">
+                <span class="current-price">₹${product.price.toFixed(2)}</span>
+                <span class="original-price">₹${originalPrice.toFixed(2)}</span>
+                <span class="discount-badge">-${discount}%</span>
+              </div>
+
+              <!-- Payment Options -->
+              <div class="payment-options">
+                <div class="payment-option">
+                  <div class="payment-label">Prepaid</div>
+                  <div class="payment-price">₹${prepaidPrice}</div>
+                  <div class="payment-save">Save ₹${product.price - prepaidPrice}</div>
+                </div>
+                <div class="payment-option">
+                  <div class="payment-label">Cash on Delivery</div>
+                  <div class="payment-price">₹${Math.round(product.price * 1.04)}</div>
+                  <div class="payment-save">+4% fee</div>
+                </div>
+              </div>
+
+              <!-- Delivery & Promise Combined -->
+              <div class="delivery-promise">
+                <div class="promise-item">
+                  <div class="promise-icon"><i class="fa-solid fa-truck"></i></div>
+                  <div class="promise-text">
+                    <h4>Free Delivery</h4>
+                    <p>Above ₹1,299</p>
+                  </div>
+                </div>
+                <div class="promise-item">
+                  <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
+                  <div class="promise-text">
+                    <h4>Money Back</h4>
+                    <p>100% guarantee</p>
+                  </div>
+                </div>
+                <div class="promise-item">
+                  <div class="promise-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                  <div class="promise-text">
+                    <h4>Easy Returns</h4>
+                    <p>48 hours</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Delivery Progress -->
+              <div class="delivery-progress">
+                <div class="progress-header">
+                  <span>Free delivery progress</span>
+                  <span>₹${product.price} of ₹1,299</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price/1299)*100)}%"></div>
+                </div>
+              </div>
+
+              <!-- Features Row -->
+              <div class="features-row">
+                <div class="feature"><i class="fa-regular fa-clock"></i> Express shipping</div>
+                <div class="feature"><i class="fa-regular fa-credit-card"></i> Secure payment</div>
+                <div class="feature"><i class="fa-regular fa-circle-check"></i> In stock</div>
+              </div>
+
+              <!-- Quantity & Actions -->
+              <div class="quantity-row">
+                <span class="quantity-label">Quantity:</span>
+                <div class="quantity-controls">
+                  <button class="qty-btn" onclick="updateQuantity(-1)" ${stock===0?'disabled':''}>−</button>
+                  <input type="text" class="qty-input" id="productQuantity" value="1" readonly>
+                  <button class="qty-btn" onclick="updateQuantity(1)" ${stock===0?'disabled':''}>+</button>
+                </div>
+              </div>
+
+              <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="addToCart()" ${stock===0?'disabled':''}>
+                  <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+                </button>
+                <button class="btn btn-primary" onclick="buyNow()" ${stock===0?'disabled':''}>
+                  <i class="fa-solid fa-bolt"></i> Buy Now
+                </button>
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+              <div class="tab-headers">
+                <div class="tab-header active" onclick="switchTab('desc')">Description</div>
+                <div class="tab-header" onclick="switchTab('specs')">Specifications</div>
+                <div class="tab-header" onclick="switchTab('reviews')">Reviews (128)</div>
+              </div>
+              <div class="tab-content active" id="tab-desc">
+                <p>${product.description || 'Premium quality product from MyEssantia. Crafted with attention to detail and designed for everyday elegance.'}</p>
+              </div>
+              <div class="tab-content" id="tab-specs">
+                <div class="specs-grid">
+                  <div class="spec-item"><div class="spec-label">Material</div><div class="spec-value">Premium quality</div></div>
+                  <div class="spec-item"><div class="spec-label">Brand</div><div class="spec-value">${product.brand || 'MyEssantia'}</div></div>
+                  <div class="spec-item"><div class="spec-label">Origin</div><div class="spec-value">India</div></div>
+                  <div class="spec-item"><div class="spec-label">Warranty</div><div class="spec-value">6 months</div></div>
+                </div>
+              </div>
+              <div class="tab-content" id="tab-reviews">
+                ${reviews.map(r => `
+                  <div class="review-card">
+                    <div class="reviewer">
+                      <div class="reviewer-avatar">${r.avatar}</div>
+                      <div>
+                        <div style="font-weight:600;">${r.name}</div>
+                        <div style="font-size:0.8rem; color:#999;">${r.time}</div>
+                      </div>
+                    </div>
+                    <div class="review-rating">${'★'.repeat(r.rating)}</div>
+                    <div>${r.comment}</div>
+                  </div>
+                `).join('')}
               </div>
             </div>
           </div>
-          <!-- INFO -->
-          <div class="product-info">
-            <div class="social-strip"><span class="sold-badge"><i class="fa-solid fa-fire"></i> ${soldCount}+ sold</span><span class="live-badge"><i class="fa-solid fa-circle"></i> ${liveViewers} viewing now</span></div>
-            <div class="product-category">${product.category || 'Accessories'}</div>
-            <h1 class="product-title">${product.title}</h1>
-            <div class="rating-row">
-              <div class="stars">${getStars(product.rating)}</div><span style="font-weight:700;">${(product.rating || 4.5).toFixed(1)}</span><span style="color:#4a4a4a;">(128 reviews)</span>
-              <div class="share-wrapper"><button class="share-btn" onclick="toggleShare(event)"><i class="fa-solid fa-share-alt"></i> Share</button><div class="share-menu" id="shareMenu">...</div></div>
-            </div>
-            <!-- price card -->
-            <div class="price-card">
-              <div class="price-header"><span class="current-price"><span class="inr-symbol">₹</span>${product.price.toFixed(2)}</span><span class="original-price">₹${originalPrice.toFixed(2)}</span><span class="discount">-${discount}%</span></div>
-              <div class="price-options"><div class="price-option prepaid"><div class="option-label">Prepaid</div><div class="option-price">₹${prepaidPrice}</div><div style="font-size:0.75rem; color:#d4af37;">Save ₹${product.price - prepaidPrice}</div></div><div class="price-option cod"><div class="option-label">Cash on Delivery</div><div class="option-price">₹${codPrice}</div><div style="font-size:0.75rem;">+₹${codPrice - product.price} fee</div></div></div>
-              <span class="stock-badge"><i class="fa-solid ${stock > 10 ? 'fa-check-circle' : 'fa-exclamation-circle'}" style="color:#d4af37;"></i> ${stock > 10 ? 'In Stock' : `Only ${stock} left`}</span>
-            </div>
-            <!-- promise -->
-            <div class="promise-card"><div class="promise-icon"><i class="fa-solid fa-shield"></i></div><div class="promise-content"><h4>Razorpay Money Back Promise</h4><p><span style="font-weight:800;">100% refund</span> on non-delivery or defects</p></div></div>
-            <!-- delivery -->
-            <div class="delivery-card" id="deliveryCard"><div class="delivery-header"><span class="delivery-title"><i class="fa-solid fa-truck"></i> Free Delivery</span><span class="delivery-min">Min. ₹1,299</span></div><div class="progress-bar"><div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div></div><div class="delivery-message" id="deliveryMessage"><i class="fa-solid ${product.price >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:#d4af37;"></i><span id="deliveryText">${product.price >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - product.price).toFixed(2)}</span> more for free delivery`}</span></div></div>
-            <!-- features -->
-            <div class="features-grid"><div class="feature-item"><div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div><div><h4>Free Shipping</h4><p>Above ₹1,299</p></div></div><div class="feature-item"><div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div><div><h4>Easy Returns</h4><p>48 hours</p></div></div></div>
-            <!-- quantity -->
-            <div class="quantity-wrapper"><div class="quantity-label"><i class="fa-solid fa-cubes" style="color:#d4af37;"></i> Quantity</div><div class="quantity-controls"><button class="qty-btn" onclick="updateQuantity(-1)" ${stock===0?'disabled':''}>−</button><input type="text" class="qty-input" id="productQuantity" value="1" readonly><button class="qty-btn" onclick="updateQuantity(1)" ${stock===0?'disabled':''}>+</button></div></div>
-            <!-- buttons -->
-            <div class="action-buttons"><button class="btn btn-secondary" onclick="addToCart()" ${stock===0?'disabled':''}><i class="fa-solid fa-cart-plus"></i> Add to Cart</button><button class="btn btn-primary" onclick="buyNow()" ${stock===0?'disabled':''}><i class="fa-solid fa-bolt"></i> Buy Now</button></div>
-            <!-- tabs -->
-            <div class="tabs"><div class="tab-headers"><div class="tab-header active" onclick="switchTab('desc')">Description</div><div class="tab-header" onclick="switchTab('specs')">Specs</div><div class="tab-header" onclick="switchTab('videos')">Videos</div></div><div class="tab-content active" id="tab-desc"><p>${product.description || product.shortDesc || 'Premium quality product from MyEssantia.'}</p></div><div class="tab-content" id="tab-specs"><div class="specs-grid"><div class="spec-item"><div class="spec-label">Material</div><div class="spec-value">Premium Quality</div></div><div class="spec-item"><div class="spec-label">Brand</div><div class="spec-value">${product.brand || 'MyEssantia'}</div></div></div></div><div class="tab-content" id="tab-videos"><div class="video-grid"><div class="video-item"><img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400"><i class="fa-solid fa-play"></i></div><div class="video-item"><img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400"><i class="fa-solid fa-play"></i></div></div></div></div>
-            <!-- mobile reviews -->
-            <div class="mobile-reviews"><div class="reviews-header"><span>Customer Reviews</span><span style="color:#d4af37;">★ ${(product.rating || 4.5).toFixed(1)}</span></div><div class="reviews-grid">${reviews.slice(0,3).map(r => `<div class="review-card"><div class="reviewer" style="display:flex; gap:12px;"><div class="reviewer-avatar">${r.avatar}</div><div><h5 style="font-weight:800;">${r.name}</h5><span style="font-size:0.8rem;">${r.city} · ${r.time}h ago</span></div></div><div class="review-rating" style="color:#d4af37;">${'★'.repeat(Math.floor(r.rating))}</div><div class="review-text">"${r.comment}"</div></div>`).join('')}</div><div style="text-align:center; margin-top:16px; font-weight:800; color:#d4af37;">View all 128 reviews →</div></div>
-          </div>
         </div>
       `;
-      // re-attach share menu html (shortened for brevity, but full share code remains in original js)
-      document.getElementById('shareMenu').innerHTML = `<div class="share-grid"><button class="share-option" onclick="share('facebook')"><i class="fa-brands fa-facebook-f"></i>FB</button><button class="share-option" onclick="share('twitter')"><i class="fa-brands fa-x-twitter"></i>TW</button><button class="share-option" onclick="share('whatsapp')"><i class="fa-brands fa-whatsapp"></i>WA</button><button class="share-option" onclick="share('telegram')"><i class="fa-brands fa-telegram"></i>TG</button><button class="share-option" onclick="share('email')"><i class="fa-regular fa-envelope"></i>Mail</button><button class="share-option" onclick="share('pinterest')"><i class="fa-brands fa-pinterest"></i>Pin</button></div><div class="copy-link"><input type="text" id="shareLink" value="${window.location.href}" readonly><button class="copy-btn" onclick="copyLink()">Copy</button></div>`;
-      updateDeliveryBar(product.price);
+
+      document.getElementById('shareMenu').innerHTML = `
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px;">
+          <button class="share-option" onclick="share('facebook')"><i class="fa-brands fa-facebook-f"></i></button>
+          <button class="share-option" onclick="share('twitter')"><i class="fa-brands fa-x-twitter"></i></button>
+          <button class="share-option" onclick="share('whatsapp')"><i class="fa-brands fa-whatsapp"></i></button>
+          <button class="share-option" onclick="share('telegram')"><i class="fa-brands fa-telegram"></i></button>
+          <button class="share-option" onclick="share('email')"><i class="fa-regular fa-envelope"></i></button>
+          <button class="share-option" onclick="share('pinterest')"><i class="fa-brands fa-pinterest"></i></button>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="shareLink" value="${window.location.href}" readonly style="flex:1; padding:8px; border:1px solid #eaeaea; border-radius:8px;">
+          <button class="copy-btn" onclick="copyLink()" style="padding:8px 16px; background:#1e1e1e; color:white; border:none; border-radius:8px;">Copy</button>
+        </div>
+      `;
       setupScrollTop();
     }
 
-    // ----- helper functions (unchanged logic) -----
-    function setupScrollTop() { const btn = document.getElementById('scrollTop'); window.addEventListener('scroll', () => btn.classList.toggle('visible', window.scrollY > 200)); }
-    async function loadRelated(product) { /* same as original – omitted for brevity but keep identical */ }
-    function getStars(rating) { let r=parseFloat(rating)||4.5, s=''; for(let i=1;i<=5;i++) { if(r>=i) s+='<i class="fa-solid fa-star"></i>'; else if(r>i-1 && r<i) s+='<i class="fa-solid fa-star-half-alt"></i>'; else s+='<i class="fa-regular fa-star"></i>'; } return s; }
-    window.changeImage = function(src, el) { document.getElementById('mainImage').src = src; document.querySelectorAll('.thumbnail').forEach(t=>t.classList.remove('active')); el.classList.add('active'); };
-    window.updateQuantity = function(delta) { const input=document.getElementById('productQuantity'); let val=parseInt(input.value)||1; val+=delta; if(val<1)val=1; if(currentProduct && val>currentProduct.stock) val=currentProduct.stock; input.value=val; if(currentProduct) updateDeliveryBar(currentProduct.price*val); };
-    function updateDeliveryBar(total) { const progress=document.getElementById('deliveryProgress'); const text=document.getElementById('deliveryText'); if(!progress||!text)return; progress.style.width=Math.min(100,(total/1299)*100)+'%'; text.innerHTML= total>=1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299-total).toFixed(2)}</span> more for free delivery`; }
-    window.toggleShare = function(e) { e.stopPropagation(); const menu=document.getElementById('shareMenu'); menu.classList.toggle('show'); if(menu.classList.contains('show')) setTimeout(()=>document.addEventListener('click',closeShare),100); };
-    function closeShare(e) { const menu=document.getElementById('shareMenu'); const btn=document.querySelector('.share-btn'); if(menu && !menu.contains(e.target) && !btn.contains(e.target)) { menu.classList.remove('show'); document.removeEventListener('click',closeShare); } }
-    window.share = function(platform) { /* same */ const url=encodeURIComponent(window.location.href); const title=encodeURIComponent(currentProduct?.title||'Product'); let link=''; if(platform==='facebook') link=`https://facebook.com/sharer/sharer.php?u=${url}`; if(platform==='twitter') link=`https://twitter.com/intent/tweet?text=${title}&url=${url}`; if(platform==='whatsapp') link=`https://wa.me/?text=${title}%20${url}`; if(platform==='telegram') link=`https://t.me/share/url?url=${url}&text=${title}`; if(platform==='email') link=`mailto:?subject=${title}&body=${url}`; if(platform==='pinterest') link=`https://pinterest.com/pin/create/button/?url=${url}&description=${title}`; if(link) window.open(link,'_blank','width=600,height=400'); document.getElementById('shareMenu')?.classList.remove('show'); };
-    window.copyLink = function() { const input=document.getElementById('shareLink'); input.select(); navigator.clipboard.writeText(input.value).then(()=>{ const btn=document.querySelector('.copy-btn'); btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',2000); }); };
-    window.addToCart = function() { showNotification('Added to cart!'); const btn=event?.target?.closest('button'); if(btn&&btn.classList.contains('btn-secondary')){ btn.innerHTML='<i class="fa-solid fa-check"></i> Added!'; btn.style.background='#d4af37'; btn.style.color='#000'; setTimeout(()=>{ btn.innerHTML='<i class="fa-solid fa-cart-plus"></i> Add to Cart'; btn.style.background=''; btn.style.color=''; },1500); } };
-    window.buyNow = function() { addToCart(); setTimeout(()=>window.location.href='checkout.html',800); };
-    function showNotification(msg) { const existing=document.querySelector('.notification'); if(existing)existing.remove(); const notif=document.createElement('div'); notif.className='notification'; notif.innerHTML=`<i class="fa-solid fa-check-circle" style="color:#d4af37;"></i> ${msg}`; document.body.appendChild(notif); setTimeout(()=>notif.remove(),3000); }
-    window.switchTab = function(tab) { document.querySelectorAll('.tab-header').forEach(h=>h.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); document.querySelector(`.tab-header[onclick="switchTab('${tab}')"]`).classList.add('active'); document.getElementById(`tab-${tab}`).classList.add('active'); };
+    function getStars(rating) {
+      const r = parseFloat(rating) || 4.5;
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        if (r >= i) stars += '<i class="fa-solid fa-star"></i>';
+        else if (r > i-1 && r < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+        else stars += '<i class="fa-regular fa-star"></i>';
+      }
+      return stars;
+    }
 
-    // load header/footer exactly like sample (common functions)
-    async function loadCommonModals() { try { const res = await fetch('common.html'); const data = await res.text(); document.getElementById('common-modals').innerHTML = data; } catch (e) {} }
-    function loadComponents() { fetch('header.html').then(r=>r.text()).then(d=>document.getElementById('header').innerHTML=d).catch(()=>{}); fetch('footer.html').then(r=>r.text()).then(d=>document.getElementById('footer').innerHTML=d).catch(()=>{}); }
+    window.changeImage = function(src, el) {
+      document.getElementById('mainImage').src = src;
+      document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    };
 
-    document.addEventListener('DOMContentLoaded', () => { loadCommonModals(); loadComponents(); loadProduct(); });
-    window.addEventListener('scroll', ()=> { const btn=document.getElementById('scrollTop'); if(btn) btn.classList.toggle('visible', window.scrollY>200); });
+    window.updateQuantity = function(delta) {
+      const input = document.getElementById('productQuantity');
+      let val = parseInt(input.value) || 1;
+      val += delta;
+      if (val < 1) val = 1;
+      if (currentProduct && val > currentProduct.stock) val = currentProduct.stock;
+      input.value = val;
+    };
+
+    window.toggleShare = function(e) {
+      e.stopPropagation();
+      const menu = document.getElementById('shareMenu');
+      menu.classList.toggle('show');
+    };
+
+    window.share = function(platform) {
+      const url = encodeURIComponent(window.location.href);
+      const title = encodeURIComponent(currentProduct?.title || 'Product');
+      let link = '';
+      if (platform === 'facebook') link = `https://facebook.com/sharer/sharer.php?u=${url}`;
+      if (platform === 'twitter') link = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
+      if (platform === 'whatsapp') link = `https://wa.me/?text=${title}%20${url}`;
+      if (platform === 'telegram') link = `https://t.me/share/url?url=${url}&text=${title}`;
+      if (platform === 'email') link = `mailto:?subject=${title}&body=${url}`;
+      if (platform === 'pinterest') link = `https://pinterest.com/pin/create/button/?url=${url}&description=${title}`;
+      if (link) window.open(link, '_blank', 'width=600,height=400');
+    };
+
+    window.copyLink = function() {
+      const input = document.getElementById('shareLink');
+      input.select();
+      navigator.clipboard.writeText(input.value);
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    };
+
+    window.addToCart = function() {
+      showNotification('Added to cart');
+    };
+
+    window.buyNow = function() {
+      showNotification('Proceeding to checkout');
+      setTimeout(() => window.location.href = 'checkout.html', 800);
+    };
+
+    function showNotification(msg) {
+      const existing = document.querySelector('.notification');
+      if (existing) existing.remove();
+      const notif = document.createElement('div');
+      notif.className = 'notification';
+      notif.innerHTML = `<i class="fa-regular fa-circle-check" style="color:#d4af37;"></i> ${msg}`;
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 2000);
+    }
+
+    window.switchTab = function(tab) {
+      document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelector(`.tab-header[onclick="switchTab('${tab}')"]`).classList.add('active');
+      document.getElementById(`tab-${tab}`).classList.add('active');
+    };
+
+    function setupScrollTop() {
+      const btn = document.getElementById('scrollTop');
+      window.addEventListener('scroll', () => btn.classList.toggle('visible', window.scrollY > 200));
+    }
+
+    function loadComponents() {
+      fetch('header.html').then(r=>r.text()).then(d=>document.getElementById('header').innerHTML = d).catch(()=>{});
+      fetch('footer.html').then(r=>r.text()).then(d=>document.getElementById('footer').innerHTML = d).catch(()=>{});
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadComponents();
+      loadProduct();
+    });
   </script>
 </body>
 </html>
