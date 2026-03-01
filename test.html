@@ -18,7 +18,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
-  <!-- Common CSS -->
+  <!-- Common CSS (unchanged) -->
   <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
@@ -151,7 +151,7 @@
       .section-title { font-size: 1.8rem; }
     }
 
-    /* ===== PRODUCT GRID – same as before ===== */
+    /* ===== PRODUCT GRID ===== */
     .product-grid {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem;
       margin: 1.5rem 0 3rem;
@@ -243,7 +243,7 @@
       .slide-divider { width: 3px; height: auto; background: #000; }
     }
 
-    /* ===== NEW AUTO-SLIDING TRUST SECTION (replaces 3 reviews) ===== */
+    /* ===== REFINED TRUST CAROUSEL – BETTER HEADLINE ===== */
     .trust-carousel-section {
       margin: 5rem 0 4rem;
     }
@@ -251,10 +251,21 @@
       font-size: 2.2rem; font-weight: 700; margin-bottom: 2.5rem;
       font-family: 'Montserrat', sans-serif; text-transform: uppercase;
       line-height: 1.2;
+      text-align: center;
     }
     .trust-header span { 
       color: #d4af37; font-weight: 900; 
       border-bottom: 3px solid #000; padding-bottom: 0.2rem; 
+    }
+    /* new engaging sub-header */
+    .trust-sub {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #4a4a4a;
+      margin-top: -1.5rem;
+      margin-bottom: 2.5rem;
+      font-weight: 400;
+      letter-spacing: 0.3px;
     }
 
     /* single sliding frame */
@@ -354,6 +365,8 @@
       .trust-icon { width: 80px; height: 80px; font-size: 2.4rem; }
       .trust-slide h3 { font-size: 1.6rem; }
       .trust-slide p { font-size: 1rem; }
+      .trust-header { font-size: 1.8rem; }
+      .trust-sub { font-size: 1rem; }
     }
 
     /* ===== SCROLL TOP ===== */
@@ -442,9 +455,10 @@
       </div>
     </div>
 
-    <!-- TRUST & QUALITY AUTO-SLIDE SECTION (replaces 3 reviews) -->
+    <!-- TRUST & QUALITY AUTO-SLIDE – REFINED HEADLINE -->
     <div class="container trust-carousel-section">
-      <h2 class="trust-header"><span>trust & quality</span> — we deliver</h2>
+      <h2 class="trust-header"><span>built on trust,</span> delivered with care</h2>
+      <div class="trust-sub">every detail reflects our commitment to you</div>
       
       <div class="trust-frame">
         <div class="trust-slide-container">
