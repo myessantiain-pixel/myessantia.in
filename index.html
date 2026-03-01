@@ -53,128 +53,6 @@
       box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
     }
 
-    /* Add/update these styles in your CSS */
-.image-frame {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: 20px;
-  overflow: hidden;
-  margin-bottom: 1rem;
-  background-color: #f4f2ef;
-  transition: transform 0.3s ease;
-}
-
-.primary-img, .secondary-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.primary-img {
-  opacity: 1;
-  z-index: 2;
-}
-
-.secondary-img {
-  opacity: 0;
-  z-index: 1;
-}
-
-/* Hover effect handled by JavaScript but we keep this as fallback */
-.product-card:hover .primary-img {
-  opacity: 0;
-}
-
-.product-card:hover .secondary-img {
-  opacity: 1;
-}
-
-.product-card:hover .image-frame {
-  transform: scale(1.02);
-}
-
-/* Image actions stay visible */
-.image-actions {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  width: 100%;
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  padding: 0 8px;
-  z-index: 10;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.product-card:hover .image-actions {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-    .hero-buttons .btn {
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  transform: translateY(0) scale(1);
-  box-shadow: none;
-  border-color: #d4af37;
-}
-
-.hero-buttons .btn:not(:hover) {
-  transform: translateY(0) scale(1);
-  box-shadow: none;
-  border-color: #d4af37;
-}
-
-.hero-buttons .btn:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.5);
-  border-color: #d4af37;
-}
-
-.hero-buttons .btn:active {
-  transform: translateY(-1px) scale(1.02);
-  transition: all 0.1s ease;
-}
-
-.hero-buttons .btn-outline {
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  background: transparent;
-  color: #1a1714;
-  border-color: #1a1714;
-}
-
-.hero-buttons .btn-outline:not(:hover) {
-  background: transparent;
-  color: #1a1714;
-  border-color: #1a1714;
-  transform: translateY(0) scale(1);
-  box-shadow: none;
-}
-
-.hero-buttons .btn-outline:hover {
-  background: #d4af37;
-  color: #0c0c0c;
-  border-color: #d4af37;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.4);
-}
-
-.hero-buttons .btn-outline:active {
-  transform: translateY(-1px) scale(1.02);
-  transition: all 0.1s ease;
-}
-
     /* Active navigation styling */
     .nav-link.active {
       color: #d4af37 !important;
@@ -832,366 +710,177 @@
   <script src="common.js"></script>
 
 <script>
-// ========== HOME PAGE SPECIFIC FUNCTIONS ==========
-let scrollTimeout;
-let products = []; // Global products array
+    // ========== HOME PAGE SPECIFIC FUNCTIONS ==========
+    function renderProducts() {
+      const gridContainer = document.getElementById('product-grid-container');
+      if (!gridContainer) return;
 
-function renderProducts() {
-  const gridContainer = document.getElementById('product-grid-container');
-  if (!gridContainer) return;
+      // Use the global products array from common.js (loaded from Firebase)
+      const homeProducts = products.filter(p => p.showOnHome === true);
 
-  // Use the global products array from common.js (loaded from Firebase)
-  const homeProducts = products.filter(p => p.showOnHome === true);
-
-  if (homeProducts.length === 0) {
-    gridContainer.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
-        <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-        <h3>No products on homepage</h3>
-        <p>Check back later for new arrivals!</p>
-      </div>
-    `;
-    return;
-  }
-
-  let gridHtml = '';
-  homeProducts.forEach((product, index) => {
-    const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
-    const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
-    
-    gridHtml += `
-      <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}" style="animation-delay: ${index * 0.1}s">
-        <div class="image-frame">
-          <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-          <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
-          <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
-            <button class="img-add" onclick="window.addToCart('${product.id}'); event.preventDefault(); event.stopPropagation();">
-              <i class="fa-solid fa-cart-plus"></i> add
-            </button>
-            <button class="img-buy" onclick="window.buyNow('${product.id}'); event.preventDefault(); event.stopPropagation();">
-              <i class="fa-solid fa-bolt"></i> buy
-            </button>
+      if (homeProducts.length === 0) {
+        gridContainer.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
+            <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+            <h3>No products on homepage</h3>
+            <p>Check back later for new arrivals!</p>
           </div>
-        </div>
-        <h3 class="product-title">${product.title}</h3>
-        <p class="product-category">${product.category}</p>
-        <div class="product-rating">${renderRating(product.rating)}</div>
-        <div class="product-price">
-          <span class="inr-symbol">₹</span>${formatPrice(product.price)}
-        </div>
-        ${getStockStatus(product.stock)}
-      </a>
-    `;
-  });
-  
-  gridContainer.innerHTML = gridHtml;
-}
-
-function renderRating(rating) {
-  if (!rating) return '<span>No ratings</span>';
-  const fullStars = Math.floor(rating);
-  const halfStar = rating % 1 >= 0.5;
-  const emptyStars = 5 - Math.ceil(rating);
-  
-  let stars = '';
-  for (let i = 0; i < fullStars; i++) stars += '<i class="fa-solid fa-star"></i>';
-  if (halfStar) stars += '<i class="fa-solid fa-star-half-alt"></i>';
-  for (let i = 0; i < emptyStars; i++) stars += '<i class="fa-regular fa-star"></i>';
-  
-  return stars + `<span>(${rating.toFixed(1)})</span>`;
-}
-
-function formatPrice(price) {
-  return price ? price.toLocaleString('en-IN') : '0';
-}
-
-function getStockStatus(stock) {
-  if (stock > 10) return '<div class="stock-badge in-stock"><i class="fa-solid fa-check-circle"></i> In Stock</div>';
-  if (stock > 0) return '<div class="stock-badge low-stock"><i class="fa-solid fa-exclamation-circle"></i> Low Stock</div>';
-  return '<div class="stock-badge out-of-stock"><i class="fa-solid fa-times-circle"></i> Out of Stock</div>';
-}
-
-// Scroll to products function
-function scrollToProducts() {
-  const productsSection = document.getElementById('products-section');
-  if (productsSection) {
-    productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-}
-
-// Set active navigation
-function setActiveNav() {
-  // Set Home as active
-  const homeLinks = document.querySelectorAll('.nav-link[href="index.html"]');
-  homeLinks.forEach(link => {
-    link.classList.add('active');
-  });
-  
-  // Remove active from others
-  const otherLinks = document.querySelectorAll('.nav-link:not([href="index.html"])');
-  otherLinks.forEach(link => {
-    link.classList.remove('active');
-  });
-}
-
-// Scroll to top button visibility and button reset
-function handleScroll() {
-  const scrollTop = document.getElementById('scrollTop');
-  if (scrollTop) {
-    if (window.scrollY > 300) {
-      scrollTop.classList.add('visible');
-    } else {
-      scrollTop.classList.remove('visible');
-    }
-  }
-  
-  // Reset button states after scrolling
-  clearTimeout(scrollTimeout);
-  
-  // Add scrolling class to prevent animation sticking
-  const buttons = document.querySelectorAll('.hero-buttons .btn, .view-all-link');
-  buttons.forEach(button => {
-    button.classList.add('scrolling');
-    
-    // Force remove any hover styles
-    button.style.transform = '';
-    button.style.boxShadow = '';
-    button.style.backgroundColor = '';
-    button.style.color = '';
-  });
-  
-  scrollTimeout = setTimeout(() => {
-    buttons.forEach(button => {
-      button.classList.remove('scrolling');
-      // Force a reflow to ensure normal state
-      void button.offsetHeight;
-    });
-  }, 100);
-}
-
-// Parallax effect on scroll
-function handleParallax() {
-  const heroBg = document.querySelector('.hero-bg');
-  if (heroBg) {
-    const scrolled = window.scrollY;
-    heroBg.style.transform = `scale(1.1) translateY(${scrolled * 0.1}px)`;
-  }
-}
-
-// Add ripple effect to button
-function createRipple(event, button) {
-  const ripple = document.createElement('span');
-  ripple.classList.add('ripple');
-  
-  const rect = button.getBoundingClientRect();
-  const size = Math.max(rect.width, rect.height);
-  
-  ripple.style.width = ripple.style.height = `${size}px`;
-  ripple.style.left = `${event.clientX - rect.left - size/2}px`;
-  ripple.style.top = `${event.clientY - rect.top - size/2}px`;
-  
-  button.appendChild(ripple);
-  
-  setTimeout(() => {
-    ripple.remove();
-  }, 600);
-}
-
-// Update cart count (to be implemented based on your cart system)
-function updateCartCount() {
-  // Implement your cart count logic here
-  console.log('Cart count updated');
-}
-
-// Load common components (header, footer)
-async function loadComponents() {
-  try {
-    // Load header
-    const headerResponse = await fetch('header.html');
-    const headerData = await headerResponse.text();
-    document.getElementById('header').innerHTML = headerData;
-    
-    // Load footer
-    const footerResponse = await fetch('footer.html');
-    const footerData = await footerResponse.text();
-    document.getElementById('footer').innerHTML = footerData;
-    
-    // Set active nav after components are loaded
-    setTimeout(setActiveNav, 100);
-  } catch (error) {
-    console.error('Error loading components:', error);
-  }
-}
-
-// Load common modals
-async function loadCommonModals() {
-  try {
-    const response = await fetch('common.html');
-    const data = await response.text();
-    document.getElementById('common-modals').innerHTML = data;
-  } catch (error) {
-    console.error('Error loading common modals:', error);
-  }
-}
-
-// Initialize everything
-function initializeApp() {
-  // Products are already loaded from Firebase in common.js
-  renderProducts();
-  updateCartCount();
-  
-  // Set active navigation
-  setActiveNav();
-  
-  // Add click handler for start shopping button with ripple effect
-  const startShoppingBtn = document.getElementById('startShoppingBtn');
-  if (startShoppingBtn) {
-    // Remove any existing listeners
-    const newStartShoppingBtn = startShoppingBtn.cloneNode(true);
-    startShoppingBtn.parentNode.replaceChild(newStartShoppingBtn, startShoppingBtn);
-    
-    newStartShoppingBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      
-      // Add ripple effect
-      createRipple(e, newStartShoppingBtn);
-      
-      // Ensure button returns to normal after click
-      newStartShoppingBtn.style.transform = 'translateY(-1px) scale(1.02)';
-      
-      setTimeout(() => {
-        newStartShoppingBtn.style.transform = '';
-        newStartShoppingBtn.style.boxShadow = '';
-        scrollToProducts();
-      }, 150);
-      
-      setTimeout(() => {
-        newStartShoppingBtn.style.transition = '';
-      }, 300);
-    });
-  }
-  
-  // Add hover effect handlers for view all link
-  const viewAllLink = document.querySelector('.view-all-link');
-  if (viewAllLink) {
-    viewAllLink.addEventListener('mouseenter', () => {
-      if (!viewAllLink.classList.contains('scrolling')) {
-        viewAllLink.style.transform = 'translateX(8px)';
-        viewAllLink.style.color = '#d4af37';
+        `;
+        return;
       }
-    });
-    
-    viewAllLink.addEventListener('mouseleave', () => {
-      viewAllLink.style.transform = '';
-      viewAllLink.style.color = '';
-    });
-  }
-  
-  // Add scroll event listeners
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  window.addEventListener('scroll', handleParallax, { passive: true });
-  
-  // Animate value items on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '50px' });
 
-  document.querySelectorAll('.value-item').forEach(item => {
-    item.style.opacity = '0';
-    item.style.transform = 'translateY(20px)';
-    item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    observer.observe(item);
-  });
-  
-  // Add transition end handler for all buttons
-  const buttons = document.querySelectorAll('.hero-buttons .btn, .view-all-link');
-  buttons.forEach(button => {
-    button.addEventListener('transitionend', () => {
-      if (!button.matches(':hover') && !button.classList.contains('scrolling')) {
-        button.style.transform = '';
-        button.style.boxShadow = '';
-        button.style.backgroundColor = '';
-        button.style.color = '';
-      }
-    });
-    
-    // Ensure button resets on mouse leave
-    button.addEventListener('mouseleave', () => {
-      if (!button.classList.contains('scrolling')) {
-        button.style.transform = '';
-        button.style.boxShadow = '';
-        button.style.backgroundColor = '';
-        button.style.color = '';
-      }
-    });
-  });
-  
-  // Add scroll to top button click handler
-  const scrollTopBtn = document.getElementById('scrollTop');
-  if (scrollTopBtn) {
-    scrollTopBtn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+      let gridHtml = '';
+      homeProducts.forEach((product, index) => {
+        const mainImage = product.images && product.images[0] ? product.images[0] : (product.primaryImg || 'https://via.placeholder.com/300');
+        const secondImage = product.images && product.images[1] ? product.images[1] : (product.secondaryImg || mainImage);
+        
+        gridHtml += `
+          <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}" style="animation-delay: ${index * 0.1}s">
+            <div class="image-frame">
+              <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+              <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+              <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
+                <button class="img-add" onclick="window.addToCart('${product.id}'); event.preventDefault(); event.stopPropagation();">
+                  <i class="fa-solid fa-cart-plus"></i> add
+                </button>
+                <button class="img-buy" onclick="window.buyNow('${product.id}'); event.preventDefault(); event.stopPropagation();">
+                  <i class="fa-solid fa-bolt"></i> buy
+                </button>
+              </div>
+            </div>
+            <h3 class="product-title">${product.title}</h3>
+            <p class="product-category">${product.category}</p>
+            <div class="product-rating">${renderRating(product.rating)}</div>
+            <div class="product-price">
+              <span class="inr-symbol">₹</span>${formatPrice(product.price)}
+            </div>
+            ${getStockStatus(product.stock)}
+          </a>
+        `;
       });
-    });
-  }
-}
+      
+      gridContainer.innerHTML = gridHtml;
+    }
 
-// Document ready handler
-document.addEventListener('DOMContentLoaded', () => {
-  loadCommonModals();
-  loadComponents();
-  
-  // Initialize after a short delay to ensure components are loaded
-  setTimeout(initializeApp, 500);
-});
-
-// Window load handler for fallback
-window.addEventListener('load', () => {
-  // If products array is empty but we have cached products, use them as fallback
-  if (products.length === 0) {
-    const cachedProducts = localStorage.getItem('MyEssantia_products');
-    if (cachedProducts) {
-      try {
-        products = JSON.parse(cachedProducts);
-        renderProducts();
-      } catch (e) {
-        console.error('Error parsing cached products:', e);
+    // Scroll to products function
+    function scrollToProducts() {
+      const productsSection = document.getElementById('products-section');
+      if (productsSection) {
+        productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
-  }
-  
-  // Re-initialize to ensure everything is set up
-  setTimeout(() => {
-    setActiveNav();
-    initializeApp();
-  }, 200);
-});
 
-// Clean up event listeners on page unload
-window.addEventListener('beforeunload', () => {
-  window.removeEventListener('scroll', handleScroll);
-  window.removeEventListener('scroll', handleParallax);
-});
+    // Set active navigation
+    function setActiveNav() {
+      // Set Home as active
+      const homeLinks = document.querySelectorAll('.nav-link[href="index.html"]');
+      homeLinks.forEach(link => {
+        link.classList.add('active');
+      });
+      
+      // Remove active from others
+      const otherLinks = document.querySelectorAll('.nav-link:not([href="index.html"])');
+      otherLinks.forEach(link => {
+        link.classList.remove('active');
+      });
+    }
 
-// Export functions for global use
-window.addToCart = function(productId) {
-  console.log('Add to cart:', productId);
-  // Implement your add to cart logic here
-};
+    // Scroll to top button visibility
+    function handleScroll() {
+      const scrollTop = document.getElementById('scrollTop');
+      if (scrollTop) {
+        if (window.scrollY > 300) {
+          scrollTop.classList.add('visible');
+        } else {
+          scrollTop.classList.remove('visible');
+        }
+      }
+    }
 
-window.buyNow = function(productId) {
-  console.log('Buy now:', productId);
-  // Implement your buy now logic here
-};
+    // Parallax effect on scroll
+    function handleParallax() {
+      const heroBg = document.querySelector('.hero-bg');
+      if (heroBg) {
+        const scrolled = window.scrollY;
+        heroBg.style.transform = `scale(1.1) translateY(${scrolled * 0.1}px)`;
+      }
+    }
 
-window.scrollToProducts = scrollToProducts;
+    function initializeApp() {
+      // Products are already loaded from Firebase in common.js
+      renderProducts();
+      updateCartCount();
+      
+      // Set active navigation
+      setActiveNav();
+      
+      // Add scroll event listeners
+      window.addEventListener('scroll', handleScroll);
+      window.addEventListener('scroll', handleParallax);
+      
+      // Add click handler for start shopping button
+      const startShoppingBtn = document.getElementById('startShoppingBtn');
+      if (startShoppingBtn) {
+        startShoppingBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          scrollToProducts();
+        });
+      }
+
+      // Animate value items on scroll
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.value-item').forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+        item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(item);
+      });
+    }
+
+    // Load common modals
+    async function loadCommonModals() {
+      try {
+        const response = await fetch('common.html');
+        const data = await response.text();
+        document.getElementById('common-modals').innerHTML = data;
+      } catch (error) {
+        console.error('Error loading common modals:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCommonModals();
+      loadComponents();
+    });
+
+    // Add a fallback in case products haven't loaded yet
+    window.addEventListener('load', () => {
+      // If products array is empty but we have cached products, use them as fallback
+      if (products.length === 0) {
+        const cachedProducts = localStorage.getItem('MyEssantia_products');
+        if (cachedProducts) {
+          products = JSON.parse(cachedProducts);
+          renderProducts();
+        }
+      }
+      
+      // Set active nav again after components are loaded
+      setTimeout(setActiveNav, 500);
+    });
+
+    // Clean up event listeners on page unload
+    window.addEventListener('beforeunload', () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', handleParallax);
+    });
   </script>
 </body>
 </html>
