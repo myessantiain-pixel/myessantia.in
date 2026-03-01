@@ -11,7 +11,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -19,7 +19,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
   <style>
-    /* ========== RESET & BASE ========== */
+    /* ========== CLEAN MODERN DESIGN ========== */
     * {
       margin: 0;
       padding: 0;
@@ -29,13 +29,12 @@
     html, body {
       width: 100%;
       overflow-x: hidden;
-      position: relative;
+      background: #f8fafc;
     }
 
     body {
-      font-family: 'Montserrat', sans-serif;
-      background: #fcfaf7;
-      color: #000;
+      font-family: 'Inter', sans-serif;
+      color: #1e293b;
       line-height: 1.5;
     }
 
@@ -43,7 +42,7 @@
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 16px;
+      padding: 0 20px;
     }
 
     /* ========== BREADCRUMB ========== */
@@ -51,37 +50,35 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 6px;
-      padding: 16px 0;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #666;
-      text-transform: uppercase;
+      gap: 8px;
+      padding: 20px 0;
+      font-size: 0.85rem;
+      color: #64748b;
     }
 
     .breadcrumb a {
-      color: #000;
+      color: #1e293b;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .breadcrumb i {
-      font-size: 0.5rem;
-      color: #d4af37;
+      font-size: 0.7rem;
+      color: #94a3b8;
     }
 
     /* ========== MAIN GRID ========== */
     .product-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 24px;
-      padding-bottom: 40px;
+      gap: 32px;
+      padding-bottom: 60px;
     }
 
     @media (min-width: 1024px) {
       .product-grid {
         grid-template-columns: 1fr 1fr;
-        gap: 48px;
+        gap: 60px;
       }
     }
 
@@ -101,11 +98,12 @@
     .main-image {
       width: 100%;
       aspect-ratio: 1/1;
-      border-radius: 20px;
+      border-radius: 24px;
       overflow: hidden;
-      margin-bottom: 12px;
-      background: #f0f0f0;
-      border: 2px solid #000;
+      margin-bottom: 16px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .main-image img {
@@ -117,7 +115,7 @@
     .thumbnail-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      gap: 12px;
     }
 
     .thumbnail {
@@ -125,12 +123,13 @@
       border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
-      border: 2px solid #000;
-      background: #f0f0f0;
+      border: 2px solid transparent;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
     }
 
     .thumbnail.active {
-      border-color: #d4af37;
+      border-color: #2563eb;
     }
 
     .thumbnail img {
@@ -152,25 +151,27 @@
     }
 
     .review-mini-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 20px;
-      border: 2px solid #000;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
 
     .review-mini-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
-      font-weight: 800;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #1e293b;
     }
 
     .review-mini-item {
       display: flex;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #eee;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid #f1f5f9;
     }
 
     .review-mini-item:last-child {
@@ -178,15 +179,15 @@
     }
 
     .review-mini-avatar {
-      width: 40px;
-      height: 40px;
-      background: #d4af37;
+      width: 44px;
+      height: 44px;
+      background: #dbeafe;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      color: #000;
+      font-weight: 600;
+      color: #2563eb;
       flex-shrink: 0;
     }
 
@@ -195,42 +196,40 @@
       width: 100%;
     }
 
-    /* Social Badges - Fixed colors */
+    /* Social Badges */
     .social-strip {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 16px;
     }
 
     .sold-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: #dc2626;
-      color: white;
-      padding: 6px 14px;
-      border-radius: 40px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      border: 2px solid #000;
+      gap: 8px;
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
     }
 
     .live-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: #16a34a;
-      color: white;
-      padding: 6px 14px;
-      border-radius: 40px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      border: 2px solid #000;
+      gap: 8px;
+      background: #dcfce7;
+      color: #16a34a;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
     }
 
     .live-badge i {
-      font-size: 0.5rem;
+      font-size: 0.6rem;
       animation: blink 1.5s infinite;
     }
 
@@ -241,25 +240,25 @@
     }
 
     .product-category {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: #d4af37;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #2563eb;
       text-transform: uppercase;
-      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
     }
 
     .product-title {
-      font-size: 1.8rem;
-      font-weight: 800;
+      font-size: 2.2rem;
+      font-weight: 700;
       line-height: 1.2;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      word-break: break-word;
+      margin-bottom: 16px;
+      color: #0f172a;
     }
 
     @media (min-width: 768px) {
       .product-title {
-        font-size: 2.5rem;
+        font-size: 2.8rem;
       }
     }
 
@@ -268,15 +267,15 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 16px;
+      margin-bottom: 24px;
     }
 
     .stars {
       display: flex;
-      gap: 3px;
-      color: #d4af37;
-      font-size: 0.9rem;
+      gap: 4px;
+      color: #fbbf24;
+      font-size: 1rem;
     }
 
     /* Share Button */
@@ -286,34 +285,40 @@
     }
 
     .share-btn {
-      background: #000;
-      color: white;
-      border: 2px solid #d4af37;
-      padding: 8px 16px;
-      border-radius: 40px;
-      font-size: 0.75rem;
-      font-weight: 700;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e293b;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .share-btn:hover {
+      border-color: #2563eb;
+      background: #eff6ff;
     }
 
     .share-menu {
       position: absolute;
-      top: calc(100% + 8px);
+      top: calc(100% + 10px);
       right: 0;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-      padding: 16px;
-      width: 260px;
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 280px;
       z-index: 100;
       opacity: 0;
       visibility: hidden;
       transform: translateY(-10px);
       transition: all 0.3s ease;
-      border: 2px solid #000;
+      border: 1px solid #e2e8f0;
     }
 
     .share-menu.show {
@@ -326,7 +331,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .share-option {
@@ -334,84 +339,88 @@
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      padding: 8px;
-      border-radius: 8px;
-      background: #f5f5f5;
+      padding: 10px 4px;
+      border-radius: 12px;
+      background: #f8fafc;
       border: none;
-      font-size: 0.6rem;
-      font-weight: 600;
+      font-size: 0.7rem;
+      font-weight: 500;
       cursor: pointer;
     }
 
     .share-option i {
-      font-size: 1rem;
+      font-size: 1.1rem;
+      color: #2563eb;
     }
 
     .copy-link {
       display: flex;
-      gap: 4px;
+      gap: 8px;
     }
 
     .copy-link input {
       flex: 1;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 0.7rem;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 0.8rem;
     }
 
     .copy-btn {
-      padding: 8px 12px;
-      background: #d4af37;
+      padding: 10px 16px;
+      background: #2563eb;
+      color: white;
       border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.7rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.8rem;
       cursor: pointer;
     }
 
     /* Price Card */
     .price-card {
-      background: #000;
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 20px;
-      border: 2px solid #d4af37;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
 
     .price-header {
       display: flex;
       align-items: baseline;
-      gap: 12px;
+      gap: 16px;
       flex-wrap: wrap;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .current-price {
-      font-size: 2.5rem;
-      font-weight: 900;
-      color: white;
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #0f172a;
       line-height: 1;
     }
 
     .inr-symbol {
-      font-size: 1.8rem;
-      color: #d4af37;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #64748b;
     }
 
     .original-price {
-      font-size: 1.2rem;
-      color: #666;
+      font-size: 1.3rem;
+      color: #94a3b8;
       text-decoration: line-through;
     }
 
     .discount {
-      background: #d4af37;
-      color: #000;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-weight: 800;
-      font-size: 0.8rem;
+      background: #dcfce7;
+      color: #16a34a;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.9rem;
     }
 
     /* Price Options */
@@ -419,105 +428,103 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .price-option {
-      padding: 16px 8px;
+      padding: 16px;
       border-radius: 16px;
       text-align: center;
-      border: 2px solid;
+      border: 1px solid;
     }
 
     .price-option.prepaid {
-      background: #d4af37;
-      border-color: #fff;
+      background: #eff6ff;
+      border-color: #bfdbfe;
     }
 
     .price-option.cod {
-      background: #1a1a1a;
-      border-color: #d4af37;
-    }
-
-    .price-option.cod .option-price {
-      color: #d4af37;
+      background: #f8fafc;
+      border-color: #e2e8f0;
     }
 
     .option-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #64748b;
       text-transform: uppercase;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .price-option.prepaid .option-label {
-      color: #000;
+      color: #2563eb;
     }
 
     .option-price {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: white;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0f172a;
       line-height: 1.2;
     }
 
     .stock-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      background: #1a1a1a;
-      border-radius: 40px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: white;
-      border: 2px solid #d4af37;
+      gap: 8px;
+      padding: 8px 20px;
+      background: #f8fafc;
+      border-radius: 100px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e293b;
+      border: 1px solid #e2e8f0;
     }
 
     /* Money Back Promise */
     .promise-card {
-      background: #d4af37;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 20px;
+      background: #eff6ff;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 24px;
       display: flex;
       align-items: center;
       gap: 16px;
-      border: 2px solid #000;
+      border: 1px solid #bfdbfe;
     }
 
     .promise-icon {
-      width: 48px;
-      height: 48px;
-      background: #000;
+      width: 52px;
+      height: 52px;
+      background: #ffffff;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #d4af37;
+      color: #2563eb;
       font-size: 1.5rem;
       flex-shrink: 0;
+      border: 1px solid #bfdbfe;
     }
 
     .promise-content h4 {
-      font-size: 1rem;
-      font-weight: 800;
-      margin-bottom: 2px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #1e293b;
     }
 
     .promise-content p {
-      font-size: 0.8rem;
-      font-weight: 600;
+      font-size: 0.9rem;
+      color: #475569;
     }
 
     /* Delivery Card */
     .delivery-card {
-      background: #000;
+      background: #ffffff;
       border-radius: 20px;
       padding: 20px;
-      margin-bottom: 20px;
-      border: 2px solid #d4af37;
+      margin-bottom: 24px;
+      border: 1px solid #e2e8f0;
     }
 
     .delivery-header {
@@ -533,28 +540,26 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-weight: 800;
-      color: white;
-      font-size: 1rem;
+      font-weight: 600;
+      color: #1e293b;
     }
 
     .delivery-title i {
-      color: #d4af37;
+      color: #2563eb;
     }
 
     .delivery-min {
-      background: #1a1a1a;
+      background: #f8fafc;
       padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #d4af37;
-      border: 1px solid #d4af37;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #475569;
     }
 
     .progress-bar {
       height: 8px;
-      background: #333;
+      background: #f1f5f9;
       border-radius: 10px;
       overflow: hidden;
       margin: 12px 0;
@@ -562,7 +567,7 @@
 
     .progress-fill {
       height: 100%;
-      background: #d4af37;
+      background: #2563eb;
       width: 0%;
       transition: width 0.3s;
     }
@@ -571,68 +576,68 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: white;
-      font-size: 0.85rem;
-      font-weight: 600;
+      color: #1e293b;
+      font-size: 0.9rem;
+      font-weight: 500;
     }
 
     /* Features Grid */
     .features-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 24px;
     }
 
     .feature-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px;
-      background: #000;
-      border-radius: 12px;
-      border: 2px solid #d4af37;
+      gap: 12px;
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
     }
 
     .feature-icon {
-      width: 36px;
-      height: 36px;
-      background: #d4af37;
-      border-radius: 8px;
+      width: 40px;
+      height: 40px;
+      background: #ffffff;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #000;
-      flex-shrink: 0;
+      color: #2563eb;
+      border: 1px solid #e2e8f0;
     }
 
     .feature-text h4 {
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: white;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #1e293b;
       margin-bottom: 2px;
     }
 
     .feature-text p {
-      font-size: 0.65rem;
-      color: #999;
+      font-size: 0.75rem;
+      color: #64748b;
     }
 
     /* Quantity */
     .quantity-wrapper {
-      background: #000;
+      background: #ffffff;
       border-radius: 20px;
       padding: 20px;
-      margin-bottom: 20px;
-      border: 2px solid #d4af37;
+      margin-bottom: 24px;
+      border: 1px solid #e2e8f0;
     }
 
     .quantity-label {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-weight: 800;
-      color: white;
+      font-weight: 600;
+      color: #1e293b;
       margin-bottom: 16px;
     }
 
@@ -645,12 +650,12 @@
     .qty-btn {
       width: 44px;
       height: 44px;
-      border: 2px solid #d4af37;
-      background: #1a1a1a;
-      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      border-radius: 12px;
       font-size: 1.3rem;
-      font-weight: 800;
-      color: white;
+      font-weight: 600;
+      color: #1e293b;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -665,12 +670,12 @@
     .qty-input {
       width: 70px;
       height: 44px;
-      border: 2px solid #d4af37;
-      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
       text-align: center;
       font-size: 1.1rem;
-      font-weight: 800;
-      background: white;
+      font-weight: 600;
+      background: #ffffff;
     }
 
     /* Action Buttons */
@@ -678,7 +683,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
     }
 
     @media (min-width: 480px) {
@@ -691,43 +696,51 @@
       flex: 1;
       padding: 16px;
       border: none;
-      border-radius: 40px;
-      font-weight: 800;
-      font-size: 0.9rem;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 1rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      text-transform: uppercase;
-      border: 2px solid #000;
+      transition: all 0.2s;
     }
 
     .btn-primary {
-      background: #d4af37;
-      color: #000;
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
     }
 
     .btn-secondary {
-      background: #000;
-      color: white;
-      border-color: #d4af37;
+      background: #ffffff;
+      color: #1e293b;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: #f8fafc;
     }
 
     /* Tabs */
     .tabs {
-      background: #000;
+      background: #ffffff;
       border-radius: 20px;
-      padding: 20px;
+      padding: 24px;
       margin-bottom: 24px;
-      border: 2px solid #d4af37;
+      border: 1px solid #e2e8f0;
     }
 
     .tab-headers {
       display: flex;
-      gap: 16px;
-      border-bottom: 2px solid #333;
-      margin-bottom: 16px;
+      gap: 24px;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 20px;
       overflow-x: auto;
       scrollbar-width: none;
     }
@@ -737,25 +750,25 @@
     }
 
     .tab-header {
-      padding: 8px 0;
+      padding: 12px 0;
       cursor: pointer;
-      font-weight: 700;
-      color: #666;
-      font-size: 0.8rem;
+      font-weight: 600;
+      color: #94a3b8;
+      font-size: 0.95rem;
       white-space: nowrap;
-      text-transform: uppercase;
+      border-bottom: 2px solid transparent;
     }
 
     .tab-header.active {
-      color: #d4af37;
-      border-bottom: 2px solid #d4af37;
+      color: #2563eb;
+      border-bottom-color: #2563eb;
     }
 
     .tab-content {
       display: none;
-      color: white;
-      font-size: 0.85rem;
-      line-height: 1.6;
+      color: #475569;
+      font-size: 0.95rem;
+      line-height: 1.7;
     }
 
     .tab-content.active {
@@ -775,21 +788,20 @@
     }
 
     .spec-item {
-      padding: 12px;
-      background: #1a1a1a;
-      border-radius: 10px;
-      border: 1px solid #d4af37;
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: 12px;
     }
 
     .spec-label {
-      font-size: 0.7rem;
-      color: #999;
+      font-size: 0.8rem;
+      color: #64748b;
       margin-bottom: 4px;
     }
 
     .spec-value {
-      font-weight: 800;
-      color: white;
+      font-weight: 700;
+      color: #1e293b;
     }
 
     .video-grid {
@@ -809,7 +821,7 @@
       border-radius: 12px;
       overflow: hidden;
       position: relative;
-      border: 2px solid #d4af37;
+      border: 1px solid #e2e8f0;
     }
 
     .video-item img {
@@ -823,23 +835,23 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 40px;
-      height: 40px;
-      background: #d4af37;
+      width: 44px;
+      height: 44px;
+      background: #ffffff;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #000;
-      border: 2px solid #000;
+      color: #2563eb;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
     }
 
     /* Mobile Reviews */
     .mobile-reviews {
-      background: #000;
+      background: #ffffff;
       border-radius: 20px;
-      padding: 20px;
-      border: 2px solid #d4af37;
+      padding: 24px;
+      border: 1px solid #e2e8f0;
     }
 
     @media (min-width: 1024px) {
@@ -852,9 +864,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
-      color: white;
-      font-weight: 800;
+      margin-bottom: 20px;
+      font-weight: 700;
+      color: #1e293b;
     }
 
     .reviews-grid {
@@ -863,70 +875,69 @@
     }
 
     .review-card {
-      padding: 16px;
-      background: #1a1a1a;
-      border-radius: 12px;
-      border: 1px solid #d4af37;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: 16px;
     }
 
     .reviewer {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
 
     .reviewer-avatar {
-      width: 40px;
-      height: 40px;
-      background: #d4af37;
+      width: 44px;
+      height: 44px;
+      background: #dbeafe;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      color: #000;
+      font-weight: 600;
+      color: #2563eb;
     }
 
     .reviewer-info h5 {
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1e293b;
     }
 
     .reviewer-info span {
-      font-size: 0.7rem;
-      color: #999;
+      font-size: 0.8rem;
+      color: #64748b;
     }
 
     .review-rating {
-      color: #d4af37;
-      margin-bottom: 6px;
+      color: #fbbf24;
+      margin-bottom: 8px;
     }
 
     .review-text {
-      color: #ccc;
-      font-size: 0.8rem;
-      margin-bottom: 8px;
+      color: #475569;
+      font-size: 0.9rem;
+      line-height: 1.6;
     }
 
     /* Related Products */
     .related {
-      margin-top: 40px;
-      padding-top: 20px;
+      margin-top: 48px;
+      padding-top: 32px;
     }
 
     .related-title {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 20px;
-      text-transform: uppercase;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #0f172a;
     }
 
     .related-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      gap: 16px;
     }
 
     @media (min-width: 640px) {
@@ -938,18 +949,24 @@
     .related-card {
       text-decoration: none;
       color: inherit;
-      background: #000;
-      border-radius: 16px;
-      padding: 12px;
-      border: 2px solid #d4af37;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 16px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s;
+    }
+
+    .related-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
     }
 
     .related-image {
       aspect-ratio: 1/1;
-      border-radius: 12px;
+      border-radius: 16px;
       overflow: hidden;
-      margin-bottom: 8px;
-      background: #333;
+      margin-bottom: 12px;
+      background: #f8fafc;
     }
 
     .related-image img {
@@ -959,50 +976,50 @@
     }
 
     .related-name {
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: white;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #1e293b;
       margin-bottom: 4px;
     }
 
     .related-price {
-      font-weight: 800;
-      color: #d4af37;
-      font-size: 1rem;
-      margin-bottom: 8px;
+      font-weight: 700;
+      color: #2563eb;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
     }
 
     .related-add {
-      padding: 8px;
-      background: #1a1a1a;
-      border-radius: 20px;
+      padding: 10px;
+      background: #f8fafc;
+      border-radius: 100px;
       text-align: center;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: #d4af37;
-      border: 1px solid #d4af37;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #1e293b;
+      border: 1px solid #e2e8f0;
     }
 
     /* Notification */
     .notification {
       position: fixed;
-      top: 16px;
-      left: 16px;
-      right: 16px;
+      top: 20px;
+      left: 20px;
+      right: 20px;
       max-width: 360px;
       margin: 0 auto;
-      background: #000;
-      color: white;
-      padding: 14px 20px;
-      border-radius: 40px;
+      background: #ffffff;
+      color: #1e293b;
+      padding: 16px 20px;
+      border-radius: 100px;
       display: flex;
       align-items: center;
       gap: 12px;
-      font-weight: 700;
+      font-weight: 600;
       z-index: 1000;
       animation: slideDown 0.3s ease;
-      border: 2px solid #d4af37;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
     }
 
     @keyframes slideDown {
@@ -1014,29 +1031,30 @@
     .scroll-top {
       position: fixed;
       bottom: 20px;
-      right: 16px;
-      width: 44px;
-      height: 44px;
-      background: #000;
-      color: #d4af37;
+      right: 20px;
+      width: 48px;
+      height: 48px;
+      background: #ffffff;
+      color: #2563eb;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid #d4af37;
+      border: 1px solid #e2e8f0;
       cursor: pointer;
       opacity: 0;
       transition: opacity 0.3s;
       z-index: 90;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
     }
 
     .scroll-top.visible {
       opacity: 1;
     }
 
-    /* Helper */
-    .text-gold {
-      color: #d4af37;
+    /* Utility */
+    .text-blue {
+      color: #2563eb;
     }
   </style>
 </head>
@@ -1048,11 +1066,11 @@
   <main>
     <div class="container">
       <div class="breadcrumb">
-        <a href="index.html">HOME</a>
+        <a href="index.html">Home</a>
         <i class="fa-solid fa-chevron-right"></i>
-        <a href="collection.html">COLLECTION</a>
+        <a href="collection.html">Collection</a>
         <i class="fa-solid fa-chevron-right"></i>
-        <span id="breadcrumb-product">LOADING...</span>
+        <span id="breadcrumb-product">Loading...</span>
       </div>
     </div>
 
@@ -1089,17 +1107,17 @@
 
     function generateReviews() {
       const users = [
-        { name: 'PRIYA SHARMA', city: 'MUMBAI', avatar: 'PS' },
-        { name: 'RAHUL VERMA', city: 'DELHI', avatar: 'RV' },
-        { name: 'ANANYA PATEL', city: 'BANGALORE', avatar: 'AP' },
-        { name: 'KARTHIK IYER', city: 'CHENNAI', avatar: 'KI' }
+        { name: 'Priya Sharma', city: 'Mumbai', avatar: 'PS' },
+        { name: 'Rahul Verma', city: 'Delhi', avatar: 'RV' },
+        { name: 'Ananya Patel', city: 'Bangalore', avatar: 'AP' },
+        { name: 'Karthik Iyer', city: 'Chennai', avatar: 'KI' }
       ];
       
       const comments = [
-        "Absolutely love this! Quality is amazing.",
-        "Perfect product, exceeded expectations.",
-        "Great quality and beautiful design.",
-        "Excellent value for money."
+        "Absolutely love this! Quality is amazing and delivery was super fast.",
+        "Perfect product, exceeded my expectations. Worth every penny!",
+        "Great quality and beautiful design. Highly recommend!",
+        "Excellent value for money. Will buy again."
       ];
       
       return users.map((user, i) => ({
@@ -1124,7 +1142,7 @@
         if (!doc.exists) return showNotFound();
 
         currentProduct = { id: doc.id, ...doc.data() };
-        document.getElementById('breadcrumb-product').textContent = currentProduct.title.toUpperCase();
+        document.getElementById('breadcrumb-product').textContent = currentProduct.title;
         renderProduct(currentProduct);
         loadRelated(currentProduct);
       } catch (error) {
@@ -1135,10 +1153,10 @@
 
     function showNotFound() {
       document.getElementById('product-container').innerHTML = `
-        <div style="text-align: center; padding: 40px 20px; background: #000; border-radius: 20px; border: 2px solid #d4af37;">
-          <i class="fa-solid fa-box-open" style="font-size: 48px; color: #d4af37;"></i>
-          <h2 style="font-size: 1.5rem; margin: 16px 0; color: white;">PRODUCT NOT FOUND</h2>
-          <a href="collection.html" style="display: inline-block; padding: 12px 30px; background: #d4af37; color: #000; text-decoration: none; border-radius: 40px; font-weight: 700;">BROWSE</a>
+        <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 24px; border: 1px solid #e2e8f0;">
+          <i class="fa-solid fa-box-open" style="font-size: 48px; color: #2563eb;"></i>
+          <h2 style="font-size: 1.8rem; margin: 16px 0; color: #1e293b;">Product Not Found</h2>
+          <a href="collection.html" style="display: inline-block; padding: 12px 32px; background: #2563eb; color: white; text-decoration: none; border-radius: 100px; font-weight: 600;">Browse Collection</a>
         </div>
       `;
     }
@@ -1146,7 +1164,7 @@
     function renderProduct(product) {
       const images = [];
       if (product.media?.images) images.push(...product.media.images.map(i => i.url));
-      if (images.length === 0) images.push(product.primaryImg || 'https://via.placeholder.com/600');
+      if (images.length === 0) images.push(product.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600');
 
       const stock = product.stock || 10;
       const originalPrice = Math.round(product.price * 1.25);
@@ -1178,55 +1196,55 @@
             <div class="desktop-reviews">
               <div class="review-mini-card">
                 <div class="review-mini-header">
-                  <span>REAL REVIEWS</span>
-                  <span class="text-gold">★ ${(product.rating || 4.5).toFixed(1)}</span>
+                  <span>Customer Reviews</span>
+                  <span style="color:#2563eb; font-weight:700;">★ ${(product.rating || 4.5).toFixed(1)}</span>
                 </div>
                 ${reviews.slice(0, 3).map(r => `
                   <div class="review-mini-item">
                     <div class="review-mini-avatar">${r.avatar}</div>
                     <div style="flex:1">
-                      <div style="font-weight:800; font-size:0.8rem;">${r.name}</div>
-                      <div style="color:#d4af37; font-size:0.7rem; margin:2px 0;">${'★'.repeat(Math.floor(r.rating))}</div>
-                      <div style="font-size:0.75rem; color:#666;">"${r.comment.substring(0,40)}..."</div>
+                      <div style="font-weight:700; font-size:0.9rem;">${r.name}</div>
+                      <div style="color:#fbbf24; font-size:0.8rem; margin:2px 0;">${'★'.repeat(Math.floor(r.rating))}</div>
+                      <div style="font-size:0.8rem; color:#64748b;">"${r.comment.substring(0,50)}..."</div>
                     </div>
                   </div>
                 `).join('')}
-                <div style="text-align:center; margin-top:12px; font-weight:700; color:#d4af37;">VIEW ALL 128 →</div>
+                <div style="text-align:center; margin-top:16px; font-weight:600; color:#2563eb;">View all 128 reviews →</div>
               </div>
             </div>
           </div>
 
           <!-- Product Info -->
           <div class="product-info">
-            <!-- Social Badges - RED & GREEN -->
+            <!-- Social Badges -->
             <div class="social-strip">
-              <span class="sold-badge"><i class="fa-solid fa-fire"></i> ${soldCount}+ SOLD</span>
-              <span class="live-badge"><i class="fa-solid fa-circle"></i> ${liveViewers} VIEWING</span>
+              <span class="sold-badge"><i class="fa-solid fa-fire"></i> ${soldCount}+ sold</span>
+              <span class="live-badge"><i class="fa-solid fa-circle"></i> ${liveViewers} viewing now</span>
             </div>
 
-            <div class="product-category">${product.category?.toUpperCase() || 'ACCESSORIES'}</div>
+            <div class="product-category">${product.category || 'Accessories'}</div>
             <h1 class="product-title">${product.title}</h1>
 
             <!-- Rating & Share -->
             <div class="rating-row">
               <div class="stars">${getStars(product.rating)}</div>
-              <span style="font-weight:700;">${(product.rating || 4.5).toFixed(1)}</span>
-              <span style="color:#666;">(128)</span>
+              <span style="font-weight:600;">${(product.rating || 4.5).toFixed(1)}</span>
+              <span style="color:#64748b;">(128 reviews)</span>
               
               <div class="share-wrapper">
-                <button class="share-btn" onclick="toggleShare(event)"><i class="fa-solid fa-share-alt"></i> SHARE</button>
+                <button class="share-btn" onclick="toggleShare(event)"><i class="fa-solid fa-share-alt"></i> Share</button>
                 <div class="share-menu" id="shareMenu">
                   <div class="share-grid">
                     <button class="share-option" onclick="share('facebook')"><i class="fa-brands fa-facebook-f"></i>FB</button>
                     <button class="share-option" onclick="share('twitter')"><i class="fa-brands fa-x-twitter"></i>TW</button>
                     <button class="share-option" onclick="share('whatsapp')"><i class="fa-brands fa-whatsapp"></i>WA</button>
                     <button class="share-option" onclick="share('telegram')"><i class="fa-brands fa-telegram"></i>TG</button>
-                    <button class="share-option" onclick="share('email')"><i class="fa-regular fa-envelope"></i>MAIL</button>
-                    <button class="share-option" onclick="share('pinterest')"><i class="fa-brands fa-pinterest"></i>PIN</button>
+                    <button class="share-option" onclick="share('email')"><i class="fa-regular fa-envelope"></i>Mail</button>
+                    <button class="share-option" onclick="share('pinterest')"><i class="fa-brands fa-pinterest"></i>Pin</button>
                   </div>
                   <div class="copy-link">
                     <input type="text" id="shareLink" value="${window.location.href}" readonly>
-                    <button class="copy-btn" onclick="copyLink()">COPY</button>
+                    <button class="copy-btn" onclick="copyLink()">Copy</button>
                   </div>
                 </div>
               </div>
@@ -1242,20 +1260,20 @@
               
               <div class="price-options">
                 <div class="price-option prepaid">
-                  <div class="option-label">PREPAID</div>
+                  <div class="option-label">Prepaid</div>
                   <div class="option-price">₹${prepaidPrice}</div>
-                  <div style="font-size:0.6rem; font-weight:700; color:#000;">SAVE ₹${product.price - prepaidPrice}</div>
+                  <div style="font-size:0.75rem; color:#2563eb;">Save ₹${product.price - prepaidPrice}</div>
                 </div>
                 <div class="price-option cod">
-                  <div class="option-label">CASH ON DELIVERY</div>
+                  <div class="option-label">Cash on Delivery</div>
                   <div class="option-price">₹${codPrice}</div>
-                  <div style="font-size:0.6rem; color:#999;">+₹${codPrice - product.price} FEE</div>
+                  <div style="font-size:0.75rem; color:#94a3b8;">+₹${codPrice - product.price} fee</div>
                 </div>
               </div>
 
               <span class="stock-badge">
-                <i class="fa-solid ${stock > 10 ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
-                ${stock > 10 ? 'IN STOCK' : `ONLY ${stock} LEFT`}
+                <i class="fa-solid ${stock > 10 ? 'fa-check-circle text-blue' : 'fa-exclamation-circle'}" style="color:${stock > 10 ? '#2563eb' : '#f59e0b'};"></i>
+                ${stock > 10 ? 'In Stock' : `Only ${stock} left`}
               </span>
             </div>
 
@@ -1263,24 +1281,24 @@
             <div class="promise-card">
               <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
               <div class="promise-content">
-                <h4>RAZORPAY MONEY BACK</h4>
-                <p><span style="background:#000; color:#d4af37; padding:2px 6px;">100% REFUND</span> ON DEFECTS</p>
+                <h4>Razorpay Money Back Promise</h4>
+                <p><span style="font-weight:700;">100% refund</span> on non-delivery or defects</p>
               </div>
             </div>
 
             <!-- Delivery -->
             <div class="delivery-card" id="deliveryCard">
               <div class="delivery-header">
-                <span class="delivery-title"><i class="fa-solid fa-truck"></i> FREE DELIVERY</span>
-                <span class="delivery-min">MIN ₹1,299</span>
+                <span class="delivery-title"><i class="fa-solid fa-truck"></i> Free Delivery</span>
+                <span class="delivery-min">Min. ₹1,299</span>
               </div>
               <div class="progress-bar">
                 <div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div>
               </div>
               <div class="delivery-message" id="deliveryMessage">
-                <i class="fa-solid ${product.price >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}"></i>
+                <i class="fa-solid ${product.price >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:${product.price >= 1299 ? '#16a34a' : '#2563eb'};"></i>
                 <span id="deliveryText">
-                  ${product.price >= 1299 ? 'FREE DELIVERY!' : `ADD <span style="color:#d4af37;">₹${(1299 - product.price).toFixed(2)}</span> MORE`}
+                  ${product.price >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:700; color:#2563eb;">₹${(1299 - product.price).toFixed(2)}</span> more for free delivery`}
                 </span>
               </div>
             </div>
@@ -1289,17 +1307,17 @@
             <div class="features-grid">
               <div class="feature-item">
                 <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
-                <div><h4>FREE SHIPPING</h4><p>ABOVE ₹1,299</p></div>
+                <div><h4>Free Shipping</h4><p>Above ₹1,299</p></div>
               </div>
               <div class="feature-item">
                 <div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div>
-                <div><h4>EASY RETURNS</h4><p>48 HOURS</p></div>
+                <div><h4>Easy Returns</h4><p>48 hours</p></div>
               </div>
             </div>
 
             <!-- Quantity -->
             <div class="quantity-wrapper">
-              <div class="quantity-label"><i class="fa-solid fa-cubes"></i> QUANTITY</div>
+              <div class="quantity-label"><i class="fa-solid fa-cubes" style="color:#2563eb;"></i> Quantity</div>
               <div class="quantity-controls">
                 <button class="qty-btn" onclick="updateQuantity(-1)" ${stock === 0 ? 'disabled' : ''}>−</button>
                 <input type="text" class="qty-input" id="productQuantity" value="1" readonly>
@@ -1310,33 +1328,33 @@
             <!-- Buttons -->
             <div class="action-buttons">
               <button class="btn btn-secondary" onclick="addToCart()" ${stock === 0 ? 'disabled' : ''}>
-                <i class="fa-solid fa-cart-plus"></i> ADD TO CART
+                <i class="fa-solid fa-cart-plus"></i> Add to Cart
               </button>
               <button class="btn btn-primary" onclick="buyNow()" ${stock === 0 ? 'disabled' : ''}>
-                <i class="fa-solid fa-bolt"></i> BUY NOW
+                <i class="fa-solid fa-bolt"></i> Buy Now
               </button>
             </div>
 
             <!-- Tabs -->
             <div class="tabs">
               <div class="tab-headers">
-                <div class="tab-header active" onclick="switchTab('desc')">DESCRIPTION</div>
-                <div class="tab-header" onclick="switchTab('specs')">SPECS</div>
-                <div class="tab-header" onclick="switchTab('videos')">VIDEOS</div>
+                <div class="tab-header active" onclick="switchTab('desc')">Description</div>
+                <div class="tab-header" onclick="switchTab('specs')">Specs</div>
+                <div class="tab-header" onclick="switchTab('videos')">Videos</div>
               </div>
               <div class="tab-content active" id="tab-desc">
                 <p>${product.description || product.shortDesc || 'Premium quality product from MyEssantia.'}</p>
               </div>
               <div class="tab-content" id="tab-specs">
                 <div class="specs-grid">
-                  <div class="spec-item"><div class="spec-label">MATERIAL</div><div class="spec-value">PREMIUM</div></div>
-                  <div class="spec-item"><div class="spec-label">BRAND</div><div class="spec-value">${product.brand?.toUpperCase() || 'MYESSANTIA'}</div></div>
+                  <div class="spec-item"><div class="spec-label">Material</div><div class="spec-value">Premium Quality</div></div>
+                  <div class="spec-item"><div class="spec-label">Brand</div><div class="spec-value">${product.brand || 'MyEssantia'}</div></div>
                 </div>
               </div>
               <div class="tab-content" id="tab-videos">
                 <div class="video-grid">
-                  <div class="video-item"><img src="https://via.placeholder.com/400"><i class="fa-solid fa-play"></i><span style="position:absolute; bottom:5px; right:5px; background:#000; color:#d4af37; padding:2px 6px; border-radius:10px; font-size:0.6rem;">2:34</span></div>
-                  <div class="video-item"><img src="https://via.placeholder.com/400"><i class="fa-solid fa-play"></i><span style="position:absolute; bottom:5px; right:5px; background:#000; color:#d4af37; padding:2px 6px; border-radius:10px; font-size:0.6rem;">1:47</span></div>
+                  <div class="video-item"><img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400"><i class="fa-solid fa-play"></i></div>
+                  <div class="video-item"><img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400"><i class="fa-solid fa-play"></i></div>
                 </div>
               </div>
             </div>
@@ -1344,8 +1362,8 @@
             <!-- Mobile Reviews -->
             <div class="mobile-reviews">
               <div class="reviews-header">
-                <span>CUSTOMER REVIEWS</span>
-                <span class="text-gold">★ ${(product.rating || 4.5).toFixed(1)}</span>
+                <span>Customer Reviews</span>
+                <span style="color:#2563eb;">★ ${(product.rating || 4.5).toFixed(1)}</span>
               </div>
               <div class="reviews-grid">
                 ${reviews.slice(0, 3).map(r => `
@@ -1354,7 +1372,7 @@
                       <div class="reviewer-avatar">${r.avatar}</div>
                       <div class="reviewer-info">
                         <h5>${r.name}</h5>
-                        <span>${r.city} · ${r.time}H AGO</span>
+                        <span>${r.city} · ${r.time}h ago</span>
                       </div>
                     </div>
                     <div class="review-rating">${'★'.repeat(Math.floor(r.rating))}</div>
@@ -1362,7 +1380,7 @@
                   </div>
                 `).join('')}
               </div>
-              <div style="text-align:center; margin-top:12px; font-weight:700; color:#d4af37;">VIEW ALL 128 →</div>
+              <div style="text-align:center; margin-top:16px; font-weight:600; color:#2563eb;">View all 128 reviews →</div>
             </div>
           </div>
         </div>
@@ -1395,16 +1413,16 @@
 
         const html = `
           <div class="related">
-            <h2 class="related-title">YOU MAY ALSO LIKE</h2>
+            <h2 class="related-title">You May Also Like</h2>
             <div class="related-grid">
               ${related.map(p => {
-                const img = p.media?.images?.[0]?.url || p.primaryImg || 'https://via.placeholder.com/200';
+                const img = p.media?.images?.[0]?.url || p.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200';
                 return `
                   <a href="product.html?id=${p.id}" class="related-card">
                     <div class="related-image"><img src="${img}" alt=""></div>
-                    <div class="related-name">${p.title.substring(0, 20)}</div>
+                    <div class="related-name">${p.title.substring(0, 25)}</div>
                     <div class="related-price">₹${p.price.toFixed(2)}</div>
-                    <div class="related-add">QUICK ADD</div>
+                    <div class="related-add">Quick Add</div>
                   </a>
                 `;
               }).join('')}
@@ -1448,7 +1466,7 @@
       const text = document.getElementById('deliveryText');
       if (!progress || !text) return;
       progress.style.width = Math.min(100, (total / 1299) * 100) + '%';
-      text.innerHTML = total >= 1299 ? 'FREE DELIVERY!' : `ADD <span style="color:#d4af37;">₹${(1299 - total).toFixed(2)}</span> MORE`;
+      text.innerHTML = total >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:700; color:#2563eb;">₹${(1299 - total).toFixed(2)}</span> more for free delivery`;
     }
 
     // Share Functions
@@ -1489,21 +1507,21 @@
       input.select();
       navigator.clipboard.writeText(input.value).then(() => {
         const btn = document.querySelector('.copy-btn');
-        btn.textContent = 'COPIED!';
-        setTimeout(() => btn.textContent = 'COPY', 2000);
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
       });
     };
 
     // Cart
     window.addToCart = function() {
-      showNotification('PRODUCT ADDED TO CART!');
+      showNotification('Added to cart!');
       const btn = event?.target?.closest('button');
       if (btn && btn.classList.contains('btn-secondary')) {
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> ADDED!';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Added!';
         btn.style.background = '#16a34a';
         btn.style.color = 'white';
         setTimeout(() => {
-          btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> ADD TO CART';
+          btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> Add to Cart';
           btn.style.background = '';
           btn.style.color = '';
         }, 1500);
