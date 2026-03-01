@@ -8,10 +8,10 @@
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
-  <!-- Premium Fonts (Montserrat + Inter) -->
+  <!-- Simple fonts: Inter only (clean, modern) – removed Montserrat for simplicity -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Montserrat:wght@300..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet">
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -24,11 +24,11 @@
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* ========== ADDITIONAL PRODUCT PAGE STYLES – BLACK/GOLD WITH RED/GREEN BADGES ========== */
+    /* ========== ADDITIONAL PRODUCT PAGE STYLES – SIMPLER FONTS, REFINED PRICE AREA ========== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; overflow-x: hidden; background: #ffffff; scroll-behavior: smooth; }
     body {
-      font-family: 'Inter', 'Montserrat', sans-serif;
+      font-family: 'Inter', sans-serif; /* only Inter – clean */
       color: #1e1e1e;
       line-height: 1.5;
     }
@@ -43,7 +43,7 @@
     }
     @keyframes slideIn { from { width: 0; opacity: 0; } to { width: 100%; opacity: 1; } }
 
-    /* ========== BREADCRUMB – refined ========== */
+    /* ========== BREADCRUMB ========== */
     .breadcrumb {
       display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
       padding: 20px 0; font-size: 0.85rem; color: #4a4a4a;
@@ -69,7 +69,7 @@
       transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
     }
     .main-image:hover { transform: scale(1.01) translate(-2px, -2px); box-shadow: 12px 12px 0 rgba(212,175,55,0.3); }
-    .main-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1); }
+    .main-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
     .main-image:hover img { transform: scale(1.05); }
     .thumbnail-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
@@ -83,7 +83,7 @@
     .thumbnail.active { border-color: #d4af37; border-width: 3px; box-shadow: 0 0 0 2px rgba(212,175,55,0.3); }
     .thumbnail img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* desktop reviews card – gold accent */
+    /* desktop reviews card */
     .desktop-reviews { display: none; margin-top: 24px; }
     @media (min-width: 1024px) { .desktop-reviews { display: block; } }
     .review-mini-card {
@@ -96,24 +96,21 @@
       display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
       font-weight: 700; color: #1e1e1e; text-transform: uppercase;
     }
-    .review-mini-header span:first-child { font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px; }
     .review-mini-header span:last-child { color: #d4af37; background: #000; padding: 4px 12px; border-radius: 40px; font-size:0.9rem;}
     .review-mini-item {
       display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #eaeaea;
       transition: background 0.2s, padding-left 0.2s;
     }
     .review-mini-item:hover { background: #faf6f0; padding-left: 8px; border-radius: 12px; }
-    .review-mini-item:last-child { border-bottom: none; }
     .review-mini-avatar {
       width: 44px; height: 44px; background: #000; border-radius: 50%;
       display: flex; align-items: center; justify-content: center; font-weight: 700;
       color: #d4af37; border: 2px solid #d4af37; flex-shrink: 0;
     }
 
-    /* ========== PRODUCT INFO – black / gold with RED/GREEN badges ========== */
+    /* ========== PRODUCT INFO – simpler fonts ========== */
     .social-strip { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
     
-    /* UPDATED: sold badge RED, live badge GREEN with refined pulse */
     .sold-badge {
       display: inline-flex; align-items: center; gap: 8px; background: #dc2626; color: white;
       padding: 8px 18px; border-radius: 60px; font-size: 0.9rem; font-weight: 700; 
@@ -141,14 +138,13 @@
 
     .product-category {
       font-size: 0.85rem; font-weight: 700; color: #d4af37; text-transform: uppercase;
-      letter-spacing: 1px; margin-bottom: 8px; font-family: 'Montserrat', sans-serif;
+      letter-spacing: 1px; margin-bottom: 8px;
     }
     .product-title {
       font-size: 2.4rem; font-weight: 800; line-height: 1.1; margin-bottom: 16px;
-      color: #000; font-family: 'Montserrat', sans-serif; text-transform: uppercase;
-      text-shadow: 2px 2px 0 rgba(212,175,55,0.1);
+      color: #000; text-transform: uppercase;
     }
-    @media (min-width: 768px) { .product-title { font-size: 3.2rem; } }
+    @media (min-width: 768px) { .product-title { font-size: 3rem; } }
 
     /* rating row */
     .rating-row {
@@ -156,7 +152,7 @@
     }
     .stars { display: flex; gap: 4px; color: #d4af37; font-size: 1rem; }
 
-    /* share – gold details */
+    /* share */
     .share-wrapper { position: relative; margin-left: auto; }
     .share-btn {
       background: #ffffff; border: 2px solid #000; padding: 8px 20px; border-radius: 60px;
@@ -179,7 +175,6 @@
       border-radius: 16px; background: #f6f6f6; border: 1px solid #ddd; font-size: 0.7rem;
       font-weight: 600; cursor: pointer; transition: 0.15s;
     }
-    .share-option i { font-size: 1.1rem; color: #000; }
     .share-option:hover { background: #d4af37; border-color: #000; transform: scale(0.95); }
     .copy-link { display: flex; gap: 8px; }
     .copy-link input {
@@ -193,7 +188,7 @@
     }
     .copy-btn:hover { background: #d4af37; color: #000; }
 
-    /* price card – heavy black/gold with hover effects */
+    /* ===== PRICE CARD – REDESIGNED ===== */
     .price-card {
       background: #ffffff; border-radius: 28px; padding: 24px; margin-bottom: 24px;
       border: 2px solid #000; box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
@@ -201,30 +196,41 @@
     }
     .price-card:hover { box-shadow: 12px 12px 0 rgba(212,175,55,0.3); transform: translate(-2px, -2px); }
     .price-header {
-      display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;
+      display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; /* reduced */
     }
     .current-price {
-      font-size: 3rem; font-weight: 900; color: #000; line-height: 1; font-family: 'Montserrat', sans-serif;
+      font-size: 2.8rem; font-weight: 900; color: #000; line-height: 1;
     }
-    .inr-symbol { font-size: 2rem; font-weight: 700; color: #d4af37; }
-    .original-price { font-size: 1.3rem; color: #777; text-decoration: line-through; }
+    .inr-symbol { font-size: 1.8rem; font-weight: 700; color: #d4af37; }
+    .original-price { font-size: 1.2rem; color: #777; text-decoration: line-through; }
     .discount {
       background: #000; color: #d4af37; padding: 4px 14px; border-radius: 60px;
       font-weight: 800; font-size: 1rem; border: 2px solid #d4af37;
     }
+    /* new tax info line */
+    .tax-info {
+      font-size: 0.85rem; color: #4a4a4a; margin-bottom: 16px; border-bottom: 1px dashed #ccc; padding-bottom: 12px;
+    }
+    .tax-info i { color: #d4af37; margin-right: 6px; }
+
+    /* SMALLER price option boxes + removed "Save" texts */
     .price-options {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;
     }
     .price-option {
-      padding: 16px; border-radius: 20px; text-align: center; border: 2px solid;
-      transition: all 0.3s;
+      padding: 10px 8px; /* reduced padding */
+      border-radius: 18px; text-align: center; border: 2px solid;
+      transition: all 0.2s;
+      font-size: 0.9rem;
     }
-    .price-option:hover { transform: translateY(-3px); }
+    .price-option:hover { transform: translateY(-2px); }
     .price-option.prepaid { background: #fcf8f0; border-color: #d4af37; }
     .price-option.cod { background: #f4f4f4; border-color: #000; }
-    .option-label { font-size: 0.8rem; font-weight: 700; color: #1e1e1e; text-transform: uppercase; margin-bottom: 6px; }
+    .option-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
     .price-option.prepaid .option-label { color: #d4af37; }
-    .option-price { font-size: 1.8rem; font-weight: 800; color: #000; line-height: 1.2; }
+    .option-price { font-size: 1.4rem; font-weight: 800; color: #000; line-height: 1.2; }
+    /* extra info removed (Save lines) */
+
     .stock-badge {
       display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px;
       background: #ffffff; border-radius: 60px; font-size: 0.9rem; font-weight: 700;
@@ -232,7 +238,7 @@
     }
     .stock-badge:hover { background: #000; color: #d4af37; }
 
-    /* promise card – black/gold */
+    /* promise card */
     .promise-card {
       background: #000; border-radius: 28px; padding: 20px; margin-bottom: 24px;
       display: flex; align-items: center; gap: 16px; border: 2px solid #d4af37;
@@ -247,7 +253,7 @@
     .promise-content h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; color: #d4af37; }
     .promise-content p { font-size: 0.9rem; color: #eee; }
 
-    /* delivery card */
+    /* delivery card – with approx days */
     .delivery-card {
       background: #ffffff; border-radius: 28px; padding: 20px; margin-bottom: 24px;
       border: 2px solid #000; box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
@@ -263,6 +269,14 @@
     .progress-bar { height: 10px; background: #eaeaea; border-radius: 10px; overflow: hidden; margin: 12px 0; border: 1px solid #000; }
     .progress-fill { height: 100%; background: #d4af37; width: 0%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
     .delivery-message { display: flex; align-items: center; gap: 8px; color: #1e1e1e; font-weight: 600; }
+
+    /* new delivery by line */
+    .delivery-eta {
+      margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ccc;
+      display: flex; align-items: center; gap: 8px; font-size: 0.95rem;
+    }
+    .delivery-eta i { color: #d4af37; width: 20px; }
+    .eta-bold { font-weight: 800; color: #000; }
 
     /* features */
     .features-grid {
@@ -303,29 +317,26 @@
       font-size: 1.2rem; font-weight: 700; background: #ffffff;
     }
 
-    /* action buttons – black/gold with enhanced hover */
+    /* action buttons – 2D borders only (no shadows), clean */
     .action-buttons { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
     @media (min-width: 480px) { .action-buttons { flex-direction: row; } }
     .btn {
-      flex: 1; padding: 16px; border: none; border-radius: 60px; font-weight: 800; font-size: 1rem;
+      flex: 1; padding: 16px; border-radius: 60px; font-weight: 800; font-size: 1rem;
       cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: all 0.3s; text-transform: uppercase; border: 2px solid transparent;
-      position: relative; overflow: hidden;
+      transition: all 0.2s; text-transform: uppercase;
+      border: 2px solid #000; /* consistent 2D border */
+      background: #ffffff; color: #000;
+      box-shadow: none; /* flat */
     }
-    .btn::before {
-      content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0;
-      border-radius: 50%; background: rgba(255,255,255,0.3); transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-    .btn:hover::before { width: 300px; height: 300px; }
     .btn-primary {
       background: #000; color: #d4af37; border: 2px solid #d4af37;
     }
-    .btn-primary:hover { background: #d4af37; color: #000; border-color: #000; transform: translateY(-2px); }
-    .btn-secondary {
-      background: #ffffff; color: #000; border: 2px solid #000;
+    .btn-primary:hover {
+      background: #d4af37; color: #000; border-color: #000; transform: translateY(-2px);
     }
-    .btn-secondary:hover { background: #000; color: #d4af37; border-color: #d4af37; transform: translateY(-2px); }
+    .btn-secondary:hover {
+      background: #000; color: #d4af37; border-color: #d4af37; transform: translateY(-2px);
+    }
 
     /* tabs */
     .tabs {
@@ -372,8 +383,7 @@
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       width: 44px; height: 44px; background: #d4af37; border-radius: 50%;
       display: flex; align-items: center; justify-content: center; color: #000;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); border: 2px solid #000;
-      transition: all 0.3s;
+      border: 2px solid #000; transition: all 0.3s;
     }
     .video-item:hover i { background: #000; color: #d4af37; border-color: #d4af37; }
 
@@ -386,7 +396,7 @@
     @media (min-width: 1024px) { .mobile-reviews { display: none; } }
     .reviews-header {
       display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-      font-weight: 800; color: #1e1e1e; font-family: 'Montserrat', sans-serif;
+      font-weight: 800; color: #1e1e1e;
     }
     .review-card {
       padding: 20px; background: #fafafa; border-radius: 20px; border: 1px solid #000; margin-bottom: 12px;
@@ -405,7 +415,7 @@
     .related { margin-top: 48px; padding-top: 32px; }
     .related-title {
       font-size: 2rem; font-weight: 800; margin-bottom: 24px; color: #000;
-      font-family: 'Montserrat', sans-serif; text-transform: uppercase;
+      text-transform: uppercase;
     }
     .related-grid {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
@@ -450,15 +460,10 @@
     }
     .scroll-top.visible { opacity: 1; }
     .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; transform: scale(1.1) translateY(-2px); }
-
-    /* misc */
-    .text-gold { color: #d4af37; }
-    .bg-black { background: #000; }
   </style>
 </head>
 <body>
 
-  <!-- header & footer will be loaded dynamically (exactly like sample) -->
   <div id="header"></div>
   <div class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></div>
 
@@ -480,7 +485,7 @@
   <div id="common-modals"></div>
 
   <script>
-    // ========== FIREBASE CONFIG (unchanged) ==========
+    // ========== FIREBASE CONFIG ==========
     const firebaseConfig = {
       apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
       authDomain: "myessantia.firebaseapp.com",
@@ -575,7 +580,7 @@
                     <div class="review-mini-avatar">${r.avatar}</div>
                     <div style="flex:1"><div style="font-weight:800;">${r.name}</div><div style="color:#d4af37;">${'★'.repeat(Math.floor(r.rating))}</div><div style="font-size:0.8rem;">"${r.comment.substring(0,45)}..."</div></div>
                   </div>`).join('')}
-                <div style="text-align:center; margin-top:16px; font-weight:800; color:#d4af37; transition: 0.2s; cursor:default;">View all 128 reviews →</div>
+                <div style="text-align:center; margin-top:16px; font-weight:800; color:#d4af37;">View all 128 reviews →</div>
               </div>
             </div>
           </div>
@@ -588,21 +593,31 @@
               <div class="stars">${getStars(product.rating)}</div><span style="font-weight:700;">${(product.rating || 4.5).toFixed(1)}</span><span style="color:#4a4a4a;">(128 reviews)</span>
               <div class="share-wrapper"><button class="share-btn" onclick="toggleShare(event)"><i class="fa-solid fa-share-alt"></i> Share</button><div class="share-menu" id="shareMenu">...</div></div>
             </div>
-            <!-- price card -->
+            <!-- price card – MODIFIED -->
             <div class="price-card">
               <div class="price-header"><span class="current-price"><span class="inr-symbol">₹</span>${product.price.toFixed(2)}</span><span class="original-price">₹${originalPrice.toFixed(2)}</span><span class="discount">-${discount}%</span></div>
-              <div class="price-options"><div class="price-option prepaid"><div class="option-label">Prepaid</div><div class="option-price">₹${prepaidPrice}</div><div style="font-size:0.75rem; color:#d4af37;">Save ₹${product.price - prepaidPrice}</div></div><div class="price-option cod"><div class="option-label">Cash on Delivery</div><div class="option-price">₹${codPrice}</div><div style="font-size:0.75rem;">+₹${codPrice - product.price} fee</div></div></div>
+              <div class="tax-info"><i class="fa-solid fa-receipt"></i> Taxes included. Shipping calculated at checkout.</div>
+              <div class="price-options">
+                <div class="price-option prepaid"><div class="option-label">Prepaid</div><div class="option-price">₹${prepaidPrice}</div></div>
+                <div class="price-option cod"><div class="option-label">Cash on Delivery</div><div class="option-price">₹${codPrice}</div></div>
+              </div>
               <span class="stock-badge"><i class="fa-solid ${stock > 10 ? 'fa-check-circle' : 'fa-exclamation-circle'}" style="color:#d4af37;"></i> ${stock > 10 ? 'In Stock' : `Only ${stock} left`}</span>
             </div>
             <!-- promise -->
             <div class="promise-card"><div class="promise-icon"><i class="fa-solid fa-shield"></i></div><div class="promise-content"><h4>Razorpay Money Back Promise</h4><p><span style="font-weight:800;">100% refund</span> on non-delivery or defects</p></div></div>
-            <!-- delivery -->
-            <div class="delivery-card" id="deliveryCard"><div class="delivery-header"><span class="delivery-title"><i class="fa-solid fa-truck"></i> Free Delivery</span><span class="delivery-min">Min. ₹1,299</span></div><div class="progress-bar"><div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div></div><div class="delivery-message" id="deliveryMessage"><i class="fa-solid ${product.price >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:#d4af37;"></i><span id="deliveryText">${product.price >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - product.price).toFixed(2)}</span> more for free delivery`}</span></div></div>
+            <!-- delivery card with approx days -->
+            <div class="delivery-card" id="deliveryCard">
+              <div class="delivery-header"><span class="delivery-title"><i class="fa-solid fa-truck"></i> Free Delivery</span><span class="delivery-min">Min. ₹1,299</span></div>
+              <div class="progress-bar"><div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div></div>
+              <div class="delivery-message" id="deliveryMessage"><i class="fa-solid ${product.price >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:#d4af37;"></i><span id="deliveryText">${product.price >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - product.price).toFixed(2)}</span> more for free delivery`}</span></div>
+              <!-- NEW delivery by line -->
+              <div class="delivery-eta"><i class="fa-regular fa-calendar"></i> <span>Delivery by <span class="eta-bold">5–7 business days</span></span></div>
+            </div>
             <!-- features -->
             <div class="features-grid"><div class="feature-item"><div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div><div class="feature-text"><h4>Free Shipping</h4><p>Above ₹1,299</p></div></div><div class="feature-item"><div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div><div class="feature-text"><h4>Easy Returns</h4><p>48 hours</p></div></div></div>
             <!-- quantity -->
             <div class="quantity-wrapper"><div class="quantity-label"><i class="fa-solid fa-cubes" style="color:#d4af37;"></i> Quantity</div><div class="quantity-controls"><button class="qty-btn" onclick="updateQuantity(-1)" ${stock===0?'disabled':''}>−</button><input type="text" class="qty-input" id="productQuantity" value="1" readonly><button class="qty-btn" onclick="updateQuantity(1)" ${stock===0?'disabled':''}>+</button></div></div>
-            <!-- buttons -->
+            <!-- buttons – flat 2D borders only -->
             <div class="action-buttons"><button class="btn btn-secondary" onclick="addToCart()" ${stock===0?'disabled':''}><i class="fa-solid fa-cart-plus"></i> Add to Cart</button><button class="btn btn-primary" onclick="buyNow()" ${stock===0?'disabled':''}><i class="fa-solid fa-bolt"></i> Buy Now</button></div>
             <!-- tabs -->
             <div class="tabs"><div class="tab-headers"><div class="tab-header active" onclick="switchTab('desc')">Description</div><div class="tab-header" onclick="switchTab('specs')">Specs</div><div class="tab-header" onclick="switchTab('videos')">Videos</div></div><div class="tab-content active" id="tab-desc"><p>${product.description || product.shortDesc || 'Premium quality product from MyEssantia.'}</p></div><div class="tab-content" id="tab-specs"><div class="specs-grid"><div class="spec-item"><div class="spec-label">Material</div><div class="spec-value">Premium Quality</div></div><div class="spec-item"><div class="spec-label">Brand</div><div class="spec-value">${product.brand || 'MyEssantia'}</div></div></div></div><div class="tab-content" id="tab-videos"><div class="video-grid"><div class="video-item"><img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400"><i class="fa-solid fa-play"></i></div><div class="video-item"><img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400"><i class="fa-solid fa-play"></i></div></div></div></div>
@@ -617,7 +632,6 @@
       setupScrollTop();
     }
 
-    // helper functions (unchanged logic)
     function setupScrollTop() { const btn = document.getElementById('scrollTop'); window.addEventListener('scroll', () => btn.classList.toggle('visible', window.scrollY > 200)); }
     async function loadRelated(product) { /* keep identical to original but omitted for brevity – can be added similarly */ }
     function getStars(rating) { let r=parseFloat(rating)||4.5, s=''; for(let i=1;i<=5;i++) { if(r>=i) s+='<i class="fa-solid fa-star"></i>'; else if(r>i-1 && r<i) s+='<i class="fa-solid fa-star-half-alt"></i>'; else s+='<i class="fa-regular fa-star"></i>'; } return s; }
@@ -633,7 +647,6 @@
     function showNotification(msg) { const existing=document.querySelector('.notification'); if(existing)existing.remove(); const notif=document.createElement('div'); notif.className='notification'; notif.innerHTML=`<i class="fa-solid fa-check-circle" style="color:#d4af37;"></i> ${msg}`; document.body.appendChild(notif); setTimeout(()=>notif.remove(),3000); }
     window.switchTab = function(tab) { document.querySelectorAll('.tab-header').forEach(h=>h.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); document.querySelector(`.tab-header[onclick="switchTab('${tab}')"]`).classList.add('active'); document.getElementById(`tab-${tab}`).classList.add('active'); };
 
-    // load header/footer exactly like sample (using the linked CSS files)
     async function loadCommonModals() { try { const res = await fetch('common.html'); const data = await res.text(); document.getElementById('common-modals').innerHTML = data; } catch (e) {} }
     function loadComponents() { 
       fetch('header.html').then(r=>r.text()).then(d=>document.getElementById('header').innerHTML = d).catch(()=>{}); 
