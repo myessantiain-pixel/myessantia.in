@@ -182,6 +182,32 @@
       font-size: 0.9rem;
     }
 
+    /* High Demand Badge */
+    .high-demand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #ff6b6b, #ff4757);
+      color: white;
+      padding: 0.4rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .high-demand-badge i {
+      font-size: 1rem;
+    }
+
     /* Share Button Styles */
     .share-container {
       position: relative;
@@ -1098,7 +1124,7 @@
       box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
     }
 
-    /* New Priority Access Modal Styles */
+    /* Priority Access Modal Styles */
     .priority-modal {
       display: none;
       position: fixed;
@@ -1203,14 +1229,23 @@
 
     .priority-message {
       background: #fef9e7;
-      padding: 1rem 1.5rem;
+      padding: 1.2rem 1.5rem;
       border-radius: 20px;
       margin: 0 2rem 1.5rem;
       border-left: 4px solid #d4af37;
-      text-align: center;
+      text-align: left;
       color: #5f4b1f;
       font-size: 0.95rem;
-      line-height: 1.5;
+      line-height: 1.6;
+    }
+
+    .priority-message i {
+      color: #ff6b6b;
+    }
+
+    .priority-message.high-demand {
+      background: #ffeeee;
+      border-left-color: #ff6b6b;
     }
 
     .priority-form {
@@ -1321,6 +1356,30 @@
 
     body.modal-open {
       overflow: hidden;
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      color: white;
+      font-weight: 500;
+      z-index: 9999;
+      animation: slideInRight 0.3s ease;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+    }
+
+    .notification.success { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .notification.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .notification.info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+    .notification.warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
     /* Responsive */
@@ -1449,7 +1508,7 @@
   <!-- Common Modals -->
   <div id="common-modals"></div>
 
-  <!-- New Priority Access Modal -->
+  <!-- Priority Access Modal -->
   <div id="priority-modal" class="priority-modal">
     <div class="priority-modal-content" id="priority-modal-content">
       <button class="priority-modal-close" id="close-priority-modal">&times;</button>
@@ -1461,6 +1520,26 @@
   <script src="common.js"></script>
 
 <script>
+    // ========== FIREBASE CONFIGURATION ==========
+    const firebaseConfig = {
+      apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
+      authDomain: "myessantia.firebaseapp.com",
+      projectId: "myessantia",
+      storageBucket: "myessantia.firebasestorage.app",
+      messagingSenderId: "701726517205",
+      appId: "1:701726517205:web:f6ab79efdffeab6dbbbf5c",
+      measurementId: "G-SZF11SHZBH"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ========== GLOBAL VARIABLES ==========
+    let products = [];
+    let currentUser = null;
+    let cart = [];
+
     // ========== PRODUCT PAGE SPECIFIC FUNCTIONS ==========
     
     // Facebook Pixel helper function (safe execution)
@@ -1557,6 +1636,13 @@
       const originalPrice = Math.round(product.price * 1.2);
       const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
 
+      // High demand badge HTML
+      const highDemandBadge = product.highDemand ? 
+        `<div class="high-demand-badge">
+          <i class="fa-solid fa-fire"></i>
+          <span>High Demand · Limited Stock</span>
+        </div>` : '';
+
       container.innerHTML = `
         <div class="product-container">
           <div class="gallery-section">
@@ -1576,6 +1662,8 @@
             <div class="product-category">${product.category}</div>
             <h1 class="product-title">${product.title}</h1>
             
+            ${highDemandBadge}
+
             <div class="product-meta">
               <div class="product-brand">
                 <i class="fa-regular fa-building"></i> 
@@ -1809,7 +1897,7 @@
       `;
 
       // Set the share link
-const shareLink = `${window.location.origin}${window.location.pathname}?id=${product.id}`;
+      const shareLink = `${window.location.origin}${window.location.pathname}?id=${product.id}`;
       const shareInput = document.getElementById('product-share-link');
       if (shareInput) shareInput.value = shareLink;
     }
@@ -2092,62 +2180,12 @@ const shareLink = `${window.location.origin}${window.location.pathname}?id=${pro
       }
     }
 
-    window.addToCart = async function(productId) {
+    // ========== UPDATED: Buy Now handler with High Demand check ==========
+    window.handleBuyNow = function(productId) {
       const product = products.find(p => p.id === productId);
       if (!product) return;
 
-      const quantityInput = document.getElementById('product-quantity');
-      const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
-      const existingItem = cart.find(item => item.id === productId);
-
-      let primaryImg = '';
-      if (product.media && product.media.images && product.media.images[0]) {
-        primaryImg = product.media.images[0].url;
-      } else {
-        primaryImg = product.primaryImg || '';
-      }
-
-      if (existingItem) {
-        existingItem.quantity += quantity;
-      } else {
-        cart.push({
-          id: productId,
-          title: product.title,
-          category: product.category,
-          price: product.price,
-          primaryImg: primaryImg,
-          quantity: quantity
-        });
-      }
-
-      // Save to Firebase if user is logged in
-      if (currentUser) {
-        await saveCartToFirebase();
-      } else {
-        // Fallback to localStorage for guests
-        localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-      }
-      
-      updateCartCount();
-
-      const btn = event?.target?.closest('button');
-      if (btn) {
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Added to Cart!';
-        btn.style.background = '#22c55e';
-        btn.style.color = 'white';
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.style.background = '';
-          btn.style.color = '';
-        }, 2000);
-      }
-    };
-
-    // Buy Now handler
-    window.handleBuyNow = function(productId) {
       // Track Facebook InitiateCheckout event
-      const product = products.find(p => p.id === productId);
       trackFacebookEvent('InitiateCheckout', {
         content_ids: [productId],
         content_type: 'product',
@@ -2155,11 +2193,20 @@ const shareLink = `${window.location.origin}${window.location.pathname}?id=${pro
         currency: 'INR'
       });
 
-      // Open priority access modal
-      openPriorityModal(productId);
+      // Check if product is marked as high demand by admin
+      if (product.highDemand) {
+        // Show priority access modal for high demand products
+        openPriorityModal(productId);
+      } else {
+        // Normal buy now flow - add to cart and show message
+        addToCart(productId);
+        showNotification('Product added to cart! Proceed to checkout.', 'success');
+        // You can redirect to checkout page here if needed
+        // setTimeout(() => { window.location.href = 'checkout.html'; }, 1500);
+      }
     };
 
-    // Priority Modal Functions
+    // ========== UPDATED: Priority Modal with High Demand message ==========
     function openPriorityModal(productId) {
       const product = products.find(p => p.id === productId);
       if (!product) return;
@@ -2174,6 +2221,32 @@ const shareLink = `${window.location.origin}${window.location.pathname}?id=${pro
         productImage = product.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200';
       }
 
+      // Custom message based on high demand
+      const messageClass = product.highDemand ? 'high-demand' : '';
+      let priorityMessage = '';
+      
+      if (product.highDemand) {
+        priorityMessage = `
+          <div class="priority-message ${messageClass}">
+            <i class="fa-solid fa-fire" style="margin-right: 0.5rem;"></i>
+            <strong>High Demand Alert!</strong> This product is in extremely high demand. 
+            Due to limited stock, we're releasing in batches. Enter your details below to:
+            <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+              <li>Secure priority access for the next batch</li>
+              <li>Get notified 24 hours before release</li>
+              <li>Receive exclusive early-bird discount</li>
+            </ul>
+          </div>
+        `;
+      } else {
+        priorityMessage = `
+          <div class="priority-message">
+            <i class="fa-regular fa-clock" style="margin-right: 0.5rem;"></i>
+            Due to high demand, this product is launching in a limited first batch. Enter your details to secure priority access.
+          </div>
+        `;
+      }
+
       modalBody.innerHTML = `
         <div class="priority-modal-header">
           <div class="priority-product-image">
@@ -2182,10 +2255,7 @@ const shareLink = `${window.location.origin}${window.location.pathname}?id=${pro
           <h3 class="priority-product-title">${product.title}</h3>
         </div>
         
-        <div class="priority-message">
-          <i class="fa-solid fa-clock" style="margin-right: 0.5rem;"></i>
-          Due to high demand, this product is launching in a limited first batch. Enter your details to secure priority access.
-        </div>
+        ${priorityMessage}
         
         <form class="priority-form" id="priority-form" onsubmit="submitPriorityForm(event, '${product.id}')">
           <div class="form-group">
@@ -2205,7 +2275,7 @@ const shareLink = `${window.location.origin}${window.location.pathname}?id=${pro
           </div>
           
           <button type="submit" class="priority-submit-btn" id="priority-submit-btn">
-            <i class="fa-regular fa-circle-check"></i> Secure My Spot
+            <i class="fa-regular fa-circle-check"></i> ${product.highDemand ? 'Secure Priority Access' : 'Notify Me'}
           </button>
         </form>
       `;
@@ -2293,7 +2363,7 @@ const shareLink = `${window.location.origin}${window.location.pathname}?id=${pro
         <div class="priority-success">
           <i class="fa-regular fa-circle-check"></i>
           <h3>Thank You!</h3>
-          <p>We will contact you before dispatch.</p>
+          <p>We'll notify you as soon as this product is available.</p>
         </div>
       `;
 
@@ -2326,36 +2396,166 @@ const shareLink = `${window.location.origin}${window.location.pathname}?id=${pro
       document.getElementById(`tab-${tab}`).classList.add('active');
     };
 
-    // Override updateCartCount to use common function but add delivery bar update
-    const originalUpdateCartCount = window.updateCartCount;
-    window.updateCartCount = function() {
-      if (originalUpdateCartCount) {
-        originalUpdateCartCount();
+    // Cart functions
+    window.addToCart = async function(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      const quantityInput = document.getElementById('product-quantity');
+      const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
+      const existingItem = cart.find(item => item.id === productId);
+
+      let primaryImg = '';
+      if (product.media && product.media.images && product.media.images[0]) {
+        primaryImg = product.media.images[0].url;
+      } else {
+        primaryImg = product.primaryImg || '';
       }
-      if (window.location.pathname.includes('product.html')) {
-        updateDeliveryBar();
+
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        cart.push({
+          id: productId,
+          title: product.title,
+          category: product.category,
+          price: product.price,
+          primaryImg: primaryImg,
+          quantity: quantity
+        });
+      }
+
+      // Save to Firebase if user is logged in
+      if (currentUser) {
+        await saveCartToFirebase();
+      } else {
+        // Fallback to localStorage for guests
+        localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+      }
+      
+      updateCartCount();
+
+      const btn = event?.target?.closest('button');
+      if (btn) {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Added to Cart!';
+        btn.style.background = '#22c55e';
+        btn.style.color = 'white';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          btn.style.color = '';
+        }, 2000);
       }
     };
 
-    // Initialize
-    function initializeApp() {
-      updateCartCount();
-      updateProfileIcon();
-      loadProduct();
-      
-      // Priority modal close button
-      const closePriorityBtn = document.getElementById('close-priority-modal');
-      if (closePriorityBtn) {
-        closePriorityBtn.addEventListener('click', closePriorityModal);
-      }
-
-      // Close priority modal on outside click
-      window.addEventListener('click', function(e) {
-        const priorityModal = document.getElementById('priority-modal');
-        if (e.target === priorityModal) {
-          closePriorityModal();
+    // Load cart from Firebase or localStorage
+    async function loadCart() {
+      if (currentUser) {
+        try {
+          const cartDoc = await db.collection('carts').doc(currentUser.uid).get();
+          if (cartDoc.exists) {
+            cart = cartDoc.data().items || [];
+          }
+        } catch (error) {
+          console.error('Error loading cart:', error);
         }
+      } else {
+        const savedCart = localStorage.getItem('MyEssantia_cart');
+        cart = savedCart ? JSON.parse(savedCart) : [];
+      }
+      updateCartCount();
+    }
+
+    async function saveCartToFirebase() {
+      if (!currentUser) return;
+      try {
+        await db.collection('carts').doc(currentUser.uid).set({
+          items: cart,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (error) {
+        console.error('Error saving cart:', error);
+      }
+    }
+
+    // Update cart count in header
+    function updateCartCount() {
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const cartCountElements = document.querySelectorAll('.cart-count');
+      cartCountElements.forEach(el => {
+        el.textContent = totalItems;
+        el.style.display = totalItems > 0 ? 'flex' : 'none';
       });
+    }
+
+    // Update profile icon based on auth state
+    function updateProfileIcon() {
+      const profileIcon = document.querySelector('.profile-icon');
+      if (profileIcon) {
+        if (currentUser) {
+          profileIcon.innerHTML = '<i class="fa-solid fa-user-check"></i>';
+        } else {
+          profileIcon.innerHTML = '<i class="fa-regular fa-user"></i>';
+        }
+      }
+    }
+
+    // ========== NOTIFICATION ==========
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // ========== LOAD PRODUCTS FROM FIREBASE ==========
+    async function loadProducts() {
+      try {
+        const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
+        products = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        // Cache in localStorage for offline fallback
+        localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+        
+        loadProduct();
+      } catch (error) {
+        console.error('Error loading products:', error);
+        
+        // Try to load from cache
+        const cachedProducts = localStorage.getItem('MyEssantia_products');
+        if (cachedProducts) {
+          products = JSON.parse(cachedProducts);
+          loadProduct();
+        } else {
+          showNotification('Failed to load products', 'error');
+        }
+      }
+    }
+
+    // Load header and footer components
+    async function loadComponents() {
+      try {
+        const headerResponse = await fetch('header.html');
+        const headerHtml = await headerResponse.text();
+        document.getElementById('header').innerHTML = headerHtml;
+        
+        const footerResponse = await fetch('footer.html');
+        const footerHtml = await footerResponse.text();
+        document.getElementById('footer').innerHTML = footerHtml;
+        
+        // Initialize cart count after header is loaded
+        updateCartCount();
+        updateProfileIcon();
+      } catch (error) {
+        console.error('Error loading components:', error);
+      }
     }
 
     // Load common modals
@@ -2370,17 +2570,38 @@ const shareLink = `${window.location.origin}${window.location.pathname}?id=${pro
     }
 
     // Listen for auth state changes
-    firebase.auth().onAuthStateChanged((user) => {
-      // Re-render product if needed
+    firebase.auth().onAuthStateChanged(async (user) => {
+      currentUser = user;
+      updateProfileIcon();
+      await loadCart();
+      
       if (window.location.pathname.includes('product.html')) {
-        // Cart might have changed due to login/logout
-        updateCartCount();
+        // Reload product if needed
+        if (products.length === 0) {
+          await loadProducts();
+        }
       }
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      loadCommonModals();
-      loadComponents();
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadCommonModals();
+      await loadComponents();
+      await loadProducts();
+      
+      // Priority modal close button
+      const closePriorityBtn = document.getElementById('close-priority-modal');
+      if (closePriorityBtn) {
+        closePriorityBtn.addEventListener('click', closePriorityModal);
+      }
+
+      // Close priority modal on outside click
+      window.addEventListener('click', function(e) {
+        const priorityModal = document.getElementById('priority-modal');
+        if (e.target === priorityModal) {
+          closePriorityModal();
+        }
+      });
     });
 
     // Add fallback for products
