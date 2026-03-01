@@ -19,7 +19,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
   <style>
-    /* ========== MODERN DESIGN SYSTEM ========== */
+    /* ========== MODERN DESIGN SYSTEM WITH 2D BORDERS ========== */
     * {
       margin: 0;
       padding: 0;
@@ -28,29 +28,36 @@
 
     :root {
       /* Premium Color Palette */
-      --primary: #c7a23b;        /* Rich gold */
-      --primary-dark: #a07d2b;    /* Deeper gold */
-      --primary-light: #f3e9d2;   /* Soft cream */
+      --primary: #c7a23b;
+      --primary-dark: #a07d2b;
+      --primary-light: #f3e9d2;
+      --primary-soft: #faf3e0;
       
-      --accent-black: #1e1e1e;    /* Soft black for accents */
-      --accent-charcoal: #2c2c2c;  /* Dark gray */
+      --accent-black: #1e1e1e;
+      --accent-charcoal: #2c2c2c;
       
-      --bg-warm: #fcf9f4;         /* Warm background */
-      --bg-soft: #ffffff;          /* Clean white */
-      --bg-card: #ffffff;          /* Card background */
+      --bg-warm: #fcf9f4;
+      --bg-soft: #ffffff;
+      --bg-card: #ffffff;
       
-      --text-primary: #2c2c2c;    /* Almost black for text */
-      --text-secondary: #5c5c5c;   /* Medium gray */
-      --text-tertiary: #8e8e8e;    /* Light gray */
+      --text-primary: #2c2c2c;
+      --text-secondary: #5c5c5c;
+      --text-tertiary: #8e8e8e;
       
-      --border-light: #e8e2d4;     /* Warm light border */
-      --border-medium: #d4cdbc;    /* Medium warm border */
-      --border-accent: #c7a23b;    /* Gold border */
+      --border-light: #e8e2d4;
+      --border-medium: #d4cdbc;
+      --border-accent: #c7a23b;
       
       --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
       --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
       --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.08);
       --shadow-gold: 0 8px 24px rgba(199, 162, 59, 0.12);
+      
+      /* 2D Border Variables - Can be adjusted per element */
+      --border-2d-offset: 4px;
+      --border-2d-blur: 0px;
+      --border-2d-color: rgba(0, 0, 0, 0.1);
+      --border-2d-highlight: rgba(255, 255, 255, 0.8);
       
       --spacing-xs: 0.5rem;
       --spacing-sm: 0.75rem;
@@ -79,6 +86,54 @@
       margin: 0 auto;
       padding: 0 2rem;
     }
+
+    /* ========== 2D BORDER EFFECT CLASSES ========== */
+    .border-2d {
+      position: relative;
+      border: 1px solid var(--border-medium);
+      transition: all 0.2s ease;
+    }
+    
+    .border-2d::after {
+      content: '';
+      position: absolute;
+      top: var(--border-2d-offset);
+      left: var(--border-2d-offset);
+      right: calc(-1 * var(--border-2d-offset));
+      bottom: calc(-1 * var(--border-2d-offset));
+      background: transparent;
+      border: 1px solid var(--border-2d-color);
+      filter: blur(var(--border-2d-blur));
+      z-index: -1;
+      pointer-events: none;
+      transition: all 0.2s ease;
+    }
+    
+    .border-2d:hover {
+      transform: translate(calc(-1 * var(--border-2d-offset) / 2), calc(-1 * var(--border-2d-offset) / 2));
+    }
+    
+    .border-2d:hover::after {
+      top: calc(var(--border-2d-offset) * 1.5);
+      left: calc(var(--border-2d-offset) * 1.5);
+    }
+    
+    /* Different offset intensities */
+    .border-2d-sm { --border-2d-offset: 2px; }
+    .border-2d-md { --border-2d-offset: 4px; }
+    .border-2d-lg { --border-2d-offset: 6px; }
+    .border-2d-xl { --border-2d-offset: 8px; }
+    
+    /* Different blur intensities */
+    .border-2d-blur-none { --border-2d-blur: 0px; }
+    .border-2d-blur-sm { --border-2d-blur: 1px; }
+    .border-2d-blur-md { --border-2d-blur: 2px; }
+    .border-2d-blur-lg { --border-2d-blur: 3px; }
+    
+    /* Different colors */
+    .border-2d-gold { --border-2d-color: rgba(199, 162, 59, 0.3); }
+    .border-2d-dark { --border-2d-color: rgba(0, 0, 0, 0.15); }
+    .border-2d-light { --border-2d-color: rgba(255, 255, 255, 0.5); }
 
     /* ========== BREADCRUMB ========== */
     .breadcrumb {
@@ -120,11 +175,6 @@
       position: sticky;
       top: 2rem;
       height: fit-content;
-      background: var(--bg-soft);
-      border-radius: var(--radius-xl);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--border-light);
     }
 
     .main-image {
@@ -135,7 +185,6 @@
       margin-bottom: 1.25rem;
       background: var(--bg-warm);
       cursor: zoom-in;
-      border: 1px solid var(--border-light);
     }
 
     .main-image img {
@@ -201,9 +250,57 @@
       font-weight: 600;
       line-height: 1.1;
       color: var(--text-primary);
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
       letter-spacing: -0.5px;
       padding-right: 4rem;
+    }
+
+    /* ========== SOCIAL PROOF SECTIONS ========== */
+    .sold-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #d32f2f, #b71c1c);
+      color: white;
+      padding: 0.6rem 1.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(183, 28, 28, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .live-viewers {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      color: white;
+      padding: 0.6rem 1.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 12px rgba(27, 94, 32, 0.3);
+      animation: pulse 2s infinite;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.9; box-shadow: 0 4px 20px rgba(46, 125, 50, 0.5); }
+      100% { opacity: 1; }
+    }
+
+    .live-viewers i {
+      font-size: 0.7rem;
+      color: #4caf50;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 1; }
     }
 
     .product-meta {
@@ -305,7 +402,6 @@
       visibility: hidden;
       transform: translateY(-10px);
       transition: all 0.3s ease;
-      border: 1px solid var(--border-light);
     }
 
     .share-menu.show {
@@ -379,7 +475,6 @@
       background: var(--bg-warm);
       padding: 1rem;
       border-radius: var(--radius-md);
-      border: 1px solid var(--border-light);
     }
 
     .share-link-box {
@@ -419,17 +514,12 @@
       box-shadow: var(--shadow-gold);
     }
 
-    .copy-link-btn.copied {
-      background: #22c55e;
-    }
-
-    /* ========== PRICE SECTION ========== */
+    /* ========== PRICE SECTION WITH PREPAID/COD ========== */
     .price-section {
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       background: linear-gradient(135deg, var(--primary-light) 0%, var(--bg-soft) 100%);
-      padding: 1.8rem;
+      padding: 1.5rem;
       border-radius: var(--radius-lg);
-      border: 1px solid var(--border-light);
     }
 
     .price-row {
@@ -467,7 +557,51 @@
       border-radius: var(--radius-full);
       font-size: 0.8rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
+    }
+
+    /* Prepaid & COD Pricing */
+    .pricing-options {
+      display: flex;
+      gap: 1rem;
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    .price-option {
+      flex: 1;
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-soft);
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .price-option.prepaid {
+      border: 2px solid var(--primary);
+      background: var(--primary-light);
+    }
+
+    .price-option.cod {
+      border: 2px solid var(--border-medium);
+    }
+
+    .price-option-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.3rem;
+    }
+
+    .price-option-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent-black);
+    }
+
+    .price-option-save {
+      font-size: 0.75rem;
+      color: #d32f2f;
+      font-weight: 600;
+      margin-top: 0.2rem;
     }
 
     .stock-status {
@@ -492,12 +626,6 @@
       border-color: #ffe082;
     }
 
-    .out-of-stock {
-      background: #fee9e7;
-      color: #c62828;
-      border-color: #ffb3b3;
-    }
-
     .high-demand-badge {
       display: inline-flex;
       align-items: center;
@@ -512,23 +640,65 @@
       border: 1px solid #ffb199;
     }
 
-    .high-demand-badge i {
-      color: #d84315;
+    /* ========== RAZORPAY MONEY BACK PROMISE ========== */
+    .moneyback-promise {
+      background: linear-gradient(135deg, #1e3a5f, #0a1e3a);
+      color: white;
+      padding: 1.5rem;
+      border-radius: var(--radius-lg);
+      margin: 1.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .moneyback-promise::before {
+      content: '✓✓';
+      position: absolute;
+      right: -20px;
+      bottom: -20px;
+      font-size: 8rem;
+      opacity: 0.1;
+      color: var(--primary);
+      transform: rotate(-15deg);
+    }
+
+    .promise-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      background: rgba(255, 255, 255, 0.1);
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .promise-text h4 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .promise-text p {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .promise-highlight {
+      color: var(--primary);
+      font-weight: 700;
     }
 
     /* ========== DELIVERY CARD ========== */
     .delivery-card {
       background: var(--bg-soft);
       border-radius: var(--radius-lg);
-      padding: 1.8rem;
-      margin: 2rem 0;
-      border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-sm);
-      transition: box-shadow 0.3s;
-    }
-
-    .delivery-card:hover {
-      box-shadow: var(--shadow-md);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
     }
 
     .delivery-header {
@@ -561,7 +731,6 @@
       border-radius: var(--radius-full);
       font-size: 0.85rem;
       font-weight: 700;
-      border: 1px solid var(--primary);
     }
 
     .progress-bar {
@@ -604,7 +773,6 @@
       color: var(--primary-dark);
       padding: 0.2rem 0.8rem;
       border-radius: var(--radius-full);
-      font-size: 0.9rem;
     }
 
     /* ========== PRODUCT HIGHLIGHTS ========== */
@@ -612,14 +780,13 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
-      margin: 2rem 0;
+      margin: 1.5rem 0;
     }
 
     .highlight-card {
       background: var(--bg-soft);
       padding: 1.25rem;
       border-radius: var(--radius-lg);
-      border: 1px solid var(--border-light);
       display: flex;
       align-items: center;
       gap: 1rem;
@@ -659,11 +826,10 @@
 
     /* ========== QUANTITY SELECTOR ========== */
     .quantity-section {
-      margin: 2rem 0;
+      margin: 1.5rem 0;
       background: var(--bg-soft);
       padding: 1.5rem;
       border-radius: var(--radius-lg);
-      border: 1px solid var(--border-light);
     }
 
     .quantity-label {
@@ -745,7 +911,7 @@
     .action-buttons {
       display: flex;
       gap: 1.25rem;
-      margin: 2rem 0;
+      margin: 1.5rem 0;
     }
 
     .btn {
@@ -761,14 +927,12 @@
       align-items: center;
       justify-content: center;
       gap: 0.8rem;
-      letter-spacing: 0.3px;
     }
 
     .btn-add-to-cart {
       background: var(--bg-soft);
       color: var(--text-primary);
       border: 2px solid var(--border-medium);
-      box-shadow: var(--shadow-sm);
     }
 
     .btn-add-to-cart:hover:not(:disabled) {
@@ -781,30 +945,131 @@
     .btn-buy-now {
       background: var(--accent-black);
       color: white;
-      border: 2px solid var(--accent-black);
-      box-shadow: var(--shadow-md);
     }
 
     .btn-buy-now:hover:not(:disabled) {
       background: var(--accent-charcoal);
-      border-color: var(--accent-charcoal);
       transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
     }
 
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    /* ========== TABS ========== */
-    .product-details-tabs {
-      margin-top: 2.5rem;
+    /* ========== REVIEWS SECTION ========== */
+    .reviews-section {
+      margin: 2rem 0;
       background: var(--bg-soft);
       border-radius: var(--radius-lg);
-      padding: 2rem;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--border-light);
+      padding: 1.5rem;
+    }
+
+    .reviews-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .reviews-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .reviews-title span {
+      color: var(--primary);
+    }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .review-card {
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-warm);
+      transition: all 0.2s;
+    }
+
+    .review-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .review-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .review-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .review-info h5 {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .review-time {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+    }
+
+    .review-stars {
+      color: var(--primary);
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .review-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .review-footer {
+      margin-top: 0.8rem;
+      display: flex;
+      gap: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .review-footer i {
+      margin-right: 0.3rem;
+    }
+
+    .view-all-reviews {
+      text-align: center;
+      padding: 1rem;
+      background: var(--bg-warm);
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .view-all-reviews:hover {
+      background: var(--primary-light);
+    }
+
+    /* ========== PRODUCT DETAILS TABS ========== */
+    .product-details-tabs {
+      margin-top: 2rem;
+      background: var(--bg-soft);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
     }
 
     .tab-headers {
@@ -812,21 +1077,6 @@
       gap: 2rem;
       border-bottom: 2px solid var(--border-light);
       overflow-x: auto;
-      scrollbar-width: thin;
-    }
-
-    .tab-headers::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    .tab-headers::-webkit-scrollbar-track {
-      background: var(--border-light);
-      border-radius: 4px;
-    }
-
-    .tab-headers::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 4px;
     }
 
     .tab-header {
@@ -862,9 +1112,6 @@
       padding: 2rem 0 1rem;
       display: none;
       animation: fadeIn 0.4s ease;
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      line-height: 1.8;
     }
 
     .tab-content.active {
@@ -886,7 +1133,6 @@
       padding: 1rem;
       background: var(--bg-warm);
       border-radius: var(--radius-md);
-      border: 1px solid var(--border-light);
     }
 
     .spec-label {
@@ -902,395 +1148,46 @@
       font-size: 0.95rem;
     }
 
-    /* ========== RETURN SECTION ========== */
-    .return-section {
-      margin: 2.5rem 0;
-      background: linear-gradient(135deg, #fff9f0 0%, var(--bg-soft) 100%);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      border: 1px solid #ffdbb5;
-    }
-
-    .return-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .return-header i {
-      font-size: 2.2rem;
-      color: #f59e0b;
-    }
-
-    .return-header h3 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #b45309;
-      font-family: 'Playfair Display', serif;
-    }
-
-    .return-grid {
+    /* Video Grid */
+    .video-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .return-card {
-      background: var(--bg-soft);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem 1rem;
-      text-align: center;
-      border: 1px solid #ffdbb5;
-      transition: all 0.2s;
-    }
-
-    .return-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(245, 158, 11, 0.1);
-      border-color: #f59e0b;
-    }
-
-    .return-icon {
-      width: 64px;
-      height: 64px;
-      background: #fef3c7;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem;
-      color: #f59e0b;
-      font-size: 1.8rem;
-    }
-
-    .return-card h4 {
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: #b45309;
-      font-size: 1rem;
-    }
-
-    .return-card p {
-      color: #b76e00;
-      font-size: 0.8rem;
-      line-height: 1.4;
-    }
-
-    .return-note {
-      margin-top: 1.5rem;
-      padding: 1rem 1.5rem;
-      background: #fef3c7;
-      border-radius: var(--radius-md);
-      color: #b45309;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
+      grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
-      border-left: 4px solid #f59e0b;
     }
 
-    /* ========== RELATED PRODUCTS ========== */
-    .related-section {
-      margin: 4rem 0;
-      padding: 2rem 0;
-    }
-
-    .related-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.2rem;
-      font-weight: 600;
-      margin-bottom: 2rem;
-      text-align: center;
-      color: var(--text-primary);
-    }
-
-    .related-title::after {
-      content: '';
-      display: block;
-      width: 80px;
-      height: 3px;
-      background: var(--primary);
-      margin: 0.8rem auto 0;
-      border-radius: var(--radius-full);
-    }
-
-    .related-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-    }
-
-    .related-card {
-      text-decoration: none;
-      color: inherit;
-      background: var(--bg-soft);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem;
-      transition: all 0.3s;
-      border: 1px solid var(--border-light);
-      text-align: center;
-      position: relative;
-    }
-
-    .related-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--primary);
-    }
-
-    .related-image {
-      width: 100%;
-      aspect-ratio: 1;
+    .video-thumb {
+      aspect-ratio: 16/9;
       border-radius: var(--radius-md);
       overflow: hidden;
-      margin-bottom: 1rem;
-      background: var(--bg-warm);
-      border: 1px solid var(--border-light);
+      position: relative;
+      cursor: pointer;
     }
 
-    .related-image img {
+    .video-thumb img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.4s;
     }
 
-    .related-card:hover .related-image img {
-      transform: scale(1.03);
-    }
-
-    .related-category {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 0.3rem;
-    }
-
-    .related-title-small {
-      font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-      color: var(--text-primary);
-      line-height: 1.3;
-    }
-
-    .related-price {
-      color: var(--accent-black);
-      font-weight: 800;
-      font-size: 1.3rem;
-      font-family: 'Montserrat', sans-serif;
-    }
-
-    .quick-add {
-      margin-top: 1rem;
-      padding: 0.7rem;
-      background: var(--bg-warm);
-      border-radius: var(--radius-full);
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      transition: all 0.2s;
-      cursor: pointer;
-      border: 1px solid var(--border-light);
-    }
-
-    .related-card:hover .quick-add {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    /* ========== MODAL ========== */
-    .priority-modal {
-      display: none;
-      position: fixed;
-      z-index: 1100;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(4px);
-    }
-
-    .priority-modal.show {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .priority-modal-content {
-      background: var(--bg-soft);
-      border-radius: var(--radius-xl);
-      width: 90%;
-      max-width: 450px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: var(--shadow-lg);
-      animation: modalSlideUp 0.4s ease;
-      position: relative;
-      border: 1px solid var(--border-light);
-    }
-
-    @keyframes modalSlideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .priority-modal-close {
+    .video-thumb i {
       position: absolute;
-      top: 1.2rem;
-      right: 1.2rem;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--text-tertiary);
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      transition: all 0.2s;
-      z-index: 10;
-    }
-
-    .priority-modal-close:hover {
-      background: var(--bg-warm);
-      color: var(--primary);
-    }
-
-    .priority-modal-header {
-      padding: 2rem 2rem 1rem;
-      text-align: center;
-    }
-
-    .priority-product-image {
-      width: 90px;
-      height: 90px;
-      border-radius: var(--radius-lg);
-      margin: 0 auto 1rem;
-      overflow: hidden;
-      border: 3px solid var(--primary-light);
-      box-shadow: var(--shadow-md);
-    }
-
-    .priority-product-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .priority-product-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .priority-message {
-      background: #fff0ed;
-      padding: 1rem 1.5rem;
-      border-radius: var(--radius-md);
-      margin: 0 2rem 1.5rem;
-      border-left: 4px solid #d84315;
-      text-align: center;
-      color: #d84315;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-
-    .priority-form {
-      padding: 0 2rem 2rem;
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      font-size: 0.9rem;
-    }
-
-    .form-label i {
-      color: var(--primary);
-      margin-right: 0.5rem;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 0.9rem 1rem;
-      border: 1px solid var(--border-medium);
-      border-radius: var(--radius-md);
-      font-size: 0.95rem;
-      transition: all 0.2s;
-      background: var(--bg-soft);
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(199, 162, 59, 0.1);
-    }
-
-    .priority-submit-btn {
-      width: 100%;
-      padding: 1.1rem;
-      background: var(--primary);
-      border: none;
-      border-radius: var(--radius-md);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
       color: white;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      margin-top: 1.5rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
-    .priority-submit-btn:hover:not(:disabled) {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-gold);
-    }
-
-    .priority-submit-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .priority-success {
-      text-align: center;
-      padding: 2.5rem;
-    }
-
-    .priority-success i {
-      font-size: 4rem;
-      color: #22c55e;
-      margin-bottom: 1rem;
-    }
-
-    .priority-success h3 {
-      font-size: 1.5rem;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
+    .video-thumb span {
+      position: absolute;
+      bottom: 0.5rem;
+      right: 0.5rem;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
     }
 
     /* ========== CART NOTIFICATION ========== */
@@ -1309,7 +1206,6 @@
       align-items: center;
       gap: 1rem;
       font-weight: 600;
-      border: 1px solid var(--border-light);
     }
 
     .cart-notification i {
@@ -1325,13 +1221,6 @@
       border-radius: var(--radius-full);
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid var(--primary);
-    }
-
-    .cart-notification button:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
     }
 
     @keyframes slideInRight {
@@ -1339,109 +1228,23 @@
       to { transform: translateX(0); opacity: 1; }
     }
 
-    body.modal-open {
-      overflow: hidden;
-    }
-
     /* ========== RESPONSIVE ========== */
     @media (max-width: 1024px) {
-      .product-container {
-        gap: 2.5rem;
-      }
-      
-      .product-title {
-        font-size: 2.8rem;
-      }
-      
-      .related-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      .specs-grid {
-        grid-template-columns: 1fr;
-      }
+      .product-container { gap: 2.5rem; }
+      .product-title { font-size: 2.8rem; }
+      .reviews-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     @media (max-width: 768px) {
-      .container {
-        padding: 0 1.5rem;
-      }
-
-      .product-container {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .gallery-section {
-        position: static;
-      }
-
-      .product-title {
-        font-size: 2.4rem;
-        padding-right: 3.5rem;
-      }
-
-      .share-container {
-        top: 1rem;
-      }
-
-      .share-main-btn span {
-        display: none;
-      }
-
-      .share-main-btn {
-        padding: 0.7rem 1rem;
-      }
-
-      .share-menu {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        max-width: 100%;
-        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-        transform: translateY(100%);
-      }
-
-      .share-menu.show {
-        transform: translateY(0);
-      }
-
-      .action-buttons {
-        flex-direction: column;
-      }
-
-      .return-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .product-highlights {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .product-title {
-        font-size: 2rem;
-      }
-      
-      .current-price {
-        font-size: 2.5rem;
-      }
-      
-      .inr-symbol {
-        font-size: 1.8rem;
-      }
-      
-      .related-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .delivery-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+      .container { padding: 0 1.5rem; }
+      .product-container { grid-template-columns: 1fr; gap: 2rem; }
+      .gallery-section { position: static; }
+      .product-title { font-size: 2.4rem; }
+      .share-main-btn span { display: none; }
+      .reviews-grid { grid-template-columns: 1fr; }
+      .video-grid { grid-template-columns: 1fr; }
+      .action-buttons { flex-direction: column; }
+      .pricing-options { flex-direction: column; }
     }
   </style>
 </head>
@@ -1464,14 +1267,6 @@
 
   <div id="footer"></div>
 
-  <!-- Priority Modal -->
-  <div id="priority-modal" class="priority-modal">
-    <div class="priority-modal-content">
-      <button class="priority-modal-close" id="close-priority-modal">&times;</button>
-      <div id="priority-modal-body"></div>
-    </div>
-  </div>
-
   <script>
     // ========== FIREBASE CONFIG ==========
     const firebaseConfig = {
@@ -1489,6 +1284,61 @@
     // ========== GLOBAL ==========
     let currentProduct = null;
     let cart = JSON.parse(localStorage.getItem('myessantia_cart')) || [];
+
+    // Generate random values for social proof
+    function getRandomSold() {
+      return Math.floor(Math.random() * (1500 - 300 + 1)) + 300;
+    }
+
+    function getRandomViewers() {
+      return Math.floor(Math.random() * (30 - 5 + 1)) + 5;
+    }
+
+    function getRandomReviews() {
+      const names = ['Aarav Sharma', 'Ishita Patel', 'Rahul Verma', 'Priya Singh', 'Vikram Mehta', 'Ananya Gupta', 'Karthik Iyer', 'Neha Kapoor', 'Arjun Nair', 'Shreya Reddy'];
+      const cities = ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata', 'Pune', 'Hyderabad', 'Ahmedabad'];
+      const comments = [
+        'Absolutely love this product! Quality is amazing.',
+        'Perfect for daily use. Highly recommended!',
+        'Great value for money. Fast delivery too.',
+        'Exceeded my expectations. Will buy again.',
+        'Good product but packaging could be better.',
+        'Worth every penny! The design is beautiful.',
+        'Exactly as described. Very happy with purchase.',
+        'Fast shipping and great quality. 5 stars!',
+        'My wife loved it. Thank you MyEssantia!',
+        'Solid build quality. Works perfectly.'
+      ];
+      
+      return { names, cities, comments };
+    }
+
+    // Sample reviews data
+    function generateReviews(count = 6) {
+      const { names, cities, comments } = getRandomReviews();
+      const reviews = [];
+      const now = Date.now();
+      
+      for (let i = 0; i < count; i++) {
+        const randomName = names[Math.floor(Math.random() * names.length)];
+        const randomCity = cities[Math.floor(Math.random() * cities.length)];
+        const randomComment = comments[Math.floor(Math.random() * comments.length)];
+        const randomRating = (Math.floor(Math.random() * 20) + 30) / 10; // 3.0 to 5.0
+        const hoursAgo = Math.floor(Math.random() * 48) + 1;
+        
+        reviews.push({
+          name: randomName,
+          city: randomCity,
+          comment: randomComment,
+          rating: randomRating,
+          time: hoursAgo,
+          helpful: Math.floor(Math.random() * 25) + 5,
+          avatar: randomName.charAt(0)
+        });
+      }
+      
+      return reviews.sort((a, b) => a.time - b.time);
+    }
 
     function getProductId() {
       return new URLSearchParams(window.location.search).get('id');
@@ -1515,7 +1365,7 @@
 
     function showNotFound() {
       document.getElementById('product-container').innerHTML = `
-        <div style="text-align: center; padding: 4rem; background: white; border-radius: 24px; border: 1px solid var(--border-light);">
+        <div class="border-2d border-2d-lg border-2d-gold" style="text-align: center; padding: 4rem; background: white; border-radius: 24px;">
           <i class="fa-solid fa-box-open" style="font-size: 4rem; color: var(--text-tertiary);"></i>
           <h2 style="font-size: 2rem; margin: 1rem 0;">Product Not Found</h2>
           <p style="color: var(--text-secondary);">The product you're looking for doesn't exist.</p>
@@ -1534,9 +1384,16 @@
       const stock = product.stock || 0;
       const originalPrice = Math.round(product.price * 1.2);
       const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
+      const prepaidPrice = Math.round(product.price * 0.95); // 5% discount for prepaid
+      const codPrice = Math.round(product.price * 1.02); // 2% extra for COD
       
       const cartItem = cart.find(i => i.id === product.id);
       const quantity = cartItem ? cartItem.quantity : 1;
+
+      // Generate random social proof values
+      const soldCount = getRandomSold();
+      const liveViewers = getRandomViewers();
+      const reviews = generateReviews(6);
 
       const specs = Array.isArray(product.specs) ? product.specs : 
                    (product.specs ? product.specs.split('\n').filter(s => s.trim()) : 
@@ -1547,47 +1404,90 @@
         <div class="product-container">
           <!-- GALLERY -->
           <div class="gallery-section">
-            <div class="main-image" onclick="this.classList.toggle('zoomed')">
-              <img src="${images[0]}" alt="${product.title}" id="mainImage">
+            <div class="main-image border-2d border-2d-lg border-2d-gold" style="border-radius: 18px; background: white; padding: 0; --border-2d-offset: 6px;" onclick="this.classList.toggle('zoomed')">
+              <img src="${images[0]}" alt="${product.title}" id="mainImage" style="border-radius: 18px;">
             </div>
             <div class="thumbnail-grid">
               ${images.map((img, i) => `
-                <div class="thumbnail ${i === 0 ? 'active' : ''}" onclick="changeImage('${img}', this)">
+                <div class="thumbnail ${i === 0 ? 'active' : ''} border-2d border-2d-sm" onclick="changeImage('${img}', this)" style="border-radius: 12px;">
                   <img src="${img}" alt="thumb">
                 </div>
               `).join('')}
+            </div>
+
+            <!-- REVIEWS UNDER GALLERY -->
+            <div class="reviews-section border-2d border-2d-md" style="margin-top: 2rem; --border-2d-offset: 4px;">
+              <div class="reviews-header">
+                <div class="reviews-title">
+                  <span>★</span> Real Reviews
+                </div>
+                <div style="font-weight: 600;">${product.rating?.toFixed(1) || '4.5'} · 128 reviews</div>
+              </div>
+              <div class="reviews-grid">
+                ${reviews.slice(0, 3).map(r => `
+                  <div class="review-card border-2d border-2d-sm" style="--border-2d-offset: 2px;">
+                    <div class="review-header">
+                      <div class="review-avatar">${r.avatar}</div>
+                      <div class="review-info">
+                        <h5>${r.name}</h5>
+                        <div class="review-time">${r.city} · ${r.time}h ago</div>
+                      </div>
+                    </div>
+                    <div class="review-stars">
+                      ${'★'.repeat(Math.floor(r.rating))}${r.rating % 1 ? '½' : ''}
+                    </div>
+                    <div class="review-text">"${r.comment}"</div>
+                    <div class="review-footer">
+                      <span><i class="fa-regular fa-thumbs-up"></i> ${r.helpful}</span>
+                      <span><i class="fa-regular fa-comment"></i> Reply</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="view-all-reviews border-2d border-2d-sm">
+                View all 128 reviews <i class="fa-solid fa-arrow-right"></i>
+              </div>
             </div>
           </div>
 
           <!-- INFO -->
           <div class="product-info">
+            <!-- SOCIAL PROOF BADGES -->
+            <div class="sold-badge border-2d border-2d-sm border-2d-light" style="--border-2d-color: rgba(255,255,255,0.3);">
+              <i class="fa-solid fa-fire"></i> ${soldCount}+ sold in last month
+            </div>
+            
+            <div class="live-viewers border-2d border-2d-sm border-2d-light" style="--border-2d-color: rgba(255,255,255,0.3);">
+              <i class="fa-solid fa-circle"></i> ${liveViewers} people are checking out right now
+            </div>
+
             <div class="product-category">${product.category?.toUpperCase() || 'ACCESSORIES'}</div>
             <h1 class="product-title">${product.title}</h1>
             
             <!-- SHARE BUTTON -->
             <div class="share-container">
-              <button class="share-main-btn" onclick="toggleShare(event)">
+              <button class="share-main-btn border-2d border-2d-sm" onclick="toggleShare(event)">
                 <i class="fa-solid fa-share-alt"></i>
                 <span>SHARE</span>
               </button>
-              <div class="share-menu" id="shareMenu">
+              <div class="share-menu border-2d border-2d-md" id="shareMenu" style="--border-2d-offset: 4px;">
                 <div class="share-menu-header">
                   <span>Share this product</span>
                   <button onclick="closeShare()"><i class="fa-solid fa-times"></i></button>
                 </div>
                 <div class="share-options">
-                  <button class="share-option" onclick="share('facebook')"><i class="fa-brands fa-facebook-f"></i>FB</button>
-                  <button class="share-option" onclick="share('twitter')"><i class="fa-brands fa-x-twitter"></i>TW</button>
-                  <button class="share-option" onclick="share('whatsapp')"><i class="fa-brands fa-whatsapp"></i>WA</button>
-                  <button class="share-option" onclick="share('telegram')"><i class="fa-brands fa-telegram"></i>TG</button>
-                  <button class="share-option" onclick="share('email')"><i class="fa-regular fa-envelope"></i>MAIL</button>
-                  <button class="share-option" onclick="share('pinterest')"><i class="fa-brands fa-pinterest"></i>PIN</button>
+                  <button class="share-option border-2d border-2d-sm" onclick="share('facebook')"><i class="fa-brands fa-facebook-f"></i>FB</button>
+                  <button class="share-option border-2d border-2d-sm" onclick="share('twitter')"><i class="fa-brands fa-x-twitter"></i>TW</button>
+                  <button class="share-option border-2d border-2d-sm" onclick="share('whatsapp')"><i class="fa-brands fa-whatsapp"></i>WA</button>
+                  <button class="share-option border-2d border-2d-sm" onclick="share('telegram')"><i class="fa-brands fa-telegram"></i>TG</button>
+                  <button class="share-option border-2d border-2d-sm" onclick="share('email')"><i class="fa-regular fa-envelope"></i>MAIL</button>
+                  <button class="share-option border-2d border-2d-sm" onclick="share('pinterest')"><i class="fa-brands fa-pinterest"></i>PIN</button>
                 </div>
-                <div class="share-link-container">
+                <div class="share-link-container border-2d border-2d-sm">
                   <p class="share-link-label">Or copy link</p>
                   <div class="share-link-box">
                     <input type="text" id="shareLink" value="${window.location.href}" readonly>
-                    <button class="copy-link-btn" onclick="copyLink()"><i class="fa-regular fa-copy"></i> COPY</button>
+                    <button class="copy-link-btn border-2d border-2d-sm" onclick="copyLink()" style="--border-2d-color: rgba(0,0,0,0.2);"><i class="fa-regular fa-copy"></i> COPY</button>
                   </div>
                 </div>
               </div>
@@ -1602,26 +1502,51 @@
               </div>
             </div>
 
-            <!-- PRICE -->
-            <div class="price-section">
+            <!-- PRICE WITH PREPAID/COD OPTIONS -->
+            <div class="price-section border-2d border-2d-md border-2d-gold" style="--border-2d-offset: 4px;">
               <div class="price-row">
                 <span class="current-price"><span class="inr-symbol">₹</span>${product.price.toFixed(2)}</span>
                 <span class="original-price">₹${originalPrice.toFixed(2)}</span>
                 <span class="discount-badge">-${discount}%</span>
               </div>
+              
+              <div class="pricing-options">
+                <div class="price-option prepaid border-2d border-2d-sm border-2d-gold">
+                  <div class="price-option-label">PREPAID</div>
+                  <div class="price-option-value">₹${prepaidPrice}</div>
+                  <div class="price-option-save">Save ₹${product.price - prepaidPrice}</div>
+                </div>
+                <div class="price-option cod border-2d border-2d-sm">
+                  <div class="price-option-label">CASH ON DELIVERY</div>
+                  <div class="price-option-value">₹${codPrice}</div>
+                  <div class="price-option-save">+₹${codPrice - product.price} fee</div>
+                </div>
+              </div>
+              
               <div style="display:flex; align-items:center; flex-wrap:wrap;">
-                <span class="stock-status ${stock > 10 ? 'in-stock' : (stock > 0 ? 'low-stock' : 'out-of-stock')}">
+                <span class="stock-status ${stock > 10 ? 'in-stock' : (stock > 0 ? 'low-stock' : 'out-of-stock')} border-2d border-2d-sm">
                   ${stock > 10 ? '✓ IN STOCK' : (stock > 0 ? `⚠ ONLY ${stock} LEFT` : '✗ OUT OF STOCK')}
                 </span>
-                ${product.highDemand ? '<span class="high-demand-badge"><i class="fa-solid fa-fire"></i> HIGH DEMAND</span>' : ''}
+                ${product.highDemand ? '<span class="high-demand-badge border-2d border-2d-sm"><i class="fa-solid fa-fire"></i> HIGH DEMAND</span>' : ''}
               </div>
             </div>
 
-            <!-- DELIVERY CARD - DYNAMIC -->
-            <div class="delivery-card" id="deliveryCard">
+            <!-- RAZORPAY MONEY BACK PROMISE -->
+            <div class="moneyback-promise border-2d border-2d-lg border-2d-light" style="--border-2d-color: rgba(255,255,255,0.2); --border-2d-offset: 6px;">
+              <div class="promise-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div class="promise-text">
+                <h4>Razorpay Money Back Promise</h4>
+                <p><span class="promise-highlight">Get 100% refund</span> on non-delivery or defects</p>
+              </div>
+            </div>
+
+            <!-- DELIVERY CARD -->
+            <div class="delivery-card border-2d border-2d-md" id="deliveryCard" style="--border-2d-offset: 4px;">
               <div class="delivery-header">
                 <span class="delivery-title"><i class="fa-solid fa-truck-fast"></i> FREE DELIVERY</span>
-                <span class="delivery-threshold">Min. ₹1,299</span>
+                <span class="delivery-threshold border-2d border-2d-sm">Min. ₹1,299</span>
               </div>
               <div class="progress-bar">
                 <div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price * quantity / 1299) * 100)}%"></div>
@@ -1638,43 +1563,43 @@
 
             <!-- HIGHLIGHTS -->
             <div class="product-highlights">
-              <div class="highlight-card">
+              <div class="highlight-card border-2d border-2d-sm">
                 <div class="highlight-icon"><i class="fa-solid fa-truck"></i></div>
                 <div><h4>Free Shipping</h4><p>On orders above ₹1,299</p></div>
               </div>
-              <div class="highlight-card">
+              <div class="highlight-card border-2d border-2d-sm">
                 <div class="highlight-icon"><i class="fa-solid fa-rotate-left"></i></div>
                 <div><h4>Easy Returns</h4><p>48-hour window</p></div>
               </div>
             </div>
 
             <!-- QUANTITY -->
-            <div class="quantity-section">
+            <div class="quantity-section border-2d border-2d-md" style="--border-2d-offset: 4px;">
               <div class="quantity-label"><i class="fa-solid fa-cubes"></i> Select Quantity</div>
               <div class="quantity-controls">
-                <button class="quantity-btn" onclick="updateQuantity(-1)" ${stock === 0 ? 'disabled' : ''}>−</button>
+                <button class="quantity-btn border-2d border-2d-sm" onclick="updateQuantity(-1)" ${stock === 0 ? 'disabled' : ''}>−</button>
                 <input type="text" class="quantity-input" id="productQuantity" value="${quantity}" readonly>
-                <button class="quantity-btn" onclick="updateQuantity(1)" ${stock === 0 || quantity >= stock ? 'disabled' : ''}>+</button>
+                <button class="quantity-btn border-2d border-2d-sm" onclick="updateQuantity(1)" ${stock === 0 || quantity >= stock ? 'disabled' : ''}>+</button>
               </div>
               <div class="stock-info"><i class="fa-regular fa-clock"></i> ${stock} units available</div>
             </div>
 
             <!-- ACTION BUTTONS -->
             <div class="action-buttons">
-              <button class="btn btn-add-to-cart" onclick="addToCart()" ${stock === 0 ? 'disabled' : ''}>
+              <button class="btn btn-add-to-cart border-2d border-2d-md" onclick="addToCart()" ${stock === 0 ? 'disabled' : ''}>
                 <i class="fa-solid fa-cart-plus"></i> ADD TO CART
               </button>
-              <button class="btn btn-buy-now" onclick="buyNow()" ${stock === 0 ? 'disabled' : ''}>
+              <button class="btn btn-buy-now border-2d border-2d-md border-2d-dark" onclick="buyNow()" ${stock === 0 ? 'disabled' : ''} style="--border-2d-color: rgba(255,255,255,0.3);">
                 <i class="fa-solid fa-bolt"></i> BUY NOW
               </button>
             </div>
 
-            <!-- TABS -->
-            <div class="product-details-tabs">
+            <!-- PRODUCT DETAILS TABS WITH VIDEOS -->
+            <div class="product-details-tabs border-2d border-2d-md" style="--border-2d-offset: 4px;">
               <div class="tab-headers">
                 <div class="tab-header active" onclick="switchTab('desc')">Description</div>
                 <div class="tab-header" onclick="switchTab('specs')">Specifications</div>
-                <div class="tab-header" onclick="switchTab('shipping')">Shipping</div>
+                <div class="tab-header" onclick="switchTab('videos')">Videos</div>
               </div>
               <div class="tab-content active" id="tab-desc">
                 <p>${product.description || product.shortDesc || 'Premium quality product from MyEssantia.'}</p>
@@ -1683,41 +1608,65 @@
                 <div class="specs-grid">
                   ${specs.map(s => {
                     const [k, v] = s.split(':');
-                    return `<div class="spec-item"><div class="spec-label">${k || 'Spec'}</div><div class="spec-value">${v || s}</div></div>`;
+                    return `<div class="spec-item border-2d border-2d-sm"><div class="spec-label">${k || 'Spec'}</div><div class="spec-value">${v || s}</div></div>`;
                   }).join('')}
                 </div>
               </div>
-              <div class="tab-content" id="tab-shipping">
-                <p>Free shipping on orders above ₹1,299. Dispatched within 24 hours. Delivery in 3-5 business days.</p>
+              <div class="tab-content" id="tab-videos">
+                <div class="video-grid">
+                  ${product.media?.videos?.length > 0 ? product.media.videos.map((video, i) => `
+                    <div class="video-thumb border-2d border-2d-md" onclick="window.open('${video.url}', '_blank')">
+                      <img src="${video.thumbnail || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400'}" alt="Video ${i+1}">
+                      <i class="fa-solid fa-play"></i>
+                      <span>${Math.floor(Math.random() * 3) + 1}:${Math.floor(Math.random() * 59)}</span>
+                    </div>
+                  `).join('') : `
+                    <div class="video-thumb border-2d border-2d-md">
+                      <img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400" alt="Demo video">
+                      <i class="fa-solid fa-play"></i>
+                      <span>2:34</span>
+                    </div>
+                    <div class="video-thumb border-2d border-2d-md">
+                      <img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400" alt="Demo video">
+                      <i class="fa-solid fa-play"></i>
+                      <span>1:47</span>
+                    </div>
+                  `}
+                </div>
               </div>
             </div>
 
-            <!-- RETURN POLICY -->
-            <div class="return-section">
-              <div class="return-header">
-                <i class="fa-solid fa-shield-halved"></i>
-                <h3>Easy Return Policy</h3>
+            <!-- MORE REVIEWS BOTTOM -->
+            <div class="reviews-section border-2d border-2d-md" style="margin-top: 2rem; --border-2d-offset: 4px;">
+              <div class="reviews-header">
+                <div class="reviews-title">
+                  <span>★</span> Recent Reviews
+                </div>
+                <div style="font-weight: 600;">${product.rating?.toFixed(1) || '4.5'} · 128 reviews</div>
               </div>
-              <div class="return-grid">
-                <div class="return-card">
-                  <div class="return-icon"><i class="fa-regular fa-clock"></i></div>
-                  <h4>48 Hours</h4>
-                  <p>Return within 48 hours of delivery</p>
-                </div>
-                <div class="return-card">
-                  <div class="return-icon"><i class="fa-solid fa-video"></i></div>
-                  <h4>Video Proof</h4>
-                  <p>Unboxing video required</p>
-                </div>
-                <div class="return-card">
-                  <div class="return-icon"><i class="fa-solid fa-rotate-left"></i></div>
-                  <h4>Full Refund</h4>
-                  <p>100% money back</p>
-                </div>
+              <div class="reviews-grid">
+                ${reviews.slice(3, 6).map(r => `
+                  <div class="review-card border-2d border-2d-sm" style="--border-2d-offset: 2px;">
+                    <div class="review-header">
+                      <div class="review-avatar">${r.avatar}</div>
+                      <div class="review-info">
+                        <h5>${r.name}</h5>
+                        <div class="review-time">${r.city} · ${r.time}h ago</div>
+                      </div>
+                    </div>
+                    <div class="review-stars">
+                      ${'★'.repeat(Math.floor(r.rating))}${r.rating % 1 ? '½' : ''}
+                    </div>
+                    <div class="review-text">"${r.comment}"</div>
+                    <div class="review-footer">
+                      <span><i class="fa-regular fa-thumbs-up"></i> ${r.helpful}</span>
+                      <span><i class="fa-regular fa-comment"></i> Reply</span>
+                    </div>
+                  </div>
+                `).join('')}
               </div>
-              <div class="return-note">
-                <i class="fa-solid fa-circle-exclamation"></i>
-                <div><strong>Important:</strong> Always record an unboxing video</div>
+              <div class="view-all-reviews border-2d border-2d-sm">
+                View all 128 reviews <i class="fa-solid fa-arrow-right"></i>
               </div>
             </div>
           </div>
@@ -1726,6 +1675,69 @@
 
       updateDeliveryBar(product.price * quantity);
     }
+
+    // ========== LOAD RELATED PRODUCTS ==========
+    async function loadRelated(product) {
+      try {
+        const snap = await db.collection('products')
+          .where('category', '==', product.category)
+          .limit(5)
+          .get();
+        
+        const related = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(p => p.id !== product.id)
+          .slice(0, 4);
+
+        if (related.length === 0) return;
+
+        const html = `
+          <div class="related-section">
+            <h2 class="related-title">You May Also Like</h2>
+            <div class="related-grid">
+              ${related.map(p => {
+                let img = p.media?.images?.[0]?.url || p.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200';
+                return `
+                  <div class="related-card border-2d border-2d-md" onclick="window.location='product.html?id=${p.id}'" style="--border-2d-offset: 4px;">
+                    <div class="related-image">
+                      <img src="${img}" alt="${p.title}">
+                    </div>
+                    <div class="related-category">${p.category}</div>
+                    <div class="related-title-small">${p.title.substring(0, 30)}</div>
+                    <div class="related-price">₹${p.price.toFixed(2)}</div>
+                    <div class="quick-add border-2d border-2d-sm" onclick="event.stopPropagation(); quickAdd('${p.id}')">
+                      <i class="fa-solid fa-cart-plus"></i> QUICK ADD
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+        
+        document.getElementById('product-container').insertAdjacentHTML('beforeend', html);
+      } catch (e) {
+        console.error('Related error:', e);
+      }
+    }
+
+    // ========== UTILITIES ==========
+    function getStars(rating) {
+      let stars = '';
+      const r = parseFloat(rating) || 0;
+      for (let i = 1; i <= 5; i++) {
+        if (r >= i) stars += '<i class="fa-solid fa-star"></i>';
+        else if (r > i-1 && r < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+        else stars += '<i class="fa-regular fa-star"></i>';
+      }
+      return stars;
+    }
+
+    window.changeImage = function(src, el) {
+      document.getElementById('mainImage').src = src;
+      document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    };
 
     // ========== DYNAMIC DELIVERY BAR ==========
     function updateDeliveryBar(total) {
@@ -1772,69 +1784,6 @@
       if (minus) minus.disabled = val <= 1;
     };
 
-    // ========== LOAD RELATED ==========
-    async function loadRelated(product) {
-      try {
-        const snap = await db.collection('products')
-          .where('category', '==', product.category)
-          .limit(5)
-          .get();
-        
-        const related = snap.docs
-          .map(d => ({ id: d.id, ...d.data() }))
-          .filter(p => p.id !== product.id)
-          .slice(0, 4);
-
-        if (related.length === 0) return;
-
-        const html = `
-          <div class="related-section">
-            <h2 class="related-title">You May Also Like</h2>
-            <div class="related-grid">
-              ${related.map(p => {
-                let img = p.media?.images?.[0]?.url || p.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200';
-                return `
-                  <div class="related-card" onclick="window.location='product.html?id=${p.id}'">
-                    <div class="related-image">
-                      <img src="${img}" alt="${p.title}">
-                    </div>
-                    <div class="related-category">${p.category}</div>
-                    <div class="related-title-small">${p.title.substring(0, 30)}</div>
-                    <div class="related-price">₹${p.price.toFixed(2)}</div>
-                    <div class="quick-add" onclick="event.stopPropagation(); quickAdd('${p.id}')">
-                      <i class="fa-solid fa-cart-plus"></i> QUICK ADD
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-        `;
-        
-        document.getElementById('product-container').insertAdjacentHTML('beforeend', html);
-      } catch (e) {
-        console.error('Related error:', e);
-      }
-    }
-
-    // ========== UTILITIES ==========
-    function getStars(rating) {
-      let stars = '';
-      const r = parseFloat(rating) || 0;
-      for (let i = 1; i <= 5; i++) {
-        if (r >= i) stars += '<i class="fa-solid fa-star"></i>';
-        else if (r > i-1 && r < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
-        else stars += '<i class="fa-regular fa-star"></i>';
-      }
-      return stars;
-    }
-
-    window.changeImage = function(src, el) {
-      document.getElementById('mainImage').src = src;
-      document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
-    };
-
     // ========== SHARE ==========
     window.toggleShare = function(e) {
       e.stopPropagation();
@@ -1876,10 +1825,8 @@
       navigator.clipboard.writeText(input.value).then(() => {
         const btn = document.querySelector('.copy-link-btn');
         btn.innerHTML = '<i class="fa-solid fa-check"></i> COPIED!';
-        btn.classList.add('copied');
         setTimeout(() => {
           btn.innerHTML = '<i class="fa-regular fa-copy"></i> COPY';
-          btn.classList.remove('copied');
         }, 2000);
       });
     };
@@ -1904,26 +1851,23 @@
       localStorage.setItem('myessantia_cart', JSON.stringify(cart));
       showNotification('Product added to cart!');
       
-      // Button feedback
       const btn = event?.target?.closest('button');
       if (btn && btn.classList.contains('btn-add-to-cart')) {
         const original = btn.innerHTML;
         btn.innerHTML = '<i class="fa-solid fa-check"></i> ADDED!';
         btn.style.background = '#22c55e';
         btn.style.color = 'white';
-        btn.style.borderColor = '#22c55e';
         setTimeout(() => {
           btn.innerHTML = original;
           btn.style.background = '';
           btn.style.color = '';
-          btn.style.borderColor = '';
         }, 1500);
       }
     };
 
     window.buyNow = function() {
       if (currentProduct?.highDemand) {
-        showPriorityModal();
+        alert('High demand product! Priority access modal would appear here.');
       } else {
         addToCart();
         setTimeout(() => {
@@ -1933,7 +1877,6 @@
     };
 
     window.quickAdd = function(id) {
-      // Find product from related
       showNotification('Quick add - coming soon!');
     };
 
@@ -1942,70 +1885,12 @@
       if (existing) existing.remove();
 
       const notif = document.createElement('div');
-      notif.className = 'cart-notification';
+      notif.className = 'cart-notification border-2d border-2d-md';
+      notif.style = '--border-2d-color: rgba(255,255,255,0.3); --border-2d-offset: 4px;';
       notif.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${msg} <button onclick="this.parentElement.remove()">VIEW CART</button>`;
       document.body.appendChild(notif);
       setTimeout(() => notif.remove(), 3000);
     }
-
-    // ========== PRIORITY MODAL ==========
-    function showPriorityModal() {
-      const modal = document.getElementById('priority-modal');
-      const body = document.getElementById('priority-modal-body');
-      
-      body.innerHTML = `
-        <div class="priority-modal-header">
-          <div class="priority-product-image">
-            <img src="${currentProduct.media?.images?.[0]?.url || currentProduct.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200'}" alt="">
-          </div>
-          <h3 class="priority-product-title">${currentProduct.title}</h3>
-        </div>
-        <div class="priority-message">
-          <i class="fa-solid fa-fire"></i> High Demand! This product is in high demand. Enter your details to secure priority access.
-        </div>
-        <form class="priority-form" onsubmit="submitPriority(event)">
-          <div class="form-group">
-            <label class="form-label"><i class="fa-solid fa-envelope"></i> Email Address</label>
-            <input type="email" class="form-input" placeholder="Enter your email" required>
-          </div>
-          <button type="submit" class="priority-submit-btn">SECURE MY SPOT</button>
-        </form>
-      `;
-      
-      modal.classList.add('show');
-      document.body.classList.add('modal-open');
-    }
-
-    window.submitPriority = function(e) {
-      e.preventDefault();
-      const modal = document.getElementById('priority-modal');
-      const body = document.getElementById('priority-modal-body');
-      body.innerHTML = `
-        <div class="priority-success">
-          <i class="fa-regular fa-circle-check"></i>
-          <h3>Thank You!</h3>
-          <p>We'll contact you before dispatch.</p>
-        </div>
-      `;
-      setTimeout(() => {
-        modal.classList.remove('show');
-        document.body.classList.remove('modal-open');
-      }, 2000);
-    };
-
-    // Close modal
-    document.getElementById('close-priority-modal').addEventListener('click', () => {
-      document.getElementById('priority-modal').classList.remove('show');
-      document.body.classList.remove('modal-open');
-    });
-
-    window.addEventListener('click', (e) => {
-      const modal = document.getElementById('priority-modal');
-      if (e.target === modal) {
-        modal.classList.remove('show');
-        document.body.classList.remove('modal-open');
-      }
-    });
 
     // ========== TABS ==========
     window.switchTab = function(tab) {
