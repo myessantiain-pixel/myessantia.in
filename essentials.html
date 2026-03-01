@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ESSENCE · essentials (responsive)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>MyEssantia · premium essentials</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -11,7 +11,7 @@
   <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Montserrat:wght@300..900&display=swap" rel="stylesheet">
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -24,55 +24,113 @@
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* -------------------- ESSENTIALS PAGE SPECIFIC STYLES -------------------- */
+    /* ===== GLOBAL & RESETS ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { 
+      font-family: 'Inter', 'Montserrat', sans-serif; 
+      background: #ffffff; 
+      color: #1e1e1e; 
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+    .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+    @media (min-width: 640px) { .container { padding: 0 32px; } }
+
+    /* ===== ACTIVE NAV ===== */
+    .nav-link.active { color: #d4af37 !important; font-weight: 700; position: relative; }
+    .nav-link.active::after {
+      content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px;
+      background: #d4af37; animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn { from { width: 0; opacity: 0; } to { width: 100%; opacity: 1; } }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: #fcfaf7;
+      padding: 2rem 0 1.5rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 3px solid #000;
+    }
+    .page-header-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover; background-position: 60% 30%; opacity: 0.1;
+    }
+    .page-header .container { position: relative; z-index: 2; }
     .page-title {
-      text-align: center;
-      padding: clamp(1.5rem, 4vw, 2rem) 0 clamp(0.5rem, 2vw, 1rem);
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      line-height: 1.1;
+      color: #000;
+      margin-bottom: 1rem;
     }
-    .page-title h1 {
-      font-size: clamp(2.2rem, 6vw, 3.2rem);
-      font-weight: 400;
-      color: #1a1a1a;
-      line-height: 1.2;
-    }
-    .page-title h1 span {
+    .page-title span {
       color: #d4af37;
-      font-weight: 500;
-      font-style: italic;
+      font-weight: 900;
+      background: linear-gradient(145deg, #d4af37, #b07e2e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .page-title p {
-      color: #5f5b57;
+    .page-desc {
+      color: #2a2a2a;
+      font-size: 1.1rem;
       max-width: 600px;
-      margin: 1rem auto 0;
-      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
-      padding: 0 1rem;
+      font-weight: 400;
+      line-height: 1.6;
+      margin-bottom: 1rem;
     }
 
-    /* SORT BAR */
-    .sort-bar {
+    /* ===== BREADCRUMBS ===== */
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0.5rem 0 1.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .breadcrumbs a {
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .breadcrumbs a:hover {
+      color: #d4af37;
+    }
+    .breadcrumbs i {
+      color: #d4af37;
+      font-size: 0.7rem;
+    }
+    .breadcrumbs span {
+      color: #000;
+    }
+
+    /* ===== SORT BAR - NO UNDERLINE ===== */
+    .sort-wrapper {
       display: flex;
       justify-content: flex-end;
-      align-items: center;
-      padding: 1.5rem 0 1rem;
-      border-bottom: 1px solid #f0f0f0;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: 1rem;
+      margin: 1rem 0 2rem;
     }
     .sort-select {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      background: #fafafa;
-      padding: 0.5rem 1.2rem;
-      border-radius: 40px;
-      border: 1px solid #eaeaea;
+      background: #000;
+      padding: 0.6rem 1.5rem;
+      border-radius: 60px;
+      border: 2px solid #d4af37;
       cursor: pointer;
       transition: 0.2s;
       width: fit-content;
     }
     .sort-select:hover {
-      border-color: #d4af37;
+      background: #1a1a1a;
     }
     .sort-select i {
       color: #d4af37;
@@ -81,284 +139,331 @@
     .sort-select select {
       background: transparent;
       border: none;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 0.9rem;
-      font-weight: 400;
-      color: #1a1a1a;
+      font-weight: 600;
+      color: #fff;
       outline: none;
       cursor: pointer;
+      text-transform: uppercase;
+    }
+    .sort-select select option {
+      background: #000;
+      color: #fff;
+      padding: 0.5rem;
     }
 
-    /* PRODUCT GRID */
+    /* ===== PRODUCT GRID ===== */
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: clamp(1rem, 2.5vw, 2rem);
-      margin: 2rem 0 4rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+      margin: 0 0 4rem;
     }
+    @media (min-width: 600px) { .product-grid { gap: 1.8rem; } }
+    @media (min-width: 800px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1100px) { .product-grid { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
 
     .product-card {
-      background: #fff;
-      border-radius: 28px;
-      padding: 1.2rem 1rem 1.8rem;
-      box-shadow: 0 8px 22px -8px rgba(0,0,0,0.05);
-      transition: all 0.25s ease;
-      text-align: center;
-      border: 1px solid #f5f5f5;
+      background: transparent;
+      padding: 0;
+      transition: transform 0.2s ease;
       display: flex;
       flex-direction: column;
       height: 100%;
       text-decoration: none;
       color: inherit;
+      border: none;
       cursor: pointer;
     }
-    .product-card:hover {
-      box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
-      border-color: #e0d9d0;
-      transform: translateY(-6px);
-    }
+    .product-card:hover { transform: translateY(-4px); }
 
     .image-frame {
       position: relative;
       width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 24px;
+      aspect-ratio: 1/1;
+      border-radius: 20px;
       overflow: hidden;
-      margin-bottom: 1.5rem;
-      background-color: #f4f2ef;
+      margin-bottom: 0.8rem;
+      background: #f8f6f2;
+      border: 2px solid #000;
+      box-shadow: 0 8px 16px -8px rgba(0,0,0,0.15);
     }
 
-    .primary-img, .secondary-img {
-      position: absolute;
+    .primary-img, .secondary-img { 
+      position: absolute; inset:0; background-size: cover; background-position: center; 
+      transition: opacity 0.3s ease;
+    }
+    .primary-img { opacity:1; z-index:2; }
+    .secondary-img { opacity:0; z-index:1; }
+    .image-frame:hover .primary-img { opacity:0; }
+    .image-frame:hover .secondary-img { opacity:1; }
+    @media (hover:none) { .secondary-img { opacity:0; } }
+
+    .product-category {
+      font-size: 0.7rem;
+      color: #666;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .product-title { 
+      font-weight: 800;
+      font-size: 1rem;
+      margin: 0.2rem 0;
+      color: #000;
+      line-height: 1.3;
+      text-transform: uppercase;
+      word-break: break-word;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .product-rating { 
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin: 0.2rem 0;
+      font-size: 0.8rem;
+    }
+    .product-rating i { color: #d4af37; }
+    .product-rating span {
+      margin-left: 4px;
+      color: #666;
+      font-weight: 600;
+    }
+    .product-price-block {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 0.4rem 0 0.1rem;
+    }
+    .current-price { 
+      color: #d4af37; 
+      font-weight: 800; 
+      font-size: 1.3rem; 
+    }
+    .current-price .inr-symbol { 
+      font-size: 1rem; 
+    }
+    .old-price { 
+      color: #999; 
+      font-size: 0.9rem; 
+      text-decoration: line-through; 
+    }
+    .sale-badge {
+      background: #d4af37; 
+      color: #000; 
+      font-size: 0.7rem; 
+      font-weight: 800;
+      padding: 0.2rem 0.8rem; 
+      border-radius: 40px; 
+      border: 1px solid #000;
+      display: inline-block;
+      margin-top: 0.2rem;
+    }
+    .stock-badge { 
+      font-size: 0.7rem; 
+      margin-top: 0.2rem; 
+      font-weight: 600; 
+    }
+    .in-stock { 
+      color: #2e7d32; 
+    }
+    .low-stock { 
+      color: #f57c00; 
+    }
+    .out-of-stock { 
+      color: #c62828; 
+    }
+    .card-add-btn {
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 6px;
+      background: #000; 
+      border: 2px solid #000; 
+      border-radius: 60px;
+      padding: 0.7rem 0.3rem; 
+      font-size: 0.85rem; 
+      font-weight: 600; 
+      color: #fff;
+      cursor: pointer; 
+      width: 100%; 
+      margin: 0.5rem 0 0; 
+      min-height: 44px;
+      transition: 0.15s; 
+      text-transform: uppercase;
+    }
+    .card-add-btn i { 
+      color: #d4af37; 
+    }
+    .card-add-btn:hover { 
+      background: #d4af37; 
+      color: #000; 
+      border-color: #d4af37; 
+    }
+    .card-add-btn:hover i { 
+      color: #000; 
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 4rem 2rem;
+      background: #fcfaf7;
+      border-radius: 40px;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
+    }
+    .empty-state i {
+      font-size: 4rem;
+      color: #d4af37;
+      margin-bottom: 1rem;
+    }
+    .empty-state h3 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .empty-state p {
+      color: #666;
+      font-size: 1.1rem;
+    }
+
+    /* ===== ENQUIRY FORM STYLES ===== */
+    .enquiry-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .enquiry-form .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .enquiry-form .form-group label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+    .enquiry-form .form-group input,
+    .enquiry-form .form-group select,
+    .enquiry-form .form-group textarea {
+      padding: 0.8rem 1rem;
+      border: 2px solid #000;
+      border-radius: 60px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: 0.2s;
+    }
+    .enquiry-form .form-group textarea {
+      border-radius: 30px;
+      min-height: 100px;
+      resize: vertical;
+    }
+    .enquiry-form .form-group input:focus,
+    .enquiry-form .form-group select:focus,
+    .enquiry-form .form-group textarea:focus {
+      border-color: #d4af37;
+    }
+    .auth-success {
+      color: #2e7d32;
+      background: #e8f5e9;
+      padding: 0.8rem;
+      border-radius: 60px;
+      text-align: center;
+      font-weight: 600;
+      border: 1px solid #2e7d32;
+    }
+    .auth-error {
+      color: #c62828;
+      background: #ffebee;
+      padding: 0.8rem;
+      border-radius: 60px;
+      text-align: center;
+      font-weight: 600;
+      border: 1px solid #c62828;
+    }
+
+    /* ===== MODAL STYLES ===== */
+    .modal {
+      display: none;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-size: cover;
-      background-position: center;
-      transition: opacity 0.35s ease;
-    }
-
-    .primary-img {
-      opacity: 1;
-      z-index: 2;
-    }
-    .secondary-img {
-      opacity: 0;
-      z-index: 1;
-    }
-    .image-frame:hover .primary-img {
-      opacity: 0;
-    }
-    .image-frame:hover .secondary-img {
-      opacity: 1;
-    }
-
-    .image-actions {
-      position: absolute;
-      bottom: 16px;
-      left: 0;
-      width: 100%;
-      display: flex;
-      gap: 10px;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
       justify-content: center;
-      padding: 0 12px;
-      z-index: 10;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      pointer-events: none;
     }
-    .image-frame:hover .image-actions {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
+    .modal.show {
+      display: flex;
     }
-
-    .img-add, .img-buy {
-      flex: 1;
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(4px);
-      border: none;
+    .modal-content {
+      background: #fff;
       border-radius: 40px;
-      padding: 0.7rem 0.2rem;
-      font-size: 0.8rem;
-      font-weight: 600;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .modal-header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid rgba(0,0,0,0.1);
-      color: #1a1a1a;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      pointer-events: auto;
+      margin-bottom: 1.5rem;
     }
-    .img-add i, .img-buy i {
-      font-size: 0.85rem;
-    }
-    .img-add:hover {
-      background: #ffffff;
-      border-color: #d4af37;
-      transform: scale(1.03);
-    }
-    .img-buy {
-      background: rgba(212,175,55,0.9);
-      color: #0c0c0c;
-      border-color: #d4af37;
-    }
-    .img-buy:hover {
-      background: #d4af37;
-      transform: scale(1.03);
-      box-shadow: 0 4px 10px rgba(212,175,55,0.3);
-    }
-
-    .product-title {
+    .modal-header h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
       font-family: 'Montserrat', sans-serif;
-      font-weight: 500;
-      font-size: clamp(1.1rem, 2vw, 1.3rem);
-      margin-bottom: 0.3rem;
-      color: #1e1e1e;
-      letter-spacing: -0.01em;
-    }
-
-    .product-category {
-      font-size: 0.75rem;
-      color: #a2a2a2;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.4rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 300;
     }
-
-    .product-rating {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      margin: 0.3rem 0 0.3rem;
-      flex-wrap: wrap;
-    }
-    .product-rating i {
-      color: #d4af37;
-      font-size: 0.9rem;
-    }
-    .product-rating span {
-      margin-left: 4px;
-      color: #5f5b57;
-      font-size: 0.8rem;
-      font-weight: 300;
-    }
-
-    .product-price {
-      color: #d4af37;
-      font-weight: 600;
-      font-size: clamp(1.4rem, 3vw, 1.6rem);
-      margin: 0.4rem 0 0.2rem;
-      font-family: 'Montserrat', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-    }
-    .product-price .inr-symbol {
-      font-size: clamp(1.2rem, 2.5vw, 1.4rem);
-      font-weight: 500;
-      margin-right: 2px;
-    }
-
-    .stock-badge {
-      font-size: 0.75rem;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      display: inline-block;
-      align-self: center;
-      margin-top: 0.5rem;
-      font-weight: 500;
-    }
-    .in-stock {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-    .low-stock {
-      background: #fff3e0;
-      color: #ef6c00;
-    }
-    .out-of-stock {
-      background: #ffebee;
-      color: #c62828;
-    }
-
-    /* PAGINATION */
-    .pagination {
-      display: flex;
-      justify-content: center;
-      gap: clamp(0.5rem, 2vw, 1rem);
-      margin: 3rem 0 4rem;
-      flex-wrap: wrap;
-    }
-    .pagination a {
-      text-decoration: none;
-      color: #1a1a1a;
-      padding: 0.5rem 1rem;
-      border-radius: 30px;
-      border: 1px solid #e0e0e0;
+    .close-modal {
+      background: none;
+      border: 2px solid #000;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 1.2rem;
+      cursor: pointer;
       transition: 0.2s;
-      font-weight: 400;
-      min-width: 40px;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .pagination a:hover, .pagination a.active-page {
-      background: #d4af37;
+    .close-modal:hover {
+      background: #000;
+      color: #d4af37;
       border-color: #d4af37;
-      color: #0c0c0c;
     }
 
-    /* RESPONSIVE BREAKPOINTS */
-    @media (min-width: 1200px) {
-      .container {
-        padding: 0 3rem;
-      }
-      .page-title h1 {
-        font-size: 3.2rem;
-      }
+    /* ===== SCROLL TOP ===== */
+    .scroll-top {
+      position: fixed; bottom: 20px; right: 20px; 
+      background: #000; color: #d4af37; width: 52px; height: 52px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; 
+      border: 2px solid #d4af37; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      opacity: 0; transform: translateY(15px); transition: 0.2s; z-index: 100;
+      font-size: 1.4rem; cursor: pointer;
     }
+    .scroll-top.visible { opacity: 1; transform: translateY(0); }
+    .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
 
-    @media (max-width: 992px) {
-      .product-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
-      }
-    }
-
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-      .product-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.2rem;
-      }
-      .container {
-        padding: 0 1.5rem;
-      }
-      .page-title h1 {
-        font-size: clamp(2rem, 7vw, 2.8rem);
-      }
-      .sort-bar {
+      .sort-wrapper {
         justify-content: center;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .product-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-      .container {
-        padding: 0 1rem;
-      }
-      .sort-bar {
-        justify-content: stretch;
       }
       .sort-select {
         width: 100%;
@@ -367,61 +472,41 @@
       .sort-select select {
         flex: 1;
       }
-      .product-card {
-        padding: 1rem 0.8rem 1.5rem;
-      }
-      .pagination a {
-        padding: 0.6rem 1rem;
-        min-width: 44px;
-      }
     }
 
-    @media (max-width: 360px) {
-      .image-actions {
-        flex-direction: column;
-        gap: 6px;
-        bottom: 10px;
+    @media (max-width: 480px) {
+      .page-title {
+        font-size: 2.2rem;
       }
-      .img-add, .img-buy {
-        padding: 0.5rem;
-        font-size: 0.75rem;
+      .modal-content {
+        padding: 1.5rem;
       }
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* Enquiry Form Styles (specific to essentials page) */
-    .enquiry-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .enquiry-form .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
     }
   </style>
 </head>
-<body class="bg-noise">
-  
-  <!-- Header loaded dynamically -->
+<body>
+
   <div id="header"></div>
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
 
   <main>
-    <!-- page title -->
-    <div class="container page-title">
-      <h1>all <span>essentials</span></h1>
-      <p>Everyday necessities — tech, travel & self-care, curated for modern life.</p>
-    </div>
+    <!-- PAGE HEADER -->
+    <section class="page-header">
+      <div class="page-header-bg"></div>
+      <div class="container">
+        <div class="breadcrumbs">
+          <a href="index.html">home</a>
+          <i class="fa-solid fa-chevron-right"></i>
+          <span>essentials</span>
+        </div>
+        <h1 class="page-title">all <span>essentials</span></h1>
+        <p class="page-desc">Everyday necessities — tech, travel & self-care, curated for modern life.</p>
+      </div>
+    </section>
 
-    <!-- sort bar -->
+    <!-- SORT BAR - NO UNDERLINE -->
     <div class="container">
-      <div class="sort-bar">
+      <div class="sort-wrapper">
         <div class="sort-select">
           <i class="fa-solid fa-arrow-down-wide-short"></i>
           <select id="sort-select" aria-label="Sort products">
@@ -434,14 +519,11 @@
       </div>
     </div>
 
-    <!-- product grid container -->
+    <!-- PRODUCT GRID -->
     <div class="container">
       <div id="product-grid-container" class="product-grid">
         <!-- products injected via JS -->
       </div>
-
-      <!-- pagination container -->
-      <div id="pagination-container" class="pagination"></div>
     </div>
   </main>
 
@@ -464,176 +546,37 @@
     </div>
   </div>
 
-  <!-- Common JavaScript -->
   <script src="common.js"></script>
-
-<script>
-    // ========== ESSENTIALS PAGE SPECIFIC VARIABLES ==========
-    let enquiries = [];
-
-    // ========== PRODUCT RENDERING ==========
-    function renderProducts() {
-      const gridContainer = document.getElementById('product-grid-container');
-      const sortSelect = document.getElementById('sort-select');
-      
-      if (!gridContainer) return;
-
-      // Debug: Log all products to see what's available
-      console.log('===== ESSENTIALS PAGE DEBUG =====');
-      console.log('All products from Firebase:', products);
-      
-      // First, let's see what products have showOnEssentials=true
-      const productsWithEssentialsTrue = products.filter(p => p.showOnEssentials === true);
-      console.log('Products with showOnEssentials = true:', productsWithEssentialsTrue);
-      
-      // Now filter for essentials page - MORE PERMISSIVE FILTER
-      const essentialsProducts = products.filter(p => {
-        // Check if product should show on essentials page (more flexible check)
-        const showOnEssentials = p.showOnEssentials === true || p.showOnEssentials === 'true' || p.showOnEssentials === 1;
-        
-        // Check category (completely case insensitive)
-        let categoryMatch = false;
-        if (p.category) {
-          const categoryLower = p.category.toString().toLowerCase().trim();
-          categoryMatch = categoryLower === 'essentials' || 
-                          categoryLower === 'essential' ||
-                          categoryLower.includes('essential');
-        }
-        
-        // Also include products that have showOnEssentials true regardless of category
-        // (as a fallback, since the admin panel might auto-assign)
-        const result = showOnEssentials || categoryMatch;
-        
-        if (result) {
-          console.log('✅ Product included:', p.title, '| Category:', p.category, '| showOnEssentials:', p.showOnEssentials);
-        }
-        
-        return result;
-      });
-
-      console.log('Final filtered essentials products:', essentialsProducts);
-      console.log('Total essentials products found:', essentialsProducts.length);
-
-      if (essentialsProducts.length === 0) {
-        gridContainer.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: #999;">
-            <i class="fa-solid fa-box-open" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-            <h3>No essential products found</h3>
-            <p>Check back later for new arrivals!</p>
-            <p style="font-size: 0.9rem; margin-top: 1rem; color: #666;">
-              Debug: Total products in database: ${products.length}
-            </p>
-          </div>
-        `;
-        return;
+  <script>
+    // ===== UTILITY FUNCTIONS =====
+    function renderRating(rating) {
+      if (!rating || rating === 0) return '<span>★ 0.0</span>';
+      const full = Math.floor(rating);
+      let stars = '';
+      for (let i = 0; i < 5; i++) {
+        stars += i < full ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
       }
-
-      function renderRating(rating) {
-        let stars = '';
-        const numRating = parseFloat(rating) || 0;
-        for (let i = 1; i <= 5; i++) {
-          if (numRating >= i) stars += '<i class="fa-solid fa-star"></i>';
-          else if (numRating > i - 1 && numRating < i) stars += '<i class="fa-solid fa-star-half-alt"></i>';
-          else stars += '<i class="fa-regular fa-star"></i>';
-        }
-        return stars;
-      }
-
-      function getStockStatus(stock) {
-        const stockNum = parseInt(stock) || 0;
-        if (stockNum > 10) return '<span class="stock-badge in-stock">In Stock</span>';
-        if (stockNum > 0) return `<span class="stock-badge low-stock">Only ${stockNum} left</span>`;
-        return '<span class="stock-badge out-of-stock">Out of Stock</span>';
-      }
-
-      function formatPrice(price) {
-        const numPrice = parseFloat(price) || 0;
-        return numPrice.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-      }
-
-      function getProductImage(product) {
-        // Try multiple sources for image
-        if (product.media && product.media.images && product.media.images[0]) {
-          return product.media.images[0].url || product.media.images[0];
-        }
-        if (product.images && product.images[0]) {
-          return product.images[0];
-        }
-        if (product.primaryImg) {
-          return product.primaryImg;
-        }
-        return 'https://via.placeholder.com/300?text=No+Image';
-      }
-
-      function getSortedProducts() {
-        let sorted = [...essentialsProducts];
-        switch (sortSelect.value) {
-          case 'price-low':
-            sorted.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
-            break;
-          case 'price-high':
-            sorted.sort((a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0));
-            break;
-          case 'rating':
-            sorted.sort((a, b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0));
-            break;
-          default:
-            break;
-        }
-        return sorted;
-      }
-
-      function renderAllProducts() {
-        const sortedProducts = getSortedProducts();
-        
-        let gridHtml = '';
-        sortedProducts.forEach(product => {
-          const mainImage = getProductImage(product);
-          const secondImage = product.media?.images?.[1]?.url || 
-                             product.images?.[1] || 
-                             product.secondaryImg || 
-                             mainImage;
-          
-          gridHtml += `
-            <a href="product.html?id=${product.id}" class="product-card" data-product-id="${product.id}">
-              <div class="image-frame">
-                <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-                <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
-                <div class="image-actions" onclick="event.preventDefault(); event.stopPropagation();">
-                  <button class="img-add" onclick="window.addToCart('${product.id}'); event.preventDefault(); event.stopPropagation();">
-                    <i class="fa-solid fa-cart-plus"></i> add
-                  </button>
-                  <button class="img-buy" onclick="window.buyNow('${product.id}'); event.preventDefault(); event.stopPropagation();">
-                    <i class="fa-solid fa-bolt"></i> buy
-                  </button>
-                </div>
-              </div>
-              <h3 class="product-title">${product.title || 'Untitled Product'}</h3>
-              <p class="product-category">${product.category || 'Uncategorized'}</p>
-              <div class="product-rating">
-                ${renderRating(product.rating)}
-                <span>(${(parseFloat(product.rating) || 0).toFixed(1)})</span>
-              </div>
-              <div class="product-price">
-                <span class="inr-symbol">₹</span>${formatPrice(product.price)}
-              </div>
-              ${getStockStatus(product.stock)}
-            </a>
-          `;
-        });
-        
-        gridContainer.innerHTML = gridHtml;
-      }
-
-      renderAllProducts();
-      
-      if (sortSelect) {
-        sortSelect.removeEventListener('change', renderAllProducts);
-        sortSelect.addEventListener('change', renderAllProducts);
-      }
+      return stars + `<span> ${rating.toFixed(1)}</span>`;
+    }
+    
+    function formatPrice(price) {
+      return price?.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') || '0.00';
+    }
+    
+    function getStockStatus(stock) {
+      if (stock > 5) return '<div class="stock-badge in-stock"><i class="fa-regular fa-circle-check"></i> in stock</div>';
+      if (stock > 0) return '<div class="stock-badge low-stock"><i class="fa-regular fa-clock"></i> low stock</div>';
+      return '<div class="stock-badge out-of-stock"><i class="fa-regular fa-circle-xmark"></i> out of stock</div>';
     }
 
-    // ========== ENQUIRY FUNCTIONS (Specific to essentials page) ==========
+    function handleScroll() {
+      const btn = document.getElementById('scrollTop');
+      if (btn) btn.classList.toggle('visible', window.scrollY > 200);
+    }
+
+    // ===== ENQUIRY FUNCTIONS =====
+    let enquiries = [];
+
     async function loadEnquiries() {
       if (!currentUser) {
         enquiries = [];
@@ -651,11 +594,9 @@
           ...doc.data()
         }));
         
-        // Cache for offline access
         localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
       } catch (error) {
         console.error('Error loading enquiries:', error);
-        // Fallback to localStorage
         const stored = localStorage.getItem('essence_user_enquiries');
         if (stored) {
           try {
@@ -678,7 +619,6 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        // Update local cache
         enquiry.id = docRef.id;
         enquiries.unshift(enquiry);
         localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
@@ -686,35 +626,9 @@
         return docRef.id;
       } catch (error) {
         console.error('Error saving enquiry:', error);
-        // Fallback to localStorage only
         enquiries.unshift(enquiry);
         localStorage.setItem('essence_user_enquiries', JSON.stringify(enquiries));
         return null;
-      }
-    }
-
-    function initializeEnquiry() {
-      loadEnquiries();
-      
-      // Check if enquiry button exists (you may need to add this button to your HTML)
-      const enquiryBtn = document.getElementById('enquiry-btn');
-      if (enquiryBtn) {
-        enquiryBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          if (!currentUser) {
-            alert('Please login to submit an enquiry');
-            openProfile();
-          } else {
-            openEnquiry();
-          }
-        });
-      }
-
-      const closeEnquiry = document.getElementById('close-enquiry');
-      if (closeEnquiry) {
-        closeEnquiry.addEventListener('click', function() {
-          closeModal('enquiry-modal');
-        });
       }
     }
 
@@ -740,8 +654,8 @@
               <option value="low">Low</option>
             </select>
           </div>
-          <button class="btn" onclick="window.submitEnquiry()" style="width: 100%; margin-top: 1rem;">
-            <i class="fa-regular fa-paper-plane"></i> Submit Enquiry
+          <button class="card-add-btn" onclick="window.submitEnquiry()" style="margin-top: 0.5rem;">
+            <i class="fa-regular fa-paper-plane"></i> submit enquiry
           </button>
           <div id="enquiry-message-status" class="auth-message"></div>
         </div>
@@ -782,7 +696,6 @@
         date: new Date().toISOString()
       };
 
-      // Save to Firebase
       await saveEnquiryToFirebase(newEnquiry);
 
       if (statusDiv) {
@@ -790,7 +703,6 @@
         statusDiv.textContent = 'Enquiry submitted successfully! We will respond within 24 hours.';
       }
 
-      // Clear form
       document.getElementById('enquiry-subject').value = '';
       document.getElementById('enquiry-message').value = '';
 
@@ -808,61 +720,146 @@
       }
     }
 
-    // ========== FIREBASE DATA LOADING ==========
-    async function loadProductsFromFirebase() {
-      try {
-        const snapshot = await db.collection('products').get();
-        products = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // ===== MAIN RENDERING FUNCTION =====
+    function renderProducts() {
+      const gridContainer = document.getElementById('product-grid-container');
+      const sortSelect = document.getElementById('sort-select');
+      
+      if (!gridContainer) return;
+
+      // Filter essentials products
+      const essentialsProducts = (window.products || []).filter(p => 
+        p.showOnEssentials === true && p.category === 'essentials'
+      );
+
+      console.log('Essentials products found:', essentialsProducts.length);
+
+      if (essentialsProducts.length === 0) {
+        gridContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-box-open"></i>
+            <h3>no essentials found</h3>
+            <p>Check back later for new arrivals!</p>
+          </div>
+        `;
+        return;
+      }
+
+      function getSortedProducts() {
+        let sorted = [...essentialsProducts];
+        switch (sortSelect.value) {
+          case 'price-low':
+            sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
+            break;
+          case 'price-high':
+            sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
+            break;
+          case 'rating':
+            sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+            break;
+          default:
+            // Keep original order (popular)
+            break;
+        }
+        return sorted;
+      }
+
+      function renderAllProducts() {
+        const sortedProducts = getSortedProducts();
         
-        // Cache in localStorage as backup
-        localStorage.setItem('MyEssantia_products', JSON.stringify(products));
+        let gridHtml = '';
+        sortedProducts.forEach(product => {
+          const mainImage = product.images?.[0] || product.primaryImg || 'https://via.placeholder.com/300';
+          const secondImage = product.images?.[1] || product.secondaryImg || mainImage;
+          const hasSale = product.oldPrice && product.oldPrice > product.price;
+          const discount = hasSale ? Math.round(((product.oldPrice - product.price)/product.oldPrice)*100) : 0;
+          
+          gridHtml += `
+            <div class="product-card" data-product-id="${product.id}">
+              <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
+                <div class="image-frame">
+                  <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+                  <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+                </div>
+                <p class="product-category">${product.category || 'essential'}</p>
+                <h3 class="product-title">${product.title}</h3>
+                <div class="product-rating">${renderRating(product.rating)}</div>
+                <div class="product-price-block">
+                  <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
+                  ${hasSale ? `<span class="old-price">₹${formatPrice(product.oldPrice)}</span>` : ''}
+                </div>
+                ${hasSale ? `<span class="sale-badge">-${discount}%</span>` : ''}
+                ${getStockStatus(product.stock)}
+              </a>
+              <button class="card-add-btn" onclick="window.addToCart('${product.id}'); event.stopPropagation();">
+                <i class="fa-solid fa-cart-plus"></i> add
+              </button>
+            </div>
+          `;
+        });
         
-        console.log('Products loaded from Firebase:', products);
-        renderProducts(); // Render after loading
-      } catch (error) {
-        console.error('Error loading products from Firebase:', error);
-        
-        // Try to load from localStorage as fallback
-        const cachedProducts = localStorage.getItem('MyEssantia_products');
-        if (cachedProducts) {
-          products = JSON.parse(cachedProducts);
-          console.log('Products loaded from localStorage (fallback):', products);
+        gridContainer.innerHTML = gridHtml;
+      }
+
+      renderAllProducts();
+      
+      if (sortSelect) {
+        sortSelect.removeEventListener('change', renderAllProducts);
+        sortSelect.addEventListener('change', renderAllProducts);
+      }
+    }
+
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCommonModals();
+      if (typeof loadComponents === 'function') loadComponents();
+      
+      // Set active nav
+      setTimeout(() => {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.nav-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
+      }, 200);
+
+      // Render products
+      if (window.products?.length) {
+        renderProducts();
+      } else {
+        const cached = localStorage.getItem('MyEssantia_products');
+        if (cached) {
+          window.products = JSON.parse(cached);
           renderProducts();
         }
       }
-    }
 
-    // ========== INITIALIZATION ==========
-    function initializeApp() {
-      // Load products from Firebase first
-      loadProductsFromFirebase();
-      
-      updateCartCount();
-      
-      // Load enquiries if user is logged in
-      if (currentUser) {
-        loadEnquiries();
+      // Setup enquiry modal
+      const enquiryBtn = document.getElementById('enquiry-btn');
+      if (enquiryBtn) {
+        enquiryBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (!currentUser) {
+            alert('Please login to submit an enquiry');
+            if (typeof openProfile === 'function') openProfile();
+          } else {
+            openEnquiry();
+          }
+        });
       }
-      
-      initializeEnquiry();
-    }
 
-    // Load common modals
-    async function loadCommonModals() {
-      try {
-        const response = await fetch('common.html');
-        const data = await response.text();
-        document.getElementById('common-modals').innerHTML = data;
-      } catch (error) {
-        console.error('Error loading common modals:', error);
+      const closeEnquiry = document.getElementById('close-enquiry');
+      if (closeEnquiry) {
+        closeEnquiry.addEventListener('click', function() {
+          closeModal('enquiry-modal');
+        });
       }
-    }
 
-    // Override modal close handlers for enquiry modal
-    function setupEssentialsEventListeners() {
       window.addEventListener('click', function(e) {
         const enquiryModal = document.getElementById('enquiry-modal');
         if (e.target === enquiryModal) {
@@ -875,35 +872,27 @@
           closeModal('enquiry-modal');
         }
       });
+    });
+
+    window.addEventListener('load', () => {
+      if (!window.products?.length) {
+        const cached = localStorage.getItem('MyEssantia_products');
+        if (cached) { 
+          window.products = JSON.parse(cached); 
+          renderProducts();
+        }
+      }
+    });
+
+    async function loadCommonModals() {
+      try {
+        const res = await fetch('common.html');
+        const data = await res.text();
+        document.getElementById('common-modals').innerHTML = data;
+      } catch (e) { console.warn('modals not loaded'); }
     }
 
-    // Listen for auth state changes to reload enquiries
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        loadEnquiries();
-      } else {
-        enquiries = [];
-        // Clear localStorage on logout
-        localStorage.removeItem('essence_user_enquiries');
-      }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      loadCommonModals();
-      loadComponents(); // This loads header/footer
-      setupEssentialsEventListeners();
-      
-      // The initializeApp function will be called from common.js
-      // But we'll override it here
-      window.initializeApp = initializeApp;
-    });
-
-    // Also try to load products if common.js doesn't have them
-    window.addEventListener('load', () => {
-      if (products.length === 0) {
-        loadProductsFromFirebase();
-      }
-    });
+    window.addEventListener('scroll', handleScroll);
   </script>
 </body>
 </html>
