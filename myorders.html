@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ESSENCE · track your order (responsive)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>MyEssantia · track your order</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -11,7 +11,7 @@
   <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Montserrat:wght@300..900&display=swap" rel="stylesheet">
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -24,45 +24,105 @@
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* -------------------- ORDER TRACKING PAGE SPECIFIC STYLES -------------------- */
-    body {
-      background-color: #fafafa;
+    /* ===== GLOBAL & RESETS ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { 
+      font-family: 'Inter', 'Montserrat', sans-serif; 
+      background: #ffffff; 
+      color: #1e1e1e; 
+      overflow-x: hidden;
+      line-height: 1.5;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
+    .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+    @media (min-width: 1600px) { .container { max-width: 1600px; padding: 0 40px; } }
+    @media (min-width: 640px) { .container { padding: 0 32px; } }
+
+    /* ===== ACTIVE NAV ===== */
+    .nav-link.active { color: #d4af37 !important; font-weight: 700; position: relative; }
+    .nav-link.active::after {
+      content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px;
+      background: #d4af37; animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn { from { width: 0; opacity: 0; } to { width: 100%; opacity: 1; } }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: #fcfaf7;
+      padding: 1.5rem 0 1rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 3px solid #000;
+    }
+    .page-header-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover; background-position: 60% 30%; opacity: 0.1;
+    }
+    .page-header .container { position: relative; z-index: 2; }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .breadcrumbs a {
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .breadcrumbs a:hover {
+      color: #d4af37;
+    }
+    .breadcrumbs i {
+      color: #d4af37;
+      font-size: 0.7rem;
+    }
+    .breadcrumbs span {
+      color: #000;
+    }
 
     .page-title {
-      text-align: center;
-      padding: clamp(0.5rem, 3vw, 1rem) 0 clamp(1rem, 4vw, 2rem);
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      line-height: 1.1;
+      color: #000;
+      margin-bottom: 0.25rem;
     }
-    .page-title h1 {
-      font-size: clamp(2.2rem, 6vw, 2.8rem);
-      font-weight: 400;
-      color: #1a1a1a;
-      line-height: 1.2;
-    }
-    .page-title h1 span {
+    .page-title span {
       color: #d4af37;
-      font-weight: 500;
-      font-style: italic;
+      font-weight: 900;
+      background: linear-gradient(145deg, #d4af37, #b07e2e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .page-title p {
-      color: #5f5b57;
-      max-width: 500px;
-      margin: 0.5rem auto 0;
-      font-size: clamp(0.9rem, 2.5vw, 1rem);
-      padding: 0 1rem;
+    .page-desc {
+      color: #2a2a2a;
+      font-size: 1rem;
+      max-width: 600px;
+      font-weight: 400;
+      line-height: 1.5;
     }
 
+    /* ===== TRACKING CARD ===== */
     .track-card {
       background: #ffffff;
-      border-radius: clamp(24px, 5vw, 32px);
+      border-radius: 40px;
       padding: clamp(1.5rem, 5vw, 2.5rem);
-      box-shadow: 0 15px 35px -10px rgba(0,0,0,0.05);
-      border: 1px solid #f0f0f0;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
       max-width: 600px;
-      margin: 0 auto 3rem;
+      margin: 2rem auto 3rem;
       width: 100%;
     }
 
@@ -70,7 +130,9 @@
       font-size: clamp(1.5rem, 4vw, 1.8rem);
       margin-bottom: 1.5rem;
       text-align: center;
-      font-weight: 400;
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -87,42 +149,41 @@
 
     .input-group label {
       display: block;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: #5f5b57;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #000;
       margin-bottom: 0.4rem;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
     }
 
     .input-group input {
       width: 100%;
       padding: 1rem 1.2rem;
-      border: 1px solid #e5e5e5;
+      border: 2px solid #000;
       border-radius: 60px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 1rem;
       transition: all 0.2s;
-      background: #fcfcfc;
+      background: #fff;
     }
 
     .input-group input:focus {
       outline: none;
       border-color: #d4af37;
-      box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
       background: #ffffff;
     }
 
     .track-btn {
-      background: #1a1a1a;
-      color: white;
+      background: #000;
+      color: #fff;
       width: 100%;
       padding: 1.1rem;
-      border: none;
+      border: 2px solid #000;
       border-radius: 60px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 1rem;
-      font-weight: 500;
+      font-weight: 600;
       letter-spacing: 0.5px;
       cursor: pointer;
       transition: all 0.2s;
@@ -131,12 +192,20 @@
       justify-content: center;
       gap: 10px;
       margin-top: 1rem;
+      text-transform: uppercase;
     }
 
     .track-btn:hover:not(:disabled) {
       background: #d4af37;
-      color: #0c0c0c;
-      transform: scale(1.02);
+      color: #000;
+      border-color: #d4af37;
+    }
+
+    .track-btn i { 
+      color: #d4af37; 
+    }
+    .track-btn:hover:not(:disabled) i { 
+      color: #000; 
     }
 
     .track-btn:disabled {
@@ -144,17 +213,41 @@
       cursor: not-allowed;
     }
 
-    .track-btn i {
-      font-size: 1rem;
-    }
-
     .order-note {
       text-align: center;
       margin-top: 1.2rem;
       font-size: 0.85rem;
-      color: #8f8b85;
+      color: #666;
     }
 
+    /* ===== ERROR/SUCCESS MESSAGES ===== */
+    .error-message {
+      text-align: center;
+      background: #ffebee;
+      border-radius: 60px;
+      padding: 1rem;
+      margin: 1rem 0;
+      color: #c62828;
+      border: 2px solid #c62828;
+      display: none;
+      font-weight: 600;
+    }
+    .error-message.show { display: block; }
+
+    .success-message {
+      text-align: center;
+      background: #e8f5e9;
+      border-radius: 60px;
+      padding: 1rem;
+      margin: 1rem 0;
+      color: #2e7d32;
+      border: 2px solid #2e7d32;
+      display: none;
+      font-weight: 600;
+    }
+    .success-message.show { display: block; }
+
+    /* ===== RESULT SECTION ===== */
     .result-section {
       max-width: 800px;
       margin: 2rem auto 4rem;
@@ -165,10 +258,10 @@
 
     .order-result-card {
       background: #ffffff;
-      border-radius: clamp(24px, 5vw, 36px);
+      border-radius: 40px;
       padding: clamp(1.5rem, 4vw, 2rem);
-      box-shadow: 0 20px 40px -14px rgba(0,0,0,0.08);
-      border: 1px solid #ece8e2;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
       transition: all 0.3s;
       display: none;
     }
@@ -189,30 +282,29 @@
       align-items: center;
       margin-bottom: 2rem;
       padding-bottom: 1.2rem;
-      border-bottom: 2px solid #f6f4f0;
+      border-bottom: 2px solid #000;
       flex-wrap: wrap;
       gap: 1rem;
     }
 
     .order-id-large {
       font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
+      font-weight: 800;
       font-size: clamp(1.3rem, 4vw, 1.6rem);
-      letter-spacing: -0.5px;
-      color: #1e1e1e;
+      color: #000;
     }
 
     .order-date-large {
-      background: #f4f2ef;
+      background: #f5f5f5;
       padding: 0.5rem 1.3rem;
       border-radius: 60px;
       font-size: 0.85rem;
-      font-weight: 500;
-      color: #4e4b47;
+      font-weight: 600;
+      color: #666;
       white-space: nowrap;
+      border: 1px solid #000;
     }
 
-    /* Make ordered date green */
     .order-date-large i {
       color: #2e7d32;
       margin-right: 4px;
@@ -220,16 +312,17 @@
 
     .order-status {
       display: inline-block;
-      padding: 0.4rem 1rem;
-      border-radius: 40px;
+      padding: 0.4rem 1.2rem;
+      border-radius: 60px;
       font-size: 0.8rem;
-      font-weight: 600;
+      font-weight: 700;
       margin-top: 0.5rem;
+      border: 2px solid transparent;
     }
-    .status-processing { background: #fff3e0; color: #ef6c00; }
-    .status-shipped { background: #e3f2fd; color: #0d47a1; }
-    .status-delivered { background: #e8f5e9; color: #2e7d32; }
-    .status-cancelled { background: #ffebee; color: #c62828; }
+    .status-processing { background: #fff3e0; color: #ef6c00; border-color: #ef6c00; }
+    .status-shipped { background: #e3f2fd; color: #0d47a1; border-color: #0d47a1; }
+    .status-delivered { background: #e8f5e9; color: #2e7d32; border-color: #2e7d32; }
+    .status-cancelled { background: #ffebee; color: #c62828; border-color: #c62828; }
 
     .order-items-container {
       display: flex;
@@ -242,29 +335,26 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      background: #faf9f7;
-      border-radius: 28px;
+      background: #fcfaf7;
+      border-radius: 30px;
       padding: 1rem;
       flex-wrap: wrap;
+      border: 1px solid #000;
     }
 
     .product-image-placeholder {
       width: 70px;
       height: 70px;
-      background: #eae4db;
+      background: #fff;
       border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #b9aa97;
+      color: #d4af37;
       font-size: 2rem;
       flex-shrink: 0;
       overflow: hidden;
-    }
-
-    .product-image-placeholder span {
-      font-size: 2.2rem;
-      line-height: 1;
+      border: 2px solid #000;
     }
 
     .product-info {
@@ -278,9 +368,10 @@
     }
 
     .product-name {
-      font-weight: 500;
+      font-weight: 700;
       font-size: 1.1rem;
-      color: #1e1e1e;
+      color: #000;
+      text-transform: uppercase;
     }
 
     .product-meta {
@@ -291,21 +382,22 @@
     }
 
     .product-qty {
-      color: #7f7a74;
+      color: #666;
       font-size: 0.95rem;
+      font-weight: 600;
     }
 
     .product-price {
-      font-weight: 600;
+      font-weight: 800;
       font-family: 'Montserrat', sans-serif;
-      color: #1a1a1a;
+      color: #d4af37;
       min-width: 70px;
       text-align: right;
     }
 
     .order-summary {
-      background: #f3f1ee;
-      border-radius: 28px;
+      background: #000;
+      border-radius: 30px;
       padding: 1.5rem 2rem;
       margin: 1.5rem 0 1rem;
       display: flex;
@@ -318,28 +410,31 @@
 
     .summary-left span {
       font-size: 1rem;
-      color: #5f5b57;
+      color: #d4af37;
+      font-weight: 600;
+      text-transform: uppercase;
     }
 
     .summary-right {
       font-size: clamp(1.5rem, 4vw, 1.8rem);
-      font-weight: 600;
-      color: #1a1a1a;
+      font-weight: 800;
+      color: #d4af37;
     }
 
     .tracking-info {
-      background: #f9f9f9;
-      border-radius: 20px;
+      background: #fcfaf7;
+      border-radius: 30px;
       padding: 1.2rem;
       margin: 1rem 0;
-      border-left: 4px solid #d4af37;
+      border: 2px solid #000;
     }
 
     .tracking-info p {
       display: flex;
       align-items: center;
       gap: 0.8rem;
-      color: #333;
+      color: #000;
+      font-weight: 600;
     }
 
     .tracking-info i {
@@ -357,7 +452,7 @@
     .action-btn {
       flex: 1;
       background: transparent;
-      border: 1px solid #d4af37;
+      border: 2px solid #000;
       border-radius: 60px;
       padding: 1rem;
       font-weight: 600;
@@ -368,104 +463,72 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      color: #1a1a1a;
+      color: #000;
       text-decoration: none;
-      font-family: inherit;
+      font-family: 'Inter', sans-serif;
       min-width: 140px;
+      text-transform: uppercase;
     }
 
     .action-btn:hover:not(:disabled) {
       background: #d4af37;
-      color: #0c0c0c;
+      color: #000;
       border-color: #d4af37;
     }
+    .action-btn:hover i { color: #000; }
 
     .action-btn.primary {
-      background: #1a1a1a;
-      border-color: #1a1a1a;
-      color: white;
+      background: #000;
+      border-color: #000;
+      color: #fff;
     }
+    .action-btn.primary i { color: #d4af37; }
     .action-btn.primary:hover:not(:disabled) {
       background: #d4af37;
       border-color: #d4af37;
-      color: #0c0c0c;
+      color: #000;
     }
+    .action-btn.primary:hover i { color: #000; }
 
     .action-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
 
-    .hidden {
-      display: none !important;
-    }
-
-    .error-message {
-      text-align: center;
-      background: #fff2f0;
-      border-radius: 60px;
-      padding: 1rem;
-      margin: 1rem 0;
-      color: #b33c1f;
-      border: 1px solid #ffcdc2;
-      display: none;
-    }
-    .error-message.show {
-      display: block;
-    }
-
-    .success-message {
-      text-align: center;
-      background: #e8f5e9;
-      border-radius: 60px;
-      padding: 1rem;
-      margin: 1rem 0;
-      color: #2e7d32;
-      border: 1px solid #a5d6a7;
-      display: none;
-    }
-    .success-message.show {
-      display: block;
-    }
-
-    .info-note {
-      text-align: center;
-      color: #8f8b85;
-      font-size: 0.9rem;
-      margin: 2rem 0;
-    }
-    .info-note i {
-      color: #d4af37;
-    }
-
+    /* ===== RECENT ORDERS ===== */
     .recent-orders {
       margin: 3rem 0;
       padding: 2rem;
-      background: #fff;
-      border-radius: 32px;
-      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+      background: #fcfaf7;
+      border-radius: 40px;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
     }
 
     .recent-orders h3 {
       font-size: 1.5rem;
+      font-weight: 800;
       margin-bottom: 1.5rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
     }
+    .recent-orders h3 i { color: #d4af37; }
 
     .recent-order-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1rem;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 2px solid #000;
       cursor: pointer;
       transition: background 0.2s;
     }
 
     .recent-order-item:hover {
-      background: #f9f9f9;
+      background: #fff;
     }
 
     .recent-order-item:last-child {
@@ -480,27 +543,170 @@
     }
 
     .recent-order-id {
-      font-weight: 600;
+      font-weight: 800;
       color: #d4af37;
+      font-family: 'Montserrat', sans-serif;
     }
 
     .recent-order-date {
       color: #666;
       font-size: 0.9rem;
-    }
-
-    .recent-order-total {
       font-weight: 600;
     }
 
-    footer {
-      margin-top: auto;
+    .recent-order-total {
+      font-weight: 800;
+      color: #000;
     }
 
-    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .track-btn, .action-btn {
-      touch-action: manipulation;
+    .hidden {
+      display: none !important;
     }
 
+    /* ===== SUPPORT MODAL ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.show { display: flex; }
+
+    .modal-content {
+      background: #fff;
+      border-radius: 40px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .modal-header h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+    }
+    .close-modal {
+      background: none;
+      border: 2px solid #000;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .close-modal:hover {
+      background: #000;
+      color: #d4af37;
+      border-color: #d4af37;
+    }
+
+    .support-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .support-form .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .support-form .form-group label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+    .support-form .form-group input,
+    .support-form .form-group textarea {
+      padding: 0.8rem 1rem;
+      border: 2px solid #000;
+      border-radius: 60px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: 0.2s;
+    }
+    .support-form .form-group textarea {
+      border-radius: 30px;
+      min-height: 100px;
+      resize: vertical;
+    }
+    .support-form .form-group input:focus,
+    .support-form .form-group textarea:focus {
+      border-color: #d4af37;
+    }
+    .support-form .btn {
+      background: #000;
+      color: #fff;
+      border: 2px solid #000;
+      border-radius: 60px;
+      padding: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .support-form .btn:hover {
+      background: #d4af37;
+      color: #000;
+      border-color: #d4af37;
+    }
+    .support-form .btn i { color: #d4af37; }
+    .support-form .btn:hover i { color: #000; }
+
+    .auth-success {
+      color: #2e7d32;
+      background: #e8f5e9;
+      padding: 0.8rem;
+      border-radius: 60px;
+      text-align: center;
+      font-weight: 600;
+      border: 2px solid #2e7d32;
+    }
+    .auth-error {
+      color: #c62828;
+      background: #ffebee;
+      padding: 0.8rem;
+      border-radius: 60px;
+      text-align: center;
+      font-weight: 600;
+      border: 2px solid #c62828;
+    }
+
+    /* ===== SCROLL TOP ===== */
+    .scroll-top {
+      position: fixed; bottom: 20px; right: 20px; 
+      background: #000; color: #d4af37; width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; 
+      border: 2px solid #d4af37; box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      opacity: 0; transform: translateY(15px); transition: 0.2s; z-index: 100;
+      font-size: 1.2rem; cursor: pointer;
+    }
+    .scroll-top.visible { opacity: 1; transform: translateY(0); }
+    .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
+
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
       .product-row {
         flex-direction: column;
@@ -524,18 +730,18 @@
         flex-direction: column;
         align-items: flex-start;
       }
-    }
-
-    @media (max-width: 480px) {
-      .track-card {
-        padding: 1.5rem;
-      }
       .result-header {
         flex-direction: column;
         align-items: flex-start;
       }
       .order-date-large {
         align-self: flex-start;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .track-card {
+        padding: 1.5rem;
       }
       .product-image-placeholder {
         width: 60px;
@@ -549,41 +755,46 @@
       }
     }
 
-    @media (max-width: 360px) {
-      .product-meta {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.3rem;
-      }
-      .product-price {
-        text-align: left;
-      }
+    .info-note {
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+      margin: 2rem 0;
+    }
+    .info-note i {
+      color: #d4af37;
     }
 
-    /* Support Form Styles */
-    .support-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    footer {
+      margin-top: auto;
     }
 
-    .support-form .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
+    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .track-btn, .action-btn {
+      touch-action: manipulation;
     }
   </style>
 </head>
-<body class="bg-noise">
-  
-  <!-- Header loaded dynamically -->
+<body>
+
   <div id="header"></div>
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
 
   <main>
-    <div class="container page-title">
-      <h1>my <span>orders</span></h1>
-      <p>Enter your details to track an order</p>
-    </div>
+    <!-- PAGE HEADER -->
+    <section class="page-header">
+      <div class="page-header-bg"></div>
+      <div class="container">
+        <div class="breadcrumbs">
+          <a href="index.html">home</a>
+          <i class="fa-solid fa-chevron-right"></i>
+          <span>track order</span>
+        </div>
+        <h1 class="page-title">my <span>orders</span></h1>
+        <p class="page-desc">Enter your details to track an order</p>
+      </div>
+    </section>
 
+    <!-- TRACKING CARD -->
     <div class="container">
       <div class="track-card">
         <h2><i class="fa-solid fa-magnifying-glass"></i> track your order</h2>
@@ -602,10 +813,12 @@
       </div>
     </div>
 
+    <!-- RESULT SECTION -->
     <div class="container result-section" id="resultContainer">
       <div class="order-result-card" id="orderResultCard"></div>
     </div>
 
+    <!-- RECENT ORDERS -->
     <div class="container" id="recentOrdersContainer" style="display: none;">
       <div class="recent-orders">
         <h3><i class="fa-regular fa-clock"></i> recent orders</h3>
@@ -613,21 +826,22 @@
       </div>
     </div>
 
+    <!-- SUPPORT LINK -->
     <div class="container" style="text-align: center; margin: 2rem auto 3rem;">
-      <p style="color: #8f8b85; font-size: 0.9rem;">
-        <i class="fa-regular fa-circle-question" style="color: #d4af37;"></i> 
-        need help? <a href="#" style="color: #1a1a1a; font-weight: 500;" onclick="showSupportModal()">contact support</a>
+      <p class="info-note">
+        <i class="fa-regular fa-circle-question"></i> 
+        need help? <a href="#" style="color: #000; font-weight: 600; text-decoration: none; border-bottom: 2px solid #d4af37;" onclick="showSupportModal()">contact support</a>
       </p>
     </div>
   </main>
 
-  <!-- Footer loaded dynamically -->
+  <!-- Footer -->
   <div id="footer"></div>
 
   <!-- Common Modals -->
   <div id="common-modals"></div>
 
-  <!-- Support Modal (specific to order tracking page) -->
+  <!-- Support Modal -->
   <div id="support-modal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -635,7 +849,7 @@
         <button class="close-modal" onclick="closeSupportModal()">&times;</button>
       </div>
       <div class="support-form">
-        <p style="text-align: center; margin-bottom: 1.5rem;">How can we help you today?</p>
+        <p style="text-align: center; margin-bottom: 1.5rem; font-weight: 600;">How can we help you today?</p>
         <div class="form-group">
           <label for="support-name">Name</label>
           <input type="text" id="support-name" placeholder="Your name">
@@ -648,7 +862,7 @@
           <label for="support-message">Message</label>
           <textarea id="support-message" rows="4" placeholder="Describe your issue..."></textarea>
         </div>
-        <button class="btn" onclick="submitSupport()" style="width: 100%;">
+        <button class="btn" onclick="submitSupport()">
           <i class="fa-regular fa-paper-plane"></i> Send Message
         </button>
         <div id="support-message-status" class="auth-message" style="margin-top: 1rem;"></div>
@@ -656,14 +870,17 @@
     </div>
   </div>
 
-  <!-- Common JavaScript -->
   <script src="common.js"></script>
+  <script>
+    // ===== UTILITY FUNCTIONS =====
+    function handleScroll() {
+      const btn = document.getElementById('scrollTop');
+      if (btn) btn.classList.toggle('visible', window.scrollY > 200);
+    }
 
- <script>
-    // ========== ORDER TRACKING PAGE SPECIFIC VARIABLES ==========
+    // ===== ORDER TRACKING FUNCTIONS =====
     let orders = [];
 
-    // ========== ORDER TRACKING FUNCTIONS ==========
     async function initializeOrderTracking() {
       // Load orders from Firebase first if user is logged in
       if (currentUser) {
@@ -1014,7 +1231,7 @@
       }, 100);
     }
 
-    // ========== SUPPORT FUNCTIONS ==========
+    // ===== SUPPORT FUNCTIONS =====
     window.showSupportModal = function() {
       const supportModal = document.getElementById('support-modal');
       if (supportModal) {
@@ -1075,43 +1292,21 @@
       }, 2000);
     };
 
-    // ========== INITIALIZATION ==========
-    function initializeApp() {
-      updateCartCount();
-      updateProfileIcon();
-      initializeOrderTracking();
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCommonModals();
+      if (typeof loadComponents === 'function') loadComponents();
       
-      // currentUser is now managed by Firebase in common.js
-      // No need to load from localStorage
-    }
+      // Set active nav
+      setTimeout(() => {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.nav-link[href="track-order.html"]').forEach(l => l.classList.add('active'));
+      }, 200);
 
-    // Override updateProfileIcon to handle order tracking specific UI
-    const originalUpdateProfileIcon = window.updateProfileIcon;
-    window.updateProfileIcon = function() {
-      if (originalUpdateProfileIcon) {
-        originalUpdateProfileIcon();
-      }
-      // Additional order tracking specific UI updates
-      if (currentUser) {
-        loadUserOrdersFromFirestore();
-      } else {
-        hideRecentOrders();
-      }
-    };
+      // Initialize order tracking
+      initializeOrderTracking();
 
-    // Load common modals
-    async function loadCommonModals() {
-      try {
-        const response = await fetch('common.html');
-        const data = await response.text();
-        document.getElementById('common-modals').innerHTML = data;
-      } catch (error) {
-        console.error('Error loading common modals:', error);
-      }
-    }
-
-    // Setup support modal listeners
-    function setupSupportModalListeners() {
+      // Setup support modal listeners
       window.addEventListener('click', function(e) {
         const supportModal = document.getElementById('support-modal');
         if (e.target === supportModal) {
@@ -1124,7 +1319,26 @@
           closeSupportModal();
         }
       });
+    });
+
+    async function loadCommonModals() {
+      try {
+        const res = await fetch('common.html');
+        const data = await res.text();
+        document.getElementById('common-modals').innerHTML = data;
+      } catch (e) { console.warn('modals not loaded'); }
     }
+
+    window.addEventListener('scroll', handleScroll);
+
+    // ===== MODAL CLOSE FUNCTIONS =====
+    window.closeModal = function(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    };
 
     // Listen for auth state changes
     firebase.auth().onAuthStateChanged((user) => {
@@ -1142,12 +1356,6 @@
           }
         }
       }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      loadCommonModals();
-      loadComponents();
-      setupSupportModalListeners();
     });
   </script>
 </body>
