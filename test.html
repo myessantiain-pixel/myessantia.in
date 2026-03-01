@@ -66,6 +66,7 @@
     .hero-title {
       font-size: 2.5rem;
       font-weight: 700; line-height: 1.1; color: #000; margin-bottom: 1rem;
+      font-family: 'Montserrat', sans-serif;
     }
     .hero-title strong { font-weight: 900; color: #d4af37; font-style: italic; background: linear-gradient(145deg, #d4af37, #b8952e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .hero-desc { font-size: 1.1rem; color: #1a1a1a; margin-bottom: 1.8rem; max-width: 480px; line-height: 1.5; font-weight: 400; }
@@ -109,18 +110,45 @@
       gap: 0.5rem 1rem; margin: 3.5rem 0 2rem;
     }
     .section-title {
-      font-size: 2.4rem; font-weight: 700; letter-spacing: -0.02em; margin: 0;
-      font-family: 'Playfair Display', serif; text-transform: uppercase;
+      font-size: 2.4rem; 
+      font-weight: 800; 
+      letter-spacing: -0.02em; 
+      margin: 0;
+      font-family: 'Montserrat', sans-serif; 
+      text-transform: uppercase;
+      position: relative;
     }
-    .section-title span { font-weight: 900; color: #d4af37; border-bottom: 4px solid #000; padding-bottom: 0.2rem; }
+    .section-title span { 
+      font-weight: 900; 
+      color: #d4af37; 
+      position: relative;
+    }
+    .section-title span::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #000;
+    }
     .view-all-link {
-      text-decoration: none; color: #000; font-size: 1.1rem; font-weight: 700;
-      border-bottom: 3px solid #d4af37; padding-bottom: 3px; white-space: nowrap;
-      transition: 0.2s; display: flex; align-items: center; gap: 8px;
+      text-decoration: none; 
+      color: #000; 
+      font-size: 1.1rem; 
+      font-weight: 700;
+      border-bottom: 3px solid #d4af37; 
+      padding-bottom: 3px; 
+      white-space: nowrap;
+      transition: 0.2s; 
+      display: flex; 
+      align-items: center; 
+      gap: 8px;
+      font-family: 'Montserrat', sans-serif;
     }
     .view-all-link:hover { color: #d4af37; gap: 12px; }
 
-    /* ===== BOLDER PRODUCT GRID – 2 COLUMNS ON MOBILE ===== */
+    /* ===== PRODUCT GRID – 2 COLUMNS ON MOBILE, SQUARE IMAGES ===== */
     .product-grid {
       display: grid; 
       grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
@@ -146,10 +174,8 @@
     }
 
     .product-card {
-      background: #fff; 
-      border-radius: 24px; 
-      padding: 1rem 0.8rem 1.2rem;
-      box-shadow: 0 20px 40px -12px rgba(0,0,0,0.15); 
+      background: transparent; 
+      padding: 0;
       transition: all 0.3s cubic-bezier(0.2,0,0,1); 
       text-align: left;
       display: flex; 
@@ -159,23 +185,22 @@
       color: inherit; 
       position: relative;
       animation: fadeInUp 0.5s ease backwards;
-      border: 2px solid #000; /* Bold black border */
+      border: none; /* No border on card */
     }
     .product-card:hover {
-      box-shadow: 0 30px 50px -15px rgba(212,175,55,0.4);
-      transform: translateY(-8px) scale(1.02);
-      border-color: #d4af37;
+      transform: translateY(-6px);
     }
 
     .image-frame {
       position: relative; 
       width: 100%; 
-      aspect-ratio: 1/1; 
-      border-radius: 20px;
+      aspect-ratio: 1/1; /* Perfect square */
+      border-radius: 16px; /* Slightly rounded corners */
       overflow: hidden; 
       margin-bottom: 1rem; 
       background-color: #f8f6f2;
-      border: 2px solid #000; /* Bold black border */
+      border: 2px solid #000; /* Bold black border ONLY on image */
+      box-shadow: 0 10px 20px -8px rgba(0,0,0,0.2);
     }
     .primary-img, .secondary-img { 
       position: absolute; top:0; left:0; width:100%; height:100%; 
@@ -200,9 +225,9 @@
       color: #fff;
       cursor: pointer; 
       width: 100%; 
-      margin: 0.8rem 0 0.2rem; 
+      margin: 0.8rem 0 0; 
       transition: 0.2s;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -223,6 +248,7 @@
       letter-spacing: 0.5px; 
       margin: 0.1rem 0;
       font-weight: 600;
+      font-family: 'Montserrat', sans-serif;
     }
     .product-title { 
       font-weight: 800; 
@@ -230,6 +256,7 @@
       margin: 0.2rem 0; 
       color: #000; 
       line-height: 1.3;
+      font-family: 'Montserrat', sans-serif;
       text-transform: uppercase;
     }
 
@@ -241,7 +268,7 @@
       font-weight: 600;
     }
     .product-rating i { color: #d4af37; font-size: 0.8rem; }
-    .product-rating span { font-weight: 700; color: #000; margin-left: 4px; }
+    .product-rating span { font-weight: 700; color: #000; margin-left: 4px; font-family: 'Montserrat', sans-serif; }
 
     .product-price-block {
       display: flex; 
@@ -258,7 +285,7 @@
       line-height: 1.2;
     }
     .current-price .inr-symbol { font-size: 1rem; font-weight: 700; }
-    .old-price { color: #999; font-size: 0.9rem; text-decoration: line-through; font-weight: 600; }
+    .old-price { color: #999; font-size: 0.9rem; text-decoration: line-through; font-weight: 600; font-family: 'Montserrat', sans-serif; }
     .sale-badge {
       background: #d4af37; 
       color: #000; 
@@ -269,11 +296,13 @@
       letter-spacing: 0.5px; 
       margin-left: auto;
       border: 1px solid #000;
+      font-family: 'Montserrat', sans-serif;
     }
     .stock-badge { 
       font-size: 0.7rem; 
       margin-top: 0.3rem;
       font-weight: 600;
+      font-family: 'Montserrat', sans-serif;
     }
     .in-stock { color: #2e7d32; font-weight: 700; }
 
@@ -357,7 +386,7 @@
       font-size: 2.4rem; 
       font-weight: 700; 
       margin: 0 0 0.3rem; 
-      font-family: 'Playfair Display', serif;
+      font-family: 'Montserrat', sans-serif;
       text-transform: uppercase;
     }
     .slide-content h3 span { color: #d4af37; font-weight: 900; }
@@ -367,6 +396,7 @@
       font-size: 1.2rem; 
       line-height: 1.6;
       font-weight: 500;
+      font-family: 'Montserrat', sans-serif;
     }
     .slide-divider { width: 100px; height: 3px; background: linear-gradient(90deg, #000000, transparent); }
     
@@ -382,7 +412,7 @@
       font-size: 2.8rem; 
       font-weight: 700; 
       margin-bottom: 3rem;
-      font-family: 'Playfair Display', serif; 
+      font-family: 'Montserrat', sans-serif; 
       position: relative;
       text-transform: uppercase;
     }
@@ -494,6 +524,7 @@
       position: relative; 
       z-index: 6;
       font-weight: 500;
+      font-family: 'Montserrat', sans-serif;
     }
     .testimonial-card h5 { 
       font-weight: 800; 
@@ -505,6 +536,7 @@
       position: relative; 
       z-index: 6;
       text-transform: uppercase;
+      font-family: 'Montserrat', sans-serif;
     }
     .testimonial-card h5::before { content: '— '; color: #d4af37; font-weight: 700; }
 
@@ -546,6 +578,7 @@
       font-size: 1.1rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      font-family: 'Montserrat', sans-serif;
     }
     .btn-primary {
       background: #000;
@@ -641,13 +674,14 @@
     </div>
 
     <!-- PRODUCTS SECTION (same structure, same functions) -->
-    <div class="container" id="products-section">
-      <div class="section-header">
-        <h2 class="section-title"><span>accessories & essentials</span> — new arrivals</h2>
-        <a href="accessories.html" class="view-all-link">view all products <i class="fa-solid fa-arrow-right"></i></a>
-      </div>
-      <div class="product-grid" id="product-grid-container"></div>
-    </div>
+ <!-- PRODUCTS SECTION -->
+<div class="container" id="products-section">
+  <div class="section-header">
+    <h2 class="section-title"><span>best sellers</span> — trending now</h2>
+    <a href="accessories.html" class="view-all-link">view all products <i class="fa-solid fa-arrow-right"></i></a>
+  </div>
+  <div class="product-grid" id="product-grid-container"></div>
+</div>
 
     <!-- TWO-SLIDE ABOUT (refined style) -->
     <div class="container">
