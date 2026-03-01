@@ -96,6 +96,53 @@
       transform: scale(1.1);
     }
 
+    .hero-buttons .btn {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-buttons .btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  z-index: -1;
+}
+
+.hero-buttons .btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.hero-buttons .btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.5);
+  border-color: #d4af37;
+}
+
+.hero-buttons .btn:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.hero-buttons .btn-outline {
+  transition: all 0.3s ease;
+}
+
+.hero-buttons .btn-outline:hover {
+  background: #d4af37;
+  color: #0c0c0c;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.4);
+}
+
     .hero .container { 
       position: relative; 
       z-index: 2;
