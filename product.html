@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* -------------------- PRODUCT PAGE SPECIFIC STYLES -------------------- */
+ /* -------------------- PRODUCT PAGE SPECIFIC STYLES -------------------- */
 /* Breadcrumb */
 .breadcrumb {
   display: flex;
@@ -54,6 +54,7 @@
   padding: 1rem 0 3rem;
   max-width: 1400px;
   margin: 0 auto;
+  overflow: visible; /* Ensure dropdowns aren't clipped */
 }
 
 /* Gallery Section - Better desktop sizing */
@@ -122,6 +123,7 @@
 .product-info {
   padding: 0.5rem 0;
   position: relative;
+  overflow: visible !important; /* Prevent dropdown clipping */
 }
 
 /* Desktop share button - positioned next to title */
@@ -132,6 +134,7 @@
     justify-content: space-between;
     gap: 1rem;
     margin-bottom: 1rem;
+    overflow: visible; /* Prevent dropdown clipping */
   }
 
   .product-title {
@@ -145,7 +148,7 @@
   }
 
   .share-container {
-    position: static;
+    position: relative; /* Changed from static to relative */
     margin: 0;
     flex-shrink: 0;
   }
@@ -179,7 +182,7 @@
 
   .share-menu {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 10px); /* Position right below the button */
     right: 0;
     left: auto;
     background: white;
@@ -187,7 +190,7 @@
     box-shadow: 0 15px 30px -12px rgba(0,0,0,0.2);
     padding: 1rem;
     width: 320px;
-    z-index: 100;
+    z-index: 1000; /* Increased z-index */
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
@@ -262,7 +265,7 @@
   box-shadow: 0 15px 30px -12px rgba(0,0,0,0.2);
   padding: 1rem;
   width: 320px;
-  z-index: 100;
+  z-index: 1000; /* Increased z-index */
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
@@ -1549,6 +1552,7 @@ body.modal-open {
     border-radius: 30px 30px 0 0;
     transform: translateY(100%);
     padding-bottom: 1.5rem;
+    z-index: 1000;
   }
   
   .share-menu.show {
