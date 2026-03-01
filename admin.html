@@ -45,6 +45,8 @@
       --color-info-light: #E3F2FD;
       --color-warning: #ffbb33;
       --color-warning-light: #FFF3E0;
+      --color-high-demand: #ff6b6b;
+      --color-high-demand-light: #ffeeee;
       
       --spacing-xs: 0.5rem;
       --spacing-sm: 0.75rem;
@@ -499,6 +501,86 @@
       color: var(--color-warning);
     }
 
+    /* High Demand Toggle */
+    .high-demand-toggle {
+      display: flex;
+      align-items: center;
+      padding: var(--spacing-md) 0;
+      margin: var(--spacing-md) 0;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      margin-right: var(--spacing-md);
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--color-high-demand);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+
+    .toggle-label {
+      font-weight: 600;
+      font-size: var(--font-size-base);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .toggle-label i {
+      color: var(--color-high-demand);
+      font-size: var(--font-size-lg);
+    }
+
+    .high-demand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--color-high-demand);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-left: var(--spacing-xs);
+    }
+
     .media-upload-section {
       background: var(--color-surface);
       border-radius: var(--border-radius-xl);
@@ -812,7 +894,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 900px;
+      min-width: 1000px;
     }
 
     th {
@@ -870,6 +952,19 @@
       gap: 4px;
       background: var(--color-warning);
       color: var(--color-secondary);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-left: var(--spacing-xs);
+    }
+
+    .high-demand-badge-table {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--color-high-demand);
+      color: white;
       padding: 2px 8px;
       border-radius: 20px;
       font-size: 10px;
@@ -992,6 +1087,13 @@
         <div class="stat-info">
           <h3 id="newin-products">0</h3>
           <p>New In (24h)</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-fire"></i></div>
+        <div class="stat-info">
+          <h3 id="high-demand-products">0</h3>
+          <p>High Demand</p>
         </div>
       </div>
       <div class="stat-card">
@@ -1147,12 +1249,29 @@
             </div>
           </div>
 
-          <!-- Section 5: Page Visibility -->
+          <!-- Section 5: Page Visibility & Special Flags -->
           <div class="form-section">
             <div class="form-section-title">
               <i class="fa-solid fa-eye"></i>
-              <span>Page Visibility</span>
+              <span>Page Visibility & Special Flags</span>
             </div>
+            
+            <!-- High Demand Toggle -->
+            <div class="high-demand-toggle">
+              <label class="toggle-switch">
+                <input type="checkbox" id="product-high-demand">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label">
+                <i class="fa-solid fa-fire"></i>
+                Mark as High Demand Product
+              </span>
+            </div>
+            <div class="field-hint">
+              <i class="fa-solid fa-info-circle"></i>
+              When enabled, users will see a priority access popup when clicking "Buy Now"
+            </div>
+
             <div class="page-selector">
               <div class="page-chip">
                 <input type="checkbox" id="show-on-home">
@@ -1186,6 +1305,7 @@
               <span id="auto-assign-message">
                 New products are automatically added to "New In" for 24 hours. 
                 Category pages auto-sync with product category. Home page requires manual selection.
+                High Demand products show priority access popup on Buy Now.
               </span>
             </div>
           </div>
@@ -1219,6 +1339,7 @@
             <th>Price</th>
             <th>Stock</th>
             <th>Rating</th>
+            <th>Flags</th>
             <th>Pages</th>
             <th>Actions</th>
           </tr>
@@ -1269,6 +1390,7 @@
     const productShortDesc = document.getElementById('product-short-desc');
     const productDescription = document.getElementById('product-description');
     const productSpecs = document.getElementById('product-specs');
+    const productHighDemand = document.getElementById('product-high-demand');
     const showOnHome = document.getElementById('show-on-home');
     const showOnAccessories = document.getElementById('show-on-accessories');
     const showOnEssentials = document.getElementById('show-on-essentials');
@@ -1279,6 +1401,7 @@
     const emptyProducts = document.getElementById('empty-products');
     const totalProducts = document.getElementById('total-products');
     const newinProducts = document.getElementById('newin-products');
+    const highDemandProducts = document.getElementById('high-demand-products');
     const totalStock = document.getElementById('total-stock');
     const productCount = document.getElementById('product-count');
     const formTitle = document.getElementById('form-title');
@@ -1517,6 +1640,10 @@
         return (now - creationDate) < (24 * 60 * 60 * 1000);
       }).length;
       newinProducts.textContent = newInCount;
+      
+      const highDemandCount = products.filter(p => p.highDemand).length;
+      highDemandProducts.textContent = highDemandCount;
+      
       const totalStockValue = products.reduce((sum, p) => sum + (p.stock || 0), 0);
       totalStock.textContent = totalStockValue;
       productCount.textContent = `${products.length} products`;
@@ -1567,6 +1694,7 @@
           <td>
             <strong>${product.title}</strong>
             ${isNewIn ? '<span class="newin-badge"><i class="fa-regular fa-clock"></i> NEW</span>' : ''}
+            ${product.highDemand ? '<span class="high-demand-badge-table"><i class="fa-solid fa-fire"></i> HIGH DEMAND</span>' : ''}
             ${product.brand ? `<div style="font-size:var(--font-size-xs); color:var(--color-text-lighter);">${product.brand}</div>` : ''}
           </td>
           <td>${product.category}</td>
@@ -1578,6 +1706,12 @@
             </span>
           </td>
           <td>${product.rating?.toFixed(1)} <i class="fa-solid fa-star" style="color:var(--color-primary);"></i></td>
+          <td>
+            <div style="display:flex; gap:4px; flex-wrap:wrap;">
+              ${product.highDemand ? '<span class="high-demand-badge-table"><i class="fa-solid fa-fire"></i> HD</span>' : ''}
+              ${isNewIn ? '<span class="newin-badge"><i class="fa-regular fa-clock"></i> NEW</span>' : ''}
+            </div>
+          </td>
           <td><div style="display:flex; gap:4px; flex-wrap:wrap;">${pages.join(' ')}</div></td>
           <td>
             <div class="action-btns">
@@ -1606,7 +1740,7 @@
       if (category) {
         message += `Products in "${category}" category are auto-assigned to the ${category} page. `;
       }
-      message += 'Home page requires manual selection.';
+      message += 'Home page requires manual selection. High Demand products show priority access popup on Buy Now.';
       autoAssignMessage.textContent = message;
     }
 
@@ -1636,7 +1770,8 @@
         showOnHome: showOnHome.checked,
         showOnAccessories: showOnAccessories.checked,
         showOnEssentials: showOnEssentials.checked,
-        showOnNew: true // Always true for new products
+        showOnNew: true, // Always true for new products
+        highDemand: productHighDemand.checked // New high demand flag
       };
 
       // Add ID if editing
@@ -1677,6 +1812,7 @@
       showOnAccessories.checked = product.showOnAccessories || false;
       showOnEssentials.checked = product.showOnEssentials || false;
       showOnNew.checked = product.showOnNew || false;
+      productHighDemand.checked = product.highDemand || false;
 
       formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> Edit Product';
       
@@ -1708,6 +1844,7 @@
       showOnAccessories.checked = false;
       showOnEssentials.checked = false;
       showOnNew.checked = false;
+      productHighDemand.checked = false;
       newinStatusContainer.style.display = 'none';
       formTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> Add New Product';
       updateCategorySync();
