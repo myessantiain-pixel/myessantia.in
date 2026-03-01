@@ -34,7 +34,8 @@
       overflow-x: hidden;
       line-height: 1.5;
     }
-    .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+    .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 30px; }
+    @media (min-width: 1600px) { .container { max-width: 1600px; padding: 0 40px; } }
     @media (min-width: 640px) { .container { padding: 0 32px; } }
 
     /* ===== ACTIVE NAV ===== */
@@ -48,7 +49,7 @@
     /* ===== PAGE HEADER ===== */
     .page-header {
       background: #fcfaf7;
-      padding: 2rem 0 1.5rem;
+      padding: 1.5rem 0 1rem;
       position: relative;
       overflow: hidden;
       border-bottom: 3px solid #000;
@@ -59,39 +60,27 @@
       background-size: cover; background-position: 60% 30%; opacity: 0.1;
     }
     .page-header .container { position: relative; z-index: 2; }
-    .page-title {
-      font-size: clamp(2.5rem, 8vw, 4rem);
-      font-weight: 800;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-      line-height: 1.1;
-      color: #000;
-      margin-bottom: 1rem;
-    }
-    .page-title span {
-      color: #d4af37;
-      font-weight: 900;
-      background: linear-gradient(145deg, #d4af37, #b07e2e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .page-desc {
-      color: #2a2a2a;
-      font-size: 1.1rem;
-      max-width: 600px;
-      font-weight: 400;
-      line-height: 1.6;
-      margin-bottom: 1rem;
+
+    /* ===== HEADER CONTENT WITH SORT ===== */
+    .header-content {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
     }
 
-    /* ===== BREADCRUMBS ===== */
+    .title-section {
+      flex: 1;
+      min-width: 280px;
+    }
+
     .breadcrumbs {
       display: flex;
       align-items: center;
       gap: 8px;
-      margin: 0.5rem 0 1.5rem;
-      font-size: 0.85rem;
+      margin: 0 0 0.5rem;
+      font-size: 0.8rem;
       font-weight: 600;
       text-transform: uppercase;
     }
@@ -111,36 +100,61 @@
       color: #000;
     }
 
-    /* ===== SORT BAR - NO UNDERLINE ===== */
-    .sort-wrapper {
-      display: flex;
-      justify-content: flex-end;
-      margin: 1rem 0 2rem;
+    .page-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      line-height: 1.1;
+      color: #000;
+      margin-bottom: 0.25rem;
     }
+    .page-title span {
+      color: #d4af37;
+      font-weight: 900;
+      background: linear-gradient(145deg, #d4af37, #b07e2e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .page-desc {
+      color: #2a2a2a;
+      font-size: 1rem;
+      max-width: 600px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    /* ===== SORT SECTION - INSIDE HEADER ===== */
+    .sort-header-section {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    
     .sort-select {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
       background: #000;
-      padding: 0.6rem 1.5rem;
+      padding: 0.5rem 1.5rem;
       border-radius: 60px;
       border: 2px solid #d4af37;
       cursor: pointer;
       transition: 0.2s;
-      width: fit-content;
     }
     .sort-select:hover {
       background: #1a1a1a;
     }
     .sort-select i {
       color: #d4af37;
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
     .sort-select select {
       background: transparent;
       border: none;
       font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: #fff;
       outline: none;
@@ -150,7 +164,23 @@
     .sort-select select option {
       background: #000;
       color: #fff;
-      padding: 0.5rem;
+    }
+
+    /* ===== RESULTS COUNT ===== */
+    .results-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      margin: 0.5rem 0 1rem;
+    }
+    .results-count {
+      color: #666;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: #f5f5f5;
+      padding: 0.2rem 1rem;
+      border-radius: 60px;
+      border: 1px solid #000;
+      display: inline-block;
     }
 
     /* ===== PRODUCT GRID ===== */
@@ -158,11 +188,12 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 1.2rem;
-      margin: 0 0 4rem;
+      margin: 1rem 0 4rem;
     }
     @media (min-width: 600px) { .product-grid { gap: 1.8rem; } }
     @media (min-width: 800px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (min-width: 1100px) { .product-grid { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
+    @media (min-width: 1400px) { .product-grid { grid-template-columns: repeat(5, 1fr); gap: 2rem; } }
 
     .product-card {
       background: transparent;
@@ -462,8 +493,13 @@
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-      .sort-wrapper {
-        justify-content: center;
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .sort-header-section {
+        width: 100%;
+        justify-content: flex-start;
       }
       .sort-select {
         width: 100%;
@@ -471,6 +507,9 @@
       }
       .sort-select select {
         flex: 1;
+      }
+      .results-wrapper {
+        justify-content: center;
       }
     }
 
@@ -490,32 +529,42 @@
   <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
 
   <main>
-    <!-- PAGE HEADER -->
+    <!-- PAGE HEADER WITH SORT INTEGRATED -->
     <section class="page-header">
       <div class="page-header-bg"></div>
       <div class="container">
-        <div class="breadcrumbs">
-          <a href="index.html">home</a>
-          <i class="fa-solid fa-chevron-right"></i>
-          <span>essentials</span>
+        <div class="header-content">
+          <!-- Title Section -->
+          <div class="title-section">
+            <div class="breadcrumbs">
+              <a href="index.html">home</a>
+              <i class="fa-solid fa-chevron-right"></i>
+              <span>essentials</span>
+            </div>
+            <h1 class="page-title">all <span>essentials</span></h1>
+            <p class="page-desc">Everyday necessities — tech, travel & self-care, curated for modern life.</p>
+          </div>
+          
+          <!-- Sort Section - Right Side -->
+          <div class="sort-header-section">
+            <div class="sort-select">
+              <i class="fa-solid fa-arrow-down-wide-short"></i>
+              <select id="sort-select" aria-label="Sort products">
+                <option value="popular">sort: popular</option>
+                <option value="price-low">price: low to high</option>
+                <option value="price-high">price: high to low</option>
+                <option value="rating">top rated</option>
+              </select>
+            </div>
+          </div>
         </div>
-        <h1 class="page-title">all <span>essentials</span></h1>
-        <p class="page-desc">Everyday necessities — tech, travel & self-care, curated for modern life.</p>
       </div>
     </section>
 
-    <!-- SORT BAR - NO UNDERLINE -->
+    <!-- RESULTS COUNT -->
     <div class="container">
-      <div class="sort-wrapper">
-        <div class="sort-select">
-          <i class="fa-solid fa-arrow-down-wide-short"></i>
-          <select id="sort-select" aria-label="Sort products">
-            <option value="popular">sort by: popular</option>
-            <option value="price-low">price: low to high</option>
-            <option value="price-high">price: high to low</option>
-            <option value="rating">top rated</option>
-          </select>
-        </div>
+      <div class="results-wrapper">
+        <div id="results-count" class="results-count"></div>
       </div>
     </div>
 
@@ -732,6 +781,7 @@
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
       const sortSelect = document.getElementById('sort-select');
+      const resultsCount = document.getElementById('results-count');
       
       if (!gridContainer) return;
 
@@ -750,7 +800,13 @@
             <p>Check back later for new arrivals!</p>
           </div>
         `;
+        if (resultsCount) resultsCount.innerHTML = '0 items';
         return;
+      }
+
+      // Update results count
+      if (resultsCount) {
+        resultsCount.innerHTML = `${essentialsProducts.length} item${essentialsProducts.length !== 1 ? 's' : ''}`;
       }
 
       function getSortedProducts() {
@@ -774,6 +830,11 @@
 
       function renderAllProducts() {
         const sortedProducts = getSortedProducts();
+        
+        // Update results count
+        if (resultsCount) {
+          resultsCount.innerHTML = `${sortedProducts.length} item${sortedProducts.length !== 1 ? 's' : ''}`;
+        }
         
         let gridHtml = '';
         sortedProducts.forEach(product => {
