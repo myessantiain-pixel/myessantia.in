@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>MyEssantia · product · premium</title>
+  <title>MyEssantia · product</title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
-  <!-- Premium Fonts -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -19,20 +19,24 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
   <style>
-    /* ---------- BOLD, TEXTURED DESIGN FROM HOMEPAGE ---------- */
+    /* ========== RESET & BASE ========== */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    html { scroll-behavior: smooth; }
-    body { 
-      overflow-x: hidden; 
-      width: 100%; 
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body {
       font-family: 'Montserrat', sans-serif;
       background: #fcfaf7;
       color: #000;
+      line-height: 1.5;
     }
 
     .container {
@@ -42,41 +46,36 @@
       padding: 0 16px;
     }
 
-    /* ---------- BREADCRUMB ---------- */
+    /* ========== BREADCRUMB ========== */
     .breadcrumb {
       display: flex;
-      gap: 8px;
-      align-items: center;
-      padding: 16px 0 16px;
-      color: #666;
-      font-size: 0.75rem;
-      font-weight: 600;
       flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding: 16px 0;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #666;
       text-transform: uppercase;
     }
 
     .breadcrumb a {
       color: #000;
       text-decoration: none;
-      transition: color 0.2s;
       font-weight: 700;
     }
 
-    .breadcrumb a:hover {
-      color: #d4af37;
-    }
-
     .breadcrumb i {
-      font-size: 0.6rem;
+      font-size: 0.5rem;
       color: #d4af37;
     }
 
-    /* ---------- MAIN GRID ---------- */
+    /* ========== MAIN GRID ========== */
     .product-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 24px;
-      padding: 0 0 48px;
+      padding-bottom: 40px;
     }
 
     @media (min-width: 1024px) {
@@ -86,7 +85,7 @@
       }
     }
 
-    /* ---------- GALLERY (BOLD FRAMES) ---------- */
+    /* ========== GALLERY ========== */
     .gallery-section {
       width: 100%;
     }
@@ -94,7 +93,7 @@
     @media (min-width: 1024px) {
       .gallery-section {
         position: sticky;
-        top: 24px;
+        top: 20px;
         height: fit-content;
       }
     }
@@ -102,52 +101,35 @@
     .main-image {
       width: 100%;
       aspect-ratio: 1/1;
-      border-radius: 24px;
+      border-radius: 20px;
       overflow: hidden;
-      margin-bottom: 16px;
-      background: #f8f6f2;
-      border: 3px solid #000;
-      box-shadow: 8px 8px 0 #000;
-      transition: all 0.2s ease;
-    }
-
-    .main-image:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 12px 12px 0 #000;
+      margin-bottom: 12px;
+      background: #f0f0f0;
+      border: 2px solid #000;
     }
 
     .main-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-
-    .main-image:hover img {
-      transform: scale(1.02);
     }
 
     .thumbnail-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      gap: 8px;
     }
 
     .thumbnail {
       aspect-ratio: 1/1;
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
       border: 2px solid #000;
-      transition: all 0.2s;
-      background: #f8f6f2;
-      box-shadow: 4px 4px 0 #000;
+      background: #f0f0f0;
     }
 
-    .thumbnail:hover,
     .thumbnail.active {
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0 #d4af37;
       border-color: #d4af37;
     }
 
@@ -157,65 +139,38 @@
       object-fit: cover;
     }
 
-    /* ---------- REVIEWS UNDER GALLERY (DESKTOP) ---------- */
-    .gallery-reviews {
+    /* ========== DESKTOP REVIEWS ========== */
+    .desktop-reviews {
       display: none;
-      margin-top: 32px;
+      margin-top: 24px;
     }
 
     @media (min-width: 1024px) {
-      .gallery-reviews {
+      .desktop-reviews {
         display: block;
       }
     }
 
-    .reviews-mini {
-      background: #000;
-      border-radius: 24px;
-      padding: 24px;
-      border: 3px solid #d4af37;
-      box-shadow: 8px 8px 0 #000;
-      position: relative;
+    .review-mini-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      border: 2px solid #000;
     }
 
-    .reviews-mini::after {
-      content: '';
-      position: absolute;
-      top: 6px; left: 6px; right: -6px; bottom: -6px;
-      border: 2px solid #d4af37;
-      border-radius: 22px;
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    .reviews-mini-header {
+    .review-mini-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .reviews-mini-header h4 {
+      margin-bottom: 16px;
       font-weight: 800;
-      font-size: 1.2rem;
-      color: #fff;
-      text-transform: uppercase;
-    }
-
-    .reviews-mini-header span {
-      color: #d4af37;
-      font-weight: 800;
-      background: #1a1a1a;
-      padding: 4px 12px;
-      border-radius: 40px;
-      border: 1px solid #d4af37;
     }
 
     .review-mini-item {
       display: flex;
       gap: 12px;
-      padding: 16px 0;
-      border-bottom: 1px solid #333;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
     }
 
     .review-mini-item:last-child {
@@ -223,8 +178,8 @@
     }
 
     .review-mini-avatar {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       background: #d4af37;
       border-radius: 50%;
       display: flex;
@@ -233,108 +188,50 @@
       font-weight: 800;
       color: #000;
       flex-shrink: 0;
-      border: 2px solid #fff;
     }
 
-    .review-mini-content {
-      flex: 1;
-    }
-
-    .review-mini-name {
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-bottom: 2px;
-      color: #fff;
-    }
-
-    .review-mini-rating {
-      color: #d4af37;
-      font-size: 0.7rem;
-      margin-bottom: 4px;
-    }
-
-    .review-mini-text {
-      font-size: 0.8rem;
-      color: #ccc;
-      line-height: 1.4;
-    }
-
-    .view-all-reviews {
-      text-align: center;
-      margin-top: 20px;
-      padding: 12px;
-      background: #1a1a1a;
-      border-radius: 40px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: #d4af37;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 2px solid #d4af37;
-      text-transform: uppercase;
-    }
-
-    .view-all-reviews:hover {
-      background: #d4af37;
-      color: #000;
-      transform: translate(-2px, -2px);
-      box-shadow: 4px 4px 0 #fff;
-    }
-
-    /* ---------- PRODUCT INFO ---------- */
+    /* ========== PRODUCT INFO ========== */
     .product-info {
-      padding: 0;
+      width: 100%;
     }
 
-    /* Social Proof Strip */
+    /* Social Badges - Fixed colors */
     .social-strip {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 20px;
+      gap: 10px;
+      margin-bottom: 16px;
     }
 
     .sold-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: #000;
-      color: #fff;
-      padding: 8px 16px;
+      gap: 6px;
+      background: #dc2626;
+      color: white;
+      padding: 6px 14px;
       border-radius: 40px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      box-shadow: 4px 4px 0 #d4af37;
-      border: 2px solid #d4af37;
-      text-transform: uppercase;
+      border: 2px solid #000;
     }
 
     .live-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: #d4af37;
-      color: #000;
-      padding: 8px 16px;
+      gap: 6px;
+      background: #16a34a;
+      color: white;
+      padding: 6px 14px;
       border-radius: 40px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      box-shadow: 4px 4px 0 #000;
+      font-size: 0.75rem;
+      font-weight: 700;
       border: 2px solid #000;
-      text-transform: uppercase;
-      animation: pulse 2s infinite;
     }
 
     .live-badge i {
       font-size: 0.5rem;
-      color: #000;
       animation: blink 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 4px 4px 0 #000; }
-      70% { box-shadow: 6px 6px 0 #000, 0 0 10px rgba(212, 175, 55, 0.5); }
-      100% { box-shadow: 4px 4px 0 #000; }
     }
 
     @keyframes blink {
@@ -346,27 +243,23 @@
     .product-category {
       font-size: 0.7rem;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
       color: #d4af37;
-      margin-bottom: 8px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
     }
 
     .product-title {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       font-weight: 800;
-      line-height: 1.1;
-      color: #000;
-      margin-bottom: 16px;
-      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
       text-transform: uppercase;
       word-break: break-word;
     }
 
     @media (min-width: 768px) {
       .product-title {
-        font-size: 3rem;
+        font-size: 2.5rem;
       }
     }
 
@@ -375,30 +268,18 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 24px;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     .stars {
       display: flex;
       gap: 3px;
       color: #d4af37;
-      font-size: 1rem;
-    }
-
-    .rating-value {
-      font-weight: 800;
-      color: #000;
       font-size: 0.9rem;
     }
 
-    .reviews-count {
-      color: #666;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    /* Share Button - Bold Style */
+    /* Share Button */
     .share-wrapper {
       position: relative;
       margin-left: auto;
@@ -406,45 +287,33 @@
 
     .share-btn {
       background: #000;
+      color: white;
       border: 2px solid #d4af37;
-      padding: 10px 20px;
+      padding: 8px 16px;
       border-radius: 40px;
-      display: inline-flex;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
       align-items: center;
-      gap: 8px;
-      font-weight: 800;
-      font-size: 0.85rem;
-      color: #fff;
+      gap: 6px;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 4px 4px 0 #000;
-      text-transform: uppercase;
-    }
-
-    .share-btn:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0 #d4af37;
-    }
-
-    .share-btn i {
-      color: #d4af37;
     }
 
     .share-menu {
       position: absolute;
-      top: calc(100% + 12px);
+      top: calc(100% + 8px);
       right: 0;
-      background: #000;
-      border-radius: 20px;
-      box-shadow: 8px 8px 0 #d4af37;
-      padding: 20px;
-      width: 280px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      padding: 16px;
+      width: 260px;
       z-index: 100;
       opacity: 0;
       visibility: hidden;
       transform: translateY(-10px);
       transition: all 0.3s ease;
-      border: 2px solid #d4af37;
+      border: 2px solid #000;
     }
 
     .share-menu.show {
@@ -457,7 +326,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .share-option {
@@ -465,31 +334,17 @@
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      padding: 12px 4px;
-      border-radius: 12px;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: #fff;
+      padding: 8px;
+      border-radius: 8px;
+      background: #f5f5f5;
+      border: none;
+      font-size: 0.6rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
     }
 
     .share-option i {
-      font-size: 1.1rem;
-      color: #d4af37;
-    }
-
-    .share-option:hover {
-      background: #d4af37;
-      color: #000;
-      transform: translate(-2px, -2px);
-      box-shadow: 3px 3px 0 #fff;
-    }
-
-    .share-option:hover i {
-      color: #000;
+      font-size: 1rem;
     }
 
     .copy-link {
@@ -499,125 +354,84 @@
 
     .copy-link input {
       flex: 1;
-      padding: 10px;
-      border: 2px solid #d4af37;
-      border-radius: 12px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
       font-size: 0.7rem;
-      background: #1a1a1a;
-      color: #fff;
-      font-weight: 600;
     }
 
     .copy-btn {
-      padding: 10px 16px;
+      padding: 8px 12px;
       background: #d4af37;
-      color: #000;
       border: none;
-      border-radius: 12px;
-      font-weight: 800;
+      border-radius: 8px;
+      font-weight: 700;
       font-size: 0.7rem;
       cursor: pointer;
-      transition: all 0.2s;
-      border: 2px solid #d4af37;
-      text-transform: uppercase;
     }
 
-    .copy-btn:hover {
-      background: #fff;
-      transform: translate(-2px, -2px);
-      box-shadow: 3px 3px 0 #d4af37;
-    }
-
-    /* Price Card - BOLD */
+    /* Price Card */
     .price-card {
       background: #000;
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 24px;
-      border: 3px solid #d4af37;
-      box-shadow: 8px 8px 0 #000;
-      position: relative;
-    }
-
-    .price-card::after {
-      content: '';
-      position: absolute;
-      top: 6px; left: 6px; right: -6px; bottom: -6px;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
       border: 2px solid #d4af37;
-      border-radius: 22px;
-      opacity: 0.5;
-      pointer-events: none;
     }
 
     .price-header {
       display: flex;
       align-items: baseline;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .current-price {
-      font-size: 3rem;
+      font-size: 2.5rem;
       font-weight: 900;
-      color: #fff;
-      font-family: 'Montserrat', sans-serif;
+      color: white;
       line-height: 1;
     }
 
     .inr-symbol {
-      font-size: 2rem;
-      font-weight: 700;
+      font-size: 1.8rem;
       color: #d4af37;
     }
 
     .original-price {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       color: #666;
       text-decoration: line-through;
-      font-weight: 600;
     }
 
     .discount {
       background: #d4af37;
       color: #000;
-      padding: 6px 16px;
-      border-radius: 40px;
-      font-weight: 900;
-      font-size: 0.9rem;
-      border: 2px solid #fff;
-      box-shadow: 3px 3px 0 #fff;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.8rem;
     }
 
     /* Price Options */
     .price-options {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
     .price-option {
-      padding: 16px 12px;
-      border-radius: 18px;
+      padding: 16px 8px;
+      border-radius: 16px;
       text-align: center;
       border: 2px solid;
-      transition: all 0.2s;
-      box-shadow: 5px 5px 0 #000;
-    }
-
-    .price-option:hover {
-      transform: translate(-3px, -3px);
-      box-shadow: 8px 8px 0 #000;
     }
 
     .price-option.prepaid {
       background: #d4af37;
       border-color: #fff;
-    }
-
-    .price-option.prepaid .option-price {
-      color: #000;
     }
 
     .price-option.cod {
@@ -630,12 +444,11 @@
     }
 
     .option-label {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 700;
       color: #fff;
-      margin-bottom: 6px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      margin-bottom: 4px;
     }
 
     .price-option.prepaid .option-label {
@@ -643,304 +456,205 @@
     }
 
     .option-price {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 800;
-      font-family: 'Montserrat', sans-serif;
+      color: white;
       line-height: 1.2;
-    }
-
-    .option-save {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: #000;
-      background: #fff;
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 40px;
-      margin-top: 4px;
-    }
-
-    .price-option.cod .option-note {
-      font-size: 0.65rem;
-      color: #999;
-      margin-top: 4px;
     }
 
     .stock-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
+      gap: 6px;
+      padding: 8px 16px;
       background: #1a1a1a;
       border-radius: 40px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
+      color: white;
       border: 2px solid #d4af37;
-      color: #fff;
     }
 
-    .stock-badge.in-stock {
-      color: #d4af37;
-    }
-
-    .stock-badge.low-stock {
-      color: #ff9800;
-    }
-
-    /* Money Back Promise - BOLD */
+    /* Money Back Promise */
     .promise-card {
       background: #d4af37;
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 24px;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
-      gap: 20px;
-      position: relative;
-      overflow: hidden;
-      border: 3px solid #000;
-      box-shadow: 8px 8px 0 #000;
-    }
-
-    .promise-card::after {
-      content: '✓✓';
-      position: absolute;
-      right: -20px;
-      bottom: -30px;
-      font-size: 8rem;
-      font-weight: 900;
-      opacity: 0.1;
-      color: #000;
-      transform: rotate(-15deg);
+      gap: 16px;
+      border: 2px solid #000;
     }
 
     .promise-icon {
-      width: 70px;
-      height: 70px;
+      width: 48px;
+      height: 48px;
       background: #000;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.2rem;
       color: #d4af37;
-      border: 3px solid #fff;
-      box-shadow: 5px 5px 0 #000;
-      z-index: 2;
+      font-size: 1.5rem;
+      flex-shrink: 0;
     }
 
     .promise-content h4 {
-      font-size: 1.2rem;
-      font-weight: 900;
-      color: #000;
-      margin-bottom: 4px;
-      text-transform: uppercase;
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 2px;
     }
 
     .promise-content p {
-      color: #000;
-      font-size: 0.9rem;
-      font-weight: 700;
-    }
-
-    .promise-highlight {
-      background: #000;
-      color: #d4af37;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 900;
+      font-size: 0.8rem;
+      font-weight: 600;
     }
 
     /* Delivery Card */
     .delivery-card {
       background: #000;
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 24px;
-      border: 3px solid #d4af37;
-      box-shadow: 8px 8px 0 #000;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 2px solid #d4af37;
     }
 
     .delivery-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 8px;
     }
 
     .delivery-title {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       font-weight: 800;
-      color: #fff;
-      font-size: 1.1rem;
-      text-transform: uppercase;
+      color: white;
+      font-size: 1rem;
     }
 
     .delivery-title i {
       color: #d4af37;
-      font-size: 1.3rem;
     }
 
     .delivery-min {
       background: #1a1a1a;
-      padding: 6px 18px;
-      border-radius: 40px;
-      font-size: 0.8rem;
-      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
       color: #d4af37;
-      border: 2px solid #d4af37;
-    }
-
-    .progress-container {
-      margin: 16px 0;
+      border: 1px solid #d4af37;
     }
 
     .progress-bar {
-      height: 12px;
-      background: #1a1a1a;
-      border-radius: 20px;
+      height: 8px;
+      background: #333;
+      border-radius: 10px;
       overflow: hidden;
-      border: 2px solid #d4af37;
+      margin: 12px 0;
     }
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #d4af37, #f5d742);
+      background: #d4af37;
       width: 0%;
-      transition: width 0.3s ease;
-      border-radius: 20px;
+      transition: width 0.3s;
     }
 
     .delivery-message {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-top: 16px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .delivery-message i {
-      color: #d4af37;
-    }
-
-    .delivery-message.eligible i {
-      color: #4caf50;
-    }
-
-    .cart-value {
-      font-weight: 900;
-      color: #d4af37;
-      background: #1a1a1a;
-      padding: 4px 12px;
-      border-radius: 40px;
-      border: 1px solid #d4af37;
+      gap: 8px;
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 600;
     }
 
     /* Features Grid */
     .features-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 24px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
     .feature-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 16px;
+      gap: 10px;
+      padding: 12px;
       background: #000;
-      border-radius: 20px;
+      border-radius: 12px;
       border: 2px solid #d4af37;
-      box-shadow: 5px 5px 0 #000;
     }
 
     .feature-icon {
-      width: 44px;
-      height: 44px;
+      width: 36px;
+      height: 36px;
       background: #d4af37;
-      border-radius: 12px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #000;
-      font-size: 1.3rem;
-      border: 2px solid #fff;
-      box-shadow: 3px 3px 0 #000;
+      flex-shrink: 0;
     }
 
     .feature-text h4 {
+      font-size: 0.8rem;
       font-weight: 800;
-      font-size: 0.85rem;
+      color: white;
       margin-bottom: 2px;
-      color: #fff;
-      text-transform: uppercase;
     }
 
     .feature-text p {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: #999;
-      font-weight: 600;
     }
 
     /* Quantity */
     .quantity-wrapper {
       background: #000;
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 24px;
-      border: 3px solid #d4af37;
-      box-shadow: 8px 8px 0 #000;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 2px solid #d4af37;
     }
 
     .quantity-label {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       font-weight: 800;
-      margin-bottom: 20px;
-      color: #fff;
-      text-transform: uppercase;
-    }
-
-    .quantity-label i {
-      color: #d4af37;
+      color: white;
+      margin-bottom: 16px;
     }
 
     .quantity-controls {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     .qty-btn {
-      width: 52px;
-      height: 52px;
+      width: 44px;
+      height: 44px;
       border: 2px solid #d4af37;
       background: #1a1a1a;
-      border-radius: 16px;
-      font-size: 1.5rem;
+      border-radius: 10px;
+      font-size: 1.3rem;
       font-weight: 800;
-      color: #fff;
+      color: white;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 4px 4px 0 #000;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .qty-btn:hover:not(:disabled) {
-      background: #d4af37;
-      color: #000;
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0 #000;
     }
 
     .qty-btn:disabled {
@@ -949,23 +663,22 @@
     }
 
     .qty-input {
-      width: 80px;
-      height: 52px;
+      width: 70px;
+      height: 44px;
       border: 2px solid #d4af37;
-      border-radius: 16px;
+      border-radius: 10px;
       text-align: center;
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       font-weight: 800;
-      background: #fff;
-      color: #000;
+      background: white;
     }
 
-    /* Action Buttons - BOLD */
+    /* Action Buttons */
     .action-buttons {
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      margin-bottom: 32px;
+      gap: 12px;
+      margin-bottom: 24px;
     }
 
     @media (min-width: 480px) {
@@ -976,104 +689,73 @@
 
     .btn {
       flex: 1;
-      padding: 18px;
+      padding: 16px;
       border: none;
       border-radius: 40px;
-      font-weight: 900;
-      font-size: 1rem;
+      font-weight: 800;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      min-height: 60px;
+      border: 2px solid #000;
     }
 
     .btn-primary {
       background: #d4af37;
       color: #000;
-      border: 3px solid #000;
-      box-shadow: 6px 6px 0 #000;
-    }
-
-    .btn-primary:hover {
-      background: #fff;
-      transform: translate(-3px, -3px);
-      box-shadow: 10px 10px 0 #000;
     }
 
     .btn-secondary {
       background: #000;
-      color: #fff;
-      border: 3px solid #d4af37;
-      box-shadow: 6px 6px 0 #000;
-    }
-
-    .btn-secondary:hover {
-      background: #1a1a1a;
-      transform: translate(-3px, -3px);
-      box-shadow: 10px 10px 0 #d4af37;
+      color: white;
+      border-color: #d4af37;
     }
 
     /* Tabs */
     .tabs {
       background: #000;
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 32px;
-      border: 3px solid #d4af37;
-      box-shadow: 8px 8px 0 #000;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 2px solid #d4af37;
     }
 
     .tab-headers {
       display: flex;
-      gap: 20px;
-      border-bottom: 3px solid #d4af37;
-      margin-bottom: 24px;
+      gap: 16px;
+      border-bottom: 2px solid #333;
+      margin-bottom: 16px;
       overflow-x: auto;
-      padding-bottom: 4px;
-      scrollbar-width: thin;
+      scrollbar-width: none;
+    }
+
+    .tab-headers::-webkit-scrollbar {
+      display: none;
     }
 
     .tab-header {
-      padding: 12px 0;
+      padding: 8px 0;
       cursor: pointer;
-      font-weight: 800;
+      font-weight: 700;
       color: #666;
-      position: relative;
-      transition: color 0.2s;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       white-space: nowrap;
       text-transform: uppercase;
     }
 
-    .tab-header:hover {
-      color: #d4af37;
-    }
-
     .tab-header.active {
       color: #d4af37;
-    }
-
-    .tab-header.active::after {
-      content: '';
-      position: absolute;
-      bottom: -3px;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: #d4af37;
+      border-bottom: 2px solid #d4af37;
     }
 
     .tab-content {
       display: none;
-      line-height: 1.7;
-      color: #fff;
-      font-size: 0.9rem;
-      font-weight: 500;
+      color: white;
+      font-size: 0.85rem;
+      line-height: 1.6;
     }
 
     .tab-content.active {
@@ -1083,7 +765,7 @@
     .specs-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 16px;
+      gap: 12px;
     }
 
     @media (min-width: 480px) {
@@ -1093,30 +775,27 @@
     }
 
     .spec-item {
-      padding: 16px;
+      padding: 12px;
       background: #1a1a1a;
-      border-radius: 16px;
-      border: 2px solid #d4af37;
+      border-radius: 10px;
+      border: 1px solid #d4af37;
     }
 
     .spec-label {
       font-size: 0.7rem;
       color: #999;
       margin-bottom: 4px;
-      text-transform: uppercase;
-      font-weight: 600;
     }
 
     .spec-value {
       font-weight: 800;
-      color: #fff;
-      font-size: 1rem;
+      color: white;
     }
 
     .video-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 16px;
+      gap: 12px;
     }
 
     @media (min-width: 480px) {
@@ -1127,12 +806,10 @@
 
     .video-item {
       aspect-ratio: 16/9;
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
       position: relative;
-      cursor: pointer;
       border: 2px solid #d4af37;
-      box-shadow: 5px 5px 0 #000;
     }
 
     .video-item img {
@@ -1146,88 +823,62 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       background: #d4af37;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #000;
-      font-size: 1.2rem;
-      border: 3px solid #000;
-      box-shadow: 4px 4px 0 #000;
+      border: 2px solid #000;
     }
 
-    .video-duration {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
+    /* Mobile Reviews */
+    .mobile-reviews {
       background: #000;
-      color: #d4af37;
-      padding: 4px 10px;
-      border-radius: 40px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      border: 1px solid #d4af37;
+      border-radius: 20px;
+      padding: 20px;
+      border: 2px solid #d4af37;
     }
 
-    /* Reviews Section (Mobile) */
-    .reviews-section {
-      background: #000;
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 32px;
-      border: 3px solid #d4af37;
-      box-shadow: 8px 8px 0 #000;
+    @media (min-width: 1024px) {
+      .mobile-reviews {
+        display: none;
+      }
     }
 
     .reviews-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .reviews-title {
-      font-size: 1.3rem;
+      margin-bottom: 16px;
+      color: white;
       font-weight: 800;
-      color: #fff;
-      text-transform: uppercase;
     }
 
     .reviews-grid {
       display: grid;
-      grid-template-columns: 1fr;
       gap: 16px;
     }
 
-    @media (min-width: 640px) {
-      .reviews-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
     .review-card {
-      padding: 20px;
+      padding: 16px;
       background: #1a1a1a;
-      border-radius: 20px;
-      border: 2px solid #d4af37;
-      box-shadow: 5px 5px 0 #000;
+      border-radius: 12px;
+      border: 1px solid #d4af37;
     }
 
     .reviewer {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .reviewer-avatar {
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
       background: #d4af37;
       border-radius: 50%;
       display: flex;
@@ -1235,77 +886,52 @@
       justify-content: center;
       font-weight: 800;
       color: #000;
-      border: 2px solid #fff;
     }
 
     .reviewer-info h5 {
+      font-size: 0.9rem;
       font-weight: 800;
-      font-size: 1rem;
-      color: #fff;
+      color: white;
     }
 
     .reviewer-info span {
       font-size: 0.7rem;
       color: #999;
-      font-weight: 600;
     }
 
     .review-rating {
       color: #d4af37;
-      font-size: 0.8rem;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
     .review-text {
-      font-size: 0.9rem;
       color: #ccc;
-      margin-bottom: 16px;
-      line-height: 1.5;
-      font-style: italic;
-    }
-
-    .review-helpful {
-      display: flex;
-      gap: 20px;
-      font-size: 0.75rem;
-      color: #666;
-      font-weight: 600;
-    }
-
-    .review-helpful i {
-      margin-right: 4px;
-      color: #d4af37;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
     }
 
     /* Related Products */
     .related {
-      margin-top: 48px;
-      padding-top: 32px;
-      border-top: 4px solid #000;
+      margin-top: 40px;
+      padding-top: 20px;
     }
 
     .related-title {
-      font-size: 1.8rem;
-      font-weight: 900;
-      font-family: 'Montserrat', sans-serif;
-      margin-bottom: 24px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 20px;
       text-transform: uppercase;
-    }
-
-    .related-title span {
-      color: #d4af37;
     }
 
     .related-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      gap: 12px;
     }
 
     @media (min-width: 640px) {
       .related-grid {
         grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
       }
     }
 
@@ -1313,26 +939,17 @@
       text-decoration: none;
       color: inherit;
       background: #000;
-      border-radius: 20px;
-      padding: 16px;
+      border-radius: 16px;
+      padding: 12px;
       border: 2px solid #d4af37;
-      transition: all 0.2s;
-      box-shadow: 6px 6px 0 #000;
-      display: block;
-    }
-
-    .related-card:hover {
-      transform: translate(-4px, -4px);
-      box-shadow: 10px 10px 0 #d4af37;
     }
 
     .related-image {
       aspect-ratio: 1/1;
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
-      margin-bottom: 12px;
-      background: #1a1a1a;
-      border: 2px solid #d4af37;
+      margin-bottom: 8px;
+      background: #333;
     }
 
     .related-image img {
@@ -1341,157 +958,92 @@
       object-fit: cover;
     }
 
-    .related-category {
-      font-size: 0.6rem;
-      font-weight: 700;
-      color: #d4af37;
-      text-transform: uppercase;
+    .related-name {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: white;
       margin-bottom: 4px;
     }
 
-    .related-name {
-      font-weight: 800;
-      font-size: 0.8rem;
-      margin-bottom: 6px;
-      color: #fff;
-      line-height: 1.3;
-    }
-
     .related-price {
-      font-weight: 900;
+      font-weight: 800;
       color: #d4af37;
-      font-size: 1.1rem;
-      margin-bottom: 10px;
+      font-size: 1rem;
+      margin-bottom: 8px;
     }
 
     .related-add {
-      padding: 10px;
+      padding: 8px;
       background: #1a1a1a;
-      border-radius: 40px;
+      border-radius: 20px;
       text-align: center;
       font-size: 0.7rem;
-      font-weight: 800;
-      color: #fff;
-      transition: all 0.2s;
+      font-weight: 700;
+      color: #d4af37;
       border: 1px solid #d4af37;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-
-    .related-card:hover .related-add {
-      background: #d4af37;
-      color: #000;
     }
 
     /* Notification */
     .notification {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      left: 20px;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      max-width: 360px;
+      margin: 0 auto;
       background: #000;
-      border-radius: 60px;
-      padding: 16px 24px;
-      box-shadow: 8px 8px 0 #d4af37;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 40px;
       display: flex;
       align-items: center;
-      gap: 16px;
-      font-weight: 800;
+      gap: 12px;
+      font-weight: 700;
       z-index: 1000;
-      animation: slideIn 0.3s ease;
-      border: 3px solid #d4af37;
-      color: #fff;
-      max-width: 400px;
-      margin: 0 auto;
+      animation: slideDown 0.3s ease;
+      border: 2px solid #d4af37;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
 
-    @media (min-width: 640px) {
-      .notification {
-        left: auto;
-        width: auto;
-      }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
-    .notification i {
-      color: #d4af37;
-      font-size: 1.3rem;
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    /* Mobile Only Class */
-    @media (min-width: 1024px) {
-      .mobile-only {
-        display: none;
-      }
-    }
-
-    /* Scroll Top Button (from homepage) */
+    /* Scroll Top */
     .scroll-top {
-      position: fixed; 
-      bottom: 20px; 
-      right: 16px; 
-      background: #000; 
+      position: fixed;
+      bottom: 20px;
+      right: 16px;
+      width: 44px;
+      height: 44px;
+      background: #000;
       color: #d4af37;
-      width: 52px; 
-      height: 52px; 
-      border-radius: 50%; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      border: 3px solid #d4af37; 
-      box-shadow: 4px 4px 0 #000;
-      opacity: 0; 
-      transform: translateY(15px); 
-      transition: 0.2s; 
-      z-index: 100;
-      font-size: 1.4rem; 
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #d4af37;
       cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 90;
     }
 
-    .scroll-top.visible { 
-      opacity: 1; 
-      transform: translateY(0); 
+    .scroll-top.visible {
+      opacity: 1;
     }
 
-    .scroll-top:active { 
-      background: #d4af37; 
-      color: #000; 
-      transform: scale(0.9); 
-    }
-
-    /* Mobile optimizations */
-    @media (max-width: 480px) {
-      .product-title {
-        font-size: 1.8rem;
-      }
-      
-      .current-price {
-        font-size: 2.4rem;
-      }
-      
-      .option-price {
-        font-size: 1.4rem;
-      }
-      
-      .feature-item {
-        padding: 12px;
-      }
-      
-      .btn {
-        padding: 14px;
-        font-size: 0.9rem;
-      }
+    /* Helper */
+    .text-gold {
+      color: #d4af37;
     }
   </style>
 </head>
 <body>
 
   <div id="header"></div>
-  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
+  <div class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></div>
 
   <main>
     <div class="container">
@@ -1527,13 +1079,12 @@
     let currentProduct = null;
     let cart = JSON.parse(localStorage.getItem('myessantia_cart')) || [];
 
-    // Generate random values (with bold numbers)
     function getRandomSold() {
-      return Math.floor(Math.random() * (2500 - 800 + 1)) + 800;
+      return Math.floor(Math.random() * (2000 - 500 + 1)) + 500;
     }
 
     function getRandomViewers() {
-      return Math.floor(Math.random() * (45 - 12 + 1)) + 12;
+      return Math.floor(Math.random() * (35 - 8 + 1)) + 8;
     }
 
     function generateReviews() {
@@ -1541,22 +1092,14 @@
         { name: 'PRIYA SHARMA', city: 'MUMBAI', avatar: 'PS' },
         { name: 'RAHUL VERMA', city: 'DELHI', avatar: 'RV' },
         { name: 'ANANYA PATEL', city: 'BANGALORE', avatar: 'AP' },
-        { name: 'KARTHIK IYER', city: 'CHENNAI', avatar: 'KI' },
-        { name: 'NEHA GUPTA', city: 'PUNE', avatar: 'NG' },
-        { name: 'ARJUN SINGH', city: 'HYDERABAD', avatar: 'AS' },
-        { name: 'DIVYA NAIR', city: 'KOCHI', avatar: 'DN' },
-        { name: 'VIKRAM MEHTA', city: 'AHMEDABAD', avatar: 'VM' }
+        { name: 'KARTHIK IYER', city: 'CHENNAI', avatar: 'KI' }
       ];
       
       const comments = [
-        "ABSOLUTELY LOVE THIS! QUALITY IS AMAZING AND DELIVERY WAS SUPER FAST.",
-        "PERFECT PRODUCT, EXCEEDED MY EXPECTATIONS. WORTH EVERY PENNY!",
-        "GREAT QUALITY AND BEAUTIFUL DESIGN. MY FRIENDS KEEP ASKING WHERE I GOT IT.",
-        "EXACTLY AS DESCRIBED. THE MATERIAL IS PREMIUM AND IT LOOKS EVEN BETTER IN PERSON.",
-        "EXCELLENT CUSTOMER SERVICE AND QUICK SHIPPING. VERY HAPPY WITH PURCHASE.",
-        "THE ATTENTION TO DETAIL IS IMPRESSIVE. DEFINITELY BUYING MORE FROM THIS BRAND.",
-        "GOOD VALUE FOR MONEY. THE PRODUCT FEELS VERY PREMIUM.",
-        "FAST DELIVERY AND GREAT PACKAGING. WILL RECOMMEND TO OTHERS!"
+        "Absolutely love this! Quality is amazing.",
+        "Perfect product, exceeded expectations.",
+        "Great quality and beautiful design.",
+        "Excellent value for money."
       ];
       
       return users.map((user, i) => ({
@@ -1564,7 +1107,7 @@
         comment: comments[i % comments.length],
         rating: (4 + Math.random() * 0.9).toFixed(1),
         time: Math.floor(Math.random() * 48) + 1,
-        helpful: Math.floor(Math.random() * 40) + 15
+        helpful: Math.floor(Math.random() * 30) + 10
       }));
     }
 
@@ -1592,11 +1135,10 @@
 
     function showNotFound() {
       document.getElementById('product-container').innerHTML = `
-        <div style="text-align: center; padding: 60px 20px; background: #000; border-radius: 32px; border: 4px solid #d4af37; box-shadow: 12px 12px 0 #000;">
-          <i class="fa-solid fa-box-open" style="font-size: 64px; color: #d4af37;"></i>
-          <h2 style="font-size: 2rem; margin: 20px 0; color: #fff; font-weight: 900;">PRODUCT NOT FOUND</h2>
-          <p style="color: #999; margin-bottom: 30px;">The product you're looking for doesn't exist.</p>
-          <a href="collection.html" style="display: inline-block; padding: 16px 40px; background: #d4af37; color: #000; text-decoration: none; border-radius: 60px; font-weight: 900; border: 3px solid #000; box-shadow: 6px 6px 0 #000;">BROWSE COLLECTION</a>
+        <div style="text-align: center; padding: 40px 20px; background: #000; border-radius: 20px; border: 2px solid #d4af37;">
+          <i class="fa-solid fa-box-open" style="font-size: 48px; color: #d4af37;"></i>
+          <h2 style="font-size: 1.5rem; margin: 16px 0; color: white;">PRODUCT NOT FOUND</h2>
+          <a href="collection.html" style="display: inline-block; padding: 12px 30px; background: #d4af37; color: #000; text-decoration: none; border-radius: 40px; font-weight: 700;">BROWSE</a>
         </div>
       `;
     }
@@ -1604,15 +1146,14 @@
     function renderProduct(product) {
       const images = [];
       if (product.media?.images) images.push(...product.media.images.map(i => i.url));
-      if (images.length === 0) images.push(product.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600');
+      if (images.length === 0) images.push(product.primaryImg || 'https://via.placeholder.com/600');
 
       const stock = product.stock || 10;
       const originalPrice = Math.round(product.price * 1.25);
       const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
-      const prepaidPrice = Math.round(product.price * 0.92); // 8% discount
-      const codPrice = Math.round(product.price * 1.04); // 4% extra
+      const prepaidPrice = Math.round(product.price * 0.92);
+      const codPrice = Math.round(product.price * 1.04);
       
-      const quantity = 1;
       const soldCount = getRandomSold();
       const liveViewers = getRandomViewers();
       const reviews = generateReviews();
@@ -1620,7 +1161,7 @@
       const container = document.getElementById('product-container');
       container.innerHTML = `
         <div class="product-grid">
-          <!-- Gallery Section -->
+          <!-- Gallery -->
           <div class="gallery-section">
             <div class="main-image">
               <img src="${images[0]}" alt="${product.title}" id="mainImage">
@@ -1634,39 +1175,33 @@
             </div>
             
             <!-- Desktop Reviews -->
-            <div class="gallery-reviews">
-              <div class="reviews-mini">
-                <div class="reviews-mini-header">
-                  <h4>REAL REVIEWS</h4>
-                  <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
+            <div class="desktop-reviews">
+              <div class="review-mini-card">
+                <div class="review-mini-header">
+                  <span>REAL REVIEWS</span>
+                  <span class="text-gold">★ ${(product.rating || 4.5).toFixed(1)}</span>
                 </div>
                 ${reviews.slice(0, 3).map(r => `
                   <div class="review-mini-item">
                     <div class="review-mini-avatar">${r.avatar}</div>
-                    <div class="review-mini-content">
-                      <div class="review-mini-name">${r.name}</div>
-                      <div class="review-mini-rating">
-                        ${'★'.repeat(Math.floor(r.rating))}${r.rating % 1 ? '½' : ''}
-                      </div>
-                      <div class="review-mini-text">"${r.comment.substring(0, 60)}..."</div>
+                    <div style="flex:1">
+                      <div style="font-weight:800; font-size:0.8rem;">${r.name}</div>
+                      <div style="color:#d4af37; font-size:0.7rem; margin:2px 0;">${'★'.repeat(Math.floor(r.rating))}</div>
+                      <div style="font-size:0.75rem; color:#666;">"${r.comment.substring(0,40)}..."</div>
                     </div>
                   </div>
                 `).join('')}
-                <div class="view-all-reviews">VIEW ALL 128 REVIEWS →</div>
+                <div style="text-align:center; margin-top:12px; font-weight:700; color:#d4af37;">VIEW ALL 128 →</div>
               </div>
             </div>
           </div>
 
           <!-- Product Info -->
           <div class="product-info">
-            <!-- Social Strip -->
+            <!-- Social Badges - RED & GREEN -->
             <div class="social-strip">
-              <span class="sold-badge">
-                <i class="fa-solid fa-fire"></i> ${soldCount}+ SOLD
-              </span>
-              <span class="live-badge">
-                <i class="fa-solid fa-circle"></i> ${liveViewers} VIEWING NOW
-              </span>
+              <span class="sold-badge"><i class="fa-solid fa-fire"></i> ${soldCount}+ SOLD</span>
+              <span class="live-badge"><i class="fa-solid fa-circle"></i> ${liveViewers} VIEWING</span>
             </div>
 
             <div class="product-category">${product.category?.toUpperCase() || 'ACCESSORIES'}</div>
@@ -1674,16 +1209,12 @@
 
             <!-- Rating & Share -->
             <div class="rating-row">
-              <div class="stars">
-                ${getStars(product.rating)}
-              </div>
-              <span class="rating-value">${(product.rating || 4.5).toFixed(1)}</span>
-              <span class="reviews-count">(128 REVIEWS)</span>
+              <div class="stars">${getStars(product.rating)}</div>
+              <span style="font-weight:700;">${(product.rating || 4.5).toFixed(1)}</span>
+              <span style="color:#666;">(128)</span>
               
               <div class="share-wrapper">
-                <button class="share-btn" onclick="toggleShare(event)">
-                  <i class="fa-solid fa-share-alt"></i> SHARE
-                </button>
+                <button class="share-btn" onclick="toggleShare(event)"><i class="fa-solid fa-share-alt"></i> SHARE</button>
                 <div class="share-menu" id="shareMenu">
                   <div class="share-grid">
                     <button class="share-option" onclick="share('facebook')"><i class="fa-brands fa-facebook-f"></i>FB</button>
@@ -1713,53 +1244,43 @@
                 <div class="price-option prepaid">
                   <div class="option-label">PREPAID</div>
                   <div class="option-price">₹${prepaidPrice}</div>
-                  <div class="option-save">SAVE ₹${product.price - prepaidPrice}</div>
+                  <div style="font-size:0.6rem; font-weight:700; color:#000;">SAVE ₹${product.price - prepaidPrice}</div>
                 </div>
                 <div class="price-option cod">
                   <div class="option-label">CASH ON DELIVERY</div>
                   <div class="option-price">₹${codPrice}</div>
-                  <div class="option-note">+₹${codPrice - product.price} FEE</div>
+                  <div style="font-size:0.6rem; color:#999;">+₹${codPrice - product.price} FEE</div>
                 </div>
               </div>
 
-              <span class="stock-badge ${stock > 10 ? 'in-stock' : 'low-stock'}">
+              <span class="stock-badge">
                 <i class="fa-solid ${stock > 10 ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
                 ${stock > 10 ? 'IN STOCK' : `ONLY ${stock} LEFT`}
               </span>
             </div>
 
-            <!-- Money Back Promise -->
+            <!-- Money Back -->
             <div class="promise-card">
-              <div class="promise-icon">
-                <i class="fa-solid fa-shield"></i>
-              </div>
+              <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
               <div class="promise-content">
                 <h4>RAZORPAY MONEY BACK</h4>
-                <p><span class="promise-highlight">100% REFUND</span> ON NON-DELIVERY OR DEFECTS</p>
+                <p><span style="background:#000; color:#d4af37; padding:2px 6px;">100% REFUND</span> ON DEFECTS</p>
               </div>
             </div>
 
-            <!-- Delivery Card -->
+            <!-- Delivery -->
             <div class="delivery-card" id="deliveryCard">
               <div class="delivery-header">
-                <span class="delivery-title">
-                  <i class="fa-solid fa-truck"></i> FREE DELIVERY
-                </span>
-                <span class="delivery-min">MIN. ₹1,299</span>
+                <span class="delivery-title"><i class="fa-solid fa-truck"></i> FREE DELIVERY</span>
+                <span class="delivery-min">MIN ₹1,299</span>
               </div>
-              
-              <div class="progress-container">
-                <div class="progress-bar">
-                  <div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div>
-                </div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div>
               </div>
-              
               <div class="delivery-message" id="deliveryMessage">
                 <i class="fa-solid ${product.price >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}"></i>
                 <span id="deliveryText">
-                  ${product.price >= 1299 
-                    ? 'YOU GET FREE DELIVERY!' 
-                    : `ADD <span class="cart-value">₹${(1299 - product.price).toFixed(2)}</span> MORE`}
+                  ${product.price >= 1299 ? 'FREE DELIVERY!' : `ADD <span style="color:#d4af37;">₹${(1299 - product.price).toFixed(2)}</span> MORE`}
                 </span>
               </div>
             </div>
@@ -1768,25 +1289,17 @@
             <div class="features-grid">
               <div class="feature-item">
                 <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
-                <div>
-                  <h4>FREE SHIPPING</h4>
-                  <p>ABOVE ₹1,299</p>
-                </div>
+                <div><h4>FREE SHIPPING</h4><p>ABOVE ₹1,299</p></div>
               </div>
               <div class="feature-item">
                 <div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div>
-                <div>
-                  <h4>EASY RETURNS</h4>
-                  <p>48 HOURS</p>
-                </div>
+                <div><h4>EASY RETURNS</h4><p>48 HOURS</p></div>
               </div>
             </div>
 
             <!-- Quantity -->
             <div class="quantity-wrapper">
-              <div class="quantity-label">
-                <i class="fa-solid fa-cubes"></i> QUANTITY
-              </div>
+              <div class="quantity-label"><i class="fa-solid fa-cubes"></i> QUANTITY</div>
               <div class="quantity-controls">
                 <button class="qty-btn" onclick="updateQuantity(-1)" ${stock === 0 ? 'disabled' : ''}>−</button>
                 <input type="text" class="qty-input" id="productQuantity" value="1" readonly>
@@ -1794,7 +1307,7 @@
               </div>
             </div>
 
-            <!-- Action Buttons -->
+            <!-- Buttons -->
             <div class="action-buttons">
               <button class="btn btn-secondary" onclick="addToCart()" ${stock === 0 ? 'disabled' : ''}>
                 <i class="fa-solid fa-cart-plus"></i> ADD TO CART
@@ -1812,52 +1325,30 @@
                 <div class="tab-header" onclick="switchTab('videos')">VIDEOS</div>
               </div>
               <div class="tab-content active" id="tab-desc">
-                <p>${product.description || product.shortDesc || 'PREMIUM QUALITY PRODUCT FROM MYESSANTIA. CRAFTED WITH ATTENTION TO DETAIL AND MADE FROM THE FINEST MATERIALS.'}</p>
+                <p>${product.description || product.shortDesc || 'Premium quality product from MyEssantia.'}</p>
               </div>
               <div class="tab-content" id="tab-specs">
                 <div class="specs-grid">
-                  <div class="spec-item">
-                    <div class="spec-label">MATERIAL</div>
-                    <div class="spec-value">PREMIUM QUALITY</div>
-                  </div>
-                  <div class="spec-item">
-                    <div class="spec-label">BRAND</div>
-                    <div class="spec-value">${product.brand?.toUpperCase() || 'MYESSANTIA'}</div>
-                  </div>
-                  <div class="spec-item">
-                    <div class="spec-label">ORIGIN</div>
-                    <div class="spec-value">MADE IN INDIA</div>
-                  </div>
-                  <div class="spec-item">
-                    <div class="spec-label">WARRANTY</div>
-                    <div class="spec-value">6 MONTHS</div>
-                  </div>
+                  <div class="spec-item"><div class="spec-label">MATERIAL</div><div class="spec-value">PREMIUM</div></div>
+                  <div class="spec-item"><div class="spec-label">BRAND</div><div class="spec-value">${product.brand?.toUpperCase() || 'MYESSANTIA'}</div></div>
                 </div>
               </div>
               <div class="tab-content" id="tab-videos">
                 <div class="video-grid">
-                  <div class="video-item">
-                    <img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400" alt="video">
-                    <i class="fa-solid fa-play"></i>
-                    <span class="video-duration">2:34</span>
-                  </div>
-                  <div class="video-item">
-                    <img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400" alt="video">
-                    <i class="fa-solid fa-play"></i>
-                    <span class="video-duration">1:47</span>
-                  </div>
+                  <div class="video-item"><img src="https://via.placeholder.com/400"><i class="fa-solid fa-play"></i><span style="position:absolute; bottom:5px; right:5px; background:#000; color:#d4af37; padding:2px 6px; border-radius:10px; font-size:0.6rem;">2:34</span></div>
+                  <div class="video-item"><img src="https://via.placeholder.com/400"><i class="fa-solid fa-play"></i><span style="position:absolute; bottom:5px; right:5px; background:#000; color:#d4af37; padding:2px 6px; border-radius:10px; font-size:0.6rem;">1:47</span></div>
                 </div>
               </div>
             </div>
 
             <!-- Mobile Reviews -->
-            <div class="reviews-section mobile-only">
+            <div class="mobile-reviews">
               <div class="reviews-header">
-                <span class="reviews-title">CUSTOMER REVIEWS</span>
-                <span>★ ${(product.rating || 4.5).toFixed(1)} · 128</span>
+                <span>CUSTOMER REVIEWS</span>
+                <span class="text-gold">★ ${(product.rating || 4.5).toFixed(1)}</span>
               </div>
               <div class="reviews-grid">
-                ${reviews.slice(0, 4).map(r => `
+                ${reviews.slice(0, 3).map(r => `
                   <div class="review-card">
                     <div class="reviewer">
                       <div class="reviewer-avatar">${r.avatar}</div>
@@ -1866,26 +1357,18 @@
                         <span>${r.city} · ${r.time}H AGO</span>
                       </div>
                     </div>
-                    <div class="review-rating">
-                      ${'★'.repeat(Math.floor(r.rating))}${r.rating % 1 ? '½' : ''}
-                    </div>
+                    <div class="review-rating">${'★'.repeat(Math.floor(r.rating))}</div>
                     <div class="review-text">"${r.comment}"</div>
-                    <div class="review-helpful">
-                      <span><i class="fa-regular fa-thumbs-up"></i> ${r.helpful}</span>
-                      <span><i class="fa-regular fa-comment"></i> REPLY</span>
-                    </div>
                   </div>
                 `).join('')}
               </div>
-              <div class="view-all-reviews">VIEW ALL 128 REVIEWS →</div>
+              <div style="text-align:center; margin-top:12px; font-weight:700; color:#d4af37;">VIEW ALL 128 →</div>
             </div>
           </div>
         </div>
       `;
 
       updateDeliveryBar(product.price);
-      
-      // Setup scroll top button
       setupScrollTop();
     }
 
@@ -1912,21 +1395,16 @@
 
         const html = `
           <div class="related">
-            <h2 class="related-title"><span>YOU MAY</span> ALSO LIKE</h2>
+            <h2 class="related-title">YOU MAY ALSO LIKE</h2>
             <div class="related-grid">
               ${related.map(p => {
-                const img = p.media?.images?.[0]?.url || p.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=200';
+                const img = p.media?.images?.[0]?.url || p.primaryImg || 'https://via.placeholder.com/200';
                 return `
                   <a href="product.html?id=${p.id}" class="related-card">
-                    <div class="related-image">
-                      <img src="${img}" alt="${p.title}">
-                    </div>
-                    <div class="related-category">${p.category?.toUpperCase() || 'ACCESSORY'}</div>
-                    <div class="related-name">${p.title.substring(0, 25).toUpperCase()}</div>
+                    <div class="related-image"><img src="${img}" alt=""></div>
+                    <div class="related-name">${p.title.substring(0, 20)}</div>
                     <div class="related-price">₹${p.price.toFixed(2)}</div>
-                    <div class="related-add" onclick="event.stopPropagation(); quickAdd('${p.id}')">
-                      <i class="fa-solid fa-cart-plus"></i> QUICK ADD
-                    </div>
+                    <div class="related-add">QUICK ADD</div>
                   </a>
                 `;
               }).join('')}
@@ -1935,12 +1413,9 @@
         `;
         
         document.getElementById('product-container').insertAdjacentHTML('beforeend', html);
-      } catch (e) {
-        console.error('Related error:', e);
-      }
+      } catch (e) {}
     }
 
-    // Helper Functions
     function getStars(rating) {
       const r = parseFloat(rating) || 4.5;
       let stars = '';
@@ -1965,31 +1440,15 @@
       if (val < 1) val = 1;
       if (currentProduct && val > currentProduct.stock) val = currentProduct.stock;
       input.value = val;
-      
-      if (currentProduct) {
-        const total = currentProduct.price * val;
-        updateDeliveryBar(total);
-      }
+      if (currentProduct) updateDeliveryBar(currentProduct.price * val);
     };
 
     function updateDeliveryBar(total) {
       const progress = document.getElementById('deliveryProgress');
-      const message = document.getElementById('deliveryMessage');
       const text = document.getElementById('deliveryText');
-      if (!progress || !message || !text) return;
-
-      const percent = Math.min(100, (total / 1299) * 100);
-      progress.style.width = percent + '%';
-
-      if (total >= 1299) {
-        message.className = 'delivery-message eligible';
-        message.querySelector('i').className = 'fa-solid fa-circle-check';
-        text.innerHTML = 'YOU GET FREE DELIVERY!';
-      } else {
-        message.className = 'delivery-message';
-        message.querySelector('i').className = 'fa-solid fa-circle-info';
-        text.innerHTML = `ADD <span class="cart-value">₹${(1299 - total).toFixed(2)}</span> MORE`;
-      }
+      if (!progress || !text) return;
+      progress.style.width = Math.min(100, (total / 1299) * 100) + '%';
+      text.innerHTML = total >= 1299 ? 'FREE DELIVERY!' : `ADD <span style="color:#d4af37;">₹${(1299 - total).toFixed(2)}</span> MORE`;
     }
 
     // Share Functions
@@ -2031,55 +1490,41 @@
       navigator.clipboard.writeText(input.value).then(() => {
         const btn = document.querySelector('.copy-btn');
         btn.textContent = 'COPIED!';
-        setTimeout(() => {
-          btn.textContent = 'COPY';
-        }, 2000);
+        setTimeout(() => btn.textContent = 'COPY', 2000);
       });
     };
 
-    // Cart Functions
+    // Cart
     window.addToCart = function() {
       showNotification('PRODUCT ADDED TO CART!');
-      
       const btn = event?.target?.closest('button');
       if (btn && btn.classList.contains('btn-secondary')) {
-        const original = btn.innerHTML;
         btn.innerHTML = '<i class="fa-solid fa-check"></i> ADDED!';
-        btn.style.background = '#d4af37';
-        btn.style.color = '#000';
-        btn.style.borderColor = '#000';
+        btn.style.background = '#16a34a';
+        btn.style.color = 'white';
         setTimeout(() => {
-          btn.innerHTML = original;
+          btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> ADD TO CART';
           btn.style.background = '';
           btn.style.color = '';
-          btn.style.borderColor = '';
         }, 1500);
       }
     };
 
     window.buyNow = function() {
       addToCart();
-      setTimeout(() => {
-        window.location.href = 'checkout.html';
-      }, 800);
-    };
-
-    window.quickAdd = function(id) {
-      showNotification('QUICK ADD - COMING SOON!');
+      setTimeout(() => window.location.href = 'checkout.html', 800);
     };
 
     function showNotification(msg) {
       const existing = document.querySelector('.notification');
       if (existing) existing.remove();
-
       const notif = document.createElement('div');
       notif.className = 'notification';
-      notif.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${msg}`;
+      notif.innerHTML = `<i class="fa-solid fa-check-circle" style="color:#16a34a;"></i> ${msg}`;
       document.body.appendChild(notif);
       setTimeout(() => notif.remove(), 3000);
     }
 
-    // Tabs
     window.switchTab = function(tab) {
       document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -2087,11 +1532,7 @@
       document.getElementById(`tab-${tab}`).classList.add('active');
     };
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      loadProduct();
-      setupScrollTop();
-    });
+    document.addEventListener('DOMContentLoaded', loadProduct);
   </script>
 </body>
 </html>
