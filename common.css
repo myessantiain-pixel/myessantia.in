@@ -289,31 +289,6 @@ h1, h2, .section-title, .hero-title, .featured-text h2 {
   }
 }
 
-/* Custom Scrollbar for Modal */
-.modal-content {
-  scrollbar-width: thin;
-  scrollbar-color: #d4af37 #f5f5f5;
-}
-
-.modal-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-  background: #f5f5f5;
-  border-radius: 10px;
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-  background: #d4af37;
-  border-radius: 10px;
-  transition: all 0.3s;
-}
-
-.modal-content::-webkit-scrollbar-thumb:hover {
-  background: #c4a030;
-}
-
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -367,38 +342,19 @@ h1, h2, .section-title, .hero-title, .featured-text h2 {
   flex-shrink: 0;
 }
 
-/* Cart Items Container with Scroll */
+/* Cart Items Container - No Scrollbar */
 .cart-items {
   flex: 1;
   overflow-y: auto;
-  padding-right: 0.5rem;
   margin: 0.5rem 0;
   min-height: 200px;
   max-height: 400px;
-}
-
-/* Custom Scrollbar for Cart Items */
-.cart-items {
-  scrollbar-width: thin;
-  scrollbar-color: #d4af37 #f5f5f5;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 .cart-items::-webkit-scrollbar {
-  width: 4px;
-}
-
-.cart-items::-webkit-scrollbar-track {
-  background: #f5f5f5;
-  border-radius: 10px;
-}
-
-.cart-items::-webkit-scrollbar-thumb {
-  background: #d4af37;
-  border-radius: 10px;
-}
-
-.cart-items::-webkit-scrollbar-thumb:hover {
-  background: #c4a030;
+  display: none; /* Chrome, Safari, Opera */
 }
 
 /* Cart Item Styles - Enhanced with Price on Right */
@@ -543,42 +499,31 @@ h1, h2, .section-title, .hero-title, .featured-text h2 {
   transform: scale(1.1);
 }
 
-/* Cart Total Styles - Enhanced */
+/* Cart Total Styles - Updated */
 .cart-total {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   margin-bottom: 1.2rem;
-  padding: 0.5rem 0;
-  border-top: 2px dashed #f0f0f0;
-  border-bottom: 2px dashed #f0f0f0;
-  background: linear-gradient(90deg, #faf8f5, transparent);
+  padding: 1rem 0;
+  border-top: 2px solid #f0f0f0;
+  border-bottom: 2px solid #f0f0f0;
 }
 
 .cart-total span:first-child {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 600;
-  color: #1a1a1a;
-  font-size: 1.4rem;
-  letter-spacing: -0.02em;
+  color: #333;
   text-transform: uppercase;
-  background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  letter-spacing: 1px;
 }
 
 #cart-total-amount {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
   color: #d4af37;
-  font-size: 2rem;
-  background: linear-gradient(135deg, #d4af37, #b18a2a);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 2px 2px 4px rgba(212, 175, 55, 0.1);
+  font-size: 1.8rem;
   letter-spacing: -0.02em;
 }
 
@@ -880,12 +825,16 @@ button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add,
     height: 28px;
   }
   
-  .cart-total span:first-child {
+  .cart-total {
     font-size: 1.2rem;
   }
   
+  .cart-total span:first-child {
+    font-size: 1.1rem;
+  }
+  
   #cart-total-amount {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
   
   .checkout-btn {
@@ -983,11 +932,11 @@ button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add,
   }
   
   .cart-total span:first-child {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   
   #cart-total-amount {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
   
   .checkout-btn {
