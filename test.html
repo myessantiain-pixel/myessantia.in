@@ -151,22 +151,59 @@
       .section-title { font-size: 1.8rem; }
     }
 
-  .trust-carousel-section {
+/* Add to your existing trust-carousel-section styles */
+.trust-carousel-section {
+  margin: 5rem 0 4rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-.trust-header, .trust-sub {
-  text-align: center;
+  align-items: center; /* Centers all child elements horizontally */
   width: 100%;
 }
 
-.trust-frame {
-  margin-left: auto;
-  margin-right: auto;
+.trust-header {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem; /* Reduced to bring sub-header closer */
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  line-height: 1.2;
+  text-align: center;
+  width: 100%; /* Ensures full width for text alignment */
 }
 
+.trust-sub {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #4a4a4a;
+  margin-bottom: 2.5rem;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  width: 100%; /* Ensures full width */
+}
+
+.trust-frame {
+  background: #ffffff;
+  border: 2px solid #000;
+  border-radius: 48px;
+  padding: 2.8rem 2.5rem;
+  box-shadow: 12px 12px 0 rgba(0,0,0,0.1);
+  max-width: 800px;
+  width: 100%; /* Takes full width up to max-width */
+  margin: 0 auto; /* Centers the frame */
+  position: relative;
+  transition: box-shadow 0.2s;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+}
+
+.trust-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 2rem;
+  width: 100%; /* Ensures dots container is centered */
+}
     /* ===== PRODUCT GRID ===== */
     .product-grid {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem;
