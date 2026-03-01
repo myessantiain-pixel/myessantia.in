@@ -18,17 +18,16 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
-  <!-- Common CSS (unchanged) -->
+  <!-- Common CSS (unchanged paths) -->
   <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
-  
-  <style>
-    /* ---------- CLEAN PRODUCT-FOCUSED REDESIGN – NO BORDERS ON CARDS, BIG IMAGES, SIMPLE ---------- */
+<style>
+    /* ---------- REDESIGNED HOME PAGE – BETTER UX, SAME FUNCTIONS ---------- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
-    /* Active navigation (preserved) */
+    /* Active navigation styling (preserved) */
     .nav-link.active { color: #d4af37 !important; font-weight: 600; position: relative; }
     .nav-link.active::after {
       content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px;
@@ -36,9 +35,9 @@
     }
     @keyframes slideIn { from { width: 0; opacity: 0; } to { width: 100%; opacity: 1; } }
 
-    /* ===== CLEAN HERO – minimal, product-aware ===== */
+    /* ===== REFINED HERO – more breathing & elegance ===== */
     .hero {
-      background: #f8f6f2;
+      background: #fcfaf7;
       padding: 2rem 0 1.5rem;
       position: relative;
       overflow: hidden;
@@ -46,39 +45,41 @@
     .hero-bg {
       position: absolute; inset: 0;
       background-image: url('https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=2070&auto=format&fit=crop');
-      background-size: cover; background-position: 60% 30%; opacity: 0.1;
+      background-size: cover; background-position: 60% 30%; opacity: 0.15;
+      transition: transform 0.1s linear; /* will be used by parallax */
     }
     .hero .container { position: relative; z-index: 2; display: flex; justify-content: flex-start; }
     .hero-content {
-      background: transparent; 
-      padding: 1.2rem 1.2rem;
-      max-width: 600px;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(16px);
+      padding: 1.8rem 2rem;
+      border-radius: 40px;
+      box-shadow: 0 30px 45px -25px rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.7);
+      max-width: 620px;
       width: 100%;
+      transition: all 0.3s ease;
     }
     .hero-sub {
-      font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: #6b6258;
-      margin-bottom: 0.6rem; font-weight: 500;
+      font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: #7d7a74;
+      margin-bottom: 0.75rem; font-weight: 500;
     }
     .hero-title {
       font-size: 2.3rem;
-      font-weight: 400; line-height: 1.1; color: #1a1714; margin-bottom: 0.8rem;
-      font-family: 'Playfair Display', serif;
+      font-weight: 400; line-height: 1.1; color: #1a1714; margin-bottom: 1rem;
     }
-    .hero-title strong { font-weight: 600; color: #d4af37; }
-    .hero-desc { font-size: 1rem; color: #4a4440; margin-bottom: 1.5rem; max-width: 440px; }
+    .hero-title strong { font-weight: 700; color: #d4af37; font-style: italic; background: linear-gradient(145deg, #d4af37, #b8952e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-desc { font-size: 1rem; color: #4a4640; margin-bottom: 1.8rem; max-width: 480px; line-height: 1.5; }
     .hero-buttons { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
-    .btn {
-      border-radius: 40px; padding: 0.7rem 1.8rem; font-weight: 500; border: 1px solid #d4af37;
-      transition: 0.2s; text-decoration: none; background: #fff; color: #000;
-    }
-    .btn-primary { background: #d4af37; border: 1px solid #d4af37; color: #000; }
-    .btn:hover { background: #d4af37; color: #000; }
 
-    /* ===== VALUE STRIP – simple line ===== */
-    .value-strip { background: #ffffff; padding: 0.8rem 0; border-bottom: 1px solid #ece8e2; overflow: hidden; }
+    /* ===== VALUE STRIP – now refined with smooth infinite slide ===== */
+    .value-strip { background: #ffffff; padding: 0.9rem 0; border-bottom: 1px solid #eae8e4; overflow: hidden; position: relative; }
     .value-grid {
-      display: flex; flex-wrap: nowrap; align-items: center; gap: 0.8rem 1.8rem;
-      padding: 0 0.5rem; width: fit-content;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 0.8rem 1.5rem;
+      padding: 0 0.5rem;
+      width: fit-content;
     }
     @media (min-width: 768px) {
       .value-grid { justify-content: center; flex-wrap: wrap; animation: none; margin: 0 auto; }
@@ -97,166 +98,193 @@
     }
     .value-item {
       display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: #2b2b2b;
-      font-weight: 400; white-space: nowrap; background: transparent; border: none;
+      font-weight: 450; padding: 0.4rem 1.2rem; border-radius: 40px; transition: 0.2s;
+      white-space: nowrap; background: #f6f4f1; border: 1px solid #efebe6;
     }
     .value-item i { color: #d4af37; font-size: 1rem; }
 
-    /* ===== SECTION HEADER – clean ===== */
+    /* ===== SECTION HEADER (refined) ===== */
     .section-header {
       display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
-      gap: 0.5rem 1rem; margin: 2.5rem 0 2rem;
+      gap: 0.5rem 1rem; margin: 3.5rem 0 2rem;
     }
     .section-title {
-      font-size: 2.2rem; font-weight: 400; margin: 0; font-family: 'Playfair Display', serif;
+      font-size: 2.1rem; font-weight: 400; letter-spacing: -0.01em; margin: 0;
+      font-family: 'Playfair Display', serif;
     }
-    .section-title span { font-weight: 600; color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 0.2rem; }
+    .section-title span { font-weight: 600; color: #d4af37; border-bottom: 2px solid #f0e3d0; padding-bottom: 0.2rem; }
     .view-all-link {
-      text-decoration: none; color: #000; font-size: 1rem; font-weight: 450;
-      border-bottom: 1px solid #d4af37; padding-bottom: 3px; white-space: nowrap;
-      display: inline-flex; align-items: center; gap: 5px; transition: 0.2s;
+      text-decoration: none; color: #2b2b2b; font-size: 1rem; font-weight: 500;
+      border-bottom: 2px solid #d4af37; padding-bottom: 3px; white-space: nowrap;
+      transition: 0.2s; display: flex; align-items: center; gap: 5px;
     }
-    .view-all-link:hover { gap: 8px; color: #d4af37; }
+    .view-all-link:hover { color: #d4af37; gap: 8px; }
 
-    /* ===== PRODUCT GRID – NO BORDERS, BIG IMAGES, SIMPLE ===== */
+    /* ===== PRODUCT GRID – more breathing, cleaner cards without borders ===== */
     .product-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); /* 2 cols mobile */
-      gap: 2rem 1.2rem; margin: 1.5rem 0 3rem;
+      display: grid; grid-template-columns: 1fr; gap: 2.5rem; margin: 1.5rem 0 3rem;
     }
-    @media (min-width: 600px) { .product-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem; } }
-    @media (min-width: 900px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 500px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 800px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1100px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
 
-    /* product card – no border, no frame, just big image and text */
     .product-card {
-      background: transparent; 
-      padding: 0;  /* no inner padding */
-      transition: 0.2s ease; text-align: left;
+      background: #fff; border-radius: 32px; padding: 1.2rem 1rem 1.5rem;
+      box-shadow: 0 15px 35px -10px rgba(0,0,0,0.05); transition: all 0.3s cubic-bezier(0.2,0,0,1); text-align: left;
       display: flex; flex-direction: column; height: 100%;
       text-decoration: none; color: inherit; position: relative;
-      animation: fadeInUp 0.4s ease backwards;
+      animation: fadeInUp 0.5s ease backwards;
+      border: none; /* Removed border */
     }
-    .product-card:hover { transform: translateY(-4px); }
+    .product-card:hover {
+      box-shadow: 0 30px 45px -15px rgba(212,175,55,0.25);
+      transform: translateY(-6px);
+    }
 
-    /* image frame – big, clean, no borders */
     .image-frame {
-      position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 0;  /* square, no rounding */
-      overflow: hidden; margin-bottom: 0.8rem; background: #f4f2ef;
-      border: none; box-shadow: none;
+      position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 28px;
+      overflow: hidden; margin-bottom: 1.2rem; background-color: #f8f6f2;
+      box-shadow: 0 8px 20px -8px rgba(0,0,0,0.1);
     }
     .primary-img, .secondary-img { 
       position: absolute; top:0; left:0; width:100%; height:100%; 
-      background-size: cover;  /* cover the square, full visibility */
-      background-position: center; transition: opacity 0.3s ease;
+      background-size: cover; background-position: center; transition: opacity 0.45s ease;
     }
     .primary-img { opacity:1; z-index:2; }
     .secondary-img { opacity:0; z-index:1; }
     .image-frame:hover .primary-img { opacity:0; }
     .image-frame:hover .secondary-img { opacity:1; }
 
-    /* add to cart – simple underline style, no borders */
     .card-add-btn {
-      display: inline-flex; align-items: center; justify-content: flex-start; gap: 8px;
-      background: transparent; border: none; border-bottom: 1px solid #d4af37;
-      padding: 0.3rem 0; font-size: 0.85rem; font-weight: 500; color: #000;
-      cursor: pointer; width: fit-content; margin: 0.5rem 0 0; transition: 0.15s;
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      background: #ffffff; border: 1.8px solid #d4af37; border-radius: 60px;
+      padding: 0.8rem 0.5rem; font-size: 0.9rem; font-weight: 600; color: #0c0c0c;
+      cursor: pointer; width: 100%; margin: 0.8rem 0 0.2rem; transition: 0.2s;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    .card-add-btn i { color: #d4af37; font-size: 1rem; transition: 0.15s; }
-    .card-add-btn:hover { gap: 12px; color: #d4af37; border-bottom-color: #000; }
-    .card-add-btn:hover i { color: #000; }
+    .card-add-btn i { color: #d4af37; font-size: 1.1rem; transition: 0.2s; }
+    .card-add-btn:hover {
+      background: #d4af37; border-color: #d4af37; transform: scale(1.02);
+      box-shadow: 0 8px 20px rgba(212,175,55,0.35);
+    }
+    .card-add-btn:hover i { color: #0c0c0c; }
 
-    .product-category { font-size: 0.65rem; color: #8f8b85; text-transform: uppercase; letter-spacing: 0.5px; margin: 0.1rem 0; }
-    .product-title { font-weight: 600; font-size: 1rem; margin: 0.2rem 0; color: #000; line-height: 1.3; }
+    .product-category { font-size: 0.7rem; color: #a89f94; text-transform: uppercase; letter-spacing: 0.5px; margin: 0.1rem 0; }
+    .product-title { font-weight: 700; font-size: 1.2rem; margin: 0.3rem 0 0.2rem; color: #1a1a1a; line-height: 1.35; }
 
-    .product-rating { display: flex; align-items: center; gap: 3px; margin: 0.2rem 0; }
-    .product-rating i { color: #d4af37; font-size: 0.75rem; }
+    .product-rating { display: flex; align-items: center; gap: 4px; margin: 0.3rem 0; }
+    .product-rating i { color: #d4af37; font-size: 0.85rem; }
 
     .product-price-block {
-      display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin: 0.3rem 0 0;
+      display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0.8rem 0 0.3rem;
     }
-    .current-price { color: #000; font-weight: 600; font-size: 1.3rem; font-family: 'Montserrat', sans-serif; line-height: 1.2; }
-    .current-price .inr-symbol { font-size: 1rem; font-weight: 400; }
-    .old-price { color: #a8a8a8; font-size: 0.85rem; text-decoration: line-through; font-weight: 400; }
+    .current-price { color: #d4af37; font-weight: 700; font-size: 1.6rem; font-family: 'Montserrat', sans-serif; line-height: 1.2; }
+    .current-price .inr-symbol { font-size: 1.2rem; font-weight: 500; }
+    .old-price { color: #b0b0b0; font-size: 1rem; text-decoration: line-through; font-weight: 400; }
     .sale-badge {
-      background: #d4af37; color: #000; font-size: 0.6rem; font-weight: 600;
-      padding: 0.15rem 0.6rem; border-radius: 20px; margin-left: auto;
+      background: #d4af37; color: #0c0c0c; font-size: 0.7rem; font-weight: 600;
+      padding: 0.3rem 0.8rem; border-radius: 40px; letter-spacing: 0.3px; margin-left: auto;
     }
-    .stock-badge { font-size: 0.65rem; margin-top: 0.2rem; }
+    .stock-badge { font-size: 0.75rem; margin-top: 0.3rem; }
     .in-stock { color: #2e7d32; }
 
-    /* ===== TWO-SLIDE ABOUT – clean and minimal ===== */
+    /* ===== TWO-SLIDE ABOUT – refined with thin black border ===== */
     .about-slides {
-      margin: 3.5rem 0 2rem; background: #fcfaf7; border-radius: 48px;
-      padding: 2.5rem 2rem; 
+      margin: 4rem 0 2.5rem; background: #fbf9f7; border-radius: 56px;
+      padding: 3rem 2.5rem; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.05);
+      border: 1px solid #000000; /* Thin black border */
     }
-    .slides-container { display: flex; flex-direction: column; gap: 2.2rem; }
+    .slides-container { display: flex; flex-direction: column; gap: 2.5rem; }
     .slide-item {
-      display: flex; flex-direction: column; gap: 0.8rem; opacity: 0;
-      transform: translateY(10px); animation: slideFadeIn 0.5s ease forwards;
+      display: flex; flex-direction: column; gap: 1rem; opacity: 0;
+      transform: translateY(12px); animation: slideFadeIn 0.5s ease forwards;
     }
     .slide-item:nth-child(1) { animation-delay: 0.2s; }
     .slide-item:nth-child(2) { animation-delay: 0.6s; }
     @keyframes slideFadeIn { to { opacity: 1; transform: translateY(0); } }
     .slide-icon {
-      font-size: 2.2rem; color: #d4af37; background: transparent;
-      width: auto; height: auto; border-radius: 0; display: flex;
-      align-items: center; justify-content: flex-start; border: none; box-shadow: none;
+      font-size: 2.4rem; color: #d4af37; background: rgba(212,175,55,0.08);
+      width: 80px; height: 80px; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; border: 1px dashed #d4af37;
     }
-    .slide-content h3 { font-size: 2rem; font-weight: 400; margin: 0 0 0.3rem; font-family: 'Playfair Display', serif; }
+    .slide-content h3 { font-size: 2.2rem; font-weight: 400; margin: 0 0 0.3rem; font-family: 'Playfair Display', serif; }
     .slide-content h3 span { color: #d4af37; font-weight: 600; }
-    .slide-content p { color: #4f4a44; max-width: 420px; font-size: 1rem; line-height: 1.5; }
-    .slide-divider { width: 80px; height: 2px; background: #d4af37; }
+    .slide-content p { color: #4f4a44; max-width: 420px; font-size: 1.1rem; line-height: 1.6; }
+    .slide-divider { width: 80px; height: 2px; background: linear-gradient(90deg, #000000, transparent); } /* Black gradient */
     @media (min-width: 700px) {
-      .slides-container { flex-direction: row; }
-      .slide-divider { width: 2px; height: auto; background: #d4af37; }
+      .slides-container { flex-direction: row; align-items: stretch; gap: 2rem; }
+      .slide-item { flex: 1; }
+      .slide-divider { width: 2px; height: auto; background: linear-gradient(180deg, #000000, transparent); } /* Black gradient */
     }
 
-    /* ===== TESTIMONIALS – clean, minimal ===== */
-    .testimonials-section { margin: 4rem 0 3rem; }
+    /* ===== TESTIMONIALS – more personality with thin black border ===== */
+    .testimonials-section { margin: 5rem 0 4rem; }
     .testimonials-header {
-      font-size: 2.2rem; font-weight: 400; margin-bottom: 2rem; font-family: 'Playfair Display', serif;
+      font-size: 2.4rem; font-weight: 400; margin-bottom: 3rem;
+      font-family: 'Playfair Display', serif; position: relative;
     }
-    .testimonials-header span { color: #d4af37; font-weight: 600; border-bottom: 2px solid #d4af37; }
+    .testimonials-header span { color: #d4af37; font-weight: 600; border-bottom: 3px solid #d4af37; padding-bottom: 0.2rem; }
     .testimonials-grid {
-      display: grid; grid-template-columns: 1fr; gap: 2rem;
+      display: grid; grid-template-columns: 1fr; gap: 2.5rem;
     }
     @media (min-width: 640px) { .testimonials-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 1000px) { .testimonials-grid { grid-template-columns: repeat(3, 1fr); } }
     .testimonial-card {
-      background: transparent; padding: 1.5rem 0; border-top: 1px solid #ece8e2; position: relative;
+      background: #ffffff; padding: 2.5rem 2.2rem; border-radius: 40px;
+      border: 1px solid #000000; /* Thin black border */
+      box-shadow: 0 15px 30px -12px rgba(0,0,0,0.03);
+      transition: 0.25s; position: relative;
+    }
+    .testimonial-card:hover {
+      border-color: #000000;
+      transform: translateY(-4px);
+      box-shadow: 0 25px 35px -15px rgba(0,0,0,0.1);
     }
     .testimonial-card i.fa-quote-left {
-      color: #d4af37; opacity: 0.3; font-size: 2rem; position: absolute; top: 0.5rem; right: 0;
+      color: #d4af37; opacity: 0.2; font-size: 3.5rem; position: absolute; top: 1.2rem; right: 1.8rem;
     }
     .testimonial-card p {
-      font-size: 1rem; line-height: 1.5; margin: 0.5rem 0 1rem; color: #2e2b27; font-style: italic;
+      font-size: 1.1rem; line-height: 1.7; margin: 1rem 0 1.8rem; color: #2e2b27; font-style: italic;
     }
-    .testimonial-card h5 { font-weight: 600; margin: 0; color: #000; font-size: 0.9rem; }
-    .testimonial-card h5::before { content: '— '; color: #d4af37; }
+    .testimonial-card h5 { 
+      font-weight: 600; margin: 0; color: #1a1a1a; font-size: 1rem;
+      border-top: 1px solid #eeeeee; padding-top: 1.2rem;
+    }
+    .testimonial-card h5::before { content: '— '; color: #d4af37; font-weight: 400; }
 
-    /* scroll top – simple */
+    /* scroll top button (refined) */
     .scroll-top {
-      position: fixed; bottom: 20px; right: 20px; background: #d4af37; color: #000;
-      width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center;
-      justify-content: center; cursor: pointer; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      opacity: 0; transform: translateY(15px); transition: 0.2s; z-index: 100;
+      position: fixed; bottom: 24px; right: 24px; background: #d4af37; color: #0c0c0c;
+      width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; border: none; box-shadow: 0 8px 20px rgba(212,175,55,0.4);
+      opacity: 0; transform: translateY(20px); transition: 0.3s; z-index: 100;
     }
     .scroll-top.visible { opacity: 1; transform: translateY(0); }
+    .scroll-top:hover { background: #c4a233; transform: scale(1.05) translateY(-2px); }
 
-    /* responsive */
-    @media (max-width: 480px) {
-      .hero-title { font-size: 2rem; }
-      .section-title { font-size: 1.8rem; }
-      .product-title { font-size: 0.95rem; }
+    /* micro interactions */
+    .btn { border-radius: 50px; padding: 0.8rem 2rem; font-weight: 600; font-size: 1rem; }
+    .btn-outline { border: 2px solid #d4af37; background: transparent; color: #1a1a1a; }
+    .btn-outline:hover { background: #d4af37; color: #0c0c0c; }
+
+    /* responsive hero improvements */
+    @media (min-width: 600px) {
+      .hero { padding: 3rem 0 2rem; }
+      .hero-content { padding: 2.5rem 3rem; }
+      .hero-title { font-size: 2.8rem; }
+    }
+    @media (min-width: 900px) {
+      .hero-title { font-size: 3.5rem; }
     }
   </style>
 </head>
-<body>
+<body class="bg-noise">
 
   <div id="header"></div>
   <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
 
   <main>
-    <!-- HERO -->
+    <!-- HERO refined -->
     <section class="hero">
       <div class="hero-bg" id="heroBg"></div>
       <div class="container">
@@ -265,14 +293,14 @@
           <h1 class="hero-title">curated <strong>accessories</strong> <br>shipped worldwide</h1>
           <p class="hero-desc">Partner with vetted suppliers. Daily essentials, minimalist design, and fast fulfillment.</p>
           <div class="hero-buttons">
-            <a href="#" class="btn btn-primary" id="startShoppingBtn">start shopping</a>
-            <a href="collection.html" class="btn">view all</a>
+            <a href="#" class="btn" id="startShoppingBtn" style="background:#d4af37; color:#0c0c0c; border:none;">start shopping</a>
+            <a href="collection.html" class="btn btn-outline">view all</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- VALUE STRIP -->
+    <!-- VALUE STRIP (smooth sliding preserved) -->
     <div class="value-strip">
       <div class="container" style="padding:0 5px;">
         <div class="value-grid">
@@ -284,7 +312,7 @@
       </div>
     </div>
 
-    <!-- PRODUCTS SECTION (clean, big images, simple details) -->
+    <!-- PRODUCTS SECTION (same structure, same functions) -->
     <div class="container" id="products-section">
       <div class="section-header">
         <h2 class="section-title"><span>accessories & essentials</span> — new arrivals</h2>
@@ -293,7 +321,7 @@
       <div class="product-grid" id="product-grid-container"></div>
     </div>
 
-    <!-- TWO-SLIDE ABOUT (clean) -->
+    <!-- TWO-SLIDE ABOUT (refined style) -->
     <div class="container">
       <div class="about-slides">
         <div class="slides-container">
@@ -316,7 +344,7 @@
       </div>
     </div>
 
-    <!-- TESTIMONIALS (clean) -->
+    <!-- TESTIMONIALS (more refined) -->
     <div class="container testimonials-section">
       <h2 class="testimonials-header"><span>why people</span> trust us</h2>
       <div class="testimonials-grid">
@@ -345,7 +373,7 @@
   <script src="common.js"></script>
 
   <script>
-    // ----- ALL FUNCTIONS PRESERVED – NO CHANGES -----
+    // ----- HOME PAGE FUNCTIONS (ALL PRESERVED, ONLY VISUAL REFINEMENT) -----
     function renderRating(rating) {
       if (!rating || rating === 0) return '<span>★ 0.0</span>';
       const full = Math.floor(rating);
@@ -362,8 +390,8 @@
 
     function getStockStatus(stock) {
       if (stock > 5) return '<div class="stock-badge in-stock"><i class="fa-regular fa-circle-check"></i> in stock</div>';
-      if (stock > 0) return '<div class="stock-badge" style="color:#b85e00;"><i class="fa-regular fa-clock"></i> low stock</div>';
-      return '<div class="stock-badge" style="color:#b71c1c;"><i class="fa-regular fa-circle-xmark"></i> out of stock</div>';
+      if (stock > 0) return '<div class="stock-badge" style="color:#f57c00;"><i class="fa-regular fa-clock"></i> low stock</div>';
+      return '<div class="stock-badge" style="color:#c62828;"><i class="fa-regular fa-circle-xmark"></i> out of stock</div>';
     }
 
     function renderProducts() {
@@ -386,8 +414,8 @@
           <div class="product-card" data-product-id="${p.id}" style="animation-delay:${idx*0.08}s">
             <a href="product.html?id=${p.id}" style="text-decoration:none; color:inherit; display:block;">
               <div class="image-frame">
-                <div class="primary-img" style="background-image:url('${mainImg}'); background-size: cover;"></div>
-                <div class="secondary-img" style="background-image:url('${secondImg}'); background-size: cover;"></div>
+                <div class="primary-img" style="background-image:url('${mainImg}');"></div>
+                <div class="secondary-img" style="background-image:url('${secondImg}');"></div>
               </div>
               <p class="product-category">${p.category || 'accessory'}</p>
               <h3 class="product-title">${p.title}</h3>
@@ -420,9 +448,13 @@
     function handleScroll() {
       const btn = document.getElementById('scrollTop');
       if (btn) btn.classList.toggle('visible', window.scrollY > 200);
+      // parallax for hero bg (preserved)
       const bg = document.getElementById('heroBg');
-      if (bg) bg.style.transform = `scale(1.1) translateY(${window.scrollY * 0.03}px)`;
+      if (bg) bg.style.transform = `scale(1.1) translateY(${window.scrollY * 0.04}px)`;
     }
+
+    // wrapping existing parallax function (handleParallax merged)
+    function handleParallax() {} // already inside handleScroll
 
     async function loadCommonModals() {
       try {
