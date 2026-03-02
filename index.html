@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Montserrat:wght@300..900&display=swap" rel="stylesheet">
   
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDKs (loaded once) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
   
-<style>
+  <style>
     /* ===== GLOBAL & RESETS ===== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -243,7 +243,7 @@
       .slide-divider { width: 3px; height: auto; background: #000; }
     }
 
-    /* ===== REVIEWS CAROUSEL – Enhanced styling with sliding on all devices ===== */
+    /* ===== REVIEWS CAROUSEL ===== */
     .reviews-section {
       margin: 5rem 0 4rem;
       padding: 3rem 0;
@@ -280,7 +280,6 @@
       border-radius: 4px;
     }
 
-    /* Carousel container */
     .reviews-carousel-wrapper {
       position: relative;
       max-width: 1200px;
@@ -300,7 +299,6 @@
       padding: 10px 0 20px 0;
     }
 
-    /* Review card styling - enhanced */
     .review-card {
       flex: 0 0 calc(33.333% - 16px);
       background: #ffffff;
@@ -321,7 +319,6 @@
                   0 0 0 2px #d4af37;
     }
 
-    /* Quote icon styling */
     .review-card .quote-icon {
       color: #d4af37;
       opacity: 0.15;
@@ -332,7 +329,6 @@
       line-height: 1;
     }
 
-    /* Rating stars */
     .review-rating {
       display: flex;
       gap: 4px;
@@ -345,7 +341,6 @@
       filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.3));
     }
 
-    /* Review text */
     .review-card p {
       font-size: 1.1rem;
       line-height: 1.7;
@@ -359,7 +354,6 @@
       padding-right: 1rem;
     }
 
-    /* Reviewer info */
     .reviewer-info {
       border-top: 2px solid #f0f0f0;
       padding-top: 1.2rem;
@@ -409,7 +403,6 @@
       font-size: 0.7rem;
     }
 
-    /* Navigation arrows */
     .carousel-arrow {
       position: absolute;
       top: 50%;
@@ -446,7 +439,6 @@
       right: -20px;
     }
 
-    /* Dots indicator */
     .reviews-dots {
       display: flex;
       justify-content: center;
@@ -471,7 +463,6 @@
       box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
     }
 
-    /* Mobile responsive */
     @media (max-width: 768px) {
       .reviews-section {
         margin: 3rem 0;
@@ -512,7 +503,6 @@
       }
     }
 
-    /* Tablet */
     @media (min-width: 769px) and (max-width: 1024px) {
       .review-card {
         flex: 0 0 calc(50% - 12px);
@@ -531,7 +521,6 @@
     .scroll-top.visible { opacity: 1; transform: translateY(0); }
     .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
 
-    /* Desktop fine-tuning */
     @media (min-width: 1280px) {
       .hero-title { font-size: 3.2rem; }
       .section-title { font-size: 2.8rem; }
@@ -605,7 +594,7 @@
       </div>
     </div>
 
-    <!-- REVIEWS SECTION – Enhanced sliding carousel for all devices -->
+    <!-- REVIEWS SECTION -->
     <div class="reviews-section">
       <div class="container">
         <h2 class="reviews-header"><span>why people</span> trust us</h2>
@@ -616,15 +605,11 @@
           
           <div class="reviews-carousel-container">
             <div class="reviews-carousel-track" id="reviewsTrack">
-              <!-- Review 1 -->
+              <!-- Review cards -->
               <div class="review-card">
                 <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
                 <div class="review-rating">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
                 <p>"Reliable suppliers & fast shipping. The quality exceeds expectations. My go-to for premium accessories."</p>
                 <div class="reviewer-info">
@@ -636,15 +621,10 @@
                 </div>
               </div>
               
-              <!-- Review 2 -->
               <div class="review-card">
                 <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
                 <div class="review-rating">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
                 <p>"I use MyEssantia for my accessory business. Best & premium products. My customers love the quality."</p>
                 <div class="reviewer-info">
@@ -656,15 +636,10 @@
                 </div>
               </div>
               
-              <!-- Review 3 -->
               <div class="review-card">
                 <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
                 <div class="review-rating">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-regular fa-star"></i>
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
                 </div>
                 <p>"The accessories collection is a bestseller. Good & consistent quality. Fast delivery every time."</p>
                 <div class="reviewer-info">
@@ -676,15 +651,10 @@
                 </div>
               </div>
               
-              <!-- Review 4 (extra for better sliding) -->
               <div class="review-card">
                 <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
                 <div class="review-rating">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                 </div>
                 <p>"Outstanding customer service and premium quality. Highly recommend MyEssantia for daily essentials."</p>
                 <div class="reviewer-info">
@@ -699,7 +669,6 @@
           </div>
         </div>
         
-        <!-- Dots indicator -->
         <div class="reviews-dots" id="reviewsDots"></div>
       </div>
     </div>
@@ -708,11 +677,14 @@
   <div id="footer"></div>
   <div id="common-modals"></div>
 
+  <!-- Load common.js only ONCE -->
   <script src="common.js"></script>
-  <script src="common.js"></script>
+  
   <script>
-    // ----- EXISTING PRODUCT & UI FUNCTIONS -----
-    function renderRating(rating) {
+    // ========== PAGE-SPECIFIC FUNCTIONS ==========
+    
+    // Helper functions (only if not already defined in common.js)
+    window.renderRating = window.renderRating || function(rating) {
       if (!rating || rating === 0) return '<span>★ 0.0</span>';
       const full = Math.floor(rating);
       let stars = '';
@@ -720,32 +692,38 @@
         stars += i < full ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
       }
       return stars + `<span> ${rating.toFixed(1)}</span>`;
-    }
+    };
     
-    function formatPrice(price) {
+    window.formatPrice = window.formatPrice || function(price) {
       return price?.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') || '0.00';
-    }
+    };
     
-    function getStockStatus(stock) {
+    window.getStockStatus = window.getStockStatus || function(stock) {
       if (stock > 5) return '<div class="stock-badge in-stock"><i class="fa-regular fa-circle-check"></i> in stock</div>';
       if (stock > 0) return '<div class="stock-badge" style="color:#f57c00;"><i class="fa-regular fa-clock"></i> low stock</div>';
       return '<div class="stock-badge" style="color:#c62828;"><i class="fa-regular fa-circle-xmark"></i> out of stock</div>';
-    }
+    };
     
+    // Render products function
     function renderProducts() {
       const grid = document.getElementById('product-grid-container');
       if (!grid) return;
+      
+      // Use window.products which is set by common.js
       const homeProducts = (window.products || []).filter(p => p.showOnHome === true);
+      
       if (homeProducts.length === 0) {
         grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:3rem;"><i class="fa-solid fa-box-open" style="font-size:2.5rem; color:#d4af37;"></i><h3 style="margin-top:0.5rem;">No products on homepage</h3></div>`;
         return;
       }
+      
       let html = '';
       homeProducts.forEach((p, idx) => {
         const mainImg = p.images?.[0] || p.primaryImg || 'https://via.placeholder.com/300';
         const secondImg = p.images?.[1] || p.secondaryImg || mainImg;
         const hasSale = p.oldPrice && p.oldPrice > p.price;
         const discount = hasSale ? Math.round(((p.oldPrice - p.price)/p.oldPrice)*100) : 0;
+        
         html += `
           <div class="product-card" data-product-id="${p.id}">
             <a href="product.html?id=${p.id}" style="text-decoration:none; color:inherit; display:block;">
@@ -755,13 +733,13 @@
               </div>
               <p class="product-category">${p.category || 'accessory'}</p>
               <h3 class="product-title">${p.title}</h3>
-              <div class="product-rating">${renderRating(p.rating)}</div>
+              <div class="product-rating">${window.renderRating(p.rating)}</div>
               <div class="product-price-block">
-                <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(p.price)}</span>
-                ${hasSale ? `<span class="old-price">₹${formatPrice(p.oldPrice)}</span>` : ''}
+                <span class="current-price"><span class="inr-symbol">₹</span>${window.formatPrice(p.price)}</span>
+                ${hasSale ? `<span class="old-price">₹${window.formatPrice(p.oldPrice)}</span>` : ''}
                 ${hasSale ? `<span class="sale-badge">-${discount}%</span>` : ''}
               </div>
-              ${getStockStatus(p.stock)}
+              ${window.getStockStatus(p.stock)}
             </a>
             <button class="card-add-btn" onclick="window.addToCart('${p.id}'); event.stopPropagation();">
               <i class="fa-solid fa-cart-plus"></i> add
@@ -769,90 +747,31 @@
           </div>
         `;
       });
+      
       grid.innerHTML = html;
     }
     
+    // Scroll to products section
     function scrollToProducts() {
       document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
     }
     
+    // Set active nav link
     function setActiveNav() {
       document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
       document.querySelectorAll('.nav-link[href="index.html"]').forEach(l => l.classList.add('active'));
     }
     
+    // Handle scroll effects
     function handleScroll() {
       const btn = document.getElementById('scrollTop');
       if (btn) btn.classList.toggle('visible', window.scrollY > 200);
+      
       const bg = document.getElementById('heroBg');
       if (bg) bg.style.transform = `scale(1.1) translateY(${window.scrollY * 0.02}px)`;
     }
-
-    // ----- CORRECTED ADD TO CART FUNCTION -----
-    window.addToCart = async function(productId) {
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
-
-      if (product.stock <= 0) {
-        alert('Sorry, this product is out of stock!');
-        return;
-      }
-
-      const existingItem = cart.find(item => item.id === productId);
-
-      if (existingItem) {
-        if (existingItem.quantity >= product.stock) {
-          alert('Sorry, not enough stock available!');
-          return;
-        }
-        existingItem.quantity += 1;
-      } else {
-        cart.push({
-          id: productId,
-          title: product.title,
-          category: product.category,
-          price: product.price,
-          primaryImg: product.primaryImg || (product.images && product.images[0]),
-          quantity: 1
-        });
-      }
-
-      // Save to Firebase if user is logged in
-      if (currentUser) {
-        await saveCartToFirebase();
-      }
-      
-      updateCartCount();
-      
-      // Show animation on the button and open cart
-      const btn = event?.target?.closest('button');
-      if (btn) {
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        btn.style.background = '#4CAF50';
-        btn.style.color = 'white';
-        
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.style.background = '';
-          btn.style.color = '';
-          openCart(); // Open cart after animation
-        }, 500);
-      } else {
-        openCart(); // Open cart immediately if button not found
-      }
-    };
-
-    // ----- MAKE CART FUNCTIONS AVAILABLE GLOBALLY -----
-    window.openCart = openCart;
-    window.updateQuantity = updateQuantity;
-    window.removeFromCart = removeFromCart;
-    window.buyNow = function(productId) {
-      addToCart(productId);
-      openCart();
-    };
-
-    // ----- REVIEWS CAROUSEL (auto-slide on all devices) -----
+    
+    // ========== REVIEWS CAROUSEL ==========
     function initReviewsCarousel() {
       const track = document.getElementById('reviewsTrack');
       const prevBtn = document.getElementById('reviewPrev');
@@ -894,7 +813,8 @@
       
       // Update slide position
       function updateSlide() {
-        const cardWidth = cards[0].offsetWidth + 24; // including gap
+        if (!cards.length) return;
+        const cardWidth = cards[0].offsetWidth + 24;
         const maxIndex = totalCards - cardsPerView;
         if (currentIndex > maxIndex) currentIndex = maxIndex;
         if (currentIndex < 0) currentIndex = 0;
@@ -916,7 +836,7 @@
         if (currentIndex < maxIndex) {
           currentIndex += cardsPerView;
         } else {
-          currentIndex = 0; // Loop back to start
+          currentIndex = 0;
         }
         updateSlide();
       }
@@ -927,7 +847,7 @@
         if (currentIndex > 0) {
           currentIndex -= cardsPerView;
         } else {
-          currentIndex = maxIndex; // Loop to end
+          currentIndex = maxIndex;
         }
         updateSlide();
       }
@@ -947,7 +867,7 @@
           createDots();
           updateSlide();
         } else {
-          updateSlide(); // Just reposition
+          updateSlide();
         }
       }
       
@@ -1001,37 +921,67 @@
       // Resize listener
       window.addEventListener('resize', handleResize);
     }
-
-    // ----- INITIALIZATION -----
-    document.addEventListener('DOMContentLoaded', () => {
-      loadCommonModals();
-      if (typeof loadComponents === 'function') loadComponents();
-      if (window.products?.length) renderProducts();
-      initReviewsCarousel();
+    
+    // Load modals
+    async function loadCommonModals() {
+      try {
+        const res = await fetch('common.html');
+        const data = await res.text();
+        document.getElementById('common-modals').innerHTML = data;
+      } catch (e) { 
+        console.warn('Modals not loaded'); 
+      }
+    }
+    
+    // ========== INITIALIZATION ==========
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadCommonModals();
+      
+      // Load components (header/footer) from common.js
+      if (typeof window.loadComponents === 'function') {
+        window.loadComponents();
+      }
+      
+      // Initialize carousel after a short delay
+      setTimeout(() => {
+        initReviewsCarousel();
+      }, 500);
+      
+      // Set up event listeners
+      document.getElementById('startShoppingBtn')?.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        scrollToProducts(); 
+      });
+      
+      window.addEventListener('scroll', handleScroll);
     });
-
+    
+    // Render products when they're loaded
     window.addEventListener('load', () => {
-      if (!window.products?.length) {
+      // Check if products are already available
+      if (window.products?.length) {
+        renderProducts();
+      } else {
+        // Try to load from cache
         const cached = localStorage.getItem('MyEssantia_products');
         if (cached) { 
           window.products = JSON.parse(cached); 
           renderProducts(); 
         }
       }
+      
       setTimeout(setActiveNav, 200);
       initReviewsCarousel();
     });
-
-    async function loadCommonModals() {
-      try {
-        const res = await fetch('common.html');
-        const data = await res.text();
-        document.getElementById('common-modals').innerHTML = data;
-      } catch (e) { console.warn('modals not loaded'); }
-    }
-
-    window.addEventListener('scroll', handleScroll);
-    document.getElementById('startShoppingBtn')?.addEventListener('click', (e) => { e.preventDefault(); scrollToProducts(); });
+    
+    // Watch for products to be loaded (in case they load after)
+    const productsObserver = new MutationObserver(() => {
+      if (window.products?.length && !document.getElementById('product-grid-container').children.length) {
+        renderProducts();
+      }
+    });
+    
+    productsObserver.observe(document.body, { childList: true, subtree: true });
   </script>
 </body>
 </html>
