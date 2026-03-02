@@ -278,9 +278,57 @@ function setupEventListeners() {
   const navMenu = document.getElementById('nav-menu');
   
   if (mobileMenuToggle && navMenu) {
+    // Toggle menu on hamburger click
     mobileMenuToggle.addEventListener('click', function(e) {
       e.stopPropagation();
+      this.classList.toggle('active');
       navMenu.classList.toggle('show');
+      
+      // Toggle body class for overlay
+      if (navMenu.classList.contains('show')) {
+        document.body.classList.add('menu-open');
+        // Prevent body scrolling when menu is open
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Close menu when clicking on a navigation link
+    const navLinks = navMenu.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenuToggle.classList.remove('active');
+        navMenu.classList.remove('show');
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Close menu when clicking on the close button (X) - using event delegation
+    navMenu.addEventListener('click', function(e) {
+      // Check if click is on the close button (the ::before pseudo-element is tricky)
+      // Instead, we'll check if click is near the top-right area when menu is open
+      const rect = this.getBoundingClientRect();
+      const clickX = e.clientX;
+      const clickY = e.clientY;
+      
+      // Close button area (top 60px, right 60px)
+      if (clickY < rect.top + 60 && clickX > rect.right - 60) {
+        mobileMenuToggle.classList.remove('active');
+        navMenu.classList.remove('show');
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
+      }
+      
+      // Close if clicking on the overlay background
+      if (e.target === navMenu) {
+        mobileMenuToggle.classList.remove('active');
+        navMenu.classList.remove('show');
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
+      }
     });
   }
 
@@ -291,6 +339,14 @@ function setupEventListeners() {
       e.preventDefault();
       console.log('Cart icon clicked (delegated)');
       openCart();
+      
+      // Close mobile menu if open
+      if (navMenu && navMenu.classList.contains('show')) {
+        mobileMenuToggle?.classList.remove('active');
+        navMenu.classList.remove('show');
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
+      }
     }
   });
 
@@ -300,6 +356,14 @@ function setupEventListeners() {
       e.preventDefault();
       console.log('Profile icon clicked (delegated)');
       openProfile();
+      
+      // Close mobile menu if open
+      if (navMenu && navMenu.classList.contains('show')) {
+        mobileMenuToggle?.classList.remove('active');
+        navMenu.classList.remove('show');
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
+      }
     }
   });
 
@@ -369,15 +433,41 @@ function setupEventListeners() {
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
+      // Close mobile menu if open
+      if (navMenu && navMenu.classList.contains('show')) {
+        mobileMenuToggle?.classList.remove('active');
+        navMenu.classList.remove('show');
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
+      }
+      
+      // Close modals
       closeModal('cart-modal');
       closeModal('profile-modal');
     }
   });
 
+  // Close mobile menu when clicking outside (existing functionality enhanced)
   document.addEventListener('click', function(e) {
     if (navMenu && navMenu.classList.contains('show')) {
+      // Check if click is outside both the menu and the toggle button
       if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        mobileMenuToggle.classList.remove('active');
         navMenu.classList.remove('show');
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
+      }
+    }
+  });
+  
+  // Handle window resize - close mobile menu on resize to desktop
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      if (navMenu && navMenu.classList.contains('show')) {
+        mobileMenuToggle?.classList.remove('active');
+        navMenu.classList.remove('show');
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
       }
     }
   });
