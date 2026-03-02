@@ -21,6 +21,32 @@ let cart = [];
 let currentUser = null;
 let products = [];
 
+// ========== LOAD CART FROM LOCALSTORAGE ON INIT ==========
+function loadCartFromLocalStorage() {
+  try {
+    const savedCart = localStorage.getItem('MyEssantia_cart');
+    if (savedCart) {
+      cart = JSON.parse(savedCart);
+      console.log('Cart loaded from localStorage:', cart);
+    }
+  } catch (error) {
+    console.error('Error loading cart from localStorage:', error);
+    cart = [];
+  }
+}
+
+// ========== SAVE CART TO LOCALSTORAGE ==========
+function saveCartToLocalStorage() {
+  try {
+    localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
+  } catch (error) {
+    console.error('Error saving cart to localStorage:', error);
+  }
+}
+
+// Load cart from localStorage immediately when script runs
+loadCartFromLocalStorage();
+
 // ========== FIREBASE AUTH STATE OBSERVER ==========
 auth.onAuthStateChanged(async (user) => {
   if (user) {
@@ -35,7 +61,7 @@ auth.onAuthStateChanged(async (user) => {
     
     localStorage.setItem('MyEssantia_user', JSON.stringify(currentUser));
     
-    // Load user's cart from Firestore
+    // Load user's cart from Firestore and merge with local cart
     await loadUserCart(user.uid);
     
     // Load products from Firestore
@@ -45,10 +71,13 @@ auth.onAuthStateChanged(async (user) => {
     if (document.getElementById('profile-content')) {
       renderProfileContent();
     }
+    
+    // Update cart count after everything is loaded
+    updateCartCount();
   } else {
     currentUser = null;
-    cart = []; // Clear cart when user logs out
     localStorage.removeItem('MyEssantia_user');
+    // Don't clear cart when user logs out - keep local cart
     updateProfileIcon();
     if (document.getElementById('profile-content')) {
       renderProfileContent();
@@ -60,17 +89,50 @@ auth.onAuthStateChanged(async (user) => {
 async function loadUserCart(userId) {
   try {
     const cartDoc = await db.collection('carts').doc(userId).get();
+    let firebaseCart = [];
+    
     if (cartDoc.exists) {
-      cart = cartDoc.data().items || [];
-    } else {
-      cart = [];
+      firebaseCart = cartDoc.data().items || [];
     }
+    
+    // Merge Firebase cart with local cart if both exist
+    if (firebaseCart.length > 0 && cart.length > 0) {
+      // Merge carts (prefer Firebase cart for logged in user)
+      cart = mergeCarts(cart, firebaseCart);
+    } else if (firebaseCart.length > 0) {
+      // Use Firebase cart if it exists
+      cart = firebaseCart;
+    }
+    // Otherwise keep local cart
+    
+    // Save merged cart to localStorage
+    saveCartToLocalStorage();
+    
     updateCartCount();
     renderCartItems();
   } catch (error) {
     console.error('Error loading cart:', error);
-    cart = [];
+    // Keep using local cart if Firebase fails
+    updateCartCount();
+    renderCartItems();
   }
+}
+
+// ========== MERGE CARTS FUNCTION ==========
+function mergeCarts(localCart, firebaseCart) {
+  const merged = [...firebaseCart];
+  
+  localCart.forEach(localItem => {
+    const existingItem = merged.find(item => item.id === localItem.id);
+    if (existingItem) {
+      // Take the higher quantity
+      existingItem.quantity = Math.max(existingItem.quantity, localItem.quantity);
+    } else {
+      merged.push(localItem);
+    }
+  });
+  
+  return merged;
 }
 
 async function saveCartToFirebase() {
@@ -81,8 +143,12 @@ async function saveCartToFirebase() {
       items: cart,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+    // Also save to localStorage as backup
+    saveCartToLocalStorage();
   } catch (error) {
-    console.error('Error saving cart:', error);
+    console.error('Error saving cart to Firebase:', error);
+    // Still save to localStorage even if Firebase fails
+    saveCartToLocalStorage();
   }
 }
 
@@ -175,6 +241,8 @@ async function loadComponents() {
       setupEventListeners();
       // Force override any duplicate addToCart functions after components are loaded
       forceOverrideCartFunctions();
+      // Update cart count after components are loaded
+      updateCartCount();
     }, 50);
   } catch (error) {
     console.error('Error loading components:', error);
@@ -191,6 +259,8 @@ async function loadComponents() {
       setupEventListeners();
       // Force override any duplicate addToCart functions
       forceOverrideCartFunctions();
+      // Update cart count
+      updateCartCount();
     }, 50);
   }
 }
@@ -344,6 +414,9 @@ const masterAddToCart = async function(productId, shouldOpenCart = true) {
     });
   }
 
+  // Save to localStorage immediately
+  saveCartToLocalStorage();
+
   // Save to Firebase if user is logged in
   if (currentUser) {
     await saveCartToFirebase();
@@ -435,6 +508,9 @@ window.updateQuantity = async function(productId, change) {
     item.quantity = newQuantity;
   }
 
+  // Save to localStorage immediately
+  saveCartToLocalStorage();
+
   // Save to Firebase if user is logged in
   if (currentUser) {
     await saveCartToFirebase();
@@ -447,6 +523,9 @@ window.updateQuantity = async function(productId, change) {
 window.removeFromCart = async function(productId) {
   cart = cart.filter(item => item.id !== productId);
   
+  // Save to localStorage immediately
+  saveCartToLocalStorage();
+
   // Save to Firebase if user is logged in
   if (currentUser) {
     await saveCartToFirebase();
@@ -633,6 +712,8 @@ forceOverrideCartFunctions();
 // Override again after DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
   forceOverrideCartFunctions();
+  // Update cart count when DOM is loaded
+  updateCartCount();
 });
 
 // Override again after a short delay to catch any late script execution
