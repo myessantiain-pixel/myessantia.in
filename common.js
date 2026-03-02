@@ -107,12 +107,10 @@ async function loadUserCart(userId) {
     saveCartToLocalStorage();
     
     updateCartCount();
-    renderCartItems();
   } catch (error) {
     console.error('Error loading cart:', error);
     // Keep using local cart if Firebase fails
     updateCartCount();
-    renderCartItems();
   }
 }
 
@@ -163,7 +161,8 @@ async function loadProducts() {
   } catch (error) {
     console.error('Error loading products:', error);
     // Fallback to localStorage if Firebase fails
-    products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+    const cached = localStorage.getItem('MyEssantia_products');
+    products = cached ? JSON.parse(cached) : [];
   }
 }
 
@@ -218,6 +217,7 @@ function getFallbackFooter() {
   `;
 }
 
+// ========== COMPONENT LOADING ==========
 async function loadComponents() {
   try {
     const headerResponse = await fetch('header.html');
@@ -227,19 +227,6 @@ async function loadComponents() {
     const footerResponse = await fetch('footer.html');
     const footerData = await footerResponse.text();
     document.getElementById('footer').innerHTML = footerData;
-    
-    // Load common modals
-    const commonResponse = await fetch('common.html');
-    const commonData = await commonResponse.text();
-    
-    // Check if there's a container for common modals
-    const commonContainer = document.getElementById('common-modals');
-    if (commonContainer) {
-      commonContainer.innerHTML = commonData;
-    } else {
-      // If no container, append to body
-      document.body.insertAdjacentHTML('beforeend', commonData);
-    }
 
     // Load products after components are loaded
     await loadProducts();
@@ -249,12 +236,7 @@ async function loadComponents() {
         initializeApp();
       }
       setupEventListeners();
-      
-      // Render cart items after modal is loaded
-      if (document.getElementById('cart-items')) {
-        renderCartItems();
-      }
-      
+      // Update cart count after components are loaded
       updateCartCount();
     }, 50);
   } catch (error) {
@@ -262,66 +244,15 @@ async function loadComponents() {
     document.getElementById('header').innerHTML = getFallbackHeader();
     document.getElementById('footer').innerHTML = getFallbackFooter();
     
-    // Also add fallback modals if common.html fails to load
-    if (!document.getElementById('cart-modal')) {
-      document.body.insertAdjacentHTML('beforeend', `
-        <!-- ================= CART MODAL ================= -->
-        <div id="cart-modal" class="modal">
-          <div class="modal-content cart-modal-content">
-            <div class="modal-header">
-              <h3>YOUR <span>CART</span></h3>
-              <button class="close-modal" id="close-cart">
-                <i class="fa-solid fa-xmark"></i>
-              </button>
-            </div>
-            <div id="cart-items" class="cart-items">
-              <div class="empty-cart-message">
-                <i class="fa-solid fa-bag-shopping" style="font-size:2rem; margin-bottom:0.5rem;"></i>
-                <p>Your cart is empty</p>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <div class="cart-total">
-                <span>TOTAL:</span>
-                <span id="cart-total-amount">₹0.00</span>
-              </div>
-              <button class="checkout-btn" id="checkout-btn">
-                <i class="fa-solid fa-bolt"></i>
-                PROCEED TO CHECKOUT
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ================= PROFILE MODAL ================= -->
-        <div id="profile-modal" class="modal">
-          <div class="modal-content profile-modal-content">
-            <div class="modal-header">
-              <h3>MY <span>ACCOUNT</span></h3>
-              <button class="close-modal" id="close-profile">
-                <i class="fa-solid fa-xmark"></i>
-              </button>
-            </div>
-            <div id="profile-content" class="profile-content"></div>
-          </div>
-        </div>
-      `);
-    }
-    
     // Fallback to cached products
-    products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
+    const cached = localStorage.getItem('MyEssantia_products');
+    products = cached ? JSON.parse(cached) : [];
     
     setTimeout(() => {
       if (typeof initializeApp === 'function') {
         initializeApp();
       }
       setupEventListeners();
-      
-      // Render cart items for fallback modals
-      if (document.getElementById('cart-items')) {
-        renderCartItems();
-      }
-      
       // Update cart count
       updateCartCount();
     }, 50);
@@ -518,6 +449,7 @@ window.addToCart = async function(productId, button = null) {
       button.innerHTML = originalHTML;
       button.style.background = originalBg;
       button.style.color = originalColor;
+      // Open cart after animation
       openCart();
     }, 500);
   } else {
@@ -563,7 +495,10 @@ window.updateQuantity = async function(productId, change) {
   }
   
   updateCartCount();
-  renderCartItems();
+  // Re-render cart items when quantity updates
+  if (document.getElementById('cart-modal')?.classList.contains('show')) {
+    renderCartItems();
+  }
 };
 
 window.removeFromCart = async function(productId) {
@@ -578,7 +513,10 @@ window.removeFromCart = async function(productId) {
   }
   
   updateCartCount();
-  renderCartItems();
+  // Re-render cart items when item is removed
+  if (document.getElementById('cart-modal')?.classList.contains('show')) {
+    renderCartItems();
+  }
 };
 
 function renderCartItems() {
@@ -591,7 +529,9 @@ function renderCartItems() {
     return;
   }
 
-  if (cart.length === 0) {
+  console.log('Rendering cart items:', cart); // Debug log
+
+  if (!cart || cart.length === 0) {
     cartItemsContainer.innerHTML = `
       <div class="empty-cart-message">
         <i class="fa-regular fa-cart-shopping"></i>
@@ -653,9 +593,23 @@ function updateCartCount() {
 function openCart() {
   const cartModal = document.getElementById('cart-modal');
   if (cartModal) {
+    // Make sure cart items are rendered before showing modal
     renderCartItems();
     cartModal.classList.add('show');
     document.body.style.overflow = 'hidden';
+  } else {
+    console.warn('Cart modal not found');
+    // Try to load modals if they're not present
+    loadCommonModals().then(() => {
+      setTimeout(() => {
+        const modal = document.getElementById('cart-modal');
+        if (modal) {
+          renderCartItems();
+          modal.classList.add('show');
+          document.body.style.overflow = 'hidden';
+        }
+      }, 100);
+    });
   }
 }
 
@@ -665,6 +619,19 @@ function openProfile() {
     renderProfileContent();
     profileModal.classList.add('show');
     document.body.style.overflow = 'hidden';
+  } else {
+    console.warn('Profile modal not found');
+    // Try to load modals if they're not present
+    loadCommonModals().then(() => {
+      setTimeout(() => {
+        const modal = document.getElementById('profile-modal');
+        if (modal) {
+          renderProfileContent();
+          modal.classList.add('show');
+          document.body.style.overflow = 'hidden';
+        }
+      }, 100);
+    });
   }
 }
 
@@ -679,6 +646,35 @@ function closeModal(modalId) {
 // Make modal functions globally available
 window.openCart = openCart;
 window.closeModal = closeModal;
+
+// ========== LOAD COMMON MODALS ==========
+async function loadCommonModals() {
+  try {
+    // Check if modals already exist
+    if (document.getElementById('cart-modal')) {
+      return;
+    }
+    
+    const response = await fetch('common.html');
+    const data = await response.text();
+    document.getElementById('common-modals').innerHTML = data;
+    
+    // Re-setup event listeners for modal buttons
+    setTimeout(() => {
+      const closeCart = document.getElementById('close-cart');
+      if (closeCart) {
+        closeCart.addEventListener('click', () => closeModal('cart-modal'));
+      }
+      
+      const closeProfile = document.getElementById('close-profile');
+      if (closeProfile) {
+        closeProfile.addEventListener('click', () => closeModal('profile-modal'));
+      }
+    }, 100);
+  } catch (error) {
+    console.error('Error loading modals:', error);
+  }
+}
 
 // ========== PROFILE FUNCTIONS ==========
 function renderProfileContent() {
@@ -786,6 +782,16 @@ function updateProfileIcon() {
 // ========== INITIALIZATION ==========
 // Setup cart button listener when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-  setupCartButtonListener();
-  updateCartCount();
+  // Load modals first
+  loadCommonModals().then(() => {
+    setupCartButtonListener();
+    updateCartCount();
+  });
+});
+
+// Also try to load modals on window load
+window.addEventListener('load', function() {
+  if (!document.getElementById('cart-modal')) {
+    loadCommonModals();
+  }
 });
