@@ -222,7 +222,7 @@
       box-shadow: 0 8px 16px -8px rgba(0,0,0,0.15);
     }
     
-    /* Sale badge on price line with shimmer + small pulse */
+/* Sale badge on price line with stronger pulse on shimmer */
 .sale-price-badge {
   background: #d4af37;
   color: #000;
@@ -237,9 +237,10 @@
   white-space: nowrap;
   position: relative;
   overflow: hidden;
+  transition: transform 0.2s ease;
 }
 
-/* Shimmer effect that pulses when it moves */
+/* Shimmer effect with stronger pulse */
 .sale-price-badge::after {
   content: '';
   position: absolute;
@@ -250,29 +251,41 @@
   background: linear-gradient(
     to right,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 240, 1) 40%,
+    rgba(255, 255, 255, 0.9) 60%,
     rgba(255, 255, 255, 0) 100%
   );
   transform: rotate(25deg);
-  animation: shimmerPulse 2.5s infinite;
+  animation: shimmerStrongPulse 2.2s infinite ease-in-out;
+  filter: blur(1px);
 }
 
-@keyframes shimmerPulse {
+@keyframes shimmerStrongPulse {
   0% {
     left: -60%;
-    opacity: 0.3;
+    opacity: 0.2;
   }
   10% {
     left: -60%;
-    opacity: 0.3;
+    opacity: 0.2;
     transform: rotate(25deg) scale(1);
   }
-  30% {
-    left: 100%;
-    opacity: 1;
-    transform: rotate(25deg) scale(1.1);
+  25% {
+    left: 0%;
+    opacity: 0.6;
+    transform: rotate(25deg) scale(1.15);
   }
-  50% {
+  35% {
+    left: 50%;
+    opacity: 1;
+    transform: rotate(25deg) scale(1.25);
+  }
+  45% {
+    left: 100%;
+    opacity: 0.8;
+    transform: rotate(25deg) scale(1.15);
+  }
+  55% {
     left: 100%;
     opacity: 0;
     transform: rotate(25deg) scale(1);
@@ -280,7 +293,14 @@
   100% {
     left: 100%;
     opacity: 0;
+    transform: rotate(25deg) scale(1);
   }
+}
+
+/* Optional: Add a subtle glow during the pulse */
+.sale-price-badge.shimmer-active {
+  filter: brightness(1.2);
+  transition: filter 0.1s ease;
 }
 
     /* High Demand Badge */
