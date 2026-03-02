@@ -566,12 +566,6 @@
     function formatPrice(price) {
       return price?.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') || '0.00';
     }
-    
-    function getStockStatus(stock) {
-      if (stock > 5) return '<div class="stock-badge in-stock"><i class="fa-regular fa-circle-check"></i> in stock</div>';
-      if (stock > 0) return '<div class="stock-badge low-stock"><i class="fa-regular fa-clock"></i> low stock</div>';
-      return '<div class="stock-badge out-of-stock"><i class="fa-regular fa-circle-xmark"></i> out of stock</div>';
-    }
 
     function handleScroll() {
       const btn = document.getElementById('scrollTop');
