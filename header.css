@@ -2,12 +2,39 @@
 
 .header-icons {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   align-items: center;
 }
 
 .header-icons a {
   text-decoration: none;
+  color: #000;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-icons a:hover {
+  color: #d4af37;
+}
+
+.header-icons i {
+  font-size: 1.3rem;
+}
+
+/* ================= SEARCH ICON ================= */
+.search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ================= PROFILE ICON ================= */
+.profile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ================= CART ICON ================= */
@@ -18,18 +45,18 @@
 }
 
 .cart-icon-wrapper {
-  position: relative;   /* THIS is critical */
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: auto;
+  height: auto;
 }
 
 .cart-icon-wrapper i {
-  font-size: 20px;
+  font-size: 1.4rem;
   color: #000;
-  transition: 0.2s;
+  transition: color 0.2s ease;
 }
 
 .cart-icon-wrapper:hover i {
@@ -40,10 +67,8 @@
 
 .cart-count {
   position: absolute;
-  top: 0;
-  right: 0;
-
-  transform: translate(40%, -40%); /* Perfect top-right anchor */
+  top: -8px;
+  right: -12px;
 
   background: #d4af37;
   color: #000;
@@ -61,4 +86,6 @@
   border: 2px solid #fff;
 
   font-family: 'Montserrat', sans-serif;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  line-height: 1;
 }
