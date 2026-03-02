@@ -724,7 +724,7 @@
         }
       }
 
-   // Set active nav - highlight New-in menu
+// Set active nav link after components are loaded
 setTimeout(() => {
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   document.querySelectorAll('.nav-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
@@ -732,20 +732,26 @@ setTimeout(() => {
   // Also handle mobile menu
   document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
   document.querySelectorAll('.mobile-menu-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
-}, 200);
+  
+  // Also try matching by text content or any other selector
+  if (document.querySelectorAll('.nav-link.active').length === 0) {
+    document.querySelectorAll('.nav-link').forEach(l => {
+      if (l.textContent.includes('ESSENTIALS') || l.href?.includes('essentials')) {
+        l.classList.add('active');
+      }
+    });
+    
+    // Also handle mobile menu for fallback
+    document.querySelectorAll('.mobile-menu-link').forEach(l => {
+      if (l.textContent.includes('ESSENTIALS') || l.href?.includes('essentials')) {
+        l.classList.add('active');
+      }
+    });
+  }
+}, 300);
 
-        // Also try matching by text content or any other selector
-        if (document.querySelectorAll('.nav-link.active').length === 0) {
-          document.querySelectorAll('.nav-link').forEach(l => {
-            if (l.textContent.includes('ESSENTIALS') || l.href?.includes('essentials')) {
-              l.classList.add('active');
-            }
-          });
-        }
-      }, 300);
-
-      // Render products
-      renderProducts();
+// Render products
+renderProducts();
     });
 
     // Scroll top button visibility
