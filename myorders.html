@@ -1368,11 +1368,15 @@
       loadCommonModals();
       if (typeof loadComponents === 'function') loadComponents();
       
-      // Set active nav
-      setTimeout(() => {
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        document.querySelectorAll('.nav-link[href="track-order.html"]').forEach(l => l.classList.add('active'));
-      }, 200);
+    // Set active nav - highlight My Orders menu
+setTimeout(() => {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.nav-link[href="myorders.html"]').forEach(l => l.classList.add('active'));
+  
+  // Also handle mobile menu if needed
+  document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.mobile-menu-link[href="myorders.html"]').forEach(l => l.classList.add('active'));
+}, 200);
 
       // Initialize order tracking
       initializeOrderTracking();
