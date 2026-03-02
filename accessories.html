@@ -205,23 +205,25 @@
       box-shadow: 0 8px 16px -8px rgba(0,0,0,0.15);
     }
     
-    /* Sale badge with shimmer */
-    .sale-price-badge {
+    /* Sale badge positioned top right on image */
+    .sale-badge-image {
+      position: absolute;
+      top: 10px;
+      right: 10px;
       background: #d4af37;
       color: #000;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: 800;
-      padding: 0.2rem 0.6rem;
+      padding: 0.25rem 0.8rem;
       border-radius: 60px;
-      border: 1.5px solid #000;
+      border: 2px solid #000;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-left: auto;
-      white-space: nowrap;
-      position: relative;
+      z-index: 30;
       overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    .sale-price-badge::after {
+    .sale-badge-image::after {
       content: '';
       position: absolute;
       top: -50%;
@@ -243,47 +245,10 @@
       100% { left: 100%; opacity: 0; transform: rotate(25deg) scale(1); }
     }
 
-    .high-demand-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: #ff6b6b;
-      color: white;
-      font-size: 0.65rem;
-      font-weight: 800;
-      padding: 0.2rem 0.8rem;
-      border-radius: 60px;
-      z-index: 20;
-      letter-spacing: 0.3px;
-      border: 2px solid #000;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      text-transform: uppercase;
-      animation: pulse 2s infinite;
-    }
-    .high-demand-badge i { color: white; font-size: 0.7rem; }
-    
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    .primary-img, .secondary-img { 
-      position: absolute; inset:0; background-size: cover; background-position: center; 
-      transition: opacity 0.3s ease;
-    }
-    .primary-img { opacity:1; z-index:2; }
-    .secondary-img { opacity:0; z-index:1; }
-    .image-frame:hover .primary-img { opacity:0; }
-    .image-frame:hover .secondary-img { opacity:1; }
-    @media (hover:none) { .secondary-img { opacity:0; } }
-
     .new-badge {
       position: absolute;
       top: 10px;
-      right: 10px;
+      left: 10px;
       background: #000;
       color: #d4af37;
       font-size: 0.65rem;
@@ -298,6 +263,16 @@
       gap: 4px;
       text-transform: uppercase;
     }
+
+    .primary-img, .secondary-img { 
+      position: absolute; inset:0; background-size: cover; background-position: center; 
+      transition: opacity 0.3s ease;
+    }
+    .primary-img { opacity:1; z-index:2; }
+    .secondary-img { opacity:0; z-index:1; }
+    .image-frame:hover .primary-img { opacity:0; }
+    .image-frame:hover .secondary-img { opacity:1; }
+    @media (hover:none) { .secondary-img { opacity:0; } }
 
     .product-category {
       font-size: 0.7rem;
@@ -350,14 +325,6 @@
       font-size: 0.9rem; 
       text-decoration: line-through; 
     }
-    .stock-badge { 
-      font-size: 0.7rem; 
-      margin-top: 0.2rem; 
-      font-weight: 600; 
-    }
-    .in-stock { color: #2e7d32; }
-    .low-stock { color: #f57c00; }
-    .out-of-stock { color: #c62828; }
     
     .card-add-btn {
       display: flex; 
@@ -590,23 +557,20 @@
           const secondImage = product.images?.[1] || product.secondaryImg || mainImage;
           
           const hasSale = product.oldPrice && product.oldPrice > product.price;
-          const isHighDemand = product.highDemand === true;
           const isNew = isNewProduct(product);
           
           gridHtml += `
             <div class="product-card" data-product-id="${product.id}">
-              ${isHighDemand ? `
-                <span class="high-demand-badge">
-                  <i class="fa-solid fa-fire"></i> HIGH DEMAND
-                </span>
-              ` : ''}
-              ${isNew ? `
-                <span class="new-badge">
-                  <i class="fa-regular fa-star"></i> NEW
-                </span>
-              ` : ''}
               <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
                 <div class="image-frame">
+                  ${isNew ? `
+                    <span class="new-badge">
+                      <i class="fa-regular fa-star"></i> NEW
+                    </span>
+                  ` : ''}
+                  ${hasSale ? `
+                    <span class="sale-badge-image">SALE</span>
+                  ` : ''}
                   <div class="primary-img" style="background-image: url('${mainImage}');"></div>
                   <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
                 </div>
@@ -616,9 +580,7 @@
                 <div class="product-price-block">
                   <span class="current-price"><span class="inr-symbol">₹</span>${window.formatPrice ? window.formatPrice(product.price) : product.price}</span>
                   ${hasSale ? `<span class="old-price">₹${window.formatPrice ? window.formatPrice(product.oldPrice) : product.oldPrice}</span>` : ''}
-                  ${hasSale ? `<span class="sale-price-badge">SALE</span>` : ''}
                 </div>
-                ${window.getStockStatus ? window.getStockStatus(product.stock) : ''}
               </a>
               <button class="card-add-btn" onclick="handleAccessoryAdd('${product.id}', this); event.stopPropagation();">
                 <i class="fa-solid fa-cart-plus"></i> add
