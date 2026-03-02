@@ -8,35 +8,37 @@
         <a href="#"><i class="fa-regular fa-gem"></i> premium suppliers</a>
       </div>
       <div class="trust-badge">
-        <i class="fa-solid fa-star"></i> <span>4.8 trustpilot · 12k+ reviews</span>
+        <i class="fa-solid fa-star"></i>
+        <span>4.8 trustpilot · 12k+ reviews</span>
       </div>
     </div>
   </div>
 
   <div class="main-header">
     <div class="container">
-      <a href="#" class="logo">MyEssantia<span>.</span></a>
+      <a href="index.html" class="logo">MyEssantia<span>.</span></a>
       
-      <!-- Mobile Menu Toggle -->
-      <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle">
         <i class="fa-solid fa-bars"></i>
       </button>
       
       <ul class="nav-menu" id="nav-menu">
-        <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-        <li class="nav-item"><a href="accessories.html" class="nav-link">Accessories</a></li>
-        <li class="nav-item"><a href="essentials.html" class="nav-link">Essentials</a></li>
-        <li class="nav-item"><a href="newarrival.html" class="nav-link">New-in</a></li>
-        <li class="nav-item"><a href="myorders.html" class="nav-link">My Orders</a></li>
-        <li class="nav-item"><a href="enquire.html" class="nav-link">Enquire</a></li>
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="accessories.html" class="nav-link">Accessories</a></li>
+        <li><a href="essentials.html" class="nav-link">Essentials</a></li>
+        <li><a href="newarrival.html" class="nav-link">New-in</a></li>
+        <li><a href="myorders.html" class="nav-link">My Orders</a></li>
+        <li><a href="enquire.html" class="nav-link">Enquire</a></li>
       </ul>
       
       <div class="header-icons">
         <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+
         <a href="#" id="profile-icon">
           <i class="fa-regular fa-user"></i>
         </a>
-        <a href="#" id="cart-icon" style="position: relative;">
+
+        <a href="#" id="cart-icon" class="cart-icon-wrapper">
           <i class="fa-solid fa-bag-shopping"></i>
           <span class="cart-count" id="cart-count">0</span>
         </a>
@@ -44,37 +46,3 @@
     </div>
   </div>
 </header>
-
-<!-- Cart Modal -->
-<div id="cart-modal" class="modal">
-  <div class="modal-content cart-modal-content">
-    <div class="modal-header">
-      <h3>Your Cart (<span id="cart-item-count">0</span> items)</h3>
-      <button class="close-modal" id="close-cart">&times;</button>
-    </div>
-    <div class="cart-items" id="cart-items">
-      <div class="empty-cart-message">
-        <i class="fa-regular fa-cart-shopping"></i>
-        <p>Your cart is empty</p>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <div class="cart-total">
-        <span>Total:</span>
-        <span id="cart-total-amount">₹0.00</span>
-      </div>
-      <button class="btn checkout-btn" id="checkout-btn">Proceed to Checkout</button>
-    </div>
-  </div>
-</div>
-
-<!-- Profile Modal - Google Only Sign In -->
-<div id="profile-modal" class="modal">
-  <div class="modal-content profile-modal-content">
-    <div class="modal-header">
-      <h3>My Account</h3>
-      <button class="close-modal" id="close-profile">&times;</button>
-    </div>
-    <div class="profile-content" id="profile-content"></div>
-  </div>
-</div>
