@@ -319,7 +319,27 @@ function setupEventListeners() {
       if (cart.length === 0) {
         alert('Your cart is empty!');
       } else {
-        alert('Proceeding to checkout...');
+        // Save cart to localStorage before redirecting
+        saveCartToLocalStorage();
+        
+        // Also save to Firebase if user is logged in
+        if (currentUser) {
+          saveCartToFirebase().then(() => {
+            // Close the cart modal
+            closeModal('cart-modal');
+            // Redirect to checkout page
+            window.location.href = 'checkout.html';
+          }).catch(error => {
+            console.error('Error saving cart before redirect:', error);
+            // Still redirect even if Firebase save fails
+            closeModal('cart-modal');
+            window.location.href = 'checkout.html';
+          });
+        } else {
+          // Redirect even if not logged in (though we checked currentUser above)
+          closeModal('cart-modal');
+          window.location.href = 'checkout.html';
+        }
       }
     });
   }
