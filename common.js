@@ -341,6 +341,34 @@ window.addToCart = async function(productId) {
   
   updateCartCount();
   
+  // Show animation on the button
+  const btn = event?.target?.closest('button');
+  if (btn) {
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+    btn.style.background = '#4CAF50';
+    btn.style.color = 'white';
+    
+    // After animation completes, open the cart
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+      btn.style.color = '';
+      openCart(); // Open cart after animation
+    }, 500); // Reduced from 1500ms to 500ms for better UX
+  } else {
+    // If button not found, open cart immediately
+    openCart();
+  }
+};
+
+  // Save to Firebase if user is logged in
+  if (currentUser) {
+    await saveCartToFirebase();
+  }
+  
+  updateCartCount();
+  
   const btn = event?.target?.closest('button');
   if (btn) {
     const originalText = btn.innerHTML;
