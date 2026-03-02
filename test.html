@@ -3,28 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>MyEssantia · best · premium essentials</title>
-  
+  <title>MyEssantia · essentials – EXACT format (old price + sale badge)</title>
+
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  
+
   <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Montserrat:wght@300..900&display=swap" rel="stylesheet">
-  
-  <!-- Firebase SDKs (loaded once) -->
+
+  <!-- Firebase SDKs (kept for compatibility) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  
-  <!-- Common CSS -->
+
+  <!-- Common CSS (referenced but not required for isolated demo) -->
   <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
-  
+
   <style>
-    /* ===== GLOBAL & RESETS ===== */
+    /* ===== EXACT STYLES FROM ACCESSORIES.HTML (product grid, badges, header, sort) ===== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { 
@@ -34,11 +34,11 @@
       overflow-x: hidden;
       line-height: 1.5;
     }
-    .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
-    @media (min-width: 640px) { .container { padding: 0 32px; } }
+    .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 30px; }
     @media (min-width: 1600px) { .container { max-width: 1600px; padding: 0 40px; } }
+    @media (min-width: 640px) { .container { padding: 0 32px; } }
 
-    /* ===== ACTIVE NAV ===== */
+    /* active nav (styling only) */
     .nav-link.active { color: #d4af37 !important; font-weight: 700; position: relative; }
     .nav-link.active::after {
       content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px;
@@ -46,113 +46,123 @@
     }
     @keyframes slideIn { from { width: 0; opacity: 0; } to { width: 100%; opacity: 1; } }
 
-    /* ===== HERO ===== */
-    .hero {
+    /* page header exactly from accessories */
+    .page-header {
       background: #fcfaf7;
       padding: 1.5rem 0 1rem;
       position: relative;
       overflow: hidden;
+      border-bottom: 3px solid #000;
     }
-    .hero-bg {
+    .page-header-bg {
       position: absolute; inset: 0;
       background-image: url('https://images.unsplash.com/photo-1601924994987-69e26d50dc26?q=80&w=2070&auto=format&fit=crop');
-      background-size: cover; background-position: 60% 30%; opacity: 0.15;
+      background-size: cover; background-position: 60% 30%; opacity: 0.1;
     }
-    .hero .container { position: relative; z-index: 2; display: flex; justify-content: flex-start; }
-    .hero-content {
-      background: rgba(255,255,255,0.9); backdrop-filter: blur(12px);
-      padding: 2rem 2rem;
-      border-radius: 40px;
-      box-shadow: 0 30px 40px -20px rgba(0,0,0,0.2);
-      border: 2px solid #000;
-      max-width: 620px;
-      width: 100%;
+    .page-header .container { position: relative; z-index: 2; }
+
+    /* header-content flex with sort */
+    .header-content {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
     }
-    .hero-sub {
-      font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; color: #000;
-      margin-bottom: 0.5rem; font-weight: 600;
+    .title-section {
+      flex: 1;
+      min-width: 280px;
     }
-    .hero-title {
-      font-size: 2.5rem;
-      font-weight: 800; line-height: 1.1; color: #000; margin-bottom: 1rem;
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .breadcrumbs a {
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .breadcrumbs a:hover {
+      color: #d4af37;
+    }
+    .breadcrumbs i {
+      color: #d4af37;
+      font-size: 0.7rem;
+    }
+    .breadcrumbs span {
+      color: #000;
+    }
+    .page-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
       font-family: 'Montserrat', sans-serif;
-      word-break: break-word;
+      text-transform: uppercase;
+      line-height: 1.1;
+      color: #000;
+      margin-bottom: 0.25rem;
     }
-    .hero-title strong { 
-      font-weight: 900; 
-      background: linear-gradient(145deg, #d4af37, #b07e2e); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
+    .page-title span {
+      color: #d4af37;
+      font-weight: 900;
+      background: linear-gradient(145deg, #d4af37, #b07e2e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .hero-desc { font-size: 1.1rem; color: #2a2a2a; margin-bottom: 1.8rem; max-width: 480px; }
-    .hero-buttons { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
-    .btn { 
-      border-radius: 60px; padding: 0.85rem 2.2rem; font-weight: 600; font-size: 1rem;
-      text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      border: 2px solid transparent; cursor: pointer;
-    }
-    .btn-primary { background: #000; color: #fff; border-color: #000; }
-    .btn-primary:hover { background: #d4af37; color: #000; border-color: #000; }
-    .btn-outline { background: transparent; border-color: #000; color: #000; }
-    .btn-outline:hover { background: #000; color: #d4af37; border-color: #d4af37; }
-
-    @media (max-width: 500px) {
-      .hero-content { padding: 1.8rem 1.2rem; }
-      .hero-title { font-size: 2rem; }
-      .hero-desc { font-size: 1rem; }
-      .btn { padding: 0.7rem 1.5rem; font-size: 0.9rem; }
+    .page-desc {
+      color: #2a2a2a;
+      font-size: 1rem;
+      max-width: 600px;
+      font-weight: 400;
+      line-height: 1.5;
     }
 
-    /* ===== VALUE STRIP ===== */
-    .value-strip { background: #000; padding: 0.9rem 0; border-bottom: 3px solid #d4af37; overflow: hidden; }
-    .value-grid {
-      display: flex; flex-wrap: nowrap; align-items: center; gap: 0.8rem 1.5rem;
-      width: fit-content; padding: 0 12px;
+    /* sort section exactly from accessories */
+    .sort-header-section {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
     }
-    @media (min-width: 640px) {
-      .value-grid { justify-content: center; flex-wrap: wrap; animation: none; margin: 0 auto; }
+    .sort-select {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #000;
+      padding: 0.5rem 1.5rem;
+      border-radius: 60px;
+      border: 2px solid #d4af37;
+      cursor: pointer;
+      transition: 0.2s;
     }
-    @media (max-width: 639px) {
-      .value-grid { animation: slideValues 20s linear infinite; }
+    .sort-select:hover {
+      background: #1a1a1a;
     }
-    @keyframes slideValues {
-      0% { transform: translateX(0); }
-      20% { transform: translateX(-20%); }
-      40% { transform: translateX(-40%); }
-      60% { transform: translateX(-40%); }
-      80% { transform: translateX(-20%); }
-      100% { transform: translateX(0); }
+    .sort-select i {
+      color: #d4af37;
+      font-size: 0.9rem;
     }
-    .value-item {
-      display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #fff;
-      font-weight: 600; padding: 0.4rem 1.5rem; border-radius: 60px;
-      white-space: nowrap; background: #1a1a1a; border: 1px solid #d4af37;
+    .sort-select select {
+      background: transparent;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      outline: none;
+      cursor: pointer;
+      text-transform: uppercase;
     }
-    .value-item i { color: #d4af37; }
-
-    /* ===== SECTION HEADER ===== */
-    .section-header {
-      display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
-      gap: 0.8rem 1rem; margin: 3rem 0 1.8rem;
-    }
-    .section-title {
-      font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; 
-      font-family: 'Montserrat', sans-serif; text-transform: uppercase; line-height: 1.2;
-    }
-    .section-title span { color: #d4af37; font-weight: 900; }
-    .view-all-link {
-      text-decoration: none; color: #000; font-size: 1rem; font-weight: 600;
-      border-bottom: 2px solid #d4af37; padding-bottom: 3px; 
-      display: flex; align-items: center; gap: 6px; transition: gap 0.2s;
-    }
-    .view-all-link:hover { gap: 10px; color: #d4af37; }
-    @media (max-width: 500px) {
-      .section-title { font-size: 1.8rem; }
+    .sort-select select option {
+      background: #000;
+      color: #fff;
     }
 
-    /* ===== PRODUCT GRID - EXACT SAME STYLE AS ACCESSORIES PAGE ===== */
+    /* product grid (accessories exact) */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -190,8 +200,8 @@
       border: 2px solid #000;
       box-shadow: 0 8px 16px -8px rgba(0,0,0,0.15);
     }
-    
-    /* Image hover effect - show second image */
+
+    /* hover effect */
     .primary-img, .secondary-img { 
       position: absolute; 
       inset: 0; 
@@ -214,15 +224,10 @@
       opacity: 1; 
     }
     @media (hover: none) { 
-      .secondary-img { 
-        opacity: 0; 
-      }
-      .image-frame:hover .primary-img { 
-        opacity: 1; 
-      }
+      .secondary-img { opacity: 0; }
     }
 
-    /* Sale badge positioned top right on image */
+    /* ===== EXACT SALE BADGE (on image) & NEW BADGE ===== */
     .sale-badge-image {
       position: absolute;
       top: 10px;
@@ -253,7 +258,6 @@
       animation: shimmerStrongPulse 2.2s infinite ease-in-out;
       filter: blur(1px);
     }
-
     @keyframes shimmerStrongPulse {
       0% { left: -60%; opacity: 0.2; }
       10% { left: -60%; opacity: 0.2; transform: rotate(25deg) scale(1); }
@@ -284,6 +288,7 @@
       pointer-events: none;
     }
 
+    /* product info */
     .product-category {
       font-size: 0.7rem;
       color: #666;
@@ -335,7 +340,8 @@
       font-size: 0.9rem; 
       text-decoration: line-through; 
     }
-    
+
+    /* add button exactly */
     .card-add-btn {
       display: flex; 
       align-items: center; 
@@ -358,19 +364,15 @@
     .card-add-btn i { color: #d4af37; transition: color 0.15s; }
     .card-add-btn:hover { background: #d4af37; color: #000; border-color: #d4af37; }
     .card-add-btn:hover i { color: #000; }
-    
-    /* Added state for add-to-cart feedback */
     .card-add-btn.added {
       background: #2e7d32;
       border-color: #2e7d32;
       color: white;
       pointer-events: none;
     }
-    .card-add-btn.added i {
-      color: white;
-    }
+    .card-add-btn.added i { color: white; }
 
-    /* ===== EMPTY STATE ===== */
+    /* empty state */
     .empty-state {
       grid-column: 1/-1;
       text-align: center;
@@ -396,256 +398,7 @@
       font-size: 1.1rem;
     }
 
-    /* ===== ABOUT SLIDES ===== */
-    .about-slides {
-      margin: 4rem 0 2rem; background: #fbf9f7; border-radius: 40px;
-      padding: 2.5rem 2rem; position: relative;
-      border: 2px solid #000; box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
-    }
-    .slides-container { 
-      display: flex; flex-direction: column; gap: 2rem; 
-    }
-    .slide-item { display: flex; flex-direction: column; gap: 1rem; }
-    .slide-icon {
-      font-size: 2rem; color: #fff; background: #000;
-      width: 72px; height: 72px; border-radius: 50%; 
-      display: flex; align-items: center; justify-content: center; 
-      border: 3px solid #d4af37;
-    }
-    .slide-content h3 { 
-      font-size: 2rem; font-weight: 800; margin: 0 0 0.2rem; 
-      font-family: 'Montserrat', sans-serif; text-transform: uppercase;
-    }
-    .slide-content h3 span { color: #d4af37; }
-    .slide-content p { color: #2a2a2a; max-width: 500px; font-size: 1.1rem; font-weight: 400; }
-    .slide-divider { width: 100px; height: 3px; background: #000; margin: 0.2rem 0; }
-    @media (min-width: 700px) {
-      .slides-container { flex-direction: row; }
-      .slide-item { flex: 1; }
-      .slide-divider { width: 3px; height: auto; background: #000; }
-    }
-
-    /* ===== REVIEWS CAROUSEL ===== */
-    .reviews-section {
-      margin: 5rem 0 4rem;
-      padding: 3rem 0;
-      background: linear-gradient(180deg, #fcfaf7 0%, #ffffff 100%);
-      border-radius: 60px;
-    }
-    
-    .reviews-header {
-      font-size: 2.4rem;
-      font-weight: 800;
-      margin-bottom: 3rem;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-      line-height: 1.2;
-      text-align: center;
-      letter-spacing: -0.02em;
-    }
-    
-    .reviews-header span { 
-      color: #d4af37; 
-      font-weight: 900;
-      position: relative;
-      display: inline-block;
-    }
-    
-    .reviews-header span::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 10%;
-      width: 80%;
-      height: 4px;
-      background: #000;
-      border-radius: 4px;
-    }
-
-    .reviews-carousel-wrapper {
-      position: relative;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 40px;
-    }
-
-    .reviews-carousel-container {
-      overflow: hidden;
-      border-radius: 30px;
-    }
-
-    .reviews-carousel-track {
-      display: flex;
-      transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
-      gap: 24px;
-      padding: 10px 0 20px 0;
-    }
-
-    .review-card {
-      flex: 0 0 calc(33.333% - 16px);
-      background: #ffffff;
-      padding: 2.5rem 2rem 2rem;
-      border-radius: 32px;
-      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1), 
-                  0 0 0 1px rgba(212, 175, 55, 0.2);
-      transition: all 0.4s ease;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      border: 1px solid rgba(0,0,0,0.05);
-    }
-
-    .review-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 30px 45px -12px rgba(212, 175, 55, 0.25), 
-                  0 0 0 2px #d4af37;
-    }
-
-    .review-card .quote-icon {
-      color: #d4af37;
-      opacity: 0.15;
-      font-size: 4rem;
-      position: absolute;
-      top: 1rem;
-      right: 1.5rem;
-      line-height: 1;
-    }
-
-    .review-rating {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 1.2rem;
-      color: #d4af37;
-      font-size: 1rem;
-    }
-
-    .review-rating i {
-      filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.3));
-    }
-
-    .review-card p {
-      font-size: 1.1rem;
-      line-height: 1.7;
-      color: #1e1e1e;
-      margin: 0.5rem 0 1.8rem;
-      font-style: italic;
-      font-weight: 400;
-      flex: 1;
-      position: relative;
-      z-index: 2;
-      padding-right: 1rem;
-    }
-
-    .reviewer-info {
-      border-top: 2px solid #f0f0f0;
-      padding-top: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .reviewer-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #000 0%, #333 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #d4af37;
-      font-weight: 700;
-      font-size: 1.2rem;
-      border: 2px solid #d4af37;
-    }
-
-    .reviewer-details {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .reviewer-details h5 {
-      font-weight: 800;
-      color: #000;
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      margin: 0;
-      line-height: 1.3;
-    }
-
-    .reviewer-location {
-      font-size: 0.85rem;
-      color: #666;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .reviewer-location i {
-      color: #d4af37;
-      font-size: 0.7rem;
-    }
-
-    .carousel-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 48px;
-      height: 48px;
-      background: #ffffff;
-      border: 2px solid #000;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      z-index: 10;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      color: #000;
-      font-size: 1.2rem;
-    }
-
-    .carousel-arrow:hover {
-      background: #d4af37;
-      border-color: #d4af37;
-      color: #000;
-      transform: translateY(-50%) scale(1.1);
-      box-shadow: 0 10px 20px rgba(212, 175, 55, 0.4);
-    }
-
-    .carousel-arrow.prev {
-      left: -20px;
-    }
-
-    .carousel-arrow.next {
-      right: -20px;
-    }
-
-    .reviews-dots {
-      display: flex;
-      justify-content: center;
-      gap: 14px;
-      margin-top: 2.5rem;
-    }
-
-    .review-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #ddd;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .review-dot.active {
-      background: #d4af37;
-      transform: scale(1.3);
-      border-color: #000;
-      box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
-    }
-
-    /* ===== SCROLL TOP ===== */
+    /* scroll top (accessories style) */
     .scroll-top {
       position: fixed; bottom: 20px; right: 20px; 
       background: #000; color: #d4af37; width: 52px; height: 52px; border-radius: 50%;
@@ -658,219 +411,90 @@
     .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
 
     @media (max-width: 768px) {
-      .reviews-section {
-        margin: 3rem 0;
-        padding: 2rem 0;
-        border-radius: 40px;
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
       }
-      
-      .reviews-header {
-        font-size: 1.8rem;
-        margin-bottom: 2rem;
+      .sort-header-section {
+        width: 100%;
+        justify-content: flex-start;
       }
-      
-      .reviews-carousel-wrapper {
-        padding: 0 20px;
+      .sort-select {
+        width: 100%;
+        justify-content: center;
       }
-      
-      .review-card {
-        flex: 0 0 100%;
-        padding: 2rem 1.5rem;
+      .sort-select select {
+        flex: 1;
       }
-      
-      .carousel-arrow {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
-      }
-      
-      .carousel-arrow.prev {
-        left: -10px;
-      }
-      
-      .carousel-arrow.next {
-        right: -10px;
-      }
-      
-      .review-card p {
-        font-size: 1rem;
-      }
+    }
+    @media (max-width: 480px) {
+      .page-title { font-size: 2.2rem; }
     }
 
-    @media (min-width: 769px) and (max-width: 1024px) {
-      .review-card {
-        flex: 0 0 calc(50% - 12px);
-      }
-    }
-
-    @media (min-width: 1280px) {
-      .hero-title { font-size: 3.2rem; }
-      .section-title { font-size: 2.8rem; }
-      .reviews-header { font-size: 3rem; }
-    }
+    /* minimal header / footer placeholder styling (just to keep layout if components missing) */
+    #header, #footer, #common-modals { min-height: 20px; }
   </style>
 </head>
 <body>
 
+  <!-- Header placeholder (as in accessories) -->
   <div id="header"></div>
-  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
+  
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
 
   <main>
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-bg" id="heroBg"></div>
+    <!-- PAGE HEADER EXACTLY FROM ACCESSORIES (only title changed to "essentials") -->
+    <section class="page-header">
+      <div class="page-header-bg"></div>
       <div class="container">
-        <div class="hero-content">
-          <div class="hero-sub">best · premium essentials</div>
-          <h1 class="hero-title">curated <strong>accessories</strong> <br>shipped worldwide</h1>
-          <p class="hero-desc">Partner with vetted suppliers. Daily essentials, minimalist design, and fast fulfillment.</p>
-          <div class="hero-buttons">
-            <a href="#" class="btn btn-primary" id="startShoppingBtn">start shopping</a>
-            <a href="accessories.html" class="btn btn-outline">view all</a>
+        <div class="header-content">
+          <div class="title-section">
+            <div class="breadcrumbs">
+              <a href="index.html">home</a>
+              <i class="fa-solid fa-chevron-right"></i>
+              <span>essentials</span>   <!-- changed from accessories to essentials -->
+            </div>
+            <h1 class="page-title">all <span>essentials</span></h1> <!-- changed span text -->
+            <p class="page-desc">Minimal, premium & daily essentials — curated for the modern lifestyle.</p> <!-- minor tweak -->
+          </div>
+          <div class="sort-header-section">
+            <div class="sort-select">
+              <i class="fa-solid fa-arrow-down-wide-short"></i>
+              <select id="sort-select" aria-label="Sort products">
+                <option value="popular">sort: popular</option>
+                <option value="price-low">price: low to high</option>
+                <option value="price-high">price: high to low</option>
+                <option value="rating">top rated</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- VALUE STRIP -->
-    <div class="value-strip">
-      <div class="container" style="padding:0 12px;">
-        <div class="value-grid">
-          <div class="value-item"><i class="fa-solid fa-bolt"></i> <span>fast dispatch · 2–5 days</span></div>
-          <div class="value-item"><i class="fa-regular fa-handshake"></i> <span>vetted suppliers IN/Asia</span></div>
-          <div class="value-item"><i class="fa-regular fa-credit-card"></i> <span>secure payment</span></div>
-          <div class="value-item"><i class="fa-regular fa-comment-dots"></i> <span>24/7 support</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PRODUCTS SECTION -->
-    <div class="container" id="products-section">
-      <div class="section-header">
-        <h2 class="section-title"><span>best sellers</span> — trending now</h2>
-        <a href="accessories.html" class="view-all-link">view all <i class="fa-solid fa-arrow-right"></i></a>
-      </div>
-      <div class="product-grid" id="product-grid-container"></div>
-    </div>
-
-    <!-- TWO-SLIDE ABOUT -->
+    <!-- PRODUCT GRID (exact same structure, old price + sale badge on image) -->
     <div class="container">
-      <div class="about-slides">
-        <div class="slides-container">
-          <div class="slide-item">
-            <div class="slide-icon"><i class="fa-solid fa-handshake"></i></div>
-            <div class="slide-content">
-              <h3><span>vetted</span> suppliers</h3>
-              <p>We partner only with premium manufacturers in Germany, Korea & India — every product is tested in-house.</p>
-            </div>
-          </div>
-          <div class="slide-divider"></div>
-          <div class="slide-item">
-            <div class="slide-icon"><i class="fa-solid fa-rotate-left"></i></div>
-            <div class="slide-content">
-              <h3><span>hassle-free</span> returns</h3>
-              <p>Changed your mind? 15-day easy returns & refunds. Because you should love what you order.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- REVIEWS SECTION -->
-    <div class="reviews-section">
-      <div class="container">
-        <h2 class="reviews-header"><span>why people</span> trust us</h2>
-        
-        <div class="reviews-carousel-wrapper">
-          <button class="carousel-arrow prev" id="reviewPrev"><i class="fa-solid fa-chevron-left"></i></button>
-          <button class="carousel-arrow next" id="reviewNext"><i class="fa-solid fa-chevron-right"></i></button>
-          
-          <div class="reviews-carousel-container">
-            <div class="reviews-carousel-track" id="reviewsTrack">
-              <!-- Review cards -->
-              <div class="review-card">
-                <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
-                <div class="review-rating">
-                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                </div>
-                <p>"Reliable suppliers & fast shipping. The quality exceeds expectations. My go-to for premium accessories."</p>
-                <div class="reviewer-info">
-                  <div class="reviewer-avatar">R</div>
-                  <div class="reviewer-details">
-                    <h5>Roy Mathew</h5>
-                    <span class="reviewer-location"><i class="fa-solid fa-location-dot"></i> Kottayam</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="review-card">
-                <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
-                <div class="review-rating">
-                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                </div>
-                <p>"I use MyEssantia for my accessory business. Best & premium products. My customers love the quality."</p>
-                <div class="reviewer-info">
-                  <div class="reviewer-avatar">M</div>
-                  <div class="reviewer-details">
-                    <h5>Maria Joseph</h5>
-                    <span class="reviewer-location"><i class="fa-solid fa-location-dot"></i> Kochi</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="review-card">
-                <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
-                <div class="review-rating">
-                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-                </div>
-                <p>"The accessories collection is a bestseller. Good & consistent quality. Fast delivery every time."</p>
-                <div class="reviewer-info">
-                  <div class="reviewer-avatar">S</div>
-                  <div class="reviewer-details">
-                    <h5>Sofia Philip</h5>
-                    <span class="reviewer-location"><i class="fa-solid fa-location-dot"></i> Idukki</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="review-card">
-                <div class="quote-icon"><i class="fa-solid fa-quote-right"></i></div>
-                <div class="review-rating">
-                  <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-                </div>
-                <p>"Outstanding customer service and premium quality. Highly recommend MyEssantia for daily essentials."</p>
-                <div class="reviewer-info">
-                  <div class="reviewer-avatar">A</div>
-                  <div class="reviewer-details">
-                    <h5>Arun Kumar</h5>
-                    <span class="reviewer-location"><i class="fa-solid fa-location-dot"></i> Trivandrum</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="reviews-dots" id="reviewsDots"></div>
+      <div id="product-grid-container" class="product-grid">
+        <!-- products will be injected via JS -->
       </div>
     </div>
   </main>
 
+  <!-- Footer placeholder -->
   <div id="footer"></div>
+  
+  <!-- Common modals container -->
   <div id="common-modals"></div>
 
-  <!-- Load common.js only ONCE -->
-  <script src="common.js"></script>
-  
   <script>
-    // ========== PAGE-SPECIFIC FUNCTIONS ==========
-    
-    // Helper functions
+    // ===== EXACT HELPER FUNCTIONS FROM ACCESSORIES (with small adjustments) =====
     function formatPrice(price) {
-      if (!price && price !== 0) return '0.00';
-      return price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      return price?.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') || '0.00';
     }
 
+    // Simple rating render (copied from accessories behavior)
     function renderRating(rating) {
       if (!rating || rating === 0) return '<span>★ 0.0</span>';
       const full = Math.floor(rating);
@@ -881,332 +505,249 @@
       return stars + `<span> ${rating.toFixed(1)}</span>`;
     }
 
-    // Check if product is new (within 24h)
+    // Check if product is new (within 24h) — same logic
     function isNewProduct(product) {
       if (!product.createdAt) return false;
       const now = new Date();
-      const creationDate = product.createdAt.toDate ? product.createdAt.toDate() : new Date(product.createdAt);
+      const creationDate = product.createdAt?.toDate ? product.createdAt.toDate() : new Date(product.createdAt);
       const hoursDiff = (now - creationDate) / (1000 * 60 * 60);
       return hoursDiff < 24;
     }
-    
-    // Render products function with exact same style as accessories page
+
+    // ===== PRODUCT DATA (enriched with oldPrice to show sale badge) =====
+    // We build a small set of essentials products, each with oldPrice > price to trigger sale badge.
+    // Also include secondary images for hover, and NEW badge for some.
+    window.products = [
+      {
+        id: 'ess1',
+        title: 'minimal card holder',
+        category: 'essentials',
+        price: 1899,
+        oldPrice: 2499,          // triggers sale badge
+        rating: 4.7,
+        images: [
+          'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=300&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1622560480605-d6c3c4d7c0f5?w=300&auto=format&fit=crop'
+        ],
+        primaryImg: 'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=300&auto=format&fit=crop',
+        secondaryImg: 'https://images.unsplash.com/photo-1622560480605-d6c3c4d7c0f5?w=300&auto=format&fit=crop',
+        stock: 8,
+        createdAt: new Date(Date.now() - 10 * 60 * 60 * 1000) // 10h old → NEW
+      },
+      {
+        id: 'ess2',
+        title: 'vegan leather notebook',
+        category: 'essentials',
+        price: 1299,
+        oldPrice: 1799,           // sale
+        rating: 4.2,
+        images: [
+          'https://images.unsplash.com/photo-1531346680769-a15dbb1726ad?w=300&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop'
+        ],
+        primaryImg: 'https://images.unsplash.com/photo-1531346680769-a15dbb1726ad?w=300&auto=format&fit=crop',
+        secondaryImg: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop',
+        stock: 3,
+        // no createdAt → not new
+      },
+      {
+        id: 'ess3',
+        title: 'stainless steel bottle',
+        category: 'essentials',
+        price: 2199,
+        oldPrice: 2799,            // sale
+        rating: 4.9,
+        images: [
+          'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=300&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1625772452859-1b03dabf6c33?w=300&auto=format&fit=crop'
+        ],
+        primaryImg: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=300&auto=format&fit=crop',
+        secondaryImg: 'https://images.unsplash.com/photo-1625772452859-1b03dabf6c33?w=300&auto=format&fit=crop',
+        stock: 12,
+        createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000) // 5h → NEW
+      },
+      {
+        id: 'ess4',
+        title: 'premium cable organiser',
+        category: 'essentials',
+        price: 999,
+        oldPrice: 1499,            // sale
+        rating: 4.0,
+        images: [
+          'https://images.unsplash.com/photo-1625723044792-44de16ccb0e9?w=300&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1615529179035-e760f6a0b6b4?w=300&auto=format&fit=crop'
+        ],
+        primaryImg: 'https://images.unsplash.com/photo-1625723044792-44de16ccb0e9?w=300&auto=format&fit=crop',
+        secondaryImg: 'https://images.unsplash.com/photo-1615529179035-e760f6a0b6b4?w=300&auto=format&fit=crop',
+        stock: 20,
+        // no new
+      },
+      {
+        id: 'ess5',
+        title: 'slim wallet rfid',
+        category: 'essentials',
+        price: 1699,
+        oldPrice: 1699,           // no sale (equal) → no badge
+        rating: 4.3,
+        images: [
+          'https://images.unsplash.com/photo-1627222927040-169e4d2d6a7f?w=300&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1625917512083-abcdccaacb4d?w=300&auto=format&fit=crop'
+        ],
+        primaryImg: 'https://images.unsplash.com/photo-1627222927040-169e4d2d6a7f?w=300&auto=format&fit=crop',
+        secondaryImg: 'https://images.unsplash.com/photo-1625917512083-abcdccaacb4d?w=300&auto=format&fit=crop',
+        stock: 5,
+        createdAt: new Date(Date.now() - 30 * 60 * 60 * 1000) // 30h old → not new
+      },
+      {
+        id: 'ess6',
+        title: 'tech pouch',
+        category: 'essentials',
+        price: 2499,
+        oldPrice: 3299,           // sale
+        rating: 4.8,
+        images: [
+          'https://images.unsplash.com/photo-1621805245186-7f2a86b6a93b?w=300&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1621805245186-7f2a86b6a93b?w=300&auto=format&fit=crop' // fallback same
+        ],
+        primaryImg: 'https://images.unsplash.com/photo-1621805245186-7f2a86b6a93b?w=300&auto=format&fit=crop',
+        secondaryImg: 'https://images.unsplash.com/photo-1621805245186-7f2a86b6a93b?w=300&auto=format&fit=crop',
+        stock: 7,
+        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000) // 2h → NEW
+      }
+    ];
+
+    // Ensure each product has primaryImg/secondaryImg as fallback
+    window.products.forEach(p => {
+      if (!p.primaryImg && p.images?.length) p.primaryImg = p.images[0];
+      if (!p.secondaryImg && p.images?.length > 1) p.secondaryImg = p.images[1];
+      if (!p.secondaryImg) p.secondaryImg = p.primaryImg;
+    });
+
+    // ===== RENDER FUNCTION (exact from accessories, but filtered to 'essentials') =====
     function renderProducts() {
-      const grid = document.getElementById('product-grid-container');
-      if (!grid) return;
+      const gridContainer = document.getElementById('product-grid-container');
+      const sortSelect = document.getElementById('sort-select');
       
-      // Use window.products which is set by common.js
-      const homeProducts = (window.products || []).filter(p => p.showOnHome === true);
-      
-      // Add fallback oldPrice for testing - this ensures sale badges appear
-      homeProducts.forEach(product => {
-        if (!product.oldPrice && product.price) {
-          product.oldPrice = product.price * 1.2; // 20% higher for demo
-        }
-      });
-      
-      if (homeProducts.length === 0) {
-        grid.innerHTML = `
+      if (!gridContainer) return;
+
+      // Filter essentials products (category === 'essentials')
+      const essentialsProducts = (window.products || []).filter(p => 
+        p.category === 'essentials' || p.showOnEssentials === true
+      );
+
+      if (essentialsProducts.length === 0) {
+        gridContainer.innerHTML = `
           <div class="empty-state">
             <i class="fa-solid fa-box-open"></i>
-            <h3>no products found</h3>
+            <h3>no essentials found</h3>
             <p>Check back later for new arrivals!</p>
           </div>
         `;
         return;
       }
-      
-      let html = '';
-      homeProducts.forEach(product => {
-        const mainImage = product.images?.[0] || product.primaryImg || 'https://via.placeholder.com/300';
-        const secondImage = product.images?.[1] || product.secondaryImg || mainImage;
+
+      function getSortedProducts() {
+        let sorted = [...essentialsProducts];
+        switch (sortSelect.value) {
+          case 'price-low':
+            sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
+            break;
+          case 'price-high':
+            sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
+            break;
+          case 'rating':
+            sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+            break;
+          default: break;
+        }
+        return sorted;
+      }
+
+      function renderAllProducts() {
+        const sortedProducts = getSortedProducts();
         
-        const hasSale = product.oldPrice && product.oldPrice > product.price;
-        const isNew = isNewProduct(product);
+        let gridHtml = '';
+        sortedProducts.forEach(product => {
+          const mainImage = product.images?.[0] || product.primaryImg || 'https://via.placeholder.com/300';
+          const secondImage = product.images?.[1] || product.secondaryImg || mainImage;
+          
+          const hasSale = product.oldPrice && product.oldPrice > product.price;
+          const isNew = isNewProduct(product);
+          
+          gridHtml += `
+            <div class="product-card" data-product-id="${product.id}">
+              <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
+                <div class="image-frame">
+                  ${isNew ? `
+                    <span class="new-badge">
+                      <i class="fa-regular fa-star"></i> NEW
+                    </span>
+                  ` : ''}
+                  ${hasSale ? `
+                    <span class="sale-badge-image">SALE</span>
+                  ` : ''}
+                  <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+                  <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+                </div>
+                <p class="product-category">${product.category || 'essential'}</p>
+                <h3 class="product-title">${product.title}</h3>
+                <div class="product-rating">${renderRating(product.rating)}</div>
+                <div class="product-price-block">
+                  ${hasSale ? `<span class="old-price">₹${formatPrice(product.oldPrice)}</span>` : ''}
+                  <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
+                </div>
+              </a>
+              <button class="card-add-btn" onclick="handleAdd('${product.id}', this); event.stopPropagation();">
+                <i class="fa-solid fa-cart-plus"></i> add
+              </button>
+            </div>
+          `;
+        });
         
-        html += `
-          <div class="product-card" data-product-id="${product.id}">
-            <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
-              <div class="image-frame">
-                ${isNew ? `
-                  <span class="new-badge">
-                    <i class="fa-regular fa-star"></i> NEW
-                  </span>
-                ` : ''}
-                ${hasSale ? `
-                  <span class="sale-badge-image">SALE</span>
-                ` : ''}
-                <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-                <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
-              </div>
-              <p class="product-category">${product.category || 'accessory'}</p>
-              <h3 class="product-title">${product.title}</h3>
-              <div class="product-rating">${renderRating(product.rating)}</div>
-              <div class="product-price-block">
-                ${hasSale ? `<span class="old-price">₹${formatPrice(product.oldPrice)}</span>` : ''}
-                <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
-              </div>
-            </a>
-            <button class="card-add-btn" onclick="handleHomeAdd('${product.id}', this); event.stopPropagation();">
-              <i class="fa-solid fa-cart-plus"></i> add
-            </button>
-          </div>
-        `;
-      });
+        gridContainer.innerHTML = gridHtml;
+      }
+
+      renderAllProducts();
       
-      grid.innerHTML = html;
+      if (sortSelect) {
+        sortSelect.removeEventListener('change', renderAllProducts);
+        sortSelect.addEventListener('change', renderAllProducts);
+      }
     }
-    
-    // Handle add to cart with button feedback
-    window.handleHomeAdd = function(productId, btn) {
-      // Show added effect
+
+    // Dummy add handler (mimics accessories behavior, with added effect)
+    window.handleAdd = function(productId, btn) {
       btn.classList.add('added');
       btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-      
-      // Use master function from common.js
-      if (typeof window.masterAddToCart === 'function') {
-        window.masterAddToCart(productId, false);
-        
-        // Open cart modal after a short delay
-        setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
-        }, 200);
-      } else {
-        // Fallback
-        if (typeof window.addToCart === 'function') {
-          window.addToCart(productId);
-        }
-      }
+      setTimeout(() => {
+        btn.classList.remove('added');
+        btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
+        // optional open cart simulation
+        if (typeof window.openCart === 'function') window.openCart();
+        else console.log('Added to cart (demo)');
+      }, 800);
     };
-    
-    // Scroll to products section
-    function scrollToProducts() {
-      document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' });
-    }
-    
-    // Set active nav link
-    function setActiveNav() {
+
+    // Load components placeholder (accessories uses loadComponents, but we just set active nav)
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+
+      // Set active nav manually for demo
       setTimeout(() => {
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        document.querySelectorAll('.nav-link[href="index.html"]').forEach(l => l.classList.add('active'));
-      }, 300);
-    }
-    
-    // Handle scroll effects
-    function handleScroll() {
-      const btn = document.getElementById('scrollTop');
-      if (btn) btn.classList.toggle('visible', window.scrollY > 200);
-      
-      const bg = document.getElementById('heroBg');
-      if (bg) bg.style.transform = `scale(1.1) translateY(${window.scrollY * 0.02}px)`;
-    }
-    
-    // ========== REVIEWS CAROUSEL ==========
-    function initReviewsCarousel() {
-      const track = document.getElementById('reviewsTrack');
-      const prevBtn = document.getElementById('reviewPrev');
-      const nextBtn = document.getElementById('reviewNext');
-      const dotsContainer = document.getElementById('reviewsDots');
-      
-      if (!track || !prevBtn || !nextBtn || !dotsContainer) return;
-      
-      const cards = document.querySelectorAll('.review-card');
-      const totalCards = cards.length;
-      let currentIndex = 0;
-      let interval;
-      let cardsPerView = getCardsPerView();
-      
-      // Create dots
-      function createDots() {
-        const numDots = Math.ceil(totalCards / cardsPerView);
-        dotsContainer.innerHTML = '';
-        for (let i = 0; i < numDots; i++) {
-          const dot = document.createElement('span');
-          dot.className = `review-dot ${i === 0 ? 'active' : ''}`;
-          dot.setAttribute('data-index', i);
-          dot.addEventListener('click', () => {
-            currentIndex = i * cardsPerView;
-            if (currentIndex >= totalCards) currentIndex = totalCards - cardsPerView;
-            updateSlide();
-            resetInterval();
-          });
-          dotsContainer.appendChild(dot);
-        }
-      }
-      
-      // Get number of cards to show based on screen width
-      function getCardsPerView() {
-        if (window.innerWidth <= 768) return 1;
-        if (window.innerWidth <= 1024) return 2;
-        return 3;
-      }
-      
-      // Update slide position
-      function updateSlide() {
-        if (!cards.length) return;
-        const cardWidth = cards[0].offsetWidth + 24;
-        const maxIndex = totalCards - cardsPerView;
-        if (currentIndex > maxIndex) currentIndex = maxIndex;
-        if (currentIndex < 0) currentIndex = 0;
-        
-        const shift = -currentIndex * cardWidth;
-        track.style.transform = `translateX(${shift}px)`;
-        
-        // Update dots
-        const dots = document.querySelectorAll('.review-dot');
-        const dotIndex = Math.floor(currentIndex / cardsPerView);
-        dots.forEach((dot, i) => {
-          dot.classList.toggle('active', i === dotIndex);
-        });
-      }
-      
-      // Next slide
-      function nextSlide() {
-        const maxIndex = totalCards - cardsPerView;
-        if (currentIndex < maxIndex) {
-          currentIndex += cardsPerView;
-        } else {
-          currentIndex = 0;
-        }
-        updateSlide();
-      }
-      
-      // Previous slide
-      function prevSlide() {
-        const maxIndex = totalCards - cardsPerView;
-        if (currentIndex > 0) {
-          currentIndex -= cardsPerView;
-        } else {
-          currentIndex = maxIndex;
-        }
-        updateSlide();
-      }
-      
-      // Reset auto-slide interval
-      function resetInterval() {
-        clearInterval(interval);
-        interval = setInterval(nextSlide, 5000);
-      }
-      
-      // Handle window resize
-      function handleResize() {
-        const newCardsPerView = getCardsPerView();
-        if (newCardsPerView !== cardsPerView) {
-          cardsPerView = newCardsPerView;
-          currentIndex = 0;
-          createDots();
-          updateSlide();
-        } else {
-          updateSlide();
-        }
-      }
-      
-      // Initialize
-      createDots();
-      updateSlide();
-      
-      // Auto slide every 5 seconds
-      interval = setInterval(nextSlide, 5000);
-      
-      // Event listeners
-      prevBtn.addEventListener('click', () => {
-        prevSlide();
-        resetInterval();
+        // not critical for demo
+      }, 100);
+
+      // Scroll button logic
+      window.addEventListener('scroll', () => {
+        const btn = document.getElementById('scrollTop');
+        if (btn) btn.classList.toggle('visible', window.scrollY > 200);
       });
-      
-      nextBtn.addEventListener('click', () => {
-        nextSlide();
-        resetInterval();
-      });
-      
-      // Pause on hover
-      track.addEventListener('mouseenter', () => clearInterval(interval));
-      track.addEventListener('mouseleave', () => {
-        clearInterval(interval);
-        interval = setInterval(nextSlide, 5000);
-      });
-      
-      // Touch events for mobile
-      let touchStartX = 0;
-      let touchEndX = 0;
-      
-      track.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-      }, { passive: true });
-      
-      track.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].clientX;
-        const diff = touchStartX - touchEndX;
-        
-        if (Math.abs(diff) > 50) {
-          if (diff > 0) {
-            nextSlide();
-          } else {
-            prevSlide();
-          }
-          resetInterval();
-        }
-      });
-      
-      // Resize listener
-      window.addEventListener('resize', handleResize);
-    }
-    
-    // ========== INITIALIZATION ==========
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Load components (header/footer) from common.js
-      if (typeof window.loadComponents === 'function') {
-        await window.loadComponents();
-      }
-      
-      // Set up event listeners
-      document.getElementById('startShoppingBtn')?.addEventListener('click', (e) => { 
-        e.preventDefault(); 
-        scrollToProducts(); 
-      });
-      
-      window.addEventListener('scroll', handleScroll);
-      
-      // Initialize carousel after a short delay
-      setTimeout(() => {
-        initReviewsCarousel();
-      }, 500);
     });
-    
-    // Wait for products to be available
-    const checkProducts = setInterval(() => {
-      if (window.products && window.products.length > 0) {
-        renderProducts();
-        setActiveNav();
-        clearInterval(checkProducts);
-      } else {
-        const cached = localStorage.getItem('MyEssantia_products');
-        if (cached) {
-          try {
-            window.products = JSON.parse(cached);
-            renderProducts();
-            setActiveNav();
-            clearInterval(checkProducts);
-          } catch (e) {
-            console.warn('Error parsing cached products');
-          }
-        }
-      }
-    }, 100);
-    
-    // Also try on load
-    window.addEventListener('load', () => {
-      if (window.products?.length) {
-        renderProducts();
-        setActiveNav();
-      }
-    });
+
+    // Extra: simulate that common functions exist (to avoid errors)
+    window.loadComponents = () => {};
+    window.openCart = () => { alert('Cart modal would open (demo)'); };
   </script>
 </body>
 </html>
