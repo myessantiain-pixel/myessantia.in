@@ -709,6 +709,7 @@
   <div id="common-modals"></div>
 
   <script src="common.js"></script>
+  <script src="common.js"></script>
   <script>
     // ----- EXISTING PRODUCT & UI FUNCTIONS -----
     function renderRating(rating) {
@@ -786,6 +787,70 @@
       const bg = document.getElementById('heroBg');
       if (bg) bg.style.transform = `scale(1.1) translateY(${window.scrollY * 0.02}px)`;
     }
+
+    // ----- CORRECTED ADD TO CART FUNCTION -----
+    window.addToCart = async function(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      if (product.stock <= 0) {
+        alert('Sorry, this product is out of stock!');
+        return;
+      }
+
+      const existingItem = cart.find(item => item.id === productId);
+
+      if (existingItem) {
+        if (existingItem.quantity >= product.stock) {
+          alert('Sorry, not enough stock available!');
+          return;
+        }
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          id: productId,
+          title: product.title,
+          category: product.category,
+          price: product.price,
+          primaryImg: product.primaryImg || (product.images && product.images[0]),
+          quantity: 1
+        });
+      }
+
+      // Save to Firebase if user is logged in
+      if (currentUser) {
+        await saveCartToFirebase();
+      }
+      
+      updateCartCount();
+      
+      // Show animation on the button and open cart
+      const btn = event?.target?.closest('button');
+      if (btn) {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+        btn.style.background = '#4CAF50';
+        btn.style.color = 'white';
+        
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          btn.style.color = '';
+          openCart(); // Open cart after animation
+        }, 500);
+      } else {
+        openCart(); // Open cart immediately if button not found
+      }
+    };
+
+    // ----- MAKE CART FUNCTIONS AVAILABLE GLOBALLY -----
+    window.openCart = openCart;
+    window.updateQuantity = updateQuantity;
+    window.removeFromCart = removeFromCart;
+    window.buyNow = function(productId) {
+      addToCart(productId);
+      openCart();
+    };
 
     // ----- REVIEWS CAROUSEL (auto-slide on all devices) -----
     function initReviewsCarousel() {
@@ -948,7 +1013,10 @@
     window.addEventListener('load', () => {
       if (!window.products?.length) {
         const cached = localStorage.getItem('MyEssantia_products');
-        if (cached) { window.products = JSON.parse(cached); renderProducts(); }
+        if (cached) { 
+          window.products = JSON.parse(cached); 
+          renderProducts(); 
+        }
       }
       setTimeout(setActiveNav, 200);
       initReviewsCarousel();
