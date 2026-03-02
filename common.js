@@ -173,6 +173,8 @@ async function loadComponents() {
         initializeApp();
       }
       setupEventListeners();
+      // Force override any duplicate addToCart functions after components are loaded
+      forceOverrideCartFunctions();
     }, 50);
   } catch (error) {
     console.error('Error loading components:', error);
@@ -187,6 +189,8 @@ async function loadComponents() {
         initializeApp();
       }
       setupEventListeners();
+      // Force override any duplicate addToCart functions
+      forceOverrideCartFunctions();
     }, 50);
   }
 }
@@ -305,11 +309,16 @@ function closeModal(modalId) {
   }
 }
 
-// ========== CART FUNCTIONS ==========
-// Enhanced unified addToCart function with animation and cart opening
-window.addToCart = async function(productId, shouldOpenCart = true) {
+// ========== MASTER CART FUNCTION (FORCED OVERRIDE) ==========
+// This is the single source of truth for addToCart
+const masterAddToCart = async function(productId, shouldOpenCart = true) {
+  console.log('Master addToCart called for product:', productId);
+  
   const product = products.find(p => p.id === productId);
-  if (!product) return;
+  if (!product) {
+    console.error('Product not found:', productId);
+    return;
+  }
 
   if (product.stock <= 0) {
     alert('Sorry, this product is out of stock!');
@@ -372,16 +381,43 @@ window.addToCart = async function(productId, shouldOpenCart = true) {
   }
 };
 
-// Legacy support - calls the unified function with shouldOpenCart = false
-window.addToCartLegacy = async function(productId) {
-  return window.addToCart(productId, false);
-};
+// ========== FORCED OVERRIDE FUNCTION ==========
+function forceOverrideCartFunctions() {
+  console.log('Forcing override of cart functions...');
+  
+  // Override window.addToCart with master function
+  window.addToCart = function(productId) {
+    return masterAddToCart(productId, true);
+  };
+  
+  // Override any potential duplicate functions
+  window.addToCartMaster = masterAddToCart;
+  window.addToCartLegacy = function(productId) {
+    return masterAddToCart(productId, false);
+  };
+  
+  // Override buyNow to use master function
+  window.buyNow = function(productId) {
+    masterAddToCart(productId, true);
+  };
+  
+  // Freeze the functions to prevent further overrides
+  Object.defineProperty(window, 'addToCart', {
+    value: window.addToCart,
+    writable: false,
+    configurable: false
+  });
+  
+  Object.defineProperty(window, 'buyNow', {
+    value: window.buyNow,
+    writable: false,
+    configurable: false
+  });
+  
+  console.log('Cart functions forcefully overridden and locked');
+}
 
-window.buyNow = function(productId) {
-  // For buy now, we always want to open cart
-  window.addToCart(productId, true);
-};
-
+// ========== CART FUNCTIONS ==========
 window.updateQuantity = async function(productId, change) {
   const itemIndex = cart.findIndex(item => item.id === productId);
   if (itemIndex === -1) return;
@@ -590,3 +626,16 @@ function updateProfileIcon() {
 // Make all cart functions globally available
 window.openCart = openCart;
 window.closeModal = closeModal;
+
+// Initial override when script loads
+forceOverrideCartFunctions();
+
+// Override again after DOM is fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+  forceOverrideCartFunctions();
+});
+
+// Override again after a short delay to catch any late script execution
+setTimeout(forceOverrideCartFunctions, 100);
+setTimeout(forceOverrideCartFunctions, 500);
+setTimeout(forceOverrideCartFunctions, 1000);
