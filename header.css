@@ -1,13 +1,11 @@
 /* ---------- HEADER STYLES - MyEssantia Brand ---------- */
-/* Aligned with checkout page aesthetic: bold borders, gold accents, crisp shadows */
-
 /* TOP BAR */
 .top-bar {
-  background: #000000;        /* solid black to match checkout header */
+  background: #000;
   color: #f0f0f0;
   padding: 0.6rem 0;
   font-size: 0.7rem;
-  border-bottom: 2px solid #d4af37;    /* bold gold border */
+  border-bottom: 2px solid #d4af37;
   width: 100%;
 }
 
@@ -30,15 +28,16 @@
 
 .top-bar-links a {
   text-decoration: none;
-  color: #ddd;
+  color: #fff;
   font-size: 0.7rem;
-  font-weight: 400;           /* slightly heavier for readability */
+  font-weight: 500;
   transition: color 0.2s;
   padding: 0.2rem 0;
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
   letter-spacing: 0.3px;
+  text-transform: uppercase;
 }
 
 .top-bar-links a:hover {
@@ -49,6 +48,10 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
+  background: rgba(212, 175, 55, 0.15);
+  padding: 0.2rem 0.8rem;
+  border-radius: 40px;
+  border: 1px solid #d4af37;
 }
 
 .trust-badge i { 
@@ -59,11 +62,11 @@
 .main-header {
   background: #ffffff;
   padding: 0.8rem 0;
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.15);  /* signature checkout shadow */
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
   position: sticky;
   top: 0;
   z-index: 50;
-  border-bottom: 2px solid #000000;        /* bold black border */
+  border-bottom: 2px solid #000;
   width: 100%;
 }
 
@@ -78,12 +81,12 @@
   flex-wrap: wrap;
 }
 
-/* MyEssantia Logo – refined with gold accent */
+/* MyEssantia Logo - matching checkout typography */
 .logo {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 800;            /* extra bold to match checkout */
+  font-weight: 800;
   font-size: 2rem;
-  letter-spacing: -0.02em;     /* tighter like checkout */
+  letter-spacing: -0.02em;
   color: #000;
   text-decoration: none;
   line-height: 1.2;
@@ -96,32 +99,27 @@
   font-weight: 900;
   font-size: 2.4rem;
   color: #d4af37;
-  -webkit-text-fill-color: #d4af37;
-  background: none;
   display: inline-block;
   margin-left: 2px;
-  font-style: normal;          /* removed italic for stronger look */
-  transform: none;
 }
 
-/* Mobile Menu Toggle – matches checkout button style */
+/* Mobile Menu Toggle */
 .mobile-menu-toggle {
   display: none;
   background: #000;
-  border: 2px solid #d4af37;
+  border: 2px solid #000;
   font-size: 1.5rem;
   color: #d4af37;
   cursor: pointer;
-  padding: 0.5rem 0.8rem;
-  border-radius: 40px;          /* pill shape like checkout */
+  padding: 0.5rem 1rem;
   transition: all 0.2s;
-  line-height: 1;
+  border-radius: 60px;
+  font-weight: 700;
 }
 
 .mobile-menu-toggle:hover {
   background: #d4af37;
   color: #000;
-  border-color: #000;
 }
 
 /* Navigation Menu */
@@ -145,13 +143,13 @@
   color: #1e1e1e;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
-  font-size: 0.9rem;
-  border-bottom: 2px solid transparent;  /* thicker border */
+  font-size: 0.85rem;
   transition: all 0.2s;
-  padding: 0.3rem 0;
+  padding: 0.5rem 0;
   display: inline-block;
   letter-spacing: 0.5px;
-  text-transform: uppercase;              /* matches checkout uppercase */
+  text-transform: uppercase;
+  border-bottom: 2px solid transparent;
 }
 
 .nav-link:hover,
@@ -160,7 +158,7 @@
   border-bottom-color: #d4af37;
 }
 
-/* Header Icons – account, cart, search – now with consistent styling */
+/* Header Icons - matching checkout style */
 .header-icons {
   display: flex;
   gap: 1rem;
@@ -168,42 +166,35 @@
   flex-shrink: 0;
 }
 
-.header-icons a,
-.header-icons .search-trigger {      /* search trigger styled as icon */
+.header-icons a {
   color: #000;
   font-size: 1.3rem;
   transition: all 0.2s;
   position: relative;
-  padding: 0.4rem;
+  padding: 0.5rem;
   text-decoration: none;
-  background: #fff;
-  border: 2px solid #000;
-  border-radius: 50%;                 /* perfect circle like scroll-top button */
-  width: 42px;
-  height: 42px;
-  display: inline-flex;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
 }
 
-.header-icons a:hover,
-.header-icons .search-trigger:hover {
-  background: #d4af37;
-  color: #000;
+.header-icons a:hover {
+  color: #d4af37;
   border-color: #d4af37;
-  transform: translateY(-2px);
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
+  background: #fcf9f4;
 }
 
-/* Cart count badge – matches checkout secure-badge style */
 .cart-count {
   position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #000;
-  color: #d4af37;
-  font-size: 0.65rem;
+  top: -5px;
+  right: -5px;
+  background: #d4af37;
+  color: #000;
+  font-size: 0.6rem;
   font-weight: 800;
   width: 20px;
   height: 20px;
@@ -211,12 +202,12 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 2px solid #d4af37;
   font-family: 'Montserrat', sans-serif;
+  border: 2px solid #000;
 }
 
-/* ==================== MODAL STYLES ==================== */
-/* Modal Base – now with checkout card aesthetics */
+/* ==================== MODAL STYLES - MATCHING CHECKOUT ==================== */
+/* Modal Base */
 .modal {
   display: none;
   position: fixed;
@@ -240,8 +231,8 @@
   padding: 2rem;
   width: 90%;
   max-width: 500px;
-  border-radius: 32px;                 /* rounded like checkout cards */
-  border: 2px solid #000;              /* bold border */
+  border-radius: 32px;
+  border: 2px solid #000;
   box-shadow: 8px 8px 0 rgba(0,0,0,0.15);
   max-height: 80vh;
   display: flex;
@@ -266,7 +257,8 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: 1.2rem;
-  border-bottom: 2px solid #000;       /* solid black border */
+  border-bottom: 3px solid #000;
+  margin-bottom: 0.5rem;
 }
 
 .modal-header h3 {
@@ -285,51 +277,52 @@
 }
 
 .close-modal {
-  background: none;
+  background: #000;
   border: 2px solid #000;
-  font-size: 1.8rem;
+  font-size: 1.2rem;
   cursor: pointer;
-  color: #000;
+  color: #d4af37;
   transition: all 0.2s;
   line-height: 1;
-  padding: 0 0.5rem;
-  font-weight: 300;
-  border-radius: 40px;
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 0.3rem 0.8rem;
+  font-weight: 700;
+  border-radius: 60px;
 }
 
 .close-modal:hover {
   background: #d4af37;
-  border-color: #d4af37;
   color: #000;
 }
 
 .modal-footer {
-  border-top: 2px solid #000;
-  padding-top: 1.5rem;
+  border-top: 3px solid #000;
+  padding-top: 1.2rem;
+  margin-top: 0.5rem;
 }
 
-/* ==================== CART MODAL ==================== */
+/* ==================== CART MODAL - REDESIGNED MATCHING CHECKOUT ==================== */
 .cart-modal-content {
-  max-width: 550px;
+  max-width: 500px;
 }
 
 .cart-items {
   flex: 1;
   overflow-y: auto;
-  padding: 1.5rem 0;
+  padding: 1rem 0;
   max-height: 400px;
-  min-height: 200px;
   scrollbar-width: thin;
+  scrollbar-color: #d4af37 #f0f0f0;
 }
 
 .cart-items::-webkit-scrollbar {
   width: 4px;
 }
+
+.cart-items::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
 .cart-items::-webkit-scrollbar-thumb {
   background: #d4af37;
   border-radius: 4px;
@@ -338,45 +331,55 @@
 .cart-item {
   display: flex;
   gap: 1rem;
-  padding: 1rem 0;
-  border-bottom: 2px solid #f0f0f0;
+  padding: 1rem;
+  border: 2px solid #000;
+  border-radius: 24px;
+  margin-bottom: 1rem;
+  background: #ffffff;
+  transition: all 0.2s;
   position: relative;
-  align-items: center;
+}
+
+.cart-item:hover {
+  border-color: #d4af37;
+  background: #fcf9f4;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
 }
 
 .cart-item-image {
-  width: 70px;
-  height: 70px;
-  border-radius: 16px;                 /* match checkout item image */
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
   background-size: cover;
   background-position: center;
   background-color: #ece5dc;
   flex-shrink: 0;
-  border: 2px solid #000;               /* bold border */
+  border: 2px solid #000;
 }
 
 .cart-item-details {
   flex: 1;
+  min-width: 0;
+}
+
+.cart-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.3rem;
+  gap: 0.5rem;
 }
 
 .cart-item-title {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
-  margin-bottom: 0.2rem;
   color: #000;
   text-transform: uppercase;
-  letter-spacing: -0.02em;
-}
-
-.cart-item-category {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: #666;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
 }
 
 .cart-item-price {
@@ -384,7 +387,17 @@
   font-family: 'Montserrat', sans-serif;
   font-weight: 800;
   font-size: 1rem;
+  white-space: nowrap;
+}
+
+.cart-item-category {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
   margin-bottom: 0.5rem;
+  letter-spacing: 0.3px;
 }
 
 .cart-item-actions {
@@ -405,9 +418,9 @@
   justify-content: center;
   cursor: pointer;
   font-size: 1rem;
-  font-weight: 700;
-  transition: all 0.2s;
+  transition: all 0.15s;
   color: #000;
+  font-weight: 700;
 }
 
 .quantity-btn:hover:not(:disabled) {
@@ -423,30 +436,30 @@
 .item-quantity {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
+  font-size: 0.9rem;
   min-width: 30px;
   text-align: center;
   color: #000;
-  font-size: 0.9rem;
 }
 
 .remove-item {
-  background: none;
-  border: 2px solid #c00;
+  background: #fee;
+  border: 2px solid #000;
   color: #c00;
   cursor: pointer;
   font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 0.2rem 0.8rem;
-  border-radius: 40px;
+  font-weight: 600;
   margin-left: auto;
   font-family: 'Montserrat', sans-serif;
-  transition: all 0.2s;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: 40px;
+  transition: all 0.15s;
 }
 
 .remove-item:hover {
   background: #c00;
-  color: #fff;
+  color: white;
   border-color: #c00;
 }
 
@@ -460,12 +473,14 @@
   color: #000;
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
+  border-top: 3px solid #000;
+  padding-top: 1rem;
 }
 
 #cart-total-amount {
   color: #d4af37;
-  font-weight: 900;
   font-size: 1.3rem;
+  font-weight: 900;
 }
 
 .checkout-btn {
@@ -478,10 +493,15 @@
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  transition: all 0.3s;
+  transition: all 0.2s;
   border-radius: 60px;
   cursor: pointer;
+  font-size: 0.9rem;
   box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
 }
 
 .checkout-btn:hover {
@@ -496,6 +516,10 @@
   text-align: center;
   padding: 3rem 1rem;
   color: #666;
+  background: #f8f5f1;
+  border-radius: 24px;
+  border: 2px solid #000;
+  margin: 1rem 0;
 }
 
 .empty-cart-message i {
@@ -506,18 +530,20 @@
 
 .empty-cart-message p {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
+  font-weight: 600;
   margin: 0;
+  font-size: 1rem;
+  text-transform: uppercase;
   color: #000;
 }
 
-/* ==================== PROFILE MODAL ==================== */
+/* ==================== PROFILE MODAL - REDESIGNED ==================== */
 .profile-modal-content {
-  max-width: 450px;
+  max-width: 400px;
 }
 
 .profile-content {
-  padding: 1.5rem 0;
+  padding: 1rem 0;
   overflow-y: auto;
   max-height: 60vh;
 }
@@ -525,7 +551,7 @@
 /* Logged In State */
 .profile-info {
   text-align: center;
-  padding: 0.5rem 0;
+  padding: 1rem 0;
 }
 
 .profile-avatar {
@@ -540,17 +566,15 @@
   font-size: 2.5rem;
   color: #d4af37;
   border: 3px solid #d4af37;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
 }
 
 .profile-details {
   text-align: left;
-  background: #fcf9f4;
+  background: #f8f5f1;
   padding: 1.5rem;
   border-radius: 24px;
   border: 2px solid #000;
   margin-bottom: 1.5rem;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
 }
 
 .profile-details p {
@@ -561,7 +585,6 @@
   color: #000;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.9rem;
-  font-weight: 500;
 }
 
 .profile-details p:last-child {
@@ -571,14 +594,16 @@
 .profile-details i {
   width: 20px;
   color: #d4af37;
+  font-size: 1rem;
 }
 
 .profile-details .label {
-  font-weight: 600;
-  color: #444;
+  font-weight: 500;
+  color: #666;
   min-width: 70px;
   text-transform: uppercase;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
 }
 
 .profile-details .value {
@@ -598,24 +623,22 @@
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  transition: all 0.3s;
+  transition: all 0.2s;
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-radius: 60px;
   cursor: pointer;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+  font-size: 0.9rem;
 }
 
 .logout-btn:hover {
   background: #c00;
   color: #fff;
   border-color: #c00;
-  transform: translateY(-2px);
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
 }
 
-/* Logged Out State (Login Form) – now with checkout card styling */
+/* Logged Out State (Login Form) */
 .login-form {
   padding: 0.5rem 0;
 }
@@ -633,7 +656,7 @@
 
 .login-header h4 {
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 800;
   color: #000;
   margin-bottom: 0.5rem;
@@ -642,8 +665,8 @@
 
 .login-header p {
   color: #666;
-  font-size: 0.9rem;
-  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
   font-weight: 400;
   margin: 0;
 }
@@ -657,7 +680,7 @@
   margin-bottom: 0.3rem;
   color: #000;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -668,9 +691,9 @@
   padding: 0.8rem 1.2rem;
   border: 2px solid #000;
   border-radius: 50px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
-  transition: all 0.2s;
+  transition: all 0.15s;
   box-sizing: border-box;
   background: #fff;
 }
@@ -678,12 +701,12 @@
 .form-group input:focus {
   outline: none;
   border-color: #d4af37;
-  box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
 .form-group input::placeholder {
   color: #aaa;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 300;
 }
 
@@ -693,7 +716,7 @@
   align-items: center;
   margin: 1rem 0 1.5rem;
   font-size: 0.8rem;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 .remember-me {
@@ -701,7 +724,6 @@
   align-items: center;
   gap: 0.5rem;
   color: #000;
-  font-weight: 500;
 }
 
 .remember-me input[type="checkbox"] {
@@ -709,13 +731,14 @@
   height: 16px;
   cursor: pointer;
   accent-color: #d4af37;
+  border: 2px solid #000;
 }
 
 .forgot-password {
   color: #d4af37;
   text-decoration: none;
-  font-weight: 700;
-  font-size: 0.75rem;
+  font-weight: 600;
+  font-size: 0.8rem;
   text-transform: uppercase;
 }
 
@@ -734,13 +757,14 @@
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  transition: all 0.3s;
+  transition: all 0.2s;
   margin-bottom: 1.5rem;
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-radius: 60px;
   cursor: pointer;
+  font-size: 0.9rem;
   box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
 }
 
@@ -785,6 +809,7 @@
   font-weight: 600;
   position: relative;
   z-index: 1;
+  text-transform: uppercase;
 }
 
 .social-login {
@@ -797,7 +822,7 @@
   flex: 1;
   padding: 0.8rem;
   border: 2px solid #000;
-  border-radius: 50px;
+  border-radius: 60px;
   background: #fff;
   color: #000;
   font-weight: 600;
@@ -806,38 +831,39 @@
   justify-content: center;
   gap: 0.5rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.85rem;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+  font-size: 0.8rem;
+  text-transform: uppercase;
 }
 
 .social-btn:hover {
-  background: #d4af37;
+  background: #f5f5f5;
   border-color: #d4af37;
   transform: translateY(-2px);
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
 }
 
 .social-btn.google {
-  color: #DB4437;
+  color: #000;
 }
+
 .social-btn.google:hover {
-  color: #000;
+  background: #DB4437;
+  color: white;
+  border-color: #DB4437;
 }
-.social-btn.facebook {
-  color: #4267B2;
-}
+
 .social-btn.facebook:hover {
-  color: #000;
+  background: #4267B2;
+  color: white;
+  border-color: #4267B2;
 }
 
 .signup-prompt {
   text-align: center;
   font-size: 0.85rem;
-  color: #000;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
+  color: #666;
+  font-family: 'Inter', sans-serif;
 }
 
 .signup-prompt a {
@@ -845,6 +871,7 @@
   text-decoration: none;
   font-weight: 700;
   text-transform: uppercase;
+  font-size: 0.8rem;
 }
 
 .signup-prompt a:hover {
@@ -854,21 +881,113 @@
 .error-message {
   background: #fee;
   color: #c00;
-  padding: 0.8rem 1rem;
+  padding: 1rem;
   border-radius: 50px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   margin-bottom: 1rem;
   display: none;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   border: 2px solid #c00;
+  text-align: center;
 }
 
 .error-message.show {
   display: block;
 }
 
+/* ==================== SEARCH MODAL - NEW ==================== */
+.search-modal-content {
+  max-width: 500px;
+}
+
+.search-container {
+  padding: 1rem 0;
+}
+
+.search-input-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-input-wrapper input {
+  flex: 1;
+  padding: 1rem 1.2rem;
+  border: 2px solid #000;
+  border-radius: 60px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  transition: all 0.15s;
+}
+
+.search-input-wrapper input:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+.search-input-wrapper button {
+  background: #000;
+  border: 2px solid #000;
+  color: #d4af37;
+  padding: 0 1.5rem;
+  border-radius: 60px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+}
+
+.search-input-wrapper button:hover {
+  background: #d4af37;
+  color: #000;
+  border-color: #d4af37;
+}
+
+.popular-searches {
+  margin-top: 1.5rem;
+}
+
+.popular-searches h4 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  color: #000;
+}
+
+.search-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.search-tag {
+  background: #f8f5f1;
+  border: 2px solid #000;
+  padding: 0.5rem 1.2rem;
+  border-radius: 60px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+
+.search-tag:hover {
+  background: #d4af37;
+  border-color: #d4af37;
+  color: #000;
+}
+
 /* ==================== RESPONSIVE STYLES ==================== */
+/* Tablet Styles (640px and up) */
 @media (min-width: 640px) {
   .top-bar .container {
     flex-direction: row;
@@ -905,6 +1024,7 @@
   }
 }
 
+/* Desktop Styles (1024px and up) */
 @media (min-width: 1024px) {
   .logo {
     font-size: 2.4rem;
@@ -915,11 +1035,11 @@
   }
   
   .nav-link {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 }
 
-/* Mobile Styles */
+/* Mobile Styles (639px and below) */
 @media (max-width: 639px) {
   .main-header .container {
     flex-wrap: wrap;
@@ -940,18 +1060,15 @@
     gap: 0.5rem;
   }
   
-  .header-icons a,
-  .header-icons .search-trigger {
-    width: 38px;
-    height: 38px;
+  .header-icons a {
     font-size: 1.1rem;
+    width: 36px;
+    height: 36px;
   }
   
   .mobile-menu-toggle {
     display: block;
     order: 3;
-    font-size: 1.3rem;
-    padding: 0.4rem 0.7rem;
   }
   
   .nav-menu {
@@ -977,11 +1094,11 @@
   .nav-link {
     display: block;
     text-align: center;
-    padding: 0.8rem 0.5rem;
-    background: #f8f8f8;
+    padding: 0.75rem 0.25rem;
+    background: #f8f5f1;
     border: 2px solid #000;
-    border-radius: 40px;
-    font-size: 0.85rem;
+    border-radius: 60px;
+    font-size: 0.8rem;
     font-weight: 600;
     color: #000;
     text-decoration: none;
@@ -993,7 +1110,6 @@
     background: #d4af37;
     border-color: #d4af37;
     color: #000;
-    transform: scale(0.97);
   }
   
   .modal-content {
@@ -1003,13 +1119,8 @@
     max-height: 90vh;
   }
   
-  .cart-modal-content,
-  .profile-modal-content {
-    max-width: 95%;
-  }
-  
   .cart-items {
-    max-height: 300px;
+    max-height: 350px;
   }
   
   .cart-item {
@@ -1021,12 +1132,22 @@
     height: 60px;
   }
   
+  .cart-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
   .cart-item-title {
     font-size: 0.9rem;
+    white-space: normal;
   }
   
   .cart-item-price {
-    font-size: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .cart-item-actions {
+    flex-wrap: wrap;
   }
   
   .social-login {
@@ -1037,20 +1158,32 @@
   .modal-header h3 {
     font-size: 1.2rem;
   }
+  
+  .search-input-wrapper {
+    flex-direction: column;
+  }
+  
+  .search-input-wrapper button {
+    padding: 0.8rem;
+  }
 }
 
-/* Small Mobile Optimization */
+/* Small Mobile Optimization (480px and below) */
 @media (max-width: 480px) {
   .top-bar-links {
-    gap: 0.8rem;
+    gap: 0.5rem;
   }
   
   .top-bar-links a {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
+  }
+  
+  .trust-badge {
+    padding: 0.2rem 0.5rem;
   }
   
   .trust-badge span {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
   }
   
   .logo {
@@ -1062,20 +1195,19 @@
   }
   
   .header-icons {
-    gap: 0.4rem;
+    gap: 0.3rem;
   }
   
-  .header-icons a,
-  .header-icons .search-trigger {
-    width: 34px;
-    height: 34px;
+  .header-icons a {
     font-size: 1rem;
+    width: 32px;
+    height: 32px;
   }
   
   .cart-count {
     width: 18px;
     height: 18px;
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     top: -6px;
     right: -6px;
   }
@@ -1091,7 +1223,7 @@
   .profile-details p {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.3rem;
+    gap: 0.2rem;
   }
   
   .profile-details .label {
@@ -1102,5 +1234,14 @@
     flex-direction: column;
     gap: 0.5rem;
     align-items: flex-start;
+  }
+  
+  .search-tags {
+    gap: 0.3rem;
+  }
+  
+  .search-tag {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
   }
 }
