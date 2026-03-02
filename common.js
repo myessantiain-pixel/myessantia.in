@@ -306,7 +306,8 @@ function closeModal(modalId) {
 }
 
 // ========== CART FUNCTIONS ==========
-window.addToCart = async function(productId) {
+// Enhanced unified addToCart function with animation and cart opening
+window.addToCart = async function(productId, shouldOpenCart = true) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
 
@@ -341,25 +342,44 @@ window.addToCart = async function(productId) {
   
   updateCartCount();
   
+  // Show animation on the button
   const btn = event?.target?.closest('button');
   if (btn) {
     const originalText = btn.innerHTML;
+    const originalBg = btn.style.background;
+    const originalColor = btn.style.color;
+    
     btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
     btn.style.background = '#4CAF50';
     btn.style.color = 'white';
+    
     setTimeout(() => {
       btn.innerHTML = originalText;
-      btn.style.background = '';
-      btn.style.color = '';
-    }, 1500);
+      btn.style.background = originalBg;
+      btn.style.color = originalColor;
+      
+      // Open cart after animation if requested
+      if (shouldOpenCart) {
+        openCart();
+      }
+    }, 500);
   } else {
+    // If button not found, show alert and optionally open cart
     alert(`${product.title} added to cart!`);
+    if (shouldOpenCart) {
+      openCart();
+    }
   }
 };
 
+// Legacy support - calls the unified function with shouldOpenCart = false
+window.addToCartLegacy = async function(productId) {
+  return window.addToCart(productId, false);
+};
+
 window.buyNow = function(productId) {
-  addToCart(productId);
-  openCart();
+  // For buy now, we always want to open cart
+  window.addToCart(productId, true);
 };
 
 window.updateQuantity = async function(productId, change) {
@@ -566,3 +586,7 @@ function updateProfileIcon() {
     }
   }
 }
+
+// Make all cart functions globally available
+window.openCart = openCart;
+window.closeModal = closeModal;
