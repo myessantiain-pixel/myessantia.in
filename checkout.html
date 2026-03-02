@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>ESSENCE · checkout (responsive)</title>
+  <title>MyEssantia · checkout · premium essentials </title>
   
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   
-  <!-- Premium Fonts -->
+  <!-- Premium Fonts - matching reference page -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Montserrat:wght@300..900&display=swap" rel="stylesheet">
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -24,14 +24,22 @@
   <link rel="stylesheet" href="footer.css">
   
   <style>
-    /* -------------------- CHECKOUT PAGE SPECIFIC STYLES -------------------- */
-    body {
-      background-color: #faf9f7;
+    /* ===== GLOBAL & RESETS - matching reference page ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Inter', 'Montserrat', sans-serif; 
+      background: #ffffff; 
+      color: #1e1e1e; 
+      overflow-x: hidden;
+      line-height: 1.5;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
+    .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+    @media (min-width: 640px) { .container { padding: 0 32px; } }
 
+    /* ===== CHECKOUT HEADER - premium bold style ===== */
     .checkout-header {
       display: flex;
       justify-content: space-between;
@@ -42,47 +50,54 @@
     }
     .checkout-header h1 {
       font-size: clamp(1.8rem, 5vw, 2.2rem);
-      font-weight: 400;
-      color: #1a1a1a;
+      font-weight: 800;
+      color: #000;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      font-family: 'Montserrat', sans-serif;
     }
     .checkout-header h1 span {
       color: #d4af37;
-      font-style: italic;
-      font-weight: 500;
+      font-weight: 900;
     }
     .secure-badge {
-      background: #f2efea;
-      padding: 0.4rem 1.2rem;
-      border-radius: 40px;
+      background: #000;
+      padding: 0.6rem 1.4rem;
+      border-radius: 60px;
       font-size: 0.8rem;
-      font-weight: 400;
+      font-weight: 600;
       white-space: nowrap;
+      color: #fff;
+      border: 2px solid #d4af37;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .secure-badge i {
-      color: #2e7d32;
+      color: #d4af37;
       margin-right: 0.4rem;
     }
 
-    /* Empty cart message */
+    /* ===== EMPTY CART - bold styling ===== */
     .empty-cart-checkout {
       text-align: center;
       padding: 4rem 2rem;
       background: #ffffff;
       border-radius: 40px;
-      border: 1px solid #f2eee9;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
       margin: 2rem 0;
     }
     .empty-cart-checkout i {
       font-size: 4rem;
       color: #d4af37;
-      opacity: 0.5;
       margin-bottom: 1rem;
     }
     .empty-cart-checkout h3 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Montserrat', sans-serif;
       font-size: 1.8rem;
-      font-weight: 400;
+      font-weight: 800;
       margin-bottom: 0.5rem;
+      text-transform: uppercase;
     }
     .empty-cart-checkout p {
       color: #666;
@@ -91,61 +106,67 @@
     .empty-cart-checkout .btn {
       display: inline-block;
       padding: 1rem 2.5rem;
-      background: #d4af37;
-      color: #0c0c0c;
+      background: #000;
+      color: #fff;
       text-decoration: none;
       border-radius: 60px;
       font-weight: 600;
-      transition: all 0.3s;
+      transition: all 0.2s;
+      border: 2px solid #000;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .empty-cart-checkout .btn:hover {
-      background: #1a1a1a;
-      color: white;
-      transform: translateY(-2px);
+      background: #d4af37;
+      color: #000;
+      border-color: #d4af37;
     }
 
-    /* --- main checkout grid (responsive) --- */
+    /* ===== MAIN CHECKOUT GRID ===== */
     .checkout-grid {
       display: grid;
       grid-template-columns: 1.3fr 0.9fr;
       gap: clamp(1.5rem, 3vw, 2.5rem);
       align-items: start;
+      margin-bottom: 3rem;
     }
 
-    /* left cards - fully responsive */
+    /* ===== SECTION CARDS - bold borders, no blur ===== */
     .section-card {
       background: #ffffff;
-      border-radius: clamp(24px, 4vw, 32px);
+      border-radius: 32px;
       padding: clamp(1.5rem, 3vw, 2rem);
-      box-shadow: 0 10px 30px -12px rgba(0,0,0,0.1);
-      border: 1px solid #f2eee9;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.15);
       margin-bottom: 1.8rem;
     }
     .section-title {
       font-size: clamp(1.3rem, 3vw, 1.5rem);
-      font-weight: 400;
+      font-weight: 800;
       margin-bottom: 1.5rem;
       display: flex;
       align-items: center;
       gap: 1rem;
-      font-family: 'Playfair Display', serif;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
       flex-wrap: wrap;
     }
     .section-title .step-number {
-      background: #d4af37;
-      color: #0c0c0c;
+      background: #000;
+      color: #d4af37;
       width: 38px;
       height: 38px;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
+      font-weight: 800;
       font-size: 1.2rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      border: 2px solid #d4af37;
     }
 
-    /* form rows - responsive */
+    /* ===== FORM STYLES - bold borders ===== */
     .form-row {
       display: flex;
       gap: 1.2rem;
@@ -164,28 +185,28 @@
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.6px;
-      color: #7d7d7d;
+      color: #000;
       margin-bottom: 0.4rem;
-      font-weight: 400;
+      font-weight: 600;
     }
     input, select {
       width: 100%;
       padding: 0.9rem 1.2rem;
-      border: 1px solid #dad6d0;
+      border: 2px solid #000;
       border-radius: 60px;
       background: #ffffff;
       font-size: 0.95rem;
       transition: 0.2s;
       outline: none;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 300;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
     }
     input:focus, select:focus {
       border-color: #d4af37;
-      box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.2);
     }
 
-    /* inline checkbox row */
+    /* ===== CHECKBOX ROW ===== */
     .checkbox-row {
       display: flex;
       align-items: center;
@@ -203,14 +224,15 @@
       display: inline;
       text-transform: none;
       font-size: 0.9rem;
-      color: #2b2b2b;
+      color: #1e1e1e;
       margin: 0;
+      font-weight: 400;
     }
 
-    /* shipping method radio cards */
+    /* ===== SHIPPING METHOD RADIO CARDS - bold style ===== */
     .radio-card {
-      border: 1px solid #e1dbd3;
-      border-radius: 40px;
+      border: 2px solid #000;
+      border-radius: 60px;
       padding: 1rem 1.5rem;
       margin-bottom: 0.8rem;
       display: flex;
@@ -219,11 +241,12 @@
       transition: 0.15s;
       cursor: pointer;
       flex-wrap: wrap;
+      background: #ffffff;
     }
     .radio-card.selected {
       border-color: #d4af37;
       background: #fcf9f4;
-      box-shadow: 0 0 0 1px #d4af37;
+      box-shadow: 0 0 0 2px #d4af37;
     }
     .radio-card input[type="radio"] {
       width: 18px;
@@ -240,10 +263,11 @@
       align-items: center;
       gap: 1rem;
       flex-wrap: wrap;
+      font-weight: 500;
     }
     .radio-price {
-      font-weight: 600;
-      color: #1e1e1e;
+      font-weight: 700;
+      color: #000;
       white-space: nowrap;
     }
     .free-badge {
@@ -253,34 +277,37 @@
       padding: 0.2rem 0.8rem;
       border-radius: 40px;
       margin-left: 0.8rem;
-      font-weight: 500;
+      font-weight: 700;
       white-space: nowrap;
+      border: 1px solid #000;
     }
 
-    /* --- RIGHT PANEL (order summary) sticky but responsive --- */
+    /* ===== RIGHT PANEL - order summary, bold ===== */
     .order-summary {
       background: #ffffff;
       border-radius: 40px;
       padding: clamp(1.5rem, 4vw, 2rem);
-      border: 1px solid #f2eee9;
-      box-shadow: 0 18px 36px -18px rgba(0,0,0,0.12);
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
       position: sticky;
       top: 20px;
     }
     .summary-title {
       font-size: clamp(1.5rem, 4vw, 1.8rem);
-      font-weight: 400;
-      border-bottom: 2px solid #efebe6;
+      font-weight: 800;
+      border-bottom: 3px solid #000;
       padding-bottom: 1.2rem;
       margin-bottom: 1.5rem;
-      font-family: 'Playfair Display', serif;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
     }
     .summary-title span {
-      font-weight: 600;
       color: #d4af37;
-      font-style: italic;
+      font-weight: 900;
     }
 
+    /* ===== CART ITEMS ===== */
     .cart-item {
       display: flex;
       gap: 1rem;
@@ -292,11 +319,12 @@
       width: 80px;
       height: 80px;
       background: #ece5dc;
-      border-radius: 24px;
+      border-radius: 20px;
       background-size: cover;
       background-position: center;
       flex-shrink: 0;
-      border: 1px solid #e3dbd2;
+      border: 2px solid #000;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
     }
     .item-details {
       flex: 1;
@@ -314,26 +342,24 @@
     }
     .item-details h4 {
       font-family: 'Montserrat', sans-serif;
-      font-weight: 500;
+      font-weight: 700;
       font-size: clamp(1rem, 2.5vw, 1.2rem);
-      color: #1e1e1e;
+      color: #000;
+      text-transform: uppercase;
     }
     .item-price {
-      font-weight: 600;
+      font-weight: 800;
       color: #d4af37;
       font-size: clamp(1rem, 2.5vw, 1.2rem);
-      font-family: 'Montserrat', sans-serif;
       white-space: nowrap;
-    }
-    .item-price .inr-symbol {
-      font-size: clamp(0.9rem, 2vw, 1rem);
     }
     .item-meta {
       font-size: 0.7rem;
-      color: #8f8a84;
+      color: #666;
       text-transform: uppercase;
       letter-spacing: 0.4px;
       margin: 0.1rem 0 0.3rem;
+      font-weight: 600;
     }
     .qty-control {
       display: flex;
@@ -344,12 +370,12 @@
     }
     .qty-btn {
       background: #f5f2ee;
-      border: none;
-      width: 26px;
-      height: 26px;
+      border: 2px solid #000;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 1rem;
       transition: 0.1s;
       display: inline-flex;
@@ -358,20 +384,23 @@
     }
     .qty-btn:hover {
       background: #d4af37;
-      color: white;
+      color: #000;
     }
 
-    /* promo section INSIDE order summary */
+    /* ===== PROMO INSIDE - bold style ===== */
     .promo-inside {
       background: #f8f5f1;
       border-radius: 28px;
       padding: 1.2rem 1.5rem;
       margin: 1.5rem 0 1.2rem;
+      border: 2px solid #000;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
     }
     .promo-inside p {
-      font-weight: 400;
+      font-weight: 700;
       margin-bottom: 0.8rem;
       font-size: 0.9rem;
+      text-transform: uppercase;
     }
     .promo-flex {
       display: flex;
@@ -383,89 +412,95 @@
       flex: 1;
       min-width: 160px;
       background: white;
-      border: 1px solid #dad6d0;
+      border: 2px solid #000;
       padding: 0.8rem 1.2rem;
       border-radius: 60px;
     }
     .promo-btn {
-      background: #1a1a1a;
-      border: none;
+      background: #000;
+      border: 2px solid #000;
       color: white;
       padding: 0.8rem 1.8rem;
       border-radius: 60px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .promo-btn:hover {
       background: #d4af37;
-      color: #0c0c0c;
+      color: #000;
+      border-color: #d4af37;
     }
 
-    /* price breakdown */
+    /* ===== PRICE BREAKDOWN - bold ===== */
     .price-line {
       display: flex;
       justify-content: space-between;
       margin: 0.6rem 0;
       font-size: 0.95rem;
-      font-weight: 300;
+      font-weight: 500;
       gap: 1rem;
       flex-wrap: wrap;
     }
     .total-line {
-      font-weight: 700;
+      font-weight: 800;
       font-size: clamp(1.5rem, 4vw, 1.8rem);
-      border-top: 2px solid #ece8e2;
+      border-top: 3px solid #000;
       padding-top: 1.2rem;
       margin: 1rem 0 1.5rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      color: #000000;
+      font-family: 'Montserrat', sans-serif;
+      color: #000;
       letter-spacing: -0.01em;
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 1rem;
     }
-    .total-line span {
-      color: #000000;
-    }
 
+    /* ===== PLACE ORDER BUTTON - bold ===== */
     .place-order-btn {
       background: #d4af37;
-      border: none;
+      border: 2px solid #000;
       width: 100%;
       padding: 1.4rem;
       border-radius: 60px;
-      font-weight: 500;
+      font-weight: 700;
       font-size: 1.1rem;
-      color: #0c0c0c;
+      color: #000;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.8rem;
       cursor: pointer;
       transition: 0.2s;
-      border: 1px solid #d4af37;
       margin-bottom: 1.2rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
     }
     .place-order-btn:hover:not(:disabled) {
-      background: #c5a231;
-      transform: scale(1.01);
-      box-shadow: 0 12px 24px -12px rgba(212,175,55,0.5);
+      background: #000;
+      color: #d4af37;
+      border-color: #d4af37;
+      transform: translateY(-2px);
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
     }
     .place-order-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
 
+    /* ===== PAYMENT ICONS ===== */
     .payment-icons-sm {
       display: flex;
       justify-content: center;
       gap: 1rem;
-      color: #5f5b57;
+      color: #000;
       font-size: 1.6rem;
       flex-wrap: wrap;
     }
@@ -480,7 +515,8 @@
       font-size: 0.75rem;
       text-align: center;
       margin-top: 1rem;
-      color: #5f5b57;
+      color: #666;
+      font-weight: 500;
     }
     .notice i {
       color: #d4af37;
@@ -491,12 +527,7 @@
       margin-top: auto;
     }
 
-    /* Touch targets */
-    button, .btn, .nav-link, .header-icons a, .value-item, .view-all-link, .img-add, .img-buy, select, .qty-btn, .promo-btn, .place-order-btn {
-      touch-action: manipulation;
-    }
-
-    /* ---------- RESPONSIVE BREAKPOINTS ---------- */
+    /* ===== RESPONSIVE BREAKPOINTS ===== */
     @media (max-width: 992px) {
       .checkout-grid {
         grid-template-columns: 1fr;
@@ -528,9 +559,6 @@
         width: 100%;
         height: 180px;
       }
-      .item-header {
-        width: 100%;
-      }
       .promo-flex {
         flex-direction: column;
         align-items: stretch;
@@ -548,9 +576,6 @@
       .secure-badge {
         align-self: flex-start;
       }
-      .section-title {
-        gap: 0.8rem;
-      }
       .section-title .step-number {
         width: 32px;
         height: 32px;
@@ -559,41 +584,34 @@
       .item-image {
         height: 160px;
       }
-      .payment-icons-sm {
-        font-size: 1.4rem;
-        gap: 0.8rem;
-      }
-      .place-order-btn {
-        padding: 1.2rem;
-        font-size: 1rem;
-      }
     }
 
-    @media (max-width: 360px) {
-      .container {
-        padding: 0 0.5rem;
-      }
-      .item-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .qty-control {
-        width: 100%;
-        justify-content: flex-start;
-      }
+    /* ===== SCROLL TOP BUTTON - matching reference ===== */
+    .scroll-top {
+      position: fixed; bottom: 20px; right: 20px; 
+      background: #000; color: #d4af37; width: 52px; height: 52px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; 
+      border: 2px solid #d4af37; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      opacity: 0; transform: translateY(15px); transition: 0.2s; z-index: 100;
+      font-size: 1.4rem; cursor: pointer;
     }
+    .scroll-top.visible { opacity: 1; transform: translateY(0); }
+    .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
   </style>
 </head>
-<body class="bg-noise">
+<body>
   
   <!-- Header loaded dynamically -->
   <div id="header"></div>
+  
+  <!-- Scroll to top button (added to match reference) -->
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
 
   <main>
     <div class="container">
-      <!-- checkout header -->
+      <!-- checkout header - bold style -->
       <div class="checkout-header">
-        <h1>checkout <span>· essence</span></h1>
+        <h1>checkout <span>· MyEssantia</span></h1>
         <div class="secure-badge"><i class="fa-solid fa-lock"></i> secure checkout</div>
       </div>
 
@@ -616,6 +634,13 @@
     let subtotalSpan, shippingSpan, discountSpan, totalSpan;
     let standardRadio, expressRadio, freeBadge, standardPriceSpan, radioStandard, radioExpress;
     let cartItems = [];
+
+    // ========== SCROLL HANDLER FOR SCROLL TOP BUTTON ==========
+    function handleScroll() {
+      const btn = document.getElementById('scrollTop');
+      if (btn) btn.classList.toggle('visible', window.scrollY > 200);
+    }
+    window.addEventListener('scroll', handleScroll);
 
     // ========== CHECKOUT FUNCTIONS ==========
     function loadCartItems() {
@@ -663,7 +688,7 @@
               <div class="item-meta">${item.category || 'Accessory'}</div>
               <div class="qty-control">
                 <button class="qty-btn" data-product="${item.id}" data-delta="-1">−</button>
-                <span style="font-size: 0.9rem;" id="qty-${item.id}">${item.quantity}</span>
+                <span style="font-size: 0.9rem; font-weight: 600;" id="qty-${item.id}">${item.quantity}</span>
                 <button class="qty-btn" data-product="${item.id}" data-delta="1">+</button>
                 <button class="qty-btn" data-product="${item.id}" data-delta="remove" style="background: #fee; color: #c00; margin-left: 0.5rem;" title="Remove item">
                   <i class="fa-solid fa-trash-can" style="font-size: 0.8rem;"></i>
@@ -738,7 +763,7 @@
                   <span class="radio-price">₹149</span>
                 </div>
               </label>
-              <p style="font-size:0.75rem; margin-top:0.8rem; color:#8a7f75;"><i class="fa-solid fa-circle-info"></i> Standard shipping becomes FREE on orders above ₹499</p>
+              <p style="font-size:0.75rem; margin-top:0.8rem; color:#666; font-weight:500;"><i class="fa-solid fa-circle-info" style="color:#d4af37;"></i> Standard shipping becomes FREE on orders above ₹499</p>
             </div>
           </div>
 
@@ -758,7 +783,7 @@
                 </div>
               </div>
 
-              <div style="margin: 0.5rem 0 1rem; border-top: 1px dashed #ddd;"></div>
+              <div style="margin: 0.5rem 0 1rem; border-top: 2px dashed #000;"></div>
 
               <!-- dynamic price lines -->
               <div class="price-line"><span>Subtotal</span> <span id="subtotal-value">₹0</span></div>
@@ -771,7 +796,7 @@
               </div>
 
               <button class="place-order-btn" onclick="placeOrder()" id="place-order-btn">
-                <i class="fa-solid fa-lock fa-fade"></i> place order
+                <i class="fa-solid fa-lock"></i> place order
               </button>
 
               <div class="payment-icons-sm">
