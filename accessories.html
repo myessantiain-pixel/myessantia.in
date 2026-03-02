@@ -638,51 +638,50 @@
       }
     }
 
-    // Handle add to cart with button feedback and cart opening
-    window.handleAccessoryAdd = function(productId, btn) {
-      // Use the master function from common.js
-      if (typeof window.masterAddToCart === 'function') {
-        // Show added effect
-        btn.classList.add('added');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        
-        // Call master function (it will add to cart, sync, etc.)
-        // We pass false to avoid double-opening cart, then open manually
-        window.masterAddToCart(productId, false);
-        
-        // Open cart modal after a short delay
-        setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          // Reset button after cart opens (optional, but keeps UI consistent)
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
-        }, 200);
-      } else {
-        // Fallback if master function not ready
-        console.warn('masterAddToCart not available yet');
-        btn.classList.add('added');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        
-        // Try to use standard addToCart
-        if (typeof window.addToCart === 'function') {
-          window.addToCart(productId);
-        }
-        
-        setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
-        }, 200);
+ // Handle add to cart with button feedback and cart opening
+window.handleAccessoryAdd = function(productId, btn) {
+  // Use the master function from common.js
+  if (typeof window.masterAddToCart === 'function') {
+    // Show added effect
+    btn.classList.add('added');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+    
+    // Call master function (it will add to cart, sync, etc.)
+    window.masterAddToCart(productId, false);
+    
+    // Open cart modal after a short delay
+    setTimeout(() => {
+      if (typeof window.openCart === 'function') {
+        window.openCart();
       }
-    };
+      // Reset button after cart opens
+      setTimeout(() => {
+        btn.classList.remove('added');
+        btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
+      }, 500);
+    }, 200);
+  } else {
+    // Fallback if master function not ready
+    console.warn('masterAddToCart not available yet');
+    btn.classList.add('added');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+    
+    // Try to use standard addToCart
+    if (typeof window.addToCart === 'function') {
+      window.addToCart(productId);
+    }
+    
+    setTimeout(() => {
+      if (typeof window.openCart === 'function') {
+        window.openCart();
+      }
+      setTimeout(() => {
+        btn.classList.remove('added');
+        btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
+      }, 500);
+    }, 200);
+  }
+};
 
     // ===== INITIALIZATION =====
     document.addEventListener('DOMContentLoaded', async () => {
