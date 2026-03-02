@@ -7,12 +7,6 @@
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(8px);
   z-index: 1000;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
 }
 
 .modal.show {
@@ -32,18 +26,6 @@
   display: flex;
   flex-direction: column;
   max-height: 85vh;
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 /* ================= MODAL HEADER ================= */
@@ -75,7 +57,7 @@
   height: 36px;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,7 +67,6 @@
 .close-modal:hover {
   background: #d4af37;
   color: #000;
-  transform: rotate(90deg);
 }
 
 /* ================= CART MODAL ================= */
@@ -94,38 +75,12 @@
   flex: 1;
   overflow-y: auto;
   margin: 1rem 0;
-  padding-right: 5px;
-}
-
-.cart-items::-webkit-scrollbar {
-  width: 6px;
-}
-
-.cart-items::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.cart-items::-webkit-scrollbar-thumb {
-  background: #d4af37;
-  border-radius: 10px;
 }
 
 .empty-cart-message {
   text-align: center;
-  padding: 3rem 1rem;
+  padding: 2rem;
   color: #666;
-}
-
-.empty-cart-message i {
-  font-size: 3rem;
-  color: #d4af37;
-  margin-bottom: 1rem;
-}
-
-.empty-cart-message p {
-  font-size: 1.1rem;
-  font-weight: 500;
 }
 
 .cart-item {
@@ -136,14 +91,12 @@
   border-radius: 18px;
   margin-bottom: 1rem;
   background: #fafafa;
-  transition: all 0.2s ease;
-  position: relative;
+  transition: 0.2s ease;
 }
 
 .cart-item:hover {
   transform: translateY(-2px);
   border-color: #d4af37;
-  box-shadow: 5px 5px 0 rgba(0,0,0,0.1);
 }
 
 .cart-item-image {
@@ -158,27 +111,23 @@
 
 .cart-item-details {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
 }
 
 .cart-item-title {
   font-weight: 700;
-  font-size: 1rem;
-  margin: 0;
+  margin: 0 0 0.5rem 0;
 }
 
 .cart-item-price {
   font-weight: 800;
   color: #d4af37;
+  margin: 0 0 0.5rem 0;
 }
 
 .cart-item-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-top: 0.5rem;
 }
 
 .quantity-controls {
@@ -194,17 +143,15 @@
   border: 2px solid #000;
   background: #fff;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1rem;
 }
 
 .quantity-btn:hover {
   background: #d4af37;
-  color: #000;
 }
 
 .quantity-value {
@@ -216,16 +163,14 @@
 .remove-btn {
   border: none;
   background: transparent;
-  color: #ff4444;
+  color: #c00;
   cursor: pointer;
   margin-left: auto;
-  font-size: 1rem;
-  transition: color 0.2s ease;
-  padding: 5px;
+  transition: 0.2s;
 }
 
 .remove-btn:hover {
-  color: #cc0000;
+  color: #ff4444;
   transform: scale(1.1);
 }
 
@@ -237,7 +182,7 @@
   display: flex;
   justify-content: space-between;
   font-weight: 800;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   border-top: 2px solid #000;
   padding-top: 1rem;
   margin-bottom: 1rem;
@@ -252,12 +197,11 @@
   background: linear-gradient(135deg, #d4af37, #f3d77a);
   color: #000;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: 0.25s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-size: 1rem;
 }
 
 .checkout-btn:hover {
@@ -265,30 +209,11 @@
   box-shadow: 0 8px 20px rgba(212,175,55,0.4);
 }
 
-.checkout-btn i {
-  font-size: 1.1rem;
-}
-
 /* ================= PROFILE MODAL ================= */
 
 .profile-content {
   overflow-y: auto;
   max-height: 60vh;
-  padding-right: 5px;
-}
-
-.profile-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.profile-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.profile-content::-webkit-scrollbar-thumb {
-  background: #d4af37;
-  border-radius: 10px;
 }
 
 .profile-login-form,
@@ -304,7 +229,6 @@
   display: block;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  font-size: 0.9rem;
 }
 
 .form-group input {
@@ -313,13 +237,12 @@
   border: 2px solid #000;
   border-radius: 12px;
   font-size: 1rem;
-  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .form-group input:focus {
   outline: none;
   border-color: #d4af37;
-  box-shadow: 5px 5px 0 rgba(0,0,0,0.1);
 }
 
 .login-btn {
@@ -331,7 +254,7 @@
   background: #000;
   color: #fff;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: 0.2s;
   font-size: 1rem;
   margin-bottom: 1rem;
 }
@@ -339,8 +262,6 @@
 .login-btn:hover {
   background: #d4af37;
   color: #000;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .signup-prompt {
@@ -352,10 +273,6 @@
   color: #d4af37;
   font-weight: 700;
   text-decoration: none;
-}
-
-.signup-prompt a:hover {
-  text-decoration: underline;
 }
 
 .user-info {
@@ -381,33 +298,25 @@
 .user-info-item i {
   width: 24px;
   color: #d4af37;
-  font-size: 1.2rem;
-}
-
-.user-info-item span {
-  font-weight: 500;
 }
 
 .logout-btn {
   width: 100%;
   padding: 1rem;
   border-radius: 60px;
-  border: 2px solid #ff4444;
+  border: 2px solid #c00;
   background: #fff;
-  color: #ff4444;
+  color: #c00;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-size: 1rem;
 }
 
 .logout-btn:hover {
-  background: #ff4444;
+  background: #c00;
   color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255,68,68,0.3);
 }
