@@ -25,12 +25,12 @@ function loadCartFromLocalStorage() {
     const savedCart = localStorage.getItem('MyEssantia_cart');
     if (savedCart) {
       cart = JSON.parse(savedCart);
-      console.log('✅ Cart loaded from localStorage:', cart);
+      console.log('Cart loaded from localStorage:', cart);
     } else {
-      console.log('📦 No cart found in localStorage');
+      console.log('No cart found in localStorage');
     }
   } catch (error) {
-    console.error('❌ Error loading cart from localStorage:', error);
+    console.error('Error loading cart from localStorage:', error);
     cart = [];
   }
 }
@@ -39,9 +39,9 @@ function loadCartFromLocalStorage() {
 function saveCartToLocalStorage() {
   try {
     localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-    console.log('💾 Cart saved to localStorage:', cart);
+    console.log('Cart saved to localStorage:', cart);
   } catch (error) {
-    console.error('❌ Error saving cart to localStorage:', error);
+    console.error('Error saving cart to localStorage:', error);
   }
 }
 
@@ -50,7 +50,7 @@ loadCartFromLocalStorage();
 
 // ========== FIREBASE AUTH STATE OBSERVER ==========
 auth.onAuthStateChanged(async (user) => {
-  console.log('🔐 Auth state changed:', user ? 'Logged in' : 'Logged out');
+  console.log('Auth state changed:', user ? 'Logged in' : 'Logged out');
   if (user) {
     currentUser = {
       uid: user.uid,
@@ -95,18 +95,18 @@ async function loadUserCart(userId) {
     
     if (cartDoc.exists) {
       firebaseCart = cartDoc.data().items || [];
-      console.log('📥 Firebase cart loaded:', firebaseCart);
+      console.log('Firebase cart loaded:', firebaseCart);
     }
     
     // Merge Firebase cart with local cart if both exist
     if (firebaseCart.length > 0 && cart.length > 0) {
       // Merge carts (prefer Firebase cart for logged in user)
       cart = mergeCarts(cart, firebaseCart);
-      console.log('🔄 Carts merged:', cart);
+      console.log('Carts merged:', cart);
     } else if (firebaseCart.length > 0) {
       // Use Firebase cart if it exists
       cart = firebaseCart;
-      console.log('🔄 Using Firebase cart:', cart);
+      console.log('Using Firebase cart:', cart);
     }
     // Otherwise keep local cart
     
@@ -115,7 +115,7 @@ async function loadUserCart(userId) {
     
     updateCartCount();
   } catch (error) {
-    console.error('❌ Error loading cart:', error);
+    console.error('Error loading cart:', error);
     // Keep using local cart if Firebase fails
     updateCartCount();
   }
@@ -146,11 +146,11 @@ async function saveCartToFirebase() {
       items: cart,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    console.log('📤 Cart saved to Firebase');
+    console.log('Cart saved to Firebase');
     // Also save to localStorage as backup
     saveCartToLocalStorage();
   } catch (error) {
-    console.error('❌ Error saving cart to Firebase:', error);
+    console.error('Error saving cart to Firebase:', error);
     // Still save to localStorage even if Firebase fails
     saveCartToLocalStorage();
   }
@@ -164,16 +164,16 @@ async function loadProducts() {
       ...doc.data()
     }));
     
-    console.log('📦 Products loaded:', products.length);
+    console.log('Products loaded:', products.length);
     
     // Cache products in localStorage for offline access
     localStorage.setItem('MyEssantia_products', JSON.stringify(products));
   } catch (error) {
-    console.error('❌ Error loading products:', error);
+    console.error('Error loading products:', error);
     // Fallback to localStorage if Firebase fails
     const cached = localStorage.getItem('MyEssantia_products');
     products = cached ? JSON.parse(cached) : [];
-    console.log('📦 Products loaded from cache:', products.length);
+    console.log('Products loaded from cache:', products.length);
   }
 }
 
@@ -272,6 +272,8 @@ async function loadComponents() {
 
 // ========== EVENT LISTENERS SETUP ==========
 function setupEventListeners() {
+  console.log('Setting up event listeners');
+  
   const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
   const navMenu = document.getElementById('nav-menu');
   
@@ -282,74 +284,76 @@ function setupEventListeners() {
     });
   }
 
-  const cartIcon = document.getElementById('cart-icon');
-  if (cartIcon) {
-    cartIcon.addEventListener('click', function(e) {
+  // Use event delegation for cart icon to ensure it works even if element is reloaded
+  document.addEventListener('click', function(e) {
+    const cartIcon = e.target.closest('#cart-icon');
+    if (cartIcon) {
       e.preventDefault();
-      console.log('🛒 Cart icon clicked');
+      console.log('Cart icon clicked (delegated)');
       openCart();
-    });
-  }
+    }
+  });
 
-  const profileIcon = document.getElementById('profile-icon');
-  if (profileIcon) {
-    profileIcon.addEventListener('click', function(e) {
+  document.addEventListener('click', function(e) {
+    const profileIcon = e.target.closest('#profile-icon');
+    if (profileIcon) {
       e.preventDefault();
-      console.log('👤 Profile icon clicked');
+      console.log('Profile icon clicked (delegated)');
       openProfile();
-    });
-  }
+    }
+  });
 
-  const closeCart = document.getElementById('close-cart');
-  if (closeCart) {
-    closeCart.addEventListener('click', function() {
-      closeModal('cart-modal');
-    });
-  }
-
-  const closeProfile = document.getElementById('close-profile');
-  if (closeProfile) {
-    closeProfile.addEventListener('click', function() {
-      closeModal('profile-modal');
-    });
-  }
-
-  const checkoutBtn = document.getElementById('checkout-btn');
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', function() {
-      if (!currentUser) {
-        alert('Please login to checkout');
+  // These will be set up again when modals are loaded
+  const setupModalListeners = () => {
+    const closeCart = document.getElementById('close-cart');
+    if (closeCart) {
+      closeCart.addEventListener('click', function(e) {
+        e.preventDefault();
         closeModal('cart-modal');
-        openProfile();
-        return;
-      }
-      if (cart.length === 0) {
-        alert('Your cart is empty!');
-      } else {
-        // Save cart to localStorage before redirecting
-        saveCartToLocalStorage();
-        
-        // Also save to Firebase if user is logged in
-        if (currentUser) {
-          saveCartToFirebase().then(() => {
-            // Close the cart modal
-            closeModal('cart-modal');
-            // Redirect to checkout page
-            window.location.href = 'checkout.html';
-          }).catch(error => {
-            console.error('Error saving cart before redirect:', error);
-            // Still redirect even if Firebase save fails
-            closeModal('cart-modal');
-            window.location.href = 'checkout.html';
-          });
-        } else {
-          // Redirect even if not logged in (though we checked currentUser above)
+      });
+    }
+
+    const closeProfile = document.getElementById('close-profile');
+    if (closeProfile) {
+      closeProfile.addEventListener('click', function(e) {
+        e.preventDefault();
+        closeModal('profile-modal');
+      });
+    }
+
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+      checkoutBtn.addEventListener('click', function() {
+        if (!currentUser) {
+          alert('Please login to checkout');
           closeModal('cart-modal');
-          window.location.href = 'checkout.html';
+          openProfile();
+          return;
         }
-      }
-    });
-  }
+        if (cart.length === 0) {
+          alert('Your cart is empty!');
+        } else {
+          saveCartToLocalStorage();
+          if (currentUser) {
+            saveCartToFirebase().then(() => {
+              closeModal('cart-modal');
+              window.location.href = 'checkout.html';
+            }).catch(error => {
+              console.error('Error saving cart before redirect:', error);
+              closeModal('cart-modal');
+              window.location.href = 'checkout.html';
+            });
+          } else {
+            closeModal('cart-modal');
+            window.location.href = 'checkout.html';
+          }
+        }
+      });
+    }
+  };
+
+  // Try to set up modal listeners immediately
+  setupModalListeners();
 
   window.addEventListener('click', function(e) {
     const cartModal = document.getElementById('cart-modal');
@@ -397,7 +401,7 @@ function setupCartButtonListener() {
 
 // ========== MAIN ADD TO CART FUNCTION (SINGLE SOURCE OF TRUTH) ==========
 window.addToCart = async function(productId, button = null) {
-  console.log('➕ Adding to cart:', productId);
+  console.log('Adding to cart:', productId);
   
   // If button not provided, try to get it from the event
   if (!button && event) {
@@ -406,7 +410,7 @@ window.addToCart = async function(productId, button = null) {
   
   const product = products.find(p => p.id === productId);
   if (!product) {
-    console.error('❌ Product not found:', productId);
+    console.error('Product not found:', productId);
     return;
   }
 
@@ -423,7 +427,7 @@ window.addToCart = async function(productId, button = null) {
       return;
     }
     existingItem.quantity += 1;
-    console.log('🔄 Updated quantity:', existingItem);
+    console.log('Updated quantity:', existingItem);
   } else {
     const newItem = {
       id: productId,
@@ -434,7 +438,7 @@ window.addToCart = async function(productId, button = null) {
       quantity: 1
     };
     cart.push(newItem);
-    console.log('🆕 New item added:', newItem);
+    console.log('New item added:', newItem);
   }
 
   // Save to localStorage immediately
@@ -466,12 +470,12 @@ window.addToCart = async function(productId, button = null) {
       button.style.background = originalBg;
       button.style.color = originalColor;
       // Open cart after animation
-      console.log('🛒 Opening cart after add');
+      console.log('Opening cart after add');
       openCart();
     }, 500);
   } else {
     // Open cart immediately if button not found
-    console.log('🛒 Opening cart immediately');
+    console.log('Opening cart immediately');
     setTimeout(() => openCart(), 300);
   }
 };
@@ -488,7 +492,7 @@ window.buyNow = function(productId) {
 
 // ========== CART FUNCTIONS ==========
 window.updateQuantity = async function(productId, change) {
-  console.log('🔄 Updating quantity:', productId, change);
+  console.log('Updating quantity:', productId, change);
   
   const itemIndex = cart.findIndex(item => item.id === productId);
   if (itemIndex === -1) return;
@@ -499,13 +503,13 @@ window.updateQuantity = async function(productId, change) {
 
   if (newQuantity <= 0) {
     cart.splice(itemIndex, 1);
-    console.log('🗑️ Item removed');
+    console.log('Item removed');
   } else if (product && newQuantity > product.stock) {
     alert('Sorry, not enough stock available!');
     return;
   } else {
     item.quantity = newQuantity;
-    console.log('✅ Quantity updated to:', newQuantity);
+    console.log('Quantity updated to:', newQuantity);
   }
 
   // Save to localStorage immediately
@@ -519,13 +523,13 @@ window.updateQuantity = async function(productId, change) {
   updateCartCount();
   // Re-render cart items when quantity updates
   if (document.getElementById('cart-modal')?.classList.contains('show')) {
-    console.log('🔄 Re-rendering cart items');
+    console.log('Re-rendering cart items');
     renderCartItems();
   }
 };
 
 window.removeFromCart = async function(productId) {
-  console.log('🗑️ Removing from cart:', productId);
+  console.log('Removing from cart:', productId);
   
   cart = cart.filter(item => item.id !== productId);
   
@@ -540,32 +544,32 @@ window.removeFromCart = async function(productId) {
   updateCartCount();
   // Re-render cart items when item is removed
   if (document.getElementById('cart-modal')?.classList.contains('show')) {
-    console.log('🔄 Re-rendering cart items');
+    console.log('Re-rendering cart items');
     renderCartItems();
   }
 };
 
 function renderCartItems() {
-  console.log('🎨 Rendering cart items. Cart length:', cart.length);
+  console.log('Rendering cart items. Cart length:', cart.length);
   
   const cartItemsContainer = document.getElementById('cart-items');
   const cartItemCount = document.getElementById('cart-item-count');
   const cartTotalAmount = document.getElementById('cart-total-amount');
 
   // Log all cart elements to debug
-  console.log('📝 Cart elements:', {
+  console.log('Cart elements:', {
     container: cartItemsContainer,
     countEl: cartItemCount,
     totalEl: cartTotalAmount
   });
 
   if (!cartItemsContainer) {
-    console.error('❌ Cart items container not found!');
+    console.error('Cart items container not found!');
     return;
   }
 
   if (!cart || cart.length === 0) {
-    console.log('📭 Cart is empty, showing empty message');
+    console.log('Cart is empty, showing empty message');
     cartItemsContainer.innerHTML = `
       <div class="empty-cart-message">
         <i class="fa-regular fa-cart-shopping"></i>
@@ -581,7 +585,7 @@ function renderCartItems() {
   let total = 0;
   let totalItems = 0;
 
-  console.log('📦 Cart items to render:', cart);
+  console.log('Cart items to render:', cart);
 
   const itemsHtml = cart.map(item => {
     const itemTotal = item.price * item.quantity;
@@ -614,12 +618,12 @@ function renderCartItems() {
   }).join('');
 
   cartItemsContainer.innerHTML = itemsHtml;
-  console.log('✅ Cart HTML rendered');
+  console.log('Cart HTML rendered');
 
   if (cartItemCount) cartItemCount.textContent = totalItems;
   if (cartTotalAmount) cartTotalAmount.textContent = `₹${formatPrice(total)}`;
   
-  console.log('💰 Cart totals:', { totalItems, total });
+  console.log('Cart totals:', { totalItems, total });
 }
 
 function updateCartCount() {
@@ -627,100 +631,41 @@ function updateCartCount() {
   if (cartCount) {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = totalItems;
-    console.log('🔢 Cart count updated:', totalItems);
+    console.log('Cart count updated:', totalItems);
   } else {
-    console.warn('⚠️ Cart count element not found');
+    console.warn('Cart count element not found');
   }
 }
 
-// Diagnostic function to check what's happening with the cart
-window.debugCart = function() {
-  console.log('=== CART DIAGNOSTIC ===');
-  console.log('Cart data:', cart);
-  console.log('Cart modal exists:', !!document.getElementById('cart-modal'));
-  console.log('Cart modal class:', document.getElementById('cart-modal')?.className);
-  console.log('Cart items container:', !!document.getElementById('cart-items'));
-  console.log('Cart items HTML:', document.getElementById('cart-items')?.innerHTML);
-  
-  // Force show cart with debug styles
-  const modal = document.getElementById('cart-modal');
-  if (modal) {
-    modal.style.cssText = `
-      display: flex !important;
-      background: rgba(255, 0, 0, 0.3) !important;
-      z-index: 99999 !important;
-    `;
-    modal.classList.add('show');
-    
-    const content = modal.querySelector('.modal-content');
-    if (content) {
-      content.style.cssText = `
-        background: yellow !important;
-        border: 5px solid red !important;
-        transform: scale(1) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-      `;
-    }
-    
-    const cartItems = document.getElementById('cart-items');
-    if (cartItems) {
-      cartItems.style.cssText = `
-        border: 5px solid green !important;
-        background: lightblue !important;
-        min-height: 300px !important;
-      `;
-    }
-  }
-  
-  // Check if any parent is hiding the modal
-  let parent = modal?.parentElement;
-  while (parent) {
-    const style = window.getComputedStyle(parent);
-    if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
-      console.log('⚠️ Hidden parent:', parent, style);
-    }
-    parent = parent.parentElement;
-  }
-};
-
-// Make it available globally
-window.debugCart = debugCart;
-
-// Auto-run debug after 2 seconds when cart is opened
-document.addEventListener('click', function(e) {
-  if (e.target.closest('#cart-icon')) {
-    setTimeout(debugCart, 500);
-  }
-});
-
-console.log('🔧 Debug tools loaded - type debugCart() in console to diagnose');
-
 // ========== MODAL FUNCTIONS ==========
 function openCart() {
-  console.log('🛒 Opening cart modal');
+  console.log('Opening cart modal');
   
   const cartModal = document.getElementById('cart-modal');
   if (cartModal) {
-    console.log('✅ Cart modal found');
+    console.log('Cart modal found');
     // Make sure cart items are rendered before showing modal
     renderCartItems();
+    
+    // Force the modal to be visible
+    cartModal.style.display = 'flex';
     cartModal.classList.add('show');
     document.body.style.overflow = 'hidden';
-    console.log('✅ Cart modal opened');
+    console.log('Cart modal opened');
   } else {
-    console.warn('⚠️ Cart modal not found, attempting to load');
+    console.warn('Cart modal not found, attempting to load');
     // Try to load modals if they're not present
     loadCommonModals().then(() => {
       setTimeout(() => {
         const modal = document.getElementById('cart-modal');
         if (modal) {
-          console.log('✅ Cart modal loaded and opened');
+          console.log('Cart modal loaded and opened');
           renderCartItems();
+          modal.style.display = 'flex';
           modal.classList.add('show');
           document.body.style.overflow = 'hidden';
         } else {
-          console.error('❌ Failed to load cart modal');
+          console.error('Failed to load cart modal');
         }
       }, 100);
     });
@@ -728,27 +673,27 @@ function openCart() {
 }
 
 function openProfile() {
-  console.log('👤 Opening profile modal');
+  console.log('Opening profile modal');
   
   const profileModal = document.getElementById('profile-modal');
   if (profileModal) {
-    console.log('✅ Profile modal found');
+    console.log('Profile modal found');
     renderProfileContent();
     profileModal.classList.add('show');
     document.body.style.overflow = 'hidden';
   } else {
-    console.warn('⚠️ Profile modal not found, attempting to load');
+    console.warn('Profile modal not found, attempting to load');
     // Try to load modals if they're not present
     loadCommonModals().then(() => {
       setTimeout(() => {
         const modal = document.getElementById('profile-modal');
         if (modal) {
-          console.log('✅ Profile modal loaded and opened');
+          console.log('Profile modal loaded and opened');
           renderProfileContent();
           modal.classList.add('show');
           document.body.style.overflow = 'hidden';
         } else {
-          console.error('❌ Failed to load profile modal');
+          console.error('Failed to load profile modal');
         }
       }, 100);
     });
@@ -758,9 +703,10 @@ function openProfile() {
 function closeModal(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) {
+    modal.style.display = '';
     modal.classList.remove('show');
     document.body.style.overflow = '';
-    console.log(`✅ Modal closed: ${modalId}`);
+    console.log('Modal closed:', modalId);
   }
 }
 
@@ -770,36 +716,72 @@ window.closeModal = closeModal;
 
 // ========== LOAD COMMON MODALS ==========
 async function loadCommonModals() {
-  console.log('📥 Loading common modals');
+  console.log('Loading common modals');
   
   try {
     // Check if modals already exist
     if (document.getElementById('cart-modal')) {
-      console.log('✅ Modals already exist');
+      console.log('Modals already exist');
       return;
     }
     
     const response = await fetch('common.html');
     const data = await response.text();
     document.getElementById('common-modals').innerHTML = data;
-    console.log('✅ Modals loaded from common.html');
+    console.log('Modals loaded from common.html');
     
     // Re-setup event listeners for modal buttons
     setTimeout(() => {
       const closeCart = document.getElementById('close-cart');
       if (closeCart) {
-        closeCart.addEventListener('click', () => closeModal('cart-modal'));
+        closeCart.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeModal('cart-modal');
+        });
       }
       
       const closeProfile = document.getElementById('close-profile');
       if (closeProfile) {
-        closeProfile.addEventListener('click', () => closeModal('profile-modal'));
+        closeProfile.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeModal('profile-modal');
+        });
+      }
+
+      const checkoutBtn = document.getElementById('checkout-btn');
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
+          if (!currentUser) {
+            alert('Please login to checkout');
+            closeModal('cart-modal');
+            openProfile();
+            return;
+          }
+          if (cart.length === 0) {
+            alert('Your cart is empty!');
+          } else {
+            saveCartToLocalStorage();
+            if (currentUser) {
+              saveCartToFirebase().then(() => {
+                closeModal('cart-modal');
+                window.location.href = 'checkout.html';
+              }).catch(error => {
+                console.error('Error saving cart before redirect:', error);
+                closeModal('cart-modal');
+                window.location.href = 'checkout.html';
+              });
+            } else {
+              closeModal('cart-modal');
+              window.location.href = 'checkout.html';
+            }
+          }
+        });
       }
       
-      console.log('✅ Modal event listeners setup');
+      console.log('Modal event listeners setup');
     }, 100);
   } catch (error) {
-    console.error('❌ Error loading modals:', error);
+    console.error('Error loading modals:', error);
   }
 }
 
@@ -909,25 +891,25 @@ function updateProfileIcon() {
 // ========== INITIALIZATION ==========
 // Setup cart button listener when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🚀 DOM Content Loaded');
+  console.log('DOM Content Loaded');
   
   // Load modals first
   loadCommonModals().then(() => {
     setupCartButtonListener();
     updateCartCount();
-    console.log('✅ Initialization complete');
+    console.log('Initialization complete');
   });
 });
 
 // Also try to load modals on window load
 window.addEventListener('load', function() {
-  console.log('🌐 Window Loaded');
+  console.log('Window Loaded');
   
   if (!document.getElementById('cart-modal')) {
-    console.log('📥 Loading modals on window load');
+    console.log('Loading modals on window load');
     loadCommonModals();
   }
   
   // Log cart state on load
-  console.log('📦 Current cart on load:', cart);
+  console.log('Current cart on load:', cart);
 });
