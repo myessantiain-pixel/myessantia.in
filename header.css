@@ -1,6 +1,3 @@
-/* ==================== MOBILE MENU - COMPLETELY NEW DESIGN ==================== */
-
-/* Base header styles remain the same */
 .top-bar {
   background: #000;
   color: #f0f0f0;
@@ -163,6 +160,8 @@
   justify-content: center;
 }
 
+/* ==================== SEARCH ICON ==================== */
+
 .search-icon {
   width: 36px;
   height: 36px;
@@ -186,6 +185,8 @@
 .search-icon:hover i {
   color: #d4af37;
 }
+
+/* ==================== PROFILE ICON ==================== */
 
 .profile-icon {
   width: 36px;
@@ -223,6 +224,8 @@
   border: 2px solid #fff;
   border-radius: 50%;
 }
+
+/* ==================== CART ICON ==================== */
 
 .cart-icon {
   display: inline-block;
@@ -311,6 +314,18 @@
   border-color: #d4af37;
 }
 
+.mobile-menu-toggle.active i {
+  transform: rotate(90deg);
+}
+
+/* ==================== MOBILE MENU CONTAINER ==================== */
+
+.mobile-menu-container {
+  position: relative;
+  width: 100%;
+  display: none;
+}
+
 /* ==================== MEDIA QUERIES - DESKTOP ==================== */
 
 @media (min-width: 640px) {
@@ -325,6 +340,10 @@
     display: none !important;
   }
   
+  .mobile-menu-container {
+    display: none !important;
+  }
+  
   .main-header .container {
     position: relative;
   }
@@ -333,10 +352,11 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
   }
 }
 
-/* ==================== BRAND NEW MOBILE MENU - DROPS FROM BEHIND HEADER ==================== */
+/* ==================== MOBILE STYLES (UP TO 768px) ==================== */
 
 @media (max-width: 768px) {
   .main-header .container {
@@ -365,23 +385,24 @@
     order: 3;
   }
 
-  /* Hide desktop navigation */
+  /* Hide desktop navigation on mobile */
   .nav-menu {
-    display: none;
+    display: none !important;
   }
 
-  /* ===== NEW MOBILE MENU CONTAINER ===== */
+  /* Show mobile menu container */
   .mobile-menu-container {
+    display: block;
     position: relative;
     width: 100%;
     order: 4;
     z-index: 90;
   }
 
-  /* The actual dropdown menu that appears from behind */
+  /* Mobile dropdown menu - drops from behind header */
   .mobile-dropdown {
     position: absolute;
-    top: -20px; /* Start from behind the header */
+    top: -20px;
     left: 0;
     width: 100%;
     background: #fff;
@@ -398,7 +419,6 @@
     pointer-events: none;
   }
 
-  /* When menu is open */
   .mobile-dropdown.show {
     transform: translateY(0);
     opacity: 1;
@@ -406,7 +426,7 @@
     pointer-events: all;
   }
 
-  /* Add a slight shadow to create depth - shows it came from behind */
+  /* Gold gradient top border - creates depth effect */
   .mobile-dropdown::before {
     content: '';
     position: absolute;
@@ -418,7 +438,7 @@
     border-radius: 2px 2px 0 0;
   }
 
-  /* Menu header with small logo */
+  /* Mobile menu header */
   .mobile-menu-header {
     display: flex;
     align-items: center;
@@ -461,7 +481,7 @@
     transform: rotate(90deg);
   }
 
-  /* Menu items list */
+  /* Mobile menu items */
   .mobile-menu-items {
     display: flex;
     flex-direction: column;
@@ -483,14 +503,13 @@
     opacity: 1;
   }
 
-  /* Staggered animation */
+  /* Staggered animation for menu items */
   .mobile-dropdown.show .mobile-menu-item:nth-child(1) { transition-delay: 0.05s; }
   .mobile-dropdown.show .mobile-menu-item:nth-child(2) { transition-delay: 0.1s; }
   .mobile-dropdown.show .mobile-menu-item:nth-child(3) { transition-delay: 0.15s; }
   .mobile-dropdown.show .mobile-menu-item:nth-child(4) { transition-delay: 0.2s; }
   .mobile-dropdown.show .mobile-menu-item:nth-child(5) { transition-delay: 0.25s; }
   .mobile-dropdown.show .mobile-menu-item:nth-child(6) { transition-delay: 0.3s; }
-  .mobile-dropdown.show .mobile-menu-item:nth-child(7) { transition-delay: 0.35s; }
 
   .mobile-menu-link {
     display: block;
@@ -523,7 +542,7 @@
     border-color: #d4af37;
   }
 
-  /* Menu footer with additional links */
+  /* Mobile menu footer with social icons */
   .mobile-menu-footer {
     display: flex;
     justify-content: center;
@@ -553,7 +572,7 @@
     transform: translateY(-2px);
   }
 
-  /* Overlay when menu is open */
+  /* Body overlay when menu is open */
   body.menu-open {
     overflow: hidden;
   }
