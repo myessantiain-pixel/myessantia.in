@@ -561,13 +561,6 @@
       </div>
     </section>
 
-    <!-- RESULTS COUNT -->
-    <div class="container">
-      <div class="results-wrapper">
-        <div id="results-count" class="results-count"></div>
-      </div>
-    </div>
-
     <!-- PRODUCT GRID -->
     <div class="container">
       <div id="product-grid-container" class="product-grid">
@@ -596,6 +589,7 @@
   </div>
 
   <script src="common.js"></script>
+  <script src="common.js"></script>
   <script>
     // ===== UTILITY FUNCTIONS =====
     function renderRating(rating) {
@@ -622,6 +616,70 @@
       const btn = document.getElementById('scrollTop');
       if (btn) btn.classList.toggle('visible', window.scrollY > 200);
     }
+
+    // ===== CORRECTED ADD TO CART FUNCTION =====
+    window.addToCart = async function(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      if (product.stock <= 0) {
+        alert('Sorry, this product is out of stock!');
+        return;
+      }
+
+      const existingItem = cart.find(item => item.id === productId);
+
+      if (existingItem) {
+        if (existingItem.quantity >= product.stock) {
+          alert('Sorry, not enough stock available!');
+          return;
+        }
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          id: productId,
+          title: product.title,
+          category: product.category,
+          price: product.price,
+          primaryImg: product.primaryImg || (product.images && product.images[0]),
+          quantity: 1
+        });
+      }
+
+      // Save to Firebase if user is logged in
+      if (currentUser) {
+        await saveCartToFirebase();
+      }
+      
+      updateCartCount();
+      
+      // Show animation on the button and open cart
+      const btn = event?.target?.closest('button');
+      if (btn) {
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+        btn.style.background = '#4CAF50';
+        btn.style.color = 'white';
+        
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+          btn.style.color = '';
+          openCart(); // Open cart after animation
+        }, 500);
+      } else {
+        openCart(); // Open cart immediately if button not found
+      }
+    };
+
+    // ===== MAKE CART FUNCTIONS AVAILABLE GLOBALLY =====
+    window.openCart = openCart;
+    window.updateQuantity = updateQuantity;
+    window.removeFromCart = removeFromCart;
+    window.buyNow = function(productId) {
+      addToCart(productId);
+      openCart();
+    };
 
     // ===== ENQUIRY FUNCTIONS =====
     let enquiries = [];
