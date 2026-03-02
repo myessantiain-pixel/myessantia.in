@@ -78,38 +78,29 @@
 /* MyEssantia Logo - REDESIGNED */
 .logo {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 300;
+  font-weight: 800;
   font-size: 2rem;
   letter-spacing: -0.5px;
-  color: #1a1a1a;
+  color: #161616;
   text-decoration: none;
   line-height: 1.2;
   flex-shrink: 0;
 }
 
-.logo .m,
-.logo .e {
-  font-weight: 700;
+.logo .caps {
+  font-weight: 900;
   text-transform: uppercase;
-  font-size: 2.2rem;
 }
 
 .logo .dot {
   font-family: 'Playfair Display', serif;
-  font-style: italic;
-  font-weight: 700;
-  color: #d4af37;
+  font-weight: 800;
   font-size: 2.4rem;
+  color: #d4af37;
+  font-style: italic;
   display: inline-block;
+  margin: 0 1px 0 -2px;
   transform: rotate(-2deg);
-  margin: 0 -2px 0 -4px;
-}
-
-.logo .essantia {
-  font-weight: 300;
-  text-transform: lowercase;
-  font-size: 1.8rem;
-  letter-spacing: 0px;
 }
 
 /* Mobile Menu Toggle */
@@ -226,7 +217,7 @@
   padding: 2rem;
   width: 90%;
   max-width: 500px;
-  border-radius: 16px;
+  border-radius: 30px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   max-height: 80vh;
   display: flex;
@@ -255,10 +246,11 @@
 }
 
 .modal-header h3 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.25rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #1a1a1a;
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
@@ -283,9 +275,9 @@
   padding-top: 1.5rem;
 }
 
-/* ==================== CART MODAL - SIMPLIFIED ==================== */
+/* ==================== REDESIGNED CART MODAL ==================== */
 .cart-modal-content {
-  max-width: 500px;
+  max-width: 550px;
 }
 
 .cart-items {
@@ -298,60 +290,89 @@
 
 .cart-item {
   display: flex;
-  gap: 1rem;
-  padding: 1rem 0;
+  gap: 1.2rem;
+  padding: 1.2rem 0;
   border-bottom: 1px solid #f0f0f0;
-}
-
-.cart-item:last-child {
-  border-bottom: none;
+  position: relative;
+  align-items: flex-start;
 }
 
 .cart-item-image {
-  width: 70px;
-  height: 70px;
-  border-radius: 8px;
+  width: 90px;
+  height: 90px;
+  border-radius: 12px;
   background-size: cover;
   background-position: center;
   background-color: #f8f8f8;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .cart-item-details {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
+}
+
+.cart-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
 }
 
 .cart-item-title {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
-  font-size: 0.95rem;
+  font-weight: 600;
+  font-size: 1rem;
   color: #1e1e1e;
   margin: 0;
+  max-width: 180px;
 }
 
 .cart-item-price {
-  color: #1a1a1a;
   font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #d4af37;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.cart-item-category {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #a2a2a2;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
 }
 
 .cart-item-actions {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
-  margin-top: 0.25rem;
+  background: #f5f5f5;
+  border-radius: 30px;
+  padding: 0.2rem;
 }
 
 .quantity-btn {
-  background: #f5f5f5;
+  background: white;
   border: none;
   width: 28px;
   height: 28px;
-  border-radius: 6px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -359,20 +380,21 @@
   font-size: 1rem;
   transition: all 0.2s;
   color: #333;
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .quantity-btn:hover {
-  background: #e5e5e5;
+  background: #d4af37;
+  color: white;
 }
 
 .item-quantity {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
+  font-weight: 600;
   min-width: 30px;
   text-align: center;
   color: #1a1a1a;
-  font-size: 0.9rem;
 }
 
 .remove-item {
@@ -380,14 +402,24 @@
   border: none;
   color: #999;
   cursor: pointer;
-  font-size: 1rem;
-  padding: 0.25rem;
-  margin-left: auto;
-  transition: color 0.2s;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  transition: all 0.2s;
 }
 
 .remove-item:hover {
   color: #ff4444;
+  background: #fff5f5;
+}
+
+.remove-item i {
+  font-size: 0.9rem;
 }
 
 .cart-total {
@@ -397,32 +429,51 @@
   font-size: 1.1rem;
   font-weight: 500;
   margin-bottom: 1.5rem;
+  padding: 1rem 0;
   color: #1a1a1a;
   font-family: 'Montserrat', sans-serif;
+  border-top: 2px solid #f5f5f5;
+  border-bottom: 2px solid #f5f5f5;
+}
+
+.cart-total span:first-child {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+  color: #666;
 }
 
 #cart-total-amount {
-  font-weight: 600;
-  color: #1a1a1a;
-  font-size: 1.2rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #d4af37;
 }
 
 .checkout-btn {
   width: 100%;
-  background: #1a1a1a;
-  border: none;
-  color: #fff;
-  font-weight: 500;
+  background: #d4af37;
+  border: 1px solid #d4af37;
+  color: #0c0c0c;
+  font-weight: 700;
   padding: 1rem;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.95rem;
-  transition: all 0.2s;
-  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+  border-radius: 12px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
 }
 
 .checkout-btn:hover {
-  background: #333;
+  background: #c4a030;
+  border-color: #c4a030;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
 }
 
 .empty-cart-message {
@@ -432,7 +483,7 @@
 }
 
 .empty-cart-message i {
-  font-size: 2.5rem;
+  font-size: 3rem;
   margin-bottom: 1rem;
   color: #ddd;
 }
@@ -441,10 +492,9 @@
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   margin: 0;
-  font-size: 0.9rem;
 }
 
-/* ==================== PROFILE MODAL - SIMPLIFIED ==================== */
+/* ==================== REDESIGNED PROFILE MODAL - SIMPLIFIED ==================== */
 .profile-modal-content {
   max-width: 400px;
 }
@@ -455,244 +505,289 @@
   max-height: 60vh;
 }
 
-/* Logged In State */
+/* Logged In State - Simplified */
 .profile-info {
   padding: 0.5rem 0;
 }
 
-.profile-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #f0f0f0;
-  margin-bottom: 1.5rem;
-}
-
 .profile-avatar {
-  width: 48px;
-  height: 48px;
-  background: #f5f5f5;
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #f5f5f5 0%, #eaeaea 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
   color: #1a1a1a;
+  border: 2px solid #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.profile-name {
+.profile-details-simple {
+  background: #ffffff;
+  padding: 1rem 0;
+  margin-bottom: 1.5rem;
+}
+
+.profile-row {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}
+
+.profile-row .label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #888;
+  width: 80px;
+}
+
+.profile-row .value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #1a1a1a;
   flex: 1;
 }
 
-.profile-name h4 {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
-  margin: 0 0 0.25rem 0;
-  color: #1a1a1a;
-}
-
-.profile-name p {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.8rem;
-  color: #666;
-  margin: 0;
-}
-
-.profile-menu {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.5rem 0;
-}
-
-.profile-menu li {
-  margin-bottom: 0.25rem;
-}
-
-.profile-menu a {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  color: #333;
-  text-decoration: none;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.9rem;
-  border-radius: 8px;
-  transition: all 0.2s;
-}
-
-.profile-menu a:hover {
-  background: #f8f8f8;
-}
-
-.profile-menu i {
-  width: 20px;
-  color: #999;
-  font-size: 1rem;
-}
-
-.logout-btn {
+.logout-btn-simple {
   width: 100%;
-  background: none;
-  border: 1px solid #f0f0f0;
-  color: #666;
-  padding: 0.75rem;
-  font-weight: 400;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  color: #1a1a1a;
+  padding: 0.9rem;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.8rem;
   transition: all 0.2s;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.9rem;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
+  font-size: 0.9rem;
 }
 
-.logout-btn:hover {
-  background: #f8f8f8;
-  border-color: #ddd;
-  color: #333;
+.logout-btn-simple:hover {
+  background: #fafafa;
+  border-color: #d4af37;
+  color: #d4af37;
 }
 
-/* Logged Out State - Simplified */
-.login-form {
+.logout-btn-simple i {
+  font-size: 1rem;
+}
+
+/* Logged Out State - Simplified Login */
+.login-form-simple {
   padding: 0.5rem 0;
 }
 
-.login-header {
+.login-header-simple {
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.login-header i {
-  font-size: 2rem;
-  color: #999;
-  margin-bottom: 1rem;
-}
-
-.login-header h4 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 500;
+.login-header-simple i {
+  font-size: 2.5rem;
   color: #1a1a1a;
-  margin-bottom: 0.25rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
 }
 
-.login-header p {
-  color: #999;
-  font-size: 0.8rem;
+.login-header-simple h4 {
   font-family: 'Montserrat', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.3rem;
+}
+
+.login-header-simple p {
+  color: #888;
+  font-size: 0.85rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
   margin: 0;
 }
 
-.form-group {
-  margin-bottom: 1rem;
+.form-group-simple {
+  margin-bottom: 1.2rem;
 }
 
-.form-group input {
+.form-group-simple input {
   width: 100%;
-  padding: 0.875rem 1rem;
+  padding: 1rem;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: 10px;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.9rem;
-  transition: all 0.2s;
+  font-size: 0.95rem;
+  transition: all 0.3s;
   box-sizing: border-box;
+  background: #fafafa;
 }
 
-.form-group input:focus {
+.form-group-simple input:focus {
   outline: none;
   border-color: #1a1a1a;
+  background: #fff;
 }
 
-.form-group input::placeholder {
-  color: #bbb;
+.form-group-simple input::placeholder {
+  color: #aaa;
   font-size: 0.9rem;
   font-weight: 300;
 }
 
-.login-options {
+.login-options-simple {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 1rem 0 1.5rem;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-family: 'Montserrat', sans-serif;
 }
 
-.remember-me {
+.remember-simple {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   color: #666;
 }
 
-.remember-me input[type="checkbox"] {
+.remember-simple input[type="checkbox"] {
   width: 14px;
   height: 14px;
   cursor: pointer;
 }
 
-.forgot-password {
-  color: #999;
-  text-decoration: none;
-  font-size: 0.8rem;
-}
-
-.forgot-password:hover {
+.forgot-simple {
   color: #1a1a1a;
+  text-decoration: none;
+  font-weight: 400;
+  font-size: 0.85rem;
 }
 
-.login-btn {
+.forgot-simple:hover {
+  color: #d4af37;
+}
+
+.login-btn-simple {
   width: 100%;
   background: #1a1a1a;
   border: none;
   color: #fff;
-  padding: 0.875rem;
+  padding: 1rem;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
   transition: all 0.2s;
   margin-bottom: 1.5rem;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.9rem;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
+  font-size: 0.95rem;
 }
 
-.login-btn:hover {
-  background: #333;
+.login-btn-simple:hover {
+  background: #d4af37;
+  color: #1a1a1a;
 }
 
-.login-footer {
+.login-divider-simple {
+  position: relative;
   text-align: center;
+  margin: 1.5rem 0;
+  color: #aaa;
   font-size: 0.8rem;
-  color: #999;
   font-family: 'Montserrat', sans-serif;
 }
 
-.login-footer a {
-  color: #1a1a1a;
-  text-decoration: none;
-  font-weight: 500;
-  margin-left: 0.25rem;
+.login-divider-simple::before,
+.login-divider-simple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background: #eaeaea;
 }
 
-.login-footer a:hover {
-  text-decoration: underline;
+.login-divider-simple::before {
+  left: 0;
+}
+
+.login-divider-simple::after {
+  right: 0;
+}
+
+.social-login-simple {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.social-btn-simple {
+  flex: 1;
+  padding: 0.8rem;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  background: #fafafa;
+  color: #666;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+}
+
+.social-btn-simple:hover {
+  background: #f0f0f0;
+  border-color: #ccc;
+}
+
+.signup-prompt-simple {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #666;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.signup-prompt-simple a {
+  color: #1a1a1a;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.signup-prompt-simple a:hover {
+  color: #d4af37;
 }
 
 .error-message {
-  background: #fef2f2;
-  color: #dc2626;
-  padding: 0.75rem;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  background: #fee;
+  color: #c00;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
   margin-bottom: 1rem;
   display: none;
   font-family: 'Montserrat', sans-serif;
-  border-left: 3px solid #dc2626;
+  font-weight: 500;
+  border-left: 3px solid #c00;
 }
 
 .error-message.show {
@@ -729,40 +824,22 @@
   }
   
   .logo {
-    font-size: 2rem;
-  }
-  
-  .logo .m,
-  .logo .e {
     font-size: 2.2rem;
   }
   
   .logo .dot {
-    font-size: 2.4rem;
-  }
-  
-  .logo .essantia {
-    font-size: 1.8rem;
+    font-size: 2.6rem;
   }
 }
 
 /* Desktop Styles (1024px and up) */
 @media (min-width: 1024px) {
   .logo {
-    font-size: 2.2rem;
-  }
-  
-  .logo .m,
-  .logo .e {
     font-size: 2.4rem;
   }
   
   .logo .dot {
-    font-size: 2.6rem;
-  }
-  
-  .logo .essantia {
-    font-size: 2rem;
+    font-size: 2.8rem;
   }
   
   .nav-link {
@@ -778,21 +855,12 @@
   }
   
   .logo {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     order: 1;
   }
   
-  .logo .m,
-  .logo .e {
-    font-size: 1.7rem;
-  }
-  
   .logo .dot {
-    font-size: 1.9rem;
-  }
-  
-  .logo .essantia {
-    font-size: 1.4rem;
+    font-size: 2.2rem;
   }
   
   .header-icons {
@@ -870,24 +938,62 @@
   }
   
   .cart-item {
-    flex-wrap: wrap;
+    gap: 1rem;
+    flex-wrap: nowrap;
   }
   
   .cart-item-image {
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
+  }
+  
+  .cart-item-header {
+    flex-direction: column;
+    gap: 0.3rem;
   }
   
   .cart-item-title {
     font-size: 0.9rem;
+    max-width: 140px;
   }
   
   .cart-item-price {
-    font-size: 0.95rem;
+    font-size: 1rem;
+  }
+  
+  .cart-item-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+  
+  .quantity-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .remove-item {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .social-login-simple {
+    flex-direction: column;
+    gap: 0.5rem;
   }
   
   .modal-header h3 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+  }
+  
+  .profile-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+  
+  .profile-row .label {
+    width: auto;
   }
 }
 
@@ -906,20 +1012,11 @@
   }
   
   .logo {
-    font-size: 1.3rem;
-  }
-  
-  .logo .m,
-  .logo .e {
     font-size: 1.5rem;
   }
   
   .logo .dot {
-    font-size: 1.7rem;
-  }
-  
-  .logo .essantia {
-    font-size: 1.2rem;
+    font-size: 1.9rem;
   }
   
   .header-icons {
@@ -942,20 +1039,11 @@
     padding: 1rem;
   }
   
-  .profile-header {
-    flex-direction: column;
-    text-align: center;
+  .cart-item-title {
+    max-width: 100px;
   }
   
-  .profile-avatar {
-    margin: 0 auto;
-  }
-  
-  .profile-name {
-    text-align: center;
-  }
-  
-  .login-options {
+  .login-options-simple {
     flex-direction: column;
     gap: 0.5rem;
     align-items: flex-start;
