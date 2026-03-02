@@ -2,32 +2,34 @@
 
 <!-- Cart Modal -->
 <div id="cart-modal" class="modal">
-  <div class="modal-content">
+  <div class="modal-content cart-modal-content">
     <div class="modal-header">
-      <h3>Shopping Cart</h3>
-      <button class="close-modal" id="close-cart">&times;</button>
+      <h3>YOUR <span>CART</span></h3>
+      <button class="close-modal" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div id="cart-items" class="cart-items">
       <!-- Cart items will be rendered here -->
     </div>
     <div class="modal-footer">
       <div class="cart-total">
-        <span>Total:</span>
+        <span>TOTAL:</span>
         <span id="cart-total-amount">₹0.00</span>
       </div>
-      <button class="checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+      <button class="checkout-btn" id="checkout-btn">
+        <i class="fa-solid fa-bolt"></i> PROCEED TO CHECKOUT
+      </button>
     </div>
   </div>
 </div>
 
 <!-- Profile Modal -->
 <div id="profile-modal" class="modal">
-  <div class="modal-content">
+  <div class="modal-content profile-modal-content">
     <div class="modal-header">
-      <h3>My Account</h3>
-      <button class="close-modal" id="close-profile">&times;</button>
+      <h3>MY <span>ACCOUNT</span></h3>
+      <button class="close-modal" id="close-profile"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <div id="profile-content">
+    <div id="profile-content" class="profile-content">
       <!-- Profile content will be rendered here -->
     </div>
   </div>
