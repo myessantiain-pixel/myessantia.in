@@ -206,6 +206,7 @@
       color: inherit;
       border: none;
       cursor: pointer;
+      position: relative;
     }
     .product-card:hover { transform: translateY(-4px); }
 
@@ -221,6 +222,53 @@
       box-shadow: 0 8px 16px -8px rgba(0,0,0,0.15);
     }
 
+    /* High Demand Badge */
+    .high-demand-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #ff6b6b;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.2rem 0.8rem;
+      border-radius: 60px;
+      z-index: 20;
+      letter-spacing: 0.3px;
+      border: 2px solid #000;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-transform: uppercase;
+      animation: pulse 2s infinite;
+    }
+    
+    .high-demand-badge i {
+      color: white;
+      font-size: 0.7rem;
+    }
+    
+    /* Sale badge on price line */
+    .sale-price-badge {
+      background: #d4af37;
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.2rem 0.6rem;
+      border-radius: 60px;
+      border: 1.5px solid #000;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: auto;
+      white-space: nowrap;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
     .primary-img, .secondary-img { 
       position: absolute; inset:0; background-size: cover; background-position: center; 
       transition: opacity 0.3s ease;
@@ -230,6 +278,26 @@
     .image-frame:hover .primary-img { opacity:0; }
     .image-frame:hover .secondary-img { opacity:1; }
     @media (hover:none) { .secondary-img { opacity:0; } }
+
+    /* ===== BADGES ===== */
+    .new-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #000;
+      color: #d4af37;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0.8rem;
+      border-radius: 60px;
+      z-index: 20;
+      letter-spacing: 0.3px;
+      border: 2px solid #d4af37;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-transform: uppercase;
+    }
 
     .product-category {
       font-size: 0.7rem;
@@ -263,10 +331,11 @@
     }
     .product-price-block {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       gap: 8px;
       flex-wrap: wrap;
       margin: 0.4rem 0 0.1rem;
+      width: 100%;
     }
     .current-price { 
       color: #d4af37; 
@@ -280,17 +349,6 @@
       color: #999; 
       font-size: 0.9rem; 
       text-decoration: line-through; 
-    }
-    .sale-badge {
-      background: #d4af37; 
-      color: #000; 
-      font-size: 0.7rem; 
-      font-weight: 800;
-      padding: 0.2rem 0.8rem; 
-      border-radius: 40px; 
-      border: 1px solid #000;
-      display: inline-block;
-      margin-top: 0.2rem;
     }
     .stock-badge { 
       font-size: 0.7rem; 
@@ -402,6 +460,12 @@
         font-size: 2.2rem;
       }
     }
+
+    /* In stock styles */
+    .in-stock { color: #2e7d32; }
+    .low-stock { color: #ed6c02; }
+    .out-of-stock { color: #d32f2f; }
+    .stock-badge i { margin-right: 3px; }
   </style>
 </head>
 <body>
@@ -455,7 +519,7 @@
 
   <script src="common.js"></script>
   <script>
-    // ===== UTILITY FUNCTIONS (from index) =====
+    // ===== UTILITY FUNCTIONS =====
     function renderRating(rating) {
       if (!rating || rating === 0) return '<span>★ 0.0</span>';
       const full = Math.floor(rating);
@@ -481,23 +545,42 @@
       if (btn) btn.classList.toggle('visible', window.scrollY > 200);
     }
 
+    // ===== ADD TEST DATA FUNCTION =====
+    function addTestData() {
+      if (window.products && window.products.length > 0) {
+        window.products.forEach(product => {
+          // Add test oldPrice for SALE badge (remove when you have real data)
+          if (!product.oldPrice) {
+            product.oldPrice = product.price * 1.2; // Add 20% as old price
+          }
+        });
+        console.log('Added test data to products');
+      }
+    }
+
+    // ===== CHECK IF PRODUCT IS NEW (within 24 hours) =====
+    function isNewProduct(product) {
+      if (!product.createdAt) return false;
+      const now = new Date();
+      const creationDate = product.createdAt.toDate ? product.createdAt.toDate() : new Date(product.createdAt);
+      const hoursDiff = (now - creationDate) / (1000 * 60 * 60);
+      return hoursDiff < 24;
+    }
+
     // ===== MAIN RENDERING FUNCTION =====
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
       const sortSelect = document.getElementById('sort-select');
-      const resultsCount = document.getElementById('results-count');
       
       if (!gridContainer) return;
 
+      // Add test data to all products
+      addTestData();
+
       // Filter accessories products
       const accessoriesProducts = (window.products || []).filter(p => 
-        p.showOnAccessories === true && p.category === 'accessories'
+        p.category === 'accessories' || p.showOnAccessories === true
       );
-
-      // Update results count
-      if (resultsCount) {
-        resultsCount.innerHTML = `${accessoriesProducts.length} item${accessoriesProducts.length !== 1 ? 's' : ''}`;
-      }
 
       if (accessoriesProducts.length === 0) {
         gridContainer.innerHTML = `
@@ -532,20 +615,33 @@
       function renderAllProducts() {
         const sortedProducts = getSortedProducts();
         
-        // Update results count
-        if (resultsCount) {
-          resultsCount.innerHTML = `${sortedProducts.length} item${sortedProducts.length !== 1 ? 's' : ''}`;
-        }
-        
         let gridHtml = '';
         sortedProducts.forEach(product => {
           const mainImage = product.images?.[0] || product.primaryImg || 'https://via.placeholder.com/300';
           const secondImage = product.images?.[1] || product.secondaryImg || mainImage;
+          
+          // Check for sale
           const hasSale = product.oldPrice && product.oldPrice > product.price;
           const discount = hasSale ? Math.round(((product.oldPrice - product.price)/product.oldPrice)*100) : 0;
           
+          // Check if high demand
+          const isHighDemand = product.highDemand === true;
+          
+          // Check if new
+          const isNew = isNewProduct(product);
+          
           gridHtml += `
             <div class="product-card" data-product-id="${product.id}">
+              ${isHighDemand ? `
+                <span class="high-demand-badge">
+                  <i class="fa-solid fa-fire"></i> HIGH DEMAND
+                </span>
+              ` : ''}
+              ${isNew ? `
+                <span class="new-badge">
+                  <i class="fa-regular fa-star"></i> NEW
+                </span>
+              ` : ''}
               <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
                 <div class="image-frame">
                   <div class="primary-img" style="background-image: url('${mainImage}');"></div>
@@ -557,8 +653,8 @@
                 <div class="product-price-block">
                   <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
                   ${hasSale ? `<span class="old-price">₹${formatPrice(product.oldPrice)}</span>` : ''}
+                  ${hasSale ? `<span class="sale-price-badge">SALE</span>` : ''}
                 </div>
-                ${hasSale ? `<span class="sale-badge">-${discount}%</span>` : ''}
                 ${getStockStatus(product.stock)}
               </a>
               <button class="card-add-btn" onclick="window.addToCart('${product.id}'); event.stopPropagation();">
@@ -579,70 +675,6 @@
       }
     }
 
-    // ===== CORRECTED ADD TO CART FUNCTION =====
-    window.addToCart = async function(productId) {
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
-
-      if (product.stock <= 0) {
-        alert('Sorry, this product is out of stock!');
-        return;
-      }
-
-      const existingItem = cart.find(item => item.id === productId);
-
-      if (existingItem) {
-        if (existingItem.quantity >= product.stock) {
-          alert('Sorry, not enough stock available!');
-          return;
-        }
-        existingItem.quantity += 1;
-      } else {
-        cart.push({
-          id: productId,
-          title: product.title,
-          category: product.category,
-          price: product.price,
-          primaryImg: product.primaryImg || (product.images && product.images[0]),
-          quantity: 1
-        });
-      }
-
-      // Save to Firebase if user is logged in
-      if (currentUser) {
-        await saveCartToFirebase();
-      }
-      
-      updateCartCount();
-      
-      // Show animation on the button and open cart
-      const btn = event?.target?.closest('button');
-      if (btn) {
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        btn.style.background = '#4CAF50';
-        btn.style.color = 'white';
-        
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.style.background = '';
-          btn.style.color = '';
-          openCart(); // Open cart after animation
-        }, 500);
-      } else {
-        openCart(); // Open cart immediately if button not found
-      }
-    };
-
-    // ===== MAKE CART FUNCTIONS AVAILABLE GLOBALLY =====
-    window.openCart = openCart;
-    window.updateQuantity = updateQuantity;
-    window.removeFromCart = removeFromCart;
-    window.buyNow = function(productId) {
-      addToCart(productId);
-      openCart();
-    };
-
     // ===== INITIALIZATION =====
     document.addEventListener('DOMContentLoaded', () => {
       loadCommonModals();
@@ -654,16 +686,27 @@
         document.querySelectorAll('.nav-link[href="accessories.html"]').forEach(l => l.classList.add('active'));
       }, 200);
 
-      // Render products
-      if (window.products?.length) {
-        renderProducts();
-      } else {
-        const cached = localStorage.getItem('MyEssantia_products');
-        if (cached) {
-          window.products = JSON.parse(cached);
+      // Wait for products to load from common.js
+      const checkProducts = setInterval(() => {
+        if (window.products && window.products.length > 0) {
+          renderProducts();
+          clearInterval(checkProducts);
+        } else {
+          const cached = localStorage.getItem('MyEssantia_products');
+          if (cached) {
+            window.products = JSON.parse(cached);
+            renderProducts();
+            clearInterval(checkProducts);
+          }
+        }
+      }, 100);
+
+      // Refresh new/high demand status every minute
+      setInterval(() => {
+        if (window.products?.length) {
           renderProducts();
         }
-      }
+      }, 60000);
     });
 
     window.addEventListener('load', () => {
