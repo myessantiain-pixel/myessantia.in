@@ -1,8 +1,9 @@
 <!-- ========== COMMON MODALS FOR MYESSANTIA ========== -->
 
-<!-- CART MODAL -->
+<!-- ================= CART MODAL ================= -->
 <div id="cart-modal" class="modal">
   <div class="modal-content cart-modal-content">
+
     <div class="modal-header">
       <h3>YOUR <span>CART</span></h3>
       <button class="close-modal" id="close-cart">
@@ -10,8 +11,12 @@
       </button>
     </div>
 
+    <!-- Cart items injected by JS -->
     <div id="cart-items" class="cart-items">
-      <!-- JS RENDERS HERE -->
+      <div class="empty-cart-message">
+        <i class="fa-solid fa-bag-shopping" style="font-size:2rem; margin-bottom:0.5rem;"></i>
+        <p>Your cart is empty</p>
+      </div>
     </div>
 
     <div class="modal-footer">
@@ -25,12 +30,15 @@
         PROCEED TO CHECKOUT
       </button>
     </div>
+
   </div>
 </div>
 
-<!-- PROFILE MODAL -->
+
+<!-- ================= PROFILE MODAL ================= -->
 <div id="profile-modal" class="modal">
   <div class="modal-content profile-modal-content">
+
     <div class="modal-header">
       <h3>MY <span>ACCOUNT</span></h3>
       <button class="close-modal" id="close-profile">
@@ -38,8 +46,10 @@
       </button>
     </div>
 
+    <!-- Profile content injected by JS -->
     <div id="profile-content" class="profile-content">
-      <!-- JS RENDERS HERE -->
+      <!-- JS renders login or user info here -->
     </div>
+
   </div>
 </div>
