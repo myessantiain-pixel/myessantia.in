@@ -6,12 +6,12 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(10px);
-  z-index: 1000;
+  z-index: 10000; /* Increased z-index */
   transition: all 0.3s ease;
 }
 
 .modal.show {
-  display: flex;
+  display: flex !important; /* Force display */
   justify-content: center;
   align-items: center;
   animation: modalFadeIn 0.3s ease;
@@ -40,8 +40,66 @@
   animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+  z-index: 10001; /* Higher than modal background */
 }
 
+/* DEBUG: Add a visible border to cart items */
+.cart-item {
+  display: flex !important; /* Force display */
+  gap: 1.2rem;
+  padding: 1.2rem;
+  border: 2px solid #000;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+  background: #fff;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  animation: itemFadeIn 0.3s ease;
+  /* DEBUG: Add a bright background temporarily */
+  background-color: #f0f0f0 !important;
+}
+
+/* DEBUG: Make cart items always visible */
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  margin: 1rem 0;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #d4af37 #f0f0f0;
+  min-height: 200px; /* Ensure it has height */
+  border: 1px dashed red; /* DEBUG: Add a border to see the container */
+}
+
+.cart-item-image {
+  width: 90px;
+  height: 90px;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #000;
+  flex-shrink: 0;
+  transition: transform 0.3s;
+  /* DEBUG: Add fallback color if image fails */
+  background-color: #ddd;
+}
+
+.cart-item-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem 0;
+  color: #000;
+}
+
+.cart-item-price {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #d4af37;
+  margin: 0 0 0.8rem 0;
+  letter-spacing: -0.5px;
+}
+
+/* Rest of your existing CSS below */
 .modal-content::before {
   content: '';
   position: absolute;
