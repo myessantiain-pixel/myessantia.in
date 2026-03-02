@@ -218,7 +218,6 @@ function getFallbackFooter() {
   `;
 }
 
-// ========== COMPONENT LOADING ==========
 async function loadComponents() {
   try {
     const headerResponse = await fetch('header.html');
@@ -228,6 +227,19 @@ async function loadComponents() {
     const footerResponse = await fetch('footer.html');
     const footerData = await footerResponse.text();
     document.getElementById('footer').innerHTML = footerData;
+    
+    // Load common modals
+    const commonResponse = await fetch('common.html');
+    const commonData = await commonResponse.text();
+    
+    // Check if there's a container for common modals
+    const commonContainer = document.getElementById('common-modals');
+    if (commonContainer) {
+      commonContainer.innerHTML = commonData;
+    } else {
+      // If no container, append to body
+      document.body.insertAdjacentHTML('beforeend', commonData);
+    }
 
     // Load products after components are loaded
     await loadProducts();
@@ -237,13 +249,64 @@ async function loadComponents() {
         initializeApp();
       }
       setupEventListeners();
-      // Update cart count after components are loaded
+      
+      // Render cart items after modal is loaded
+      if (document.getElementById('cart-items')) {
+        renderCartItems();
+      }
+      
       updateCartCount();
     }, 50);
   } catch (error) {
     console.error('Error loading components:', error);
     document.getElementById('header').innerHTML = getFallbackHeader();
     document.getElementById('footer').innerHTML = getFallbackFooter();
+    
+    // Also add fallback modals if common.html fails to load
+    if (!document.getElementById('cart-modal')) {
+      document.body.insertAdjacentHTML('beforeend', `
+        <!-- ================= CART MODAL ================= -->
+        <div id="cart-modal" class="modal">
+          <div class="modal-content cart-modal-content">
+            <div class="modal-header">
+              <h3>YOUR <span>CART</span></h3>
+              <button class="close-modal" id="close-cart">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div id="cart-items" class="cart-items">
+              <div class="empty-cart-message">
+                <i class="fa-solid fa-bag-shopping" style="font-size:2rem; margin-bottom:0.5rem;"></i>
+                <p>Your cart is empty</p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div class="cart-total">
+                <span>TOTAL:</span>
+                <span id="cart-total-amount">₹0.00</span>
+              </div>
+              <button class="checkout-btn" id="checkout-btn">
+                <i class="fa-solid fa-bolt"></i>
+                PROCEED TO CHECKOUT
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= PROFILE MODAL ================= -->
+        <div id="profile-modal" class="modal">
+          <div class="modal-content profile-modal-content">
+            <div class="modal-header">
+              <h3>MY <span>ACCOUNT</span></h3>
+              <button class="close-modal" id="close-profile">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div id="profile-content" class="profile-content"></div>
+          </div>
+        </div>
+      `);
+    }
     
     // Fallback to cached products
     products = JSON.parse(localStorage.getItem('MyEssantia_products')) || [];
@@ -253,6 +316,12 @@ async function loadComponents() {
         initializeApp();
       }
       setupEventListeners();
+      
+      // Render cart items for fallback modals
+      if (document.getElementById('cart-items')) {
+        renderCartItems();
+      }
+      
       // Update cart count
       updateCartCount();
     }, 50);
