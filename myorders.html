@@ -576,140 +576,6 @@
       display: none !important;
     }
 
-    /* ===== SUPPORT MODAL ===== */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal.show { display: flex; }
-
-    .modal-content {
-      background: #fff;
-      border-radius: 30px;
-      padding: 1.5rem;
-      max-width: 450px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-      border: 2px solid #000;
-      box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
-      position: relative;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.2rem;
-    }
-    .modal-header h3 {
-      font-size: 1.3rem;
-      font-weight: 800;
-      font-family: 'Montserrat', sans-serif;
-      text-transform: uppercase;
-    }
-    .close-modal {
-      background: none;
-      border: 2px solid #000;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .close-modal:hover {
-      background: #000;
-      color: #d4af37;
-      border-color: #d4af37;
-    }
-
-    .support-form {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-    }
-    .support-form .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-    }
-    .support-form .form-group label {
-      font-weight: 600;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-    }
-    .support-form .form-group input,
-    .support-form .form-group textarea {
-      padding: 0.7rem 1rem;
-      border: 2px solid #000;
-      border-radius: 50px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      outline: none;
-      transition: 0.2s;
-    }
-    .support-form .form-group textarea {
-      border-radius: 20px;
-      min-height: 80px;
-      resize: vertical;
-    }
-    .support-form .form-group input:focus,
-    .support-form .form-group textarea:focus {
-      border-color: #d4af37;
-    }
-    .support-form .btn {
-      background: #000;
-      color: #fff;
-      border: 2px solid #000;
-      border-radius: 50px;
-      padding: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: 0.2s;
-      font-size: 0.85rem;
-    }
-    .support-form .btn:hover {
-      background: #d4af37;
-      color: #000;
-      border-color: #d4af37;
-    }
-    .support-form .btn i { color: #d4af37; }
-    .support-form .btn:hover i { color: #000; }
-
-    .auth-success {
-      color: #2e7d32;
-      background: #e8f5e9;
-      padding: 0.7rem;
-      border-radius: 50px;
-      text-align: center;
-      font-weight: 600;
-      border: 2px solid #2e7d32;
-      font-size: 0.85rem;
-    }
-    .auth-error {
-      color: #c62828;
-      background: #ffebee;
-      padding: 0.7rem;
-      border-radius: 50px;
-      text-align: center;
-      font-weight: 600;
-      border: 2px solid #c62828;
-      font-size: 0.85rem;
-    }
-
     /* ===== SCROLL TOP ===== */
     .scroll-top {
       position: fixed; bottom: 15px; right: 15px; 
@@ -821,9 +687,6 @@
         padding: 0.7rem;
         font-size: 0.8rem;
       }
-      .modal-content {
-        padding: 1.2rem;
-      }
     }
 
     .info-note {
@@ -909,37 +772,8 @@
   <!-- Footer -->
   <div id="footer"></div>
 
-  <!-- Common Modals -->
+  <!-- Common Modals (this will contain cart and profile modals) -->
   <div id="common-modals"></div>
-
-  <!-- Support Modal -->
-  <div id="support-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Contact Support</h3>
-        <button class="close-modal" onclick="closeSupportModal()">&times;</button>
-      </div>
-      <div class="support-form">
-        <p style="text-align: center; margin-bottom: 1.5rem; font-weight: 600;">How can we help you today?</p>
-        <div class="form-group">
-          <label for="support-name">Name</label>
-          <input type="text" id="support-name" placeholder="Your name">
-        </div>
-        <div class="form-group">
-          <label for="support-email">Email</label>
-          <input type="email" id="support-email" placeholder="Your email">
-        </div>
-        <div class="form-group">
-          <label for="support-message">Message</label>
-          <textarea id="support-message" rows="4" placeholder="Describe your issue..."></textarea>
-        </div>
-        <button class="btn" onclick="submitSupport()">
-          <i class="fa-regular fa-paper-plane"></i> Send Message
-        </button>
-        <div id="support-message-status" class="auth-message" style="margin-top: 1rem;"></div>
-      </div>
-    </div>
-  </div>
 
   <script src="common.js"></script>
   <script>
@@ -1070,20 +904,6 @@
             orders = [];
           }
         }
-      }
-    }
-
-    async function saveOrderToFirestore(order) {
-      if (!currentUser) return;
-
-      try {
-        await db.collection('orders').add({
-          ...order,
-          userId: currentUser.uid,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      } catch (error) {
-        console.error('Error saving order to Firestore:', error);
       }
     }
 
@@ -1289,7 +1109,6 @@
     }
 
     window.trackShipment = function(trackingNumber, carrier) {
-      // Simulate tracking - in real app, this would link to carrier's tracking page
       alert(`🔍 Tracking ${trackingNumber} with ${carrier}\n\nYour package is in transit and on schedule.`);
     };
 
@@ -1303,105 +1122,43 @@
     }
 
     // ===== SUPPORT FUNCTIONS =====
-    window.showSupportModal = function() {
-      const supportModal = document.getElementById('support-modal');
-      if (supportModal) {
-        supportModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }
-    };
-
-    window.closeSupportModal = function() {
-      const supportModal = document.getElementById('support-modal');
-      if (supportModal) {
-        supportModal.classList.remove('show');
-        document.body.style.overflow = '';
-      }
-    };
-
-    window.submitSupport = async function() {
-      const name = document.getElementById('support-name')?.value;
-      const email = document.getElementById('support-email')?.value;
-      const message = document.getElementById('support-message')?.value;
-      const statusDiv = document.getElementById('support-message-status');
-
-      if (!name || !email || !message) {
-        if (statusDiv) {
-          statusDiv.className = 'auth-error';
-          statusDiv.textContent = 'Please fill in all fields';
-        }
-        return;
-      }
-
-      // Save support request to Firebase if user is logged in
-      if (currentUser) {
-        try {
-          await db.collection('support').add({
-            name,
-            email,
-            message,
-            userId: currentUser.uid,
-            status: 'pending',
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        } catch (error) {
-          console.error('Error saving support request:', error);
-        }
-      }
-
-      if (statusDiv) {
-        statusDiv.className = 'auth-success';
-        statusDiv.textContent = 'Support request sent! We\'ll respond within 24 hours.';
-      }
-
-      // Clear form
-      document.getElementById('support-message').value = '';
-
-      // Close modal after 2 seconds
-      setTimeout(() => {
-        closeSupportModal();
-      }, 2000);
+    window.showSupportModal = function(e) {
+      if (e) e.preventDefault();
+      // Use the existing modal from common.js or create a simple alert
+      alert('Please contact support at support@myessantia.com or call +1 (555) 123-4567');
     };
 
     // ===== INITIALIZATION =====
-    document.addEventListener('DOMContentLoaded', () => {
-      loadCommonModals();
-      if (typeof loadComponents === 'function') loadComponents();
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadCommonModals();
+      if (typeof window.loadComponents === 'function') {
+        await window.loadComponents();
+      }
       
-    // Set active nav - highlight My Orders menu
-setTimeout(() => {
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  document.querySelectorAll('.nav-link[href="myorders.html"]').forEach(l => l.classList.add('active'));
-  
-  // Also handle mobile menu if needed
-  document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
-  document.querySelectorAll('.mobile-menu-link[href="myorders.html"]').forEach(l => l.classList.add('active'));
-}, 200);
+      // Set active nav
+      setTimeout(() => {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.nav-link[href="track-order.html"]').forEach(l => l.classList.add('active'));
+        
+        document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.mobile-menu-link[href="track-order.html"]').forEach(l => l.classList.add('active'));
+      }, 200);
 
       // Initialize order tracking
       initializeOrderTracking();
-
-      // Setup support modal listeners
-      window.addEventListener('click', function(e) {
-        const supportModal = document.getElementById('support-modal');
-        if (e.target === supportModal) {
-          closeSupportModal();
-        }
-      });
-
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          closeSupportModal();
-        }
-      });
     });
 
     async function loadCommonModals() {
       try {
-        const res = await fetch('common.html');
-        const data = await res.text();
-        document.getElementById('common-modals').innerHTML = data;
-      } catch (e) { console.warn('modals not loaded'); }
+        // Check if modals already exist
+        if (!document.getElementById('cart-modal')) {
+          const res = await fetch('common.html');
+          const data = await res.text();
+          document.getElementById('common-modals').innerHTML = data;
+        }
+      } catch (e) { 
+        console.warn('modals not loaded'); 
+      }
     }
 
     window.addEventListener('scroll', handleScroll);
@@ -1421,13 +1178,25 @@ setTimeout(() => {
         loadUserOrdersFromFirestore();
       } else {
         hideRecentOrders();
-        // Load guest orders from localStorage
         const storedOrders = localStorage.getItem('MyEssantia_orders');
         if (storedOrders) {
           try {
             orders = JSON.parse(storedOrders);
           } catch (e) {
             orders = [];
+          }
+        }
+      }
+    });
+
+    // Clean up any duplicate event listeners on load
+    window.addEventListener('load', function() {
+      const cartModal = document.getElementById('cart-modal');
+      if (cartModal) {
+        const closeButtons = cartModal.querySelectorAll('[onclick*="closeModal"]');
+        if (closeButtons.length > 1) {
+          for (let i = 1; i < closeButtons.length; i++) {
+            closeButtons[i].remove();
           }
         }
       }
