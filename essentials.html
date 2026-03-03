@@ -538,13 +538,18 @@
       if (!window.products) window.products = [];
       addTestData();
 
-      // Filter essentials products
-   const essentialsProducts = (window.products || []).filter(p => 
-  p.category === 'essentials' || 
-  p.category?.toLowerCase() === 'essentials' ||
-  p.showOnEssentials === true
-);
-
+const essentialsProducts = (window.products || []).filter(p => {
+  // Show if category is 'essentials' (case-insensitive)
+  const categoryMatch = p.category && 
+    p.category.toLowerCase() === 'essentials';
+  
+  // OR if explicitly marked to show on essentials page
+  const pageMatch = p.showOnEssentials === true;
+  
+  // Show if either condition is true
+  return categoryMatch || pageMatch;
+});
+      
       if (essentialsProducts.length === 0) {
         gridContainer.innerHTML = `
           <div class="empty-state">
