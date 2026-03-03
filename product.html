@@ -1478,50 +1478,73 @@
               </div>
             </div>
 
-            <div class="feature-razor-card">
-              <!-- Razorpay popup card (square, appears above guarantee) -->
-              <div id="razorpayPopup" class="razorpay-popup">
-                <div class="popup-close" onclick="toggleRazorpayPopup()">✕</div>
-                <div class="popup-title">
-                  <i class="fa-solid fa-shield-halved"></i> Razorpay Guarantee
-                </div>
-                <div class="popup-desc">
-                  Your payment is 100% secure with Razorpay. We promise:
-                </div>
-                <ul class="popup-bullets">
-                  <li><i class="fa-solid fa-circle-check"></i> Full refund if item not delivered</li>
-                  <li><i class="fa-solid fa-circle-check"></i> Replacement for defective items</li>
-                  <li><i class="fa-solid fa-circle-check"></i> 30 days buyer protection</li>
-                  <li><i class="fa-solid fa-circle-check"></i> No hidden charges</li>
-                </ul>
-              </div>
-
-              <!-- Razorpay Promise clickable -->
-              <div class="razorpay-promise" onclick="toggleRazorpayPopup()">
-                <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
-                <div class="promise-content">
-                  <h4>Razorpay Money Back Promise</h4>
-                  <p>Click to view full guarantee</p>
-                </div>
-              </div>
-              
-              <div class="features-grid">
-                <div class="feature-item">
-                  <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
-                  <div class="feature-text">
-                    <h4>Free Shipping</h4>
-                    <p>Above ₹1,299</p>
-                  </div>
-                </div>
-                <div class="feature-item">
-                  <div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div>
-                  <div class="feature-text">
-                    <h4>Easy Returns</h4>
-                    <p>48 hours</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div class="feature-razor-card">
+  <!-- Razorpay popup card (square, appears above guarantee) -->
+  <div id="razorpayPopup" class="razorpay-popup">
+    <div class="popup-close" onclick="toggleRazorpayPopup()">✕</div>
+    <div class="popup-title">
+      <i class="fa-solid fa-shield-halved"></i> Razorpay Money Back Promise
+    </div>
+    <div class="popup-desc" style="font-weight: 600; margin-bottom: 12px;">
+      Your purchase from MyEssantia is protected by Razorpay Money Back Promise
+    </div>
+    <p style="font-size: 0.85rem; margin-bottom: 16px; line-height: 1.5;">
+      If your order is incorrect, damaged, or not delivered, you'll be eligible for full refund at no additional cost from Razorpay. Valid only on Prepaid orders above ₹200.
+    </p>
+    
+    <div style="background: #f5f5f5; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #000;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+        <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
+        <span style="font-weight: 700; font-size: 0.9rem;">100% refund</span>
+        <span style="font-size: 0.8rem; color: #555;">on non-delivery or damaged / defective items</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
+        <span style="font-weight: 700; font-size: 0.9rem;">100% free</span>
+        <span style="font-size: 0.8rem; color: #555;">with no hidden costs</span>
+      </div>
+    </div>
+    
+    <p style="font-size: 0.8rem; margin-bottom: 16px; font-style: italic;">
+      Razorpay offers Money Back Promise only on select businesses that pass detailed background checks.
+    </p>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+      <button onclick="toggleRazorpayPopup()" style="background: #000; color: #d4af37; border: 2px solid #d4af37; padding: 8px 20px; border-radius: 40px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">
+        Yes, got it
+      </button>
+      <a href="razorpay-terms.html" style="color: #d4af37; font-weight: 600; font-size: 0.75rem; text-decoration: underline; cursor: pointer;">
+        To read detailed terms and conditions, click here.
+      </a>
+    </div>
+  </div>
+  
+  <!-- Razorpay Promise clickable -->
+  <div class="razorpay-promise" onclick="toggleRazorpayPopup()">
+    <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
+    <div class="promise-content">
+      <h4>Razorpay Money Back Promise</h4>
+      <p>Click to view full guarantee</p>
+    </div>
+  </div>
+  
+  <div class="features-grid">
+    <div class="feature-item">
+      <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
+      <div class="feature-text">
+        <h4>Free Shipping</h4>
+        <p>Above ₹1,299</p>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div>
+      <div class="feature-text">
+        <h4>Easy Returns</h4>
+        <p>48 hours</p>
+      </div>
+    </div>
+  </div>
+</div>
 
             <!-- ACTION BUTTONS -->
             <div class="action-buttons">
