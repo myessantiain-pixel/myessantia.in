@@ -37,9 +37,22 @@
       display: flex;
       flex-direction: column;
     }
-    .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 30px; }
-    @media (min-width: 1600px) { .container { max-width: 1600px; padding: 0 40px; } }
-    @media (min-width: 640px) { .container { padding: 0 32px; } }
+    .container { 
+      width: 100%; 
+      max-width: 1400px; 
+      margin: 0 auto; 
+      padding: 0 20px; 
+    }
+    @media (min-width: 640px) { 
+      .container { 
+        padding: 0 30px; 
+      } 
+    }
+    @media (min-width: 1200px) { 
+      .container { 
+        padding: 0 40px; 
+      } 
+    }
 
     /* ===== ACTIVE NAV ===== */
     .nav-link.active { color: #d4af37 !important; font-weight: 700; position: relative; }
@@ -181,12 +194,18 @@
       text-transform: none;
     }
 
+    /* Hidden category filter (for JS) */
+    #category-filter {
+      display: none;
+    }
+
     /* ===== CATEGORY CHIPS ===== */
     .category-chips {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.75rem;
       flex-wrap: wrap;
       margin-bottom: 2rem;
+      justify-content: flex-start;
     }
 
     .category-chip {
@@ -199,6 +218,7 @@
       font-size: 0.85rem;
       font-weight: 600;
       text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     .category-chip:hover {
@@ -213,17 +233,40 @@
       border-color: #d4af37;
     }
 
-    /* ===== PRODUCT GRID - MATCHING ACCESSORIES PAGE ===== */
+    /* ===== PRODUCT GRID - IMPROVED SPACING ===== */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1.2rem;
+      gap: 1.5rem;
       margin: 2rem 0 4rem;
     }
-    @media (min-width: 600px) { .product-grid { gap: 1.8rem; } }
-    @media (min-width: 800px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (min-width: 1100px) { .product-grid { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
-    @media (min-width: 1400px) { .product-grid { grid-template-columns: repeat(5, 1fr); gap: 2rem; } }
+    
+    @media (min-width: 600px) { 
+      .product-grid { 
+        gap: 1.8rem; 
+      } 
+    }
+    
+    @media (min-width: 800px) { 
+      .product-grid { 
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+      } 
+    }
+    
+    @media (min-width: 1100px) { 
+      .product-grid { 
+        grid-template-columns: repeat(4, 1fr); 
+        gap: 2.2rem; 
+      } 
+    }
+    
+    @media (min-width: 1400px) { 
+      .product-grid { 
+        grid-template-columns: repeat(5, 1fr); 
+        gap: 2.5rem; 
+      } 
+    }
 
     .product-card {
       background: transparent;
@@ -237,6 +280,7 @@
       border: none;
       cursor: pointer;
       position: relative;
+      width: 100%;
     }
     .product-card:hover { transform: translateY(-4px); }
 
@@ -244,7 +288,7 @@
       position: relative;
       width: 100%;
       aspect-ratio: 1/1;
-      border-radius: 20px;
+      border-radius: 16px;
       overflow: hidden;
       margin-bottom: 0.8rem;
       background: #f8f6f2;
@@ -286,13 +330,13 @@
     /* Sale badge positioned top right on image - matching accessories page */
     .sale-badge-image {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 8px;
+      right: 8px;
       background: #d4af37;
       color: #000;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 800;
-      padding: 0.25rem 0.8rem;
+      padding: 0.2rem 0.7rem;
       border-radius: 60px;
       border: 2px solid #000;
       text-transform: uppercase;
@@ -327,13 +371,13 @@
 
     .new-badge {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 8px;
+      left: 8px;
       background: #000;
       color: #d4af37;
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       font-weight: 700;
-      padding: 0.2rem 0.8rem;
+      padding: 0.2rem 0.7rem;
       border-radius: 60px;
       z-index: 20;
       letter-spacing: 0.3px;
@@ -346,16 +390,17 @@
     }
 
     .product-category {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: #666;
       text-transform: uppercase;
       font-weight: 600;
       letter-spacing: 0.5px;
+      margin-bottom: 0.1rem;
     }
     .product-title { 
       font-weight: 800;
-      font-size: 1rem;
-      margin: 0.2rem 0;
+      font-size: 0.95rem;
+      margin: 0.1rem 0 0.2rem;
       color: #000;
       line-height: 1.3;
       text-transform: uppercase;
@@ -366,34 +411,35 @@
       display: flex;
       align-items: center;
       gap: 2px;
-      margin: 0.2rem 0;
-      font-size: 0.8rem;
+      margin: 0.1rem 0;
+      font-size: 0.75rem;
     }
-    .product-rating i { color: #d4af37; }
+    .product-rating i { color: #d4af37; font-size: 0.7rem; }
     .product-rating span {
       margin-left: 4px;
       color: #666;
       font-weight: 600;
+      font-size: 0.7rem;
     }
     .product-price-block {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
-      margin: 0.4rem 0 0.1rem;
+      margin: 0.2rem 0 0.1rem;
       width: 100%;
     }
     .current-price { 
       color: #d4af37; 
       font-weight: 800; 
-      font-size: 1.4rem; 
+      font-size: 1.2rem; 
     }
     .current-price .inr-symbol { 
-      font-size: 1rem; 
+      font-size: 0.9rem; 
     }
     .old-price { 
       color: #999; 
-      font-size: 0.9rem; 
+      font-size: 0.8rem; 
       text-decoration: line-through; 
     }
     .card-add-btn {
@@ -404,18 +450,18 @@
       background: #000; 
       border: 2px solid #000; 
       border-radius: 60px;
-      padding: 0.7rem 0.3rem; 
-      font-size: 0.85rem; 
+      padding: 0.6rem 0.3rem; 
+      font-size: 0.8rem; 
       font-weight: 600; 
       color: #fff;
       cursor: pointer; 
       width: 100%; 
       margin: 0.5rem 0 0; 
-      min-height: 44px;
+      min-height: 40px;
       transition: all 0.15s; 
       text-transform: uppercase;
     }
-    .card-add-btn i { color: #d4af37; transition: color 0.15s; }
+    .card-add-btn i { color: #d4af37; transition: color 0.15s; font-size: 0.8rem; }
     .card-add-btn:hover { background: #d4af37; color: #000; border-color: #d4af37; }
     .card-add-btn:hover i { color: #000; }
     
@@ -428,15 +474,6 @@
     }
     .card-add-btn.added i {
       color: white;
-    }
-
-    /* ===== RESULTS COUNT ===== */
-    .results-count {
-      color: #666;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-top: 0.5rem;
-      text-align: right;
     }
 
     /* ===== EMPTY STATE ===== */
@@ -468,11 +505,11 @@
     /* ===== SCROLL TOP ===== */
     .scroll-top {
       position: fixed; bottom: 20px; right: 20px; 
-      background: #000; color: #d4af37; width: 52px; height: 52px; border-radius: 50%;
+      background: #000; color: #d4af37; width: 48px; height: 48px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center; 
       border: 2px solid #d4af37; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
       opacity: 0; transform: translateY(15px); transition: 0.2s; z-index: 100;
-      font-size: 1.4rem; cursor: pointer;
+      font-size: 1.2rem; cursor: pointer;
     }
     .scroll-top.visible { opacity: 1; transform: translateY(0); }
     .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
@@ -508,9 +545,6 @@
       }
       .filter-select input { 
         width: 100%; 
-      }
-      .results-count {
-        text-align: center;
       }
       
       /* Align buttons on same line for mobile */
@@ -564,29 +598,29 @@
     </section>
 
     <!-- FILTER BAR -->
-  <div class="container">
-  <div class="filter-bar">
-    
-    <div class="filter-group">
-      <div class="filter-select">
-        <i class="fa-solid fa-arrow-down-wide-short"></i>
-        <select id="sort-filter">
-          <option value="default">Sort: Featured</option>
-          <option value="price-low">Price: Low to High</option>
-          <option value="price-high">Price: High to Low</option>
-          <option value="rating">Top Rated</option>
-          <option value="newest">Newest First</option>
-        </select>
+    <div class="container">
+      <div class="filter-bar">
+        <div class="filter-group">
+          <div class="filter-select">
+            <i class="fa-solid fa-arrow-down-wide-short"></i>
+            <select id="sort-filter">
+              <option value="default">Sort: Featured</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+              <option value="newest">Newest First</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-select">
+          <i class="fa-solid fa-search"></i>
+          <input type="text" id="search-input" placeholder="Search products..." autocomplete="off">
+        </div>
       </div>
-    </div>
 
-    <div class="filter-select">
-      <i class="fa-solid fa-search"></i>
-      <input type="text" id="search-input" placeholder="Search products..." autocomplete="off">
-    </div>
-
-  </div>
-</div>
+      <!-- Hidden category filter input -->
+      <input type="hidden" id="category-filter" value="all">
 
       <!-- CATEGORY CHIPS -->
       <div id="category-chips" class="category-chips">
@@ -595,9 +629,6 @@
         <span class="category-chip" data-category="essentials">Essentials</span>
         <span class="category-chip" data-category="newarrival">New Arrivals</span>
       </div>
-
-      <!-- RESULTS COUNT -->
-      <div id="results-count" class="results-count"></div>
       
       <!-- PRODUCT GRID -->
       <div id="product-grid" class="product-grid"></div>
@@ -660,28 +691,27 @@
       
       chips.forEach(chip => {
         chip.addEventListener('click', function() {
+          // Remove active class from all chips
           chips.forEach(c => c.classList.remove('active'));
+          
+          // Add active class to clicked chip
           this.classList.add('active');
           
+          // Update hidden category filter
           const category = this.dataset.category;
-          categoryFilter.value = category;
+          if (categoryFilter) {
+            categoryFilter.value = category;
+          }
           
+          // Re-render products
           renderProducts();
         });
       });
 
-      if (categoryFilter) {
-        categoryFilter.addEventListener('change', function() {
-          const category = this.value;
-          chips.forEach(chip => {
-            if (chip.dataset.category === category) {
-              chip.classList.add('active');
-            } else {
-              chip.classList.remove('active');
-            }
-          });
-          renderProducts();
-        });
+      // Initial active state
+      const activeChip = document.querySelector('.category-chip.active');
+      if (activeChip && categoryFilter) {
+        categoryFilter.value = activeChip.dataset.category;
       }
     }
 
@@ -691,7 +721,6 @@
       const categoryFilter = document.getElementById('category-filter')?.value || 'all';
       const sortFilter = document.getElementById('sort-filter')?.value || 'default';
       const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
-      const resultsCount = document.getElementById('results-count');
 
       if (!grid || !window.products) return;
 
@@ -703,6 +732,7 @@
       });
 
       let filteredProducts = window.products.filter(product => {
+        // Category filter
         if (categoryFilter !== 'all') {
           if (categoryFilter === 'accessories' && product.category !== 'accessories') return false;
           if (categoryFilter === 'essentials' && product.category !== 'essentials') return false;
@@ -712,6 +742,7 @@
           }
         }
 
+        // Search filter
         if (searchTerm) {
           const searchable = `${product.title} ${product.category} ${product.brand || ''}`.toLowerCase();
           if (!searchable.includes(searchTerm)) return false;
@@ -720,6 +751,7 @@
         return true;
       });
 
+      // Sorting
       switch(sortFilter) {
         case 'price-low':
           filteredProducts.sort((a, b) => (a.price || 0) - (b.price || 0));
@@ -781,17 +813,13 @@
                 ${hasSale ? `<span class="old-price">₹${formatPrice(product.oldPrice)}</span>` : ''}
                 <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
               </div>
+            </a>
             <button class="card-add-btn" onclick="handleProductAdd('${product.id}', this); event.stopPropagation();">
               <i class="fa-solid fa-cart-plus"></i> add
             </button>
           </div>
         `;
       }).join('');
-      
-      // Update results count
-      if (resultsCount) {
-        resultsCount.textContent = `Showing ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''}`;
-      }
     }
 
     // Handle add to cart with button feedback
@@ -880,8 +908,12 @@
       } else {
         const cached = localStorage.getItem('MyEssantia_products');
         if (cached) {
-          window.products = JSON.parse(cached);
-          renderProducts();
+          try {
+            window.products = JSON.parse(cached);
+            renderProducts();
+          } catch (e) {
+            console.error('Error parsing cached products:', e);
+          }
         }
       }
 
@@ -897,8 +929,12 @@
       if (!window.products?.length) {
         const cached = localStorage.getItem('MyEssantia_products');
         if (cached) { 
-          window.products = JSON.parse(cached); 
-          renderProducts();
+          try {
+            window.products = JSON.parse(cached); 
+            renderProducts();
+          } catch (e) {
+            console.error('Error parsing cached products:', e);
+          }
         }
       }
       
