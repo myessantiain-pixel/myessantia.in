@@ -87,7 +87,7 @@
     .thumbnail:hover { border-color: #d4af37; transform: translateY(-2px) scale(0.98); }
     .thumbnail.active { border-color: #d4af37; border-width: 3px; }
 
-    /* Rating Chart Styles – will be repositioned for mobile via JS */
+    /* Rating Chart Styles */
     .rating-chart-card {
       background: #ffffff;
       border-radius: 16px;
@@ -298,7 +298,7 @@
       animation: pulse 1.5s infinite;
     }
 
-    /* ========== PREPAID & COD BUTTONS – PERMANENT FILL ========== */
+    /* ========== PREPAID & COD BUTTONS ========== */
     .price-options {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -754,7 +754,7 @@
     .promise-content h4 { font-size: 0.85rem; font-weight: 800; color: #d4af37; margin-bottom: 2px; }
     .promise-content p { font-size: 0.7rem; color: #eee; }
 
-    /* New Razorpay popup card – appears above the guarantee bar */
+    /* Razorpay popup card – appears above the guarantee bar */
     .razorpay-popup {
       display: none;
       background: #fff9e6;
@@ -1616,7 +1616,7 @@
       }, 3000);
     }
 
-    // Override addToCart and buyNow for high demand products
+    // USE THE GLOBAL addToCart FUNCTION FROM common.js
     window.addToCart = function() {
       if (!currentProduct) return;
       
@@ -1626,52 +1626,57 @@
         return;
       }
       
-      // Normal add to cart flow
-      const quantity = parseInt(document.getElementById('productQuantity').value) || 1;
-      const product = currentProduct;
-      
-      if (product.stock <= 0) {
-        showNotification('Sorry, this product is out of stock!');
-        return;
-      }
+      // Call the global addToCart function from common.js
+      if (typeof window.addToCartGlobal === 'function') {
+        window.addToCartGlobal(currentProduct.id);
+      } else {
+        // Fallback if global function isn't available
+        const quantity = parseInt(document.getElementById('productQuantity').value) || 1;
+        
+        if (currentProduct.stock <= 0) {
+          showNotification('Sorry, this product is out of stock!');
+          return;
+        }
 
-      if (quantity > product.stock) {
-        showNotification(`Only ${product.stock} items available!`);
-        return;
-      }
+        if (quantity > currentProduct.stock) {
+          showNotification(`Only ${currentProduct.stock} items available!`);
+          return;
+        }
 
-      if (window.cart && Array.isArray(window.cart)) {
-        const existingItem = window.cart.find(item => item.id === product.id);
-        
-        if (existingItem) {
-          existingItem.quantity += quantity;
-        } else {
-          window.cart.push({
-            id: product.id,
-            title: product.title,
-            category: product.category || 'accessory',
-            price: product.price,
-            primaryImg: product.primaryImg || (product.images && product.images[0]) || (product.media?.images && product.media.images[0]?.url),
-            quantity: quantity
-          });
+        if (window.cart && Array.isArray(window.cart)) {
+          const existingItem = window.cart.find(item => item.id === currentProduct.id);
+          
+          if (existingItem) {
+            existingItem.quantity += quantity;
+          } else {
+            window.cart.push({
+              id: currentProduct.id,
+              title: currentProduct.title,
+              category: currentProduct.category || 'accessory',
+              price: currentProduct.price,
+              primaryImg: currentProduct.primaryImg || (currentProduct.images && currentProduct.images[0]) || (currentProduct.media?.images && currentProduct.media.images[0]?.url),
+              quantity: quantity
+            });
+          }
+          
+          localStorage.setItem('MyEssantia_cart', JSON.stringify(window.cart));
+          
+          if (typeof window.updateCartCount === 'function') {
+            window.updateCartCount();
+          }
         }
         
-        localStorage.setItem('MyEssantia_cart', JSON.stringify(window.cart));
+        showNotification(`Added ${quantity} item${quantity > 1 ? 's' : ''} to cart!`);
         
-        if (typeof window.updateCartCount === 'function') {
-          window.updateCartCount();
-        }
+        setTimeout(() => {
+          if (typeof window.openCart === 'function') {
+            window.openCart();
+          }
+        }, 500);
       }
-      
-      showNotification(`Added ${quantity} item${quantity > 1 ? 's' : ''} to cart!`);
-      
-      setTimeout(() => {
-        if (typeof window.openCart === 'function') {
-          window.openCart();
-        }
-      }, 500);
     };
 
+    // USE THE GLOBAL buyNow FUNCTION FROM common.js
     window.buyNow = function() {
       if (!currentProduct) return;
       
@@ -1681,11 +1686,16 @@
         return;
       }
       
-      // Normal buy now flow
-      addToCart();
-      setTimeout(() => {
-        window.location.href = 'checkout.html';
-      }, 500);
+      // Call the global buyNow function from common.js
+      if (typeof window.buyNowGlobal === 'function') {
+        window.buyNowGlobal(currentProduct.id);
+      } else {
+        // Fallback
+        window.addToCart();
+        setTimeout(() => {
+          window.location.href = 'checkout.html';
+        }, 500);
+      }
     };
 
     function updateButtonStates() {
@@ -1904,28 +1914,28 @@
               </div>
             </div>
 
-       <div class="delivery-card">
-  <div class="delivery-header">
-    <span class="delivery-title"><i class="fa-solid fa-truck"></i> Free Delivery</span>
-    <span class="delivery-min">Min. ₹1,299</span>
-  </div>
-  <div class="progress-bar">
-    <div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div>
-  </div>
-  <div class="delivery-message" id="deliveryMessage">
-    <i class="fa-solid ${product.price >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:#d4af37;"></i>
-    <span id="deliveryText">${product.price >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - product.price).toFixed(2)}</span> more`}</span>
-  </div>
-  <div class="delivery-eta" style="display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ccc;">
-    <div style="background: #d4af37; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #000; flex-shrink: 0;">
-      <i class="fa-regular fa-calendar-check" style="color: #000; font-size: 1rem;"></i>
-    </div>
-    <div>
-      <div style="font-weight: 800; font-size: 0.85rem; color: #000;">Delivery by</div>
-      <div style="font-size: 0.9rem; color: #000; font-weight: 700;" id="deliveryDates">${getDeliveryDates().display}</div>
-    </div>
-  </div>
-</div>
+            <div class="delivery-card">
+              <div class="delivery-header">
+                <span class="delivery-title"><i class="fa-solid fa-truck"></i> Free Delivery</span>
+                <span class="delivery-min">Min. ₹1,299</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div>
+              </div>
+              <div class="delivery-message" id="deliveryMessage">
+                <i class="fa-solid ${product.price >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:#d4af37;"></i>
+                <span id="deliveryText">${product.price >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - product.price).toFixed(2)}</span> more`}</span>
+              </div>
+              <div class="delivery-eta" style="display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ccc;">
+                <div style="background: #d4af37; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #000; flex-shrink: 0;">
+                  <i class="fa-regular fa-calendar-check" style="color: #000; font-size: 1rem;"></i>
+                </div>
+                <div>
+                  <div style="font-weight: 800; font-size: 0.85rem; color: #000;">Delivery by</div>
+                  <div style="font-size: 0.9rem; color: #000; font-weight: 700;" id="deliveryDates">${getDeliveryDates().display}</div>
+                </div>
+              </div>
+            </div>
 
             <div class="feature-razor-card">
               <!-- Razorpay popup card (square, appears above guarantee) -->
@@ -1994,7 +2004,6 @@
                 </div>
               </div>
             </div>
-
 
             <!-- ACTION BUTTONS -->
             <div class="action-buttons">
@@ -2218,30 +2227,23 @@
       };
     }
 
-    function loadComponents() { 
-      if (!document.getElementById('header').innerHTML) {
-        fetch('header.html')
-          .then(r => r.text())
-          .then(d => document.getElementById('header').innerHTML = d)
-          .catch(() => console.log('Header not loaded'));
-      }
-      
-      if (!document.getElementById('footer').innerHTML) {
-        fetch('footer.html')
-          .then(r => r.text())
-          .then(d => document.getElementById('footer').innerHTML = d)
-          .catch(() => console.log('Footer not loaded'));
-      }
-    }
+    // REMOVED THE DUPLICATE loadComponents FUNCTION
+    // Let common.js handle loading components
 
     document.addEventListener('DOMContentLoaded', () => { 
-      loadComponents(); 
+      // Don't load components here - common.js will handle it
       loadProduct(); 
     });
 
     window.addEventListener('scroll', () => { 
       document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 200); 
     });
+
+    // Make sure cart icon works by ensuring common.js functions are available
+    // This is just a safety check
+    window.ensureCartFunctionality = function() {
+      console.log('Product page ready, cart functions should be available from common.js');
+    };
   </script>
 </body>
 </html>
