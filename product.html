@@ -87,7 +87,7 @@
     .thumbnail:hover { border-color: #d4af37; transform: translateY(-2px) scale(0.98); }
     .thumbnail.active { border-color: #d4af37; border-width: 3px; }
 
-    /* Rating Chart Styles */
+    /* Rating Chart Styles – will be repositioned for mobile via JS */
     .rating-chart-card {
       background: #ffffff;
       border-radius: 16px;
@@ -226,7 +226,7 @@
     .razorpay-promise {
       position: relative;
       overflow: hidden;
-      cursor: pointer;  /* indicate clickable */
+      cursor: pointer;
     }
     
     .razorpay-promise::after {
@@ -319,15 +319,15 @@
     }
 
     .price-option.prepaid {
-      background: #d4af37;  /* gold fill */
+      background: #d4af37;
       border-color: #000;
-      color: #000;  /* black text */
+      color: #000;
     }
 
     .price-option.cod {
-      background: #000;  /* black fill */
+      background: #000;
       border-color: #d4af37;
-      color: #d4af37;  /* gold text */
+      color: #d4af37;
     }
 
     .price-option.prepaid .option-label,
@@ -354,7 +354,6 @@
       line-height: 1.2;
     }
 
-    /* Hover & selected effects */
     .price-option.prepaid:hover {
       background: #c4a030;
       transform: translateY(-2px);
@@ -566,7 +565,7 @@
     }
     .product-title {
       font-size: 1.8rem; font-weight: 800; line-height: 1.1; margin-bottom: 12px; color: #000;
-      text-transform: none; /* allow both uppercase/lowercase */
+      text-transform: none;
     }
     @media (min-width: 768px) { .product-title { font-size: 2.2rem; } }
 
@@ -754,25 +753,83 @@
     .promise-content h4 { font-size: 0.85rem; font-weight: 800; color: #d4af37; margin-bottom: 2px; }
     .promise-content p { font-size: 0.7rem; color: #eee; }
 
-    /* Tooltip / policy tab */
-    .policy-tooltip {
+    /* New Razorpay popup card – appears above the guarantee bar */
+    .razorpay-popup {
       display: none;
       background: #fff9e6;
-      border: 2px solid #d4af37;
-      border-radius: 16px;
-      padding: 12px;
-      margin-top: 12px;
-      font-size: 0.75rem;
-      color: #000;
-      box-shadow: 4px 4px 0 #000;
+      border: 3px solid #d4af37;
+      border-radius: 24px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 8px 8px 0 #000;
       position: relative;
+      animation: popSlide 0.25s ease;
     }
-    .policy-tooltip.show {
+    .razorpay-popup.show {
       display: block;
     }
-    .policy-tooltip i {
+    @keyframes popSlide {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .popup-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: #000;
+      margin-bottom: 12px;
+      border-bottom: 2px dashed #d4af37;
+      padding-bottom: 8px;
+    }
+    .popup-title i {
       color: #d4af37;
-      margin-right: 6px;
+      background: #000;
+      border-radius: 50%;
+      padding: 8px;
+      font-size: 1rem;
+    }
+    .popup-desc {
+      font-size: 0.9rem;
+      color: #222;
+      margin-bottom: 16px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    .popup-bullets {
+      list-style: none;
+      padding: 0;
+    }
+    .popup-bullets li {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .popup-bullets li i {
+      color: #d4af37;
+      width: 20px;
+      font-size: 1rem;
+    }
+    .popup-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      background: #000;
+      color: #d4af37;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #d4af37;
+      font-weight: 800;
     }
 
     /* action buttons */
@@ -915,7 +972,6 @@
     let currentProduct = null;
     let selectedPaymentMethod = 'prepaid';
     
-    // Store generated data in sessionStorage to persist across refreshes
     const STORAGE_KEY = 'myessantia_product_data';
     
     function getStoredProductData(productId) {
@@ -939,7 +995,6 @@
     function getRandomSold() { return Math.floor(Math.random() * (2000 - 500 + 1)) + 500; }
     function getRandomViewers() { return Math.floor(Math.random() * (35 - 8 + 1)) + 8; }
 
-    // Realistic review generator with 20 unique reviews
     function generateRealisticReviews(productRating) {
       const reviews = [
         {
@@ -1124,7 +1179,6 @@
         }
       ];
       
-      // Adjust ratings slightly based on product rating
       return reviews.map(review => ({
         ...review,
         rating: Math.min(5, Math.max(1, review.rating + (productRating - 4.0) * 0.2))
@@ -1133,7 +1187,6 @@
 
     function getProductId() { return new URLSearchParams(window.location.search).get('id'); }
 
-    // Generate different rating distributions for each product
     function generateRatingDistribution(baseRating) {
       baseRating = parseFloat(baseRating) || 4.5;
       
@@ -1149,7 +1202,6 @@
         distribution = { 5: 20, 4: 25, 3: 25, 2: 18, 1: 12 };
       }
       
-      // Add slight randomness to make each product unique
       const randomize = (value) => {
         const variation = Math.floor(Math.random() * 6) - 2;
         return Math.max(1, Math.min(85, value + variation));
@@ -1210,10 +1262,10 @@
       }, 300);
     }
 
-    // Toggle policy tab on Razorpay click
-    window.togglePolicy = function() {
-      const tooltip = document.getElementById('razorpayPolicy');
-      if (tooltip) tooltip.classList.toggle('show');
+    // Toggle Razorpay popup (square card above guarantee)
+    window.toggleRazorpayPopup = function() {
+      const popup = document.getElementById('razorpayPopup');
+      if (popup) popup.classList.toggle('show');
     };
 
     function toggleReviews() {
@@ -1233,9 +1285,7 @@
       if (!productId) return showNotFound();
       
       try {
-        // For demo, if no Firebase we simulate a product
         if (typeof db === 'undefined' || !db) {
-          // fallback dummy
           currentProduct = {
             id: 'demo123',
             title: 'Minimalist Leather Backpack',
@@ -1243,7 +1293,7 @@
             price: 2499,
             rating: 4.7,
             stock: 15,
-            description: 'Handcrafted genuine leather backpack.',
+            description: 'Handcrafted genuine leather backpack with premium metal hardware.',
             primaryImg: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600'
           };
           document.getElementById('breadcrumb-product').textContent = currentProduct.title;
@@ -1257,7 +1307,6 @@
         renderProduct(currentProduct);
       } catch (error) { 
         console.error('Error loading product:', error); 
-        // fallback
         currentProduct = {
           id: 'demo123',
           title: 'Urban Canvas Sneakers',
@@ -1265,7 +1314,7 @@
           price: 1899,
           rating: 4.3,
           stock: 8,
-          description: 'Comfortable and stylish sneakers.',
+          description: 'Comfortable and stylish sneakers for daily wear.',
           primaryImg: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600'
         };
         document.getElementById('breadcrumb-product').textContent = currentProduct.title;
@@ -1322,29 +1371,7 @@
               ${images.map((img, i) => `<div class="thumbnail ${i === 0 ? 'active' : ''}" onclick="changeImage('${img}', this)"><img src="${img}"></div>`).join('')}
             </div>
             
-            <!-- RATING CHART (mobile: shown above desktop reviews, stays here) -->
-            <div class="rating-chart-card">
-              <div class="rating-chart-header">
-                <div>
-                  <span class="rating-main">${(product.rating || 4.5).toFixed(1)}</span>
-                  <span class="rating-outof">/5</span>
-                </div>
-                <div class="rating-stars-large">${getLargeStars(product.rating || 4.5)}</div>
-                <span class="rating-count">${reviewCount} reviews</span>
-              </div>
-              
-              <div class="rating-bars">
-                ${[5,4,3,2,1].map(star => `
-                <div class="rating-bar-row">
-                  <span class="bar-label">${star} ★</span>
-                  <div class="bar-container">
-                    <div class="bar-fill" style="width: ${ratingDist[star]}%"></div>
-                  </div>
-                  <span class="bar-percent">${ratingDist[star]}%</span>
-                </div>`).join('')}
-              </div>
-            </div>
-            
+            <!-- DESKTOP REVIEWS (hidden on mobile) -->
             <div class="desktop-reviews">
               <div class="review-mini-card">
                 <div class="review-mini-header">
@@ -1426,7 +1453,7 @@
               </div>
             </div>
 
-            <!-- DELIVERY CARD (filled style) -->
+            <!-- DELIVERY CARD -->
             <div class="delivery-card">
               <div class="delivery-header">
                 <span class="delivery-title"><i class="fa-solid fa-truck"></i> Free Delivery</span>
@@ -1445,18 +1472,34 @@
               </div>
             </div>
 
+            <!-- RATING CHART (mobile only – moved here via JS after render) -->
+            <div id="mobileRatingChart"></div>
+
             <div class="feature-razor-card">
+              <!-- Razorpay popup card (square, appears above guarantee) -->
+              <div id="razorpayPopup" class="razorpay-popup">
+                <div class="popup-close" onclick="toggleRazorpayPopup()">✕</div>
+                <div class="popup-title">
+                  <i class="fa-solid fa-shield-halved"></i> Razorpay Guarantee
+                </div>
+                <div class="popup-desc">
+                  Your payment is 100% secure with Razorpay. We promise:
+                </div>
+                <ul class="popup-bullets">
+                  <li><i class="fa-solid fa-circle-check"></i> Full refund if item not delivered</li>
+                  <li><i class="fa-solid fa-circle-check"></i> Replacement for defective items</li>
+                  <li><i class="fa-solid fa-circle-check"></i> 30 days buyer protection</li>
+                  <li><i class="fa-solid fa-circle-check"></i> No hidden charges</li>
+                </ul>
+              </div>
+
               <!-- Razorpay Promise clickable -->
-              <div class="razorpay-promise" onclick="togglePolicy()">
+              <div class="razorpay-promise" onclick="toggleRazorpayPopup()">
                 <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
                 <div class="promise-content">
                   <h4>Razorpay Money Back Promise</h4>
-                  <p>Click for policy details</p>
+                  <p>Click to view full guarantee</p>
                 </div>
-              </div>
-              <!-- policy tooltip -->
-              <div id="razorpayPolicy" class="policy-tooltip">
-                <i class="fa-solid fa-shield-halved"></i> Razorpay guarantees: 100% refund if item not delivered or defective. Valid 30 days.
               </div>
               
               <div class="features-grid">
@@ -1487,7 +1530,7 @@
               </button>
             </div>
 
-            <!-- TABS -->
+            <!-- TABS (description appears first on mobile) -->
             <div class="tabs">
               <div class="tab-headers">
                 <div class="tab-header active" onclick="switchTab('desc')">Description</div>
@@ -1551,6 +1594,31 @@
           </div>
         </div>
       `;
+
+      // Move rating chart into #mobileRatingChart for mobile (desktop unaffected)
+      const chartHTML = `
+        <div class="rating-chart-card">
+          <div class="rating-chart-header">
+            <div>
+              <span class="rating-main">${(product.rating || 4.5).toFixed(1)}</span>
+              <span class="rating-outof">/5</span>
+            </div>
+            <div class="rating-stars-large">${getLargeStars(product.rating || 4.5)}</div>
+            <span class="rating-count">${reviewCount} reviews</span>
+          </div>
+          <div class="rating-bars">
+            ${[5,4,3,2,1].map(star => `
+            <div class="rating-bar-row">
+              <span class="bar-label">${star} ★</span>
+              <div class="bar-container">
+                <div class="bar-fill" style="width: ${ratingDist[star]}%"></div>
+              </div>
+              <span class="bar-percent">${ratingDist[star]}%</span>
+            </div>`).join('')}
+          </div>
+        </div>
+      `;
+      document.getElementById('mobileRatingChart').innerHTML = chartHTML;
 
       updateDeliveryBar(product.price);
     }
