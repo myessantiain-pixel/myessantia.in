@@ -518,7 +518,9 @@
 
   <!-- Footer will be loaded dynamically -->
   <div id="footer"></div>
-  
+
+    <script src="common.js"></script>
+
   <!-- Common modals container -->
   <div id="common-modals"></div>
 
@@ -543,13 +545,8 @@
     let allProducts = [];
     let essentialsProducts = [];
     let isLoading = true;
-  </script>
-
-  <!-- Load common.js first (contains cart logic, component loading) -->
-  <script src="common.js"></script>
   
-  <script>
-    // ===== FETCH PRODUCTS FROM FIRESTORE =====
+
     async function loadProductsFromFirestore() {
       try {
         const gridContainer = document.getElementById('product-grid-container');
