@@ -36,8 +36,8 @@
       line-height: 1.4;
     }
     .feature-razor-card .razorpay-promise {
-  margin-bottom: 12px;
-}
+      margin-bottom: 12px;
+    }
     .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
     @media (min-width: 640px) { .container { padding: 0 20px; } }
 
@@ -87,12 +87,12 @@
     .thumbnail:hover { border-color: #d4af37; transform: translateY(-2px) scale(0.98); }
     .thumbnail.active { border-color: #d4af37; border-width: 3px; }
 
-    /* Rating Chart Styles */
+    /* Rating Chart Styles - REDUCED SIZE */
     .rating-chart-card {
       background: #ffffff;
-      border-radius: 20px;
-      padding: 16px;
-      margin: 16px 0;
+      border-radius: 16px;
+      padding: 12px;
+      margin: 12px 0;
       border: 2px solid #000000;
       box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
     }
@@ -100,38 +100,38 @@
     .rating-chart-header {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
       border-bottom: 2px solid #000;
     }
 
     .rating-main {
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       font-weight: 900;
       color: #000;
       line-height: 1;
     }
 
     .rating-outof {
-      font-size: 1rem;
+      font-size: 0.85rem;
       color: #666;
       font-weight: 500;
     }
 
     .rating-stars-large {
       color: #d4af37;
-      font-size: 1.1rem;
-      letter-spacing: 2px;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
     }
 
     .rating-count {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       background: #f5f5f5;
-      padding: 4px 12px;
-      border-radius: 60px;
-      border: 2px solid #000;
+      padding: 3px 8px;
+      border-radius: 40px;
+      border: 1px solid #000;
       font-weight: 600;
       margin-left: auto;
     }
@@ -139,58 +139,59 @@
     .rating-bars {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 4px;
     }
 
     .rating-bar-row {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 0.75rem;
+      gap: 6px;
+      font-size: 0.7rem;
     }
 
     .bar-label {
-      min-width: 35px;
+      min-width: 30px;
       font-weight: 700;
       color: #000;
     }
 
     .bar-container {
       flex: 1;
-      height: 24px;
+      height: 16px;
       background: #f0f0f0;
-      border-radius: 12px;
+      border-radius: 8px;
       overflow: hidden;
-      border: 2px solid #000;
+      border: 1px solid #000;
     }
 
     .bar-fill {
       height: 100%;
       background: #d4af37;
-      border-radius: 10px;
+      border-radius: 6px;
       transition: width 0.3s ease;
     }
 
     .bar-percent {
-      min-width: 45px;
+      min-width: 35px;
       text-align: right;
-      font-weight: 700;
+      font-weight: 600;
       color: #000;
+      font-size: 0.65rem;
     }
 
     /* Responsive */
     @media (max-width: 640px) {
       .rating-chart-header {
-        gap: 8px;
+        gap: 6px;
       }
       .rating-main {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
       }
       .rating-stars-large {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
       }
       .bar-container {
-        height: 20px;
+        height: 14px;
       }
     }
 
@@ -304,28 +305,88 @@
     .price-option.prepaid .option-label { color: #d4af37; }
     .option-price { font-size: 1.2rem; font-weight: 800; color: #000; line-height: 1.2; }
 
-    /* quantity + stock on same line */
+    /* quantity + stock on same line - NEW STYLING */
     .quantity-stock-row {
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      background: #f9f9f9; border-radius: 50px; padding: 6px 12px; border: 2px solid #000; margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: linear-gradient(145deg, #f9f9f9, #ffffff);
+      border-radius: 60px;
+      padding: 6px 16px;
+      border: 2px solid #000;
+      margin-top: 12px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
     }
+    
     .quantity-controls {
-      display: flex; align-items: center; gap: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      border-radius: 40px;
+      padding: 2px;
+      border: 1px solid #e0e0e0;
     }
+    
     .qty-btn {
-      width: 30px; height: 30px; border: 2px solid #000; background: white; border-radius: 10px;
-      font-size: 1rem; font-weight: 800; cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      transition: all 0.2s;
     }
-    .qty-btn:hover:not(:disabled) { background: #d4af37; }
-    .qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    
+    .qty-btn:hover:not(:disabled) {
+      background: #d4af37;
+      color: #000;
+      transform: scale(1.05);
+    }
+    
+    .qty-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    
     .qty-input {
-      width: 40px; height: 30px; border: 2px solid #000; border-radius: 10px; text-align: center;
-      font-size: 0.85rem; font-weight: 700; background: white;
+      width: 45px;
+      height: 36px;
+      border: 2px solid #000;
+      border-radius: 30px;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 700;
+      background: #ffffff;
+      color: #000;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
     }
+    
     .stock-badge {
-      display: flex; align-items: center; gap: 4px; font-weight: 700; font-size: 0.75rem; white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      background: #000;
+      color: #d4af37;
+      padding: 6px 14px;
+      border-radius: 40px;
+      border: 1px solid #d4af37;
     }
-    .stock-badge i { color: #d4af37; font-size: 0.7rem; }
+    
+    .stock-badge i {
+      color: #d4af37;
+      font-size: 0.8rem;
+    }
 
     /* DELIVERY BAR */
     .delivery-card {
@@ -352,7 +413,7 @@
       border: 2px solid #000; box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
     }
     .features-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
     }
     .feature-item {
       display: flex; align-items: center; gap: 8px; padding: 8px; background: #fafafa;
@@ -367,7 +428,7 @@
 
     .razorpay-promise {
       display: flex; align-items: center; gap: 12px; padding: 8px; background: #000; border-radius: 16px;
-      border: 2px solid #d4af37; margin-top: 6px;
+      border: 2px solid #d4af37; margin-bottom: 12px;
     }
     .promise-icon {
       width: 40px; height: 40px; background: #d4af37; border-radius: 50%;
@@ -385,10 +446,11 @@
       flex: 1; padding: 12px; border-radius: 60px; font-weight: 800; font-size: 0.85rem;
       cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
       border: 2px solid #000; background: #ffffff; color: #000; text-transform: uppercase;
+      transition: all 0.3s;
     }
     .btn-primary { background: #000; color: #d4af37; border: 2px solid #d4af37; }
-    .btn-primary:hover { background: #d4af37; color: #000; border-color: #000; }
-    .btn-secondary:hover { background: #000; color: #d4af37; border-color: #d4af37; }
+    .btn-primary:hover { background: #d4af37; color: #000; border-color: #000; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .btn-secondary:hover { background: #000; color: #d4af37; border-color: #d4af37; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 
     /* tabs (description, specs, videos) */
     .tabs {
@@ -502,26 +564,147 @@
     // ========== PRODUCT PAGE SPECIFIC CODE ==========
     let currentProduct = null;
     
+    // Store generated data in sessionStorage to persist across refreshes
+    const STORAGE_KEY = 'myessantia_product_data';
+    
+    function getStoredProductData(productId) {
+      const stored = sessionStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const data = JSON.parse(stored);
+        if (data.productId === productId) {
+          return data;
+        }
+      }
+      return null;
+    }
+
+    function storeProductData(productId, data) {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+        productId,
+        ...data
+      }));
+    }
+
     function getRandomSold() { return Math.floor(Math.random() * (2000 - 500 + 1)) + 500; }
     function getRandomViewers() { return Math.floor(Math.random() * (35 - 8 + 1)) + 8; }
 
-    function generateReviews() {
-      const users = [
-        { name: 'Priya Sharma', city: 'Mumbai', avatar: 'PS' },
-        { name: 'Rahul Verma', city: 'Delhi', avatar: 'RV' },
-        { name: 'Ananya Patel', city: 'Bangalore', avatar: 'AP' },
-        { name: 'Karthik Iyer', city: 'Chennai', avatar: 'KI' }
+    // Realistic review generator with 12 unique reviews
+    function generateRealisticReviews(productRating) {
+      const reviews = [
+        {
+          name: 'Priya Sharma',
+          city: 'Mumbai',
+          avatar: 'PS',
+          comment: 'Absolutely love this product! The quality is exceptional and it arrived well-packaged. Worth every penny.',
+          rating: 5.0,
+          time: 2,
+          verified: true
+        },
+        {
+          name: 'Rahul Verma',
+          city: 'Delhi',
+          avatar: 'RV',
+          comment: 'Good product for the price. Works as expected. Delivery was quick but the packaging could be better.',
+          rating: 4.0,
+          time: 5,
+          verified: true
+        },
+        {
+          name: 'Ananya Patel',
+          city: 'Bangalore',
+          avatar: 'AP',
+          comment: 'Perfect! Exceeded my expectations. The material is premium and it looks exactly as shown in pictures.',
+          rating: 5.0,
+          time: 1,
+          verified: true
+        },
+        {
+          name: 'Karthik Iyer',
+          city: 'Chennai',
+          avatar: 'KI',
+          comment: 'Decent product. Does the job but not amazing. Customer service was helpful though.',
+          rating: 3.5,
+          time: 3,
+          verified: true
+        },
+        {
+          name: 'Neha Gupta',
+          city: 'Jaipur',
+          avatar: 'NG',
+          comment: 'Very disappointed. The product arrived damaged and return process was lengthy.',
+          rating: 2.0,
+          time: 7,
+          verified: true
+        },
+        {
+          name: 'Arjun Singh',
+          city: 'Lucknow',
+          avatar: 'AS',
+          comment: 'Outstanding quality! My second purchase from MyEssantia and they never disappoint.',
+          rating: 5.0,
+          time: 4,
+          verified: true
+        },
+        {
+          name: 'Sneha Reddy',
+          city: 'Hyderabad',
+          avatar: 'SR',
+          comment: 'Good product but slightly overpriced. Would recommend during sale.',
+          rating: 4.0,
+          time: 6,
+          verified: true
+        },
+        {
+          name: 'Vikram Mehta',
+          city: 'Ahmedabad',
+          avatar: 'VM',
+          comment: 'Fast delivery and great quality. The product matches description perfectly.',
+          rating: 4.5,
+          time: 2,
+          verified: true
+        },
+        {
+          name: 'Pooja Desai',
+          city: 'Pune',
+          avatar: 'PD',
+          comment: 'Average product. Nothing special but nothing wrong either.',
+          rating: 3.0,
+          time: 8,
+          verified: false
+        },
+        {
+          name: 'Amit Kumar',
+          city: 'Kolkata',
+          avatar: 'AK',
+          comment: 'Excellent product! Better than I expected. Will buy again.',
+          rating: 5.0,
+          time: 3,
+          verified: true
+        },
+        {
+          name: 'Divya Nair',
+          city: 'Kochi',
+          avatar: 'DN',
+          comment: 'Good quality but size runs small. Order one size up.',
+          rating: 3.5,
+          time: 5,
+          verified: true
+        },
+        {
+          name: 'Rajesh Khanna',
+          city: 'Chandigarh',
+          avatar: 'RK',
+          comment: 'Not worth the money. Quality is average and customer support is slow.',
+          rating: 2.5,
+          time: 9,
+          verified: false
+        }
       ];
-      const comments = [
-        "Absolutely love this! Quality is amazing.",
-        "Perfect product, exceeded expectations.",
-        "Great quality and beautiful design.",
-        "Excellent value for money."
-      ];
-      return users.map((user, i) => ({
-        ...user, comment: comments[i % comments.length],
-        rating: (4 + Math.random() * 0.9).toFixed(1),
-        time: Math.floor(Math.random() * 48) + 1
+      
+      // Adjust ratings slightly based on product rating
+      return reviews.map(review => ({
+        ...review,
+        rating: Math.min(5, Math.max(1, review.rating + (productRating - 4.0) * 0.3))
       }));
     }
 
@@ -545,7 +728,7 @@
       
       // Add slight randomness to make each product unique
       const randomize = (value) => {
-        const variation = Math.floor(Math.random() * 6) - 2; // -2 to +3
+        const variation = Math.floor(Math.random() * 6) - 2;
         return Math.max(1, Math.min(85, value + variation));
       };
       
@@ -620,11 +803,24 @@
       const codPrice = Math.round(product.price * 1.04);
       const soldCount = getRandomSold();
       const liveViewers = getRandomViewers();
-      const reviews = generateReviews();
       
-      // Generate unique rating distribution for this product
-      const ratingDist = generateRatingDistribution(product.rating || 4.5);
-      const reviewCount = Math.floor(Math.random() * (350 - 45 + 1)) + 45; // Random between 45-350
+      // Check if we have stored data for this product
+      const storedData = getStoredProductData(product.id);
+      
+      let ratingDist, reviewCount, reviews;
+      
+      if (storedData) {
+        // Use stored data if available
+        ratingDist = storedData.ratingDist;
+        reviewCount = storedData.reviewCount;
+        reviews = storedData.reviews;
+      } else {
+        // Generate new data and store it
+        ratingDist = generateRatingDistribution(product.rating || 4.5);
+        reviewCount = Math.floor(Math.random() * (350 - 45 + 1)) + 45;
+        reviews = generateRealisticReviews(product.rating || 4.5);
+        storeProductData(product.id, { ratingDist, reviewCount, reviews });
+      }
 
       const container = document.getElementById('product-container');
       container.innerHTML = `
@@ -636,7 +832,7 @@
               ${images.map((img, i) => `<div class="thumbnail ${i === 0 ? 'active' : ''}" onclick="changeImage('${img}', this)"><img src="${img}"></div>`).join('')}
             </div>
             
-            <!-- RATING CHART - Added below thumbnails -->
+            <!-- RATING CHART - Reduced size -->
             <div class="rating-chart-card">
               <div class="rating-chart-header">
                 <div>
@@ -644,7 +840,7 @@
                   <span class="rating-outof">/5</span>
                 </div>
                 <div class="rating-stars-large">${getLargeStars(product.rating || 4.5)}</div>
-                <span class="rating-count">${reviewCount} verified reviews</span>
+                <span class="rating-count">${reviewCount} reviews</span>
               </div>
               
               <div class="rating-bars">
@@ -692,14 +888,14 @@
                   <span>Top Reviews</span>
                   <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
                 </div>
-                ${reviews.slice(0, 2).map(r => `
+                ${reviews.slice(0, 3).map(r => `
                   <div class="review-mini-item">
                     <div class="review-mini-avatar">${r.avatar}</div>
                     <div>
                       <div style="font-weight: 700; font-size: 0.85rem;">${r.name}</div>
-                      <div style="font-size: 0.7rem; color: #666;">${r.city}</div>
-                      <div style="margin-top: 4px; font-size: 0.75rem;">${'★'.repeat(Math.floor(r.rating))}</div>
-                      <p style="margin-top: 4px; font-size: 0.75rem;">${r.comment}</p>
+                      <div style="font-size: 0.7rem; color: #666;">${r.city} ${r.verified ? '✓' : ''}</div>
+                      <div style="margin-top: 4px; font-size: 0.75rem;">${'★'.repeat(Math.floor(r.rating))}${r.rating % 1 >= 0.5 ? '½' : ''}</div>
+                      <p style="margin-top: 4px; font-size: 0.75rem;">${r.comment.substring(0, 60)}${r.comment.length > 60 ? '...' : ''}</p>
                     </div>
                   </div>
                 `).join('')}
@@ -735,7 +931,7 @@
               </div>
             </div>
 
-            <!-- PRICE CARD with quantity + stock inline -->
+            <!-- PRICE CARD with redesigned quantity changer -->
             <div class="price-card">
               <div class="price-header">
                 <span class="current-price"><span class="inr-symbol">₹</span>${product.price.toFixed(2)}</span>
@@ -786,34 +982,34 @@
               </div>
             </div>
 
-         <div class="feature-razor-card">
-  <!-- Razorpay Promise moved to top -->
-  <div class="razorpay-promise">
-    <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
-    <div class="promise-content">
-      <h4>Razorpay Money Back Promise</h4>
-      <p>100% refund on non-delivery or defects</p>
-    </div>
-  </div>
-  
-  <!-- Features grid with both items on same line -->
-  <div class="features-grid">
-    <div class="feature-item">
-      <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
-      <div class="feature-text">
-        <h4>Free Shipping</h4>
-        <p>Above ₹1,299</p>
-      </div>
-    </div>
-    <div class="feature-item">
-      <div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div>
-      <div class="feature-text">
-        <h4>Easy Returns</h4>
-        <p>48 hours</p>
-      </div>
-    </div>
-  </div>
-</div>
+            <div class="feature-razor-card">
+              <!-- Razorpay Promise moved to top -->
+              <div class="razorpay-promise">
+                <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
+                <div class="promise-content">
+                  <h4>Razorpay Money Back Promise</h4>
+                  <p>100% refund on non-delivery or defects</p>
+                </div>
+              </div>
+              
+              <!-- Features grid with both items on same line -->
+              <div class="features-grid">
+                <div class="feature-item">
+                  <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                  <div class="feature-text">
+                    <h4>Free Shipping</h4>
+                    <p>Above ₹1,299</p>
+                  </div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                  <div class="feature-text">
+                    <h4>Easy Returns</h4>
+                    <p>48 hours</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <!-- ACTION BUTTONS -->
             <div class="action-buttons">
@@ -861,25 +1057,28 @@
               </div>
             </div>
 
-            <!-- mobile reviews -->
+            <!-- mobile reviews - More realistic reviews -->
             <div class="mobile-reviews">
               <div class="reviews-header">
-                <span>Customer Reviews</span>
+                <span>Customer Reviews (${reviewCount})</span>
                 <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
               </div>
-              ${reviews.slice(0, 2).map(r => `
+              ${reviews.slice(0, 4).map(r => `
                 <div class="review-card">
                   <div style="display: flex; gap: 10px; margin-bottom: 6px;">
                     <div class="reviewer-avatar">${r.avatar}</div>
                     <div>
                       <div style="font-weight: 700; font-size: 0.85rem;">${r.name}</div>
-                      <div style="font-size: 0.7rem;">${r.city}</div>
+                      <div style="font-size: 0.7rem;">${r.city} • ${r.time} days ago ${r.verified ? '✓ Verified' : ''}</div>
                     </div>
                   </div>
-                  <div class="stars" style="margin-bottom: 6px; font-size: 0.75rem;">${'★'.repeat(Math.floor(r.rating))}</div>
+                  <div class="stars" style="margin-bottom: 6px; font-size: 0.75rem;">${'★'.repeat(Math.floor(r.rating))}${r.rating % 1 >= 0.5 ? '½' : ''}</div>
                   <p style="font-size: 0.75rem;">${r.comment}</p>
                 </div>
               `).join('')}
+              <div style="text-align: center; margin-top: 12px;">
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.7rem;" onclick="window.location.href='reviews.html?id=${product.id}'">View All Reviews</button>
+              </div>
             </div>
           </div>
         </div>
