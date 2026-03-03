@@ -398,15 +398,15 @@ function setupEventListeners() {
           if (currentUser) {
             saveCartToFirebase().then(() => {
               closeModal('cart-modal');
-              window.location.href = 'checkout.html';
+              window.location.href = 'index.html';
             }).catch(error => {
               console.error('Error saving cart before redirect:', error);
               closeModal('cart-modal');
-              window.location.href = 'checkout.html';
+              window.location.href = 'index.html';
             });
           } else {
             closeModal('cart-modal');
-            window.location.href = 'checkout.html';
+            window.location.href = 'index.html';
           }
         }
       });
@@ -838,15 +838,15 @@ async function loadCommonModals() {
             if (currentUser) {
               saveCartToFirebase().then(() => {
                 closeModal('cart-modal');
-                window.location.href = 'checkout.html';
+                window.location.href = 'index.html';
               }).catch(error => {
                 console.error('Error saving cart before redirect:', error);
                 closeModal('cart-modal');
-                window.location.href = 'checkout.html';
+                window.location.href = 'index.html';
               });
             } else {
               closeModal('cart-modal');
-              window.location.href = 'checkout.html';
+              window.location.href = 'index.html';
             }
           }
         });
