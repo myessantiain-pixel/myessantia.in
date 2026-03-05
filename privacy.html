@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="footer.css">
 
   <style>
-    /* ===== GLOBAL & RESETS (same as index) ===== */
+    /* ===== GLOBAL & RESETS ===== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { 
@@ -38,7 +38,7 @@
     @media (min-width: 640px) { .container { padding: 0 32px; } }
     @media (min-width: 1600px) { .container { max-width: 1600px; } }
 
-    /* ===== ACTIVE NAV (privacy) ===== */
+    /* ===== ACTIVE NAV ===== */
     .nav-link.active { color: #d4af37 !important; font-weight: 700; position: relative; }
     .nav-link.active::after {
       content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px;
@@ -231,7 +231,7 @@
       border-radius: 60px; border: 1px solid #d4af37;
     }
 
-    /* ===== SCROLL TOP (same as index) ===== */
+    /* ===== SCROLL TOP ===== */
     .scroll-top {
       position: fixed; bottom: 20px; right: 20px; 
       background: #000; color: #d4af37; width: 52px; height: 52px; border-radius: 50%;
@@ -244,7 +244,6 @@
     .scroll-top.visible { opacity: 1; transform: translateY(0); }
     .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
 
-    /* responsiveness tweaks */
     @media (max-width: 500px) {
       .privacy-hero-title { font-size: 2.2rem; }
       .privacy-section h2 { font-size: 1.6rem; }
@@ -255,7 +254,7 @@
 <body>
 
   <div id="header"></div>
-  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
 
   <main>
     <!-- PRIVACY HERO -->
@@ -266,7 +265,7 @@
           <div class="privacy-hero-sub">transparency · trust · integrity</div>
           <h1 class="privacy-hero-title"><span>privacy</span> policy</h1>
           <p class="privacy-hero-desc">Your data is handled with the same care as our premium accessories.</p>
-          <span class="last-updated"><i class="fa-regular fa-calendar"></i> last updated: 6 march 2026</span>
+          <span class="last-updated"><i class="fas fa-calendar"></i> last updated: 6 march 2026</span>
         </div>
       </div>
     </section>
@@ -277,168 +276,124 @@
         
         <!-- INTRODUCTION -->
         <div class="privacy-section">
-          <h2><i class="fa-regular fa-heart"></i> our commitment</h2>
-          <p>At <strong>MyEssantia</strong> ("we", "us", "our"), your privacy isn’t an afterthought — it’s built into every interaction. This policy explains how we collect, use, and protect your personal information when you visit our store or purchase our vetted accessories. By using our services, you trust us with your data; we treat that trust as our highest currency.</p>
+          <h2><i class="fas fa-heart"></i> our commitment</h2>
+          <p>At <strong>MyEssantia</strong>, your privacy isn't an afterthought — it's built into every interaction. This policy explains how we collect, use, and protect your personal information when you visit our store or purchase our vetted accessories. By using our services, you trust us with your data; we treat that trust as our highest currency.</p>
           <div class="highlight-box">
-            <p style="margin-bottom:0;"><strong>Short version:</strong> We only collect what’s necessary to process orders, improve your experience, and comply with law. We never sell your data. Ever.</p>
+            <p style="margin-bottom:0;"><strong>Short version:</strong> We only collect what's necessary to process orders, improve your experience, and comply with law. We never sell your data. Ever.</p>
           </div>
         </div>
 
         <!-- DATA COLLECTION -->
         <div class="privacy-section">
-          <h2><i class="fa-regular fa-rectangle-list"></i> what we collect</h2>
+          <h2><i class="fas fa-rectangle-list"></i> what we collect</h2>
           <p>To give you the best premium experience, we collect:</p>
           <div class="data-grid">
-            <div class="data-item"><i class="fa-regular fa-user"></i><h4>identity</h4><p>name, email, phone</p></div>
-            <div class="data-item"><i class="fa-regular fa-address-card"></i><h4>shipping</h4><p>address, pincode, landmark</p></div>
-            <div class="data-item"><i class="fa-regular fa-credit-card"></i><h4>payment</h4><p>encrypted transaction data (never stored)</p></div>
-            <div class="data-item"><i class="fa-regular fa-clock"></i><h4>behavioral</h4><p>pages visited, referral source, device info</p></div>
+            <div class="data-item"><i class="fas fa-user"></i><h4>identity</h4><p>name, email, phone</p></div>
+            <div class="data-item"><i class="fas fa-address-card"></i><h4>shipping</h4><p>address, pincode, landmark</p></div>
+            <div class="data-item"><i class="fas fa-credit-card"></i><h4>payment</h4><p>encrypted transaction data</p></div>
+            <div class="data-item"><i class="fas fa-clock"></i><h4>behavioral</h4><p>pages visited, device info</p></div>
           </div>
-          <p>We use <strong>Firebase</strong> (Google) for authentication and Firestore for order history – both are GDPR & SOC compliant. Payment is processed via secure gateways; we never see your full card details.</p>
+          <p>We use <strong>Firebase</strong> for authentication and Firestore for order history – both are GDPR compliant. Payment is processed via secure gateways; we never see your full card details.</p>
         </div>
 
         <!-- HOW WE USE -->
         <div class="privacy-section">
-          <h2><i class="fa-regular fa-compass"></i> how we use</h2>
+          <h2><i class="fas fa-compass"></i> how we use</h2>
           <ul>
             <li><strong>✅ order fulfillment:</strong> to ship your curated accessories and provide support.</li>
-            <li><strong>✅ communication:</strong> order updates, return assistance, and (only if you opt in) occasional offers.</li>
+            <li><strong>✅ communication:</strong> order updates, return assistance, and occasional offers (opt-in only).</li>
             <li><strong>✅ improvement:</strong> analyze which bestsellers you love, to refine our vetted supplier network.</li>
             <li><strong>✅ security:</strong> detect fraudulent transactions and protect your account.</li>
           </ul>
-          <p>We do <i class="fa-solid fa-ban" style="color:#d42f2f;"></i> <strong>not</strong> sell, rent, or lease your information to third parties. Period.</p>
+          <p>We do <i class="fas fa-ban" style="color:#d42f2f;"></i> <strong>not</strong> sell, rent, or lease your information to third parties. Period.</p>
         </div>
 
         <!-- COOKIES & TRACKING -->
         <div class="privacy-section">
-          <h2><i class="fa-regular fa-cookie-bite"></i> cookies & similar tech</h2>
+          <h2><i class="fas fa-cookie-bite"></i> cookies & similar tech</h2>
           <p>Like almost every modern store, we use cookies to remember your cart, preferences, and to help us understand which products are trending. Most cookies are strictly necessary. You can disable cookies in your browser, but some features may break (like adding to cart).</p>
-          <p>Third-party services (Firebase, Font Awesome, Unsplash) may set their own cookies – refer to their policies.</p>
         </div>
 
         <!-- SHARING & DISCLOSURE -->
         <div class="privacy-section">
-          <h2><i class="fa-regular fa-share-from-square"></i> when we share</h2>
+          <h2><i class="fas fa-share-from-square"></i> when we share</h2>
           <p>We only share data with trusted partners who help us run MyEssantia, under strict confidentiality:</p>
           <ul>
-            <li><i class="fa-regular fa-truck" style="color:#d4af37;"></i> <strong>Shipping carriers:</strong> to deliver your order (name, address, phone).</li>
-            <li><i class="fa-regular fa-building" style="color:#d4af37;"></i> <strong>Payment processors:</strong> to authorize transactions (no storage).</li>
-            <li><i class="fa-regular fa-scale-balanced" style="color:#d4af37;"></i> <strong>Legal obligations:</strong> if required by law or to protect our rights.</li>
+            <li><i class="fas fa-truck" style="color:#d4af37;"></i> <strong>Shipping carriers:</strong> to deliver your order (name, address, phone).</li>
+            <li><i class="fas fa-building" style="color:#d4af37;"></i> <strong>Payment processors:</strong> to authorize transactions (no storage).</li>
+            <li><i class="fas fa-scale-balanced" style="color:#d4af37;"></i> <strong>Legal obligations:</strong> if required by law or to protect our rights.</li>
           </ul>
         </div>
 
         <!-- YOUR RIGHTS -->
         <div class="privacy-section">
-          <h2><i class="fa-regular fa-hand-peace"></i> your choices & rights</h2>
+          <h2><i class="fas fa-hand-peace"></i> your choices & rights</h2>
           <p>You can:</p>
           <ul>
             <li><strong>access / correct</strong> your profile via account settings.</li>
-            <li><strong>request deletion</strong> of your data (email us, we’ll comply within 30 days).</li>
+            <li><strong>request deletion</strong> of your data (email us, we'll comply within 30 days).</li>
             <li><strong>opt out</strong> of marketing emails – one-click unsubscribe.</li>
           </ul>
-          <p>Because we believe in <strong>data minimalism</strong>, we don’t keep your info longer than necessary. Order data is retained for 5 years for tax/legal reasons; account data until you close it.</p>
-        </div>
-
-        <!-- INTERNATIONAL -->
-        <div class="privacy-section">
-          <h2><i class="fa-regular fa-globe"></i> international transfer</h2>
-          <p>MyEssantia ships worldwide. Your data may be processed in India, Germany, or Korea (where our vetted suppliers are). We ensure all transfers comply with applicable laws and use standard contractual clauses.</p>
+          <p>Because we believe in <strong>data minimalism</strong>, we don't keep your info longer than necessary. Order data is retained for 5 years for tax/legal reasons; account data until you close it.</p>
         </div>
 
         <!-- SECURITY -->
         <div class="privacy-section">
-          <h2><i class="fa-regular fa-shield"></i> security measures</h2>
-          <p>We use 256-bit encryption, Firebase's built-in security, and regular audits. Access to personal data is limited to employees who need it to serve you (e.g., support team). While no system is 100%, we continuously monitor for vulnerabilities.</p>
-          <p style="margin-top:0.5rem;"><i class="fa-regular fa-circle-check" style="color:#2e7d32;"></i> In case of a breach, we’ll notify you within 72 hours as per regulations.</p>
-        </div>
-
-        <!-- CHILDREN -->
-        <div class="privacy-section">
-          <h2><i class="fa-regular fa-child"></i> children's privacy</h2>
-          <p>Our store is not intended for individuals under 13. We do not knowingly collect data from children. If you believe a child has provided information, contact us immediately for deletion.</p>
+          <h2><i class="fas fa-shield"></i> security measures</h2>
+          <p>We use 256-bit encryption, Firebase's built-in security, and regular audits. Access to personal data is limited to employees who need it to serve you. While no system is 100%, we continuously monitor for vulnerabilities.</p>
+          <p style="margin-top:0.5rem;"><i class="fas fa-circle-check" style="color:#2e7d32;"></i> In case of a breach, we'll notify you within 72 hours as per regulations.</p>
         </div>
 
         <!-- POLICY CHANGES -->
         <div class="privacy-section">
-          <h2><i class="fa-regular fa-pen-to-square"></i> changes to this policy</h2>
-          <p>If we update this policy, we’ll post the new version here and update the “last updated” date. If changes are significant, we may notify you via email or a site notice.</p>
+          <h2><i class="fas fa-pen-to-square"></i> changes to this policy</h2>
+          <p>If we update this policy, we'll post the new version here and update the "last updated" date. If changes are significant, we may notify you via email or a site notice.</p>
         </div>
 
         <!-- CONTACT -->
         <div class="privacy-section">
-          <h2><i class="fa-regular fa-message"></i> contact us</h2>
-          <p>Questions about privacy? We’re here to help:</p>
+          <h2><i class="fas fa-message"></i> contact us</h2>
+          <p>Questions about privacy? We're here to help:</p>
           <ul style="list-style: none; margin-left:0;">
-            <li><i class="fa-regular fa-envelope" style="color:#d4af37;"></i> <strong>myessantia@gmail.com</strong></li>
+            <li><i class="fas fa-envelope" style="color:#d4af37;"></i> <strong>myessantia@gmail.com</strong></li>
           </ul>
-          <p>You also have the right to lodge a complaint with your local data protection authority.</p>
         </div>
 
-        <!-- SIGNATURE / BRANDING -->
+        <!-- SIGNATURE -->
         <div class="signature-block">
-          <span class="signature"><i class="fa-regular fa-lock"></i> built with trust — MyEssantia best · premium essentials</span>
-          <span class="badge-policy"><i class="fa-regular fa-star"></i> vetted & transparent</span>
+          <span class="signature"><i class="fas fa-lock"></i> built with trust — MyEssantia best · premium essentials</span>
+          <span class="badge-policy"><i class="fas fa-star"></i> vetted & transparent</span>
         </div>
 
-      </div> <!-- end privacy-card -->
-    </div> <!-- end container -->
+      </div>
+    </div>
   </main>
 
   <div id="footer"></div>
   <div id="common-modals"></div>
 
-  <!-- Load common.js (must be once) -->
   <script src="common.js"></script>
-
   <script>
-    // ========== PRIVACY PAGE SPECIFIC ==========
-
-    // Set active nav (privacy) – normally common.js does it, but override for this page
     function setPrivacyActive() {
       setTimeout(() => {
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        // find privacy link – might be inside a dropdown, but for this demo we assume direct link
         const privacyLink = document.querySelector('a[href="privacy.html"]');
         if (privacyLink) privacyLink.classList.add('active');
-        else {
-          // fallback: if no direct privacy link, maybe none
-        }
       }, 300);
     }
 
-    // Scroll to top button visibility
     function handleScroll() {
       const btn = document.getElementById('scrollTop');
       if (btn) btn.classList.toggle('visible', window.scrollY > 200);
     }
 
-    // INIT
     document.addEventListener('DOMContentLoaded', async () => {
-      // load header/footer from common.js
       if (typeof window.loadComponents === 'function') {
         await window.loadComponents();
       }
-      
-      // set active after components load
       setPrivacyActive();
-
       window.addEventListener('scroll', handleScroll);
-      
-      // extra: smooth scroll to top if any anchor
     });
-
-    // Ensure products data (if needed elsewhere) doesn't interfere, but privacy page doesn't need products
-    // Override any possible product rendering
-    if (window.location.pathname.includes('privacy')) {
-      // just safety
-    }
   </script>
-
-  <!-- optional tiny style to make header consistent -->
-  <style>
-    /* ensure header inherits same active style */
-    .nav-link.active { color: #d4af37 !important; }
-    .footer { border-top: 2px solid #000; }
-  </style>
 </body>
 </html>
