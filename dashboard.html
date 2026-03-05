@@ -2584,6 +2584,10 @@
       .products-list {
         display: none;
       }
+        .mobile-cards {
+    display: none;
+  }
+
     }
 
     @media (max-width: 480px) {
@@ -3153,96 +3157,7 @@ MyEssantia Team`;
     }
   }
 
-  // Load notifications from Firestore
-  async function loadNotifyRequests() {
-    try {
-      const loadingEl = document.getElementById('loading');
-      const tableWrapper = document.getElementById('table-wrapper');
-      const mobileCards = document.getElementById('mobile-cards');
-      const emptyState = document.getElementById('empty-state');
-      
-      if (loadingEl) loadingEl.style.display = 'flex';
-      if (tableWrapper) tableWrapper.style.display = 'none';
-      if (mobileCards) mobileCards.style.display = 'none';
-      if (emptyState) emptyState.style.display = 'none';
-
-      const snapshot = await db.collection('notifications')
-        .orderBy('timestamp', 'desc')
-        .get();
-
-      window.allNotifyRequests = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        timestamp: doc.data().timestamp?.toDate() || new Date(doc.data().timestamp)
-      }));
-
-      await loadNotifyProducts();
-      applyNotifyFilter(window.currentNotifyFilter);
-      updateNotifyStats();
-      
-      if (loadingEl) loadingEl.style.display = 'none';
-      
-      if (window.filteredNotifyRequests.length === 0) {
-        if (emptyState) emptyState.style.display = 'block';
-        if (tableWrapper) tableWrapper.style.display = 'none';
-        if (mobileCards) mobileCards.style.display = 'none';
-      } else {
-        if (tableWrapper) tableWrapper.style.display = 'block';
-        if (mobileCards) mobileCards.style.display = 'block';
-        renderNotifyRequests();
-      }
-    } catch (error) {
-      console.error('Error loading notifications:', error);
-      showNotification('Failed to load notifications', 'error');
-      const loadingEl = document.getElementById('loading');
-      const emptyState = document.getElementById('empty-state');
-      if (loadingEl) loadingEl.style.display = 'none';
-      if (emptyState) emptyState.style.display = 'block';
-    }
-  }
-
-  // Search functionality
-  const searchInput = document.getElementById('search-requests');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const searchTerm = e.target.value.toLowerCase();
-      
-      if (!searchTerm) {
-        applyNotifyFilter(window.currentNotifyFilter);
-      } else {
-        window.filteredNotifyRequests = window.allNotifyRequests.filter(req => {
-          const product = window.notifyProducts[req.productId] || { title: 'Unknown Product' };
-          return req.email?.toLowerCase().includes(searchTerm) ||
-                 product.title?.toLowerCase().includes(searchTerm) ||
-                 req.productId?.toLowerCase().includes(searchTerm);
-        });
-      }
-      
-      window.currentNotifyPage = 1;
-      renderNotifyRequests();
-    });
-  }
-
-  // Update statistics
-  function updateNotifyStats() {
-    const total = window.allNotifyRequests.length;
-    const pending = window.allNotifyRequests.filter(r => r.status === 'pending' || !r.status).length;
-    const notified = window.allNotifyRequests.filter(r => r.status === 'notified').length;
-    const uniqueProducts = new Set(window.allNotifyRequests.map(r => r.productId)).size;
-
-    const totalEl = document.getElementById('total-requests');
-    const pendingEl = document.getElementById('pending-requests');
-    const notifiedEl = document.getElementById('notified-requests');
-    const uniqueEl = document.getElementById('unique-products');
-    
-    if (totalEl) totalEl.textContent = total;
-    if (pendingEl) pendingEl.textContent = pending;
-    if (notifiedEl) notifiedEl.textContent = notified;
-    if (uniqueEl) uniqueEl.textContent = uniqueProducts;
-  }
-
-  // Render requests
-// Render requests - FIXED VERSION (no double rendering)
+// Render requests - FIXED VERSION for proper responsive layout
 function renderNotifyRequests() {
   if (!window.filteredNotifyRequests) return;
   
@@ -3264,8 +3179,12 @@ function renderNotifyRequests() {
   }
 
   if (emptyState) emptyState.style.display = 'none';
+  
+  // On desktop, show table, hide mobile cards
+  // On mobile, hide table, show mobile cards (handled by CSS)
   if (tableWrapper) tableWrapper.style.display = 'block';
   if (mobileCards) mobileCards.style.display = 'block';
+  
   if (pagination) pagination.style.display = window.filteredNotifyRequests.length > window.notifyItemsPerPage ? 'flex' : 'none';
   
   // Render table rows (desktop view)
@@ -3343,13 +3262,9 @@ function renderNotifyRequests() {
     }).join('');
   }
 
-  // Render mobile cards (mobile view) - FIXED: Only render if not already rendered above
+  // Render mobile cards (mobile view)
   const mobileCardsEl = document.getElementById('mobile-cards');
   if (mobileCardsEl) {
-    // Clear existing content first
-    mobileCardsEl.innerHTML = '';
-    
-    // Then render new content
     mobileCardsEl.innerHTML = pageRequests.map(req => {
       const product = window.notifyProducts[req.productId] || { 
         title: 'Unknown Product', 
