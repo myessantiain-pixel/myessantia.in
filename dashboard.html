@@ -2886,9 +2886,22 @@ async function loadNotifyPage() {
   const filtersBar = doc.querySelector('.filters-bar');
   if (filtersBar) notifyContent.appendChild(filtersBar.cloneNode(true));
   
-  // Add table container
+  // Add table container WITHOUT the tbody and mobile cards content
   const tableContainer = doc.querySelector('.table-container');
-  if (tableContainer) notifyContent.appendChild(tableContainer.cloneNode(true));
+  if (tableContainer) {
+    // Clone the container but remove the pre-filled content
+    const clonedContainer = tableContainer.cloneNode(true);
+    
+    // Clear out any pre-filled content in the table body
+    const tbody = clonedContainer.querySelector('#table-body');
+    if (tbody) tbody.innerHTML = '';
+    
+    // Clear out any pre-filled content in mobile cards
+    const mobileCards = clonedContainer.querySelector('#mobile-cards');
+    if (mobileCards) mobileCards.innerHTML = '';
+    
+    notifyContent.appendChild(clonedContainer);
+  }
   
   // Clear and append
   pageContainer.innerHTML = '';
