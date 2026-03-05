@@ -3271,14 +3271,11 @@ MyEssantia Team`;
       
       if (loadingEl) loadingEl.style.display = 'none';
       
-      if (window.filteredNotifyRequests.length === 0) {
-        if (emptyState) emptyState.style.display = 'block';
-        if (tableWrapper) tableWrapper.style.display = 'none';
-        if (mobileCards) mobileCards.style.display = 'none';
-      } else {
-        if (tableWrapper) tableWrapper.style.display = 'block';
-        renderNotifyRequests();
-      }
+    if (window.filteredNotifyRequests.length === 0) {
+  if (emptyState) emptyState.style.display = 'block';
+} else {
+  renderNotifyRequests();
+}
     } catch (error) {
       console.error('Error loading notifications:', error);
       showNotification('Failed to load notifications', 'error');
