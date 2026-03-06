@@ -3113,8 +3113,8 @@ async function loadReviewsPage() {
 function initializeReviewsPage() {
   console.log('Initializing reviews page...');
   
-  // Use existing Firebase instance (don't reinitialize)
-  window.db = db; // Use the existing db from main dashboard
+  // Use existing Firebase instance
+  window.db = db;
   
   // Initialize global variables
   window.allReviews = [];
@@ -3123,7 +3123,11 @@ function initializeReviewsPage() {
   window.currentReviewPage = 1;
   window.reviewItemsPerPage = 10;
   window.reviewProducts = {};
-  window.reviewImageUrl = '';
+  window.reviewImageUrl = ''; // Initialize without triggering notification
+  
+  // Make sure image preview is hidden without notification
+  const preview = document.getElementById('review-image-preview');
+  if (preview) preview.style.display = 'none';
   
   // Load data
   loadReviews();
@@ -3430,7 +3434,6 @@ function goToReviewPage(p) {
   renderReviews(); 
 }
 
-// Form functions
 function addReviewImageFromUrl() {
   const url = document.getElementById('review-image-url').value.trim();
   if (!url) {
@@ -3449,26 +3452,39 @@ function addReviewImageFromUrl() {
   if (previewImg) previewImg.src = url;
   if (preview) preview.style.display = 'block';
   document.getElementById('review-image-url').value = '';
-  showReviewNotification('Image added');
+  showReviewNotification('Image added'); // This will show "Image added"
 }
 
 function handleReviewImageUpload(files) {
-  if (!files.length) return;
+  if (!files || !files.length) return;
   const file = files[0];
+  
+  // Check file size (e.g., max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    showReviewNotification('Image too large (max 5MB)', 'error');
+    return;
+  }
+  
   const url = URL.createObjectURL(file);
   window.reviewImageUrl = url;
   const previewImg = document.getElementById('review-image-preview-img');
   if (previewImg) previewImg.src = url;
   document.getElementById('review-image-preview').style.display = 'block';
-  showReviewNotification('Image uploaded');
+  showReviewNotification('Image uploaded'); // This will show "Image uploaded"
 }
 
-function removeReviewImage() {
+function removeReviewImage(showNotification = true) {
   window.reviewImageUrl = '';
   document.getElementById('review-image-preview').style.display = 'none';
   const fileInput = document.getElementById('review-image-file');
   if (fileInput) fileInput.value = '';
-  showReviewNotification('Image removed');
+  const urlInput = document.getElementById('review-image-url');
+  if (urlInput) urlInput.value = '';
+  
+  // Only show notification if we're actually removing an image (not during initialization)
+  if (showNotification) {
+    showReviewNotification('Image removed');
+  }
 }
 
 function resetReviewForm() {
@@ -3480,10 +3496,12 @@ function resetReviewForm() {
   if (reviewId) reviewId.value = '';
   if (formTitle) formTitle.innerHTML = 'add new review';
   if (reviewVerified) reviewVerified.checked = true;
-  removeReviewImage();
+  
+  // Pass false to prevent notification during form reset
+  removeReviewImage(false);
+  
   document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
 }
-
 // Add a flag to prevent double submission
 let isSubmitting = false;
 
@@ -3561,13 +3579,18 @@ function editReview(id) {
   if (reviewComment) reviewComment.value = review.comment;
   if (reviewVerified) reviewVerified.checked = review.verified === true;
   
+  // Handle image - only show preview if there's an image
+  const preview = document.getElementById('review-image-preview');
+  const previewImg = document.getElementById('review-image-preview-img');
+  
   if (review.imageUrl) {
     window.reviewImageUrl = review.imageUrl;
-    const previewImg = document.getElementById('review-image-preview-img');
     if (previewImg) previewImg.src = review.imageUrl;
-    document.getElementById('review-image-preview').style.display = 'block';
+    if (preview) preview.style.display = 'block';
   } else {
-    removeReviewImage();
+    window.reviewImageUrl = '';
+    if (preview) preview.style.display = 'none';
+    if (previewImg) previewImg.src = '';
   }
   
   if (formTitle) formTitle.innerHTML = 'edit review';
