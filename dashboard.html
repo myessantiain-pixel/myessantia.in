@@ -3063,6 +3063,7 @@ async function loadNotifyPage() {
   initializeNotify();
 }
 
+// Updated loadReviewsPage function with rating overrides
 async function loadReviewsPage() {
   try {
     // Fetch reviews HTML
@@ -3081,6 +3082,7 @@ async function loadReviewsPage() {
       '.filters-bar',
       '.stats-grid',
       '.review-form',
+      '.rating-override-panel', // Add this new panel
       '.reviews-table'
     ];
     
@@ -3091,7 +3093,7 @@ async function loadReviewsPage() {
       }
     });
     
-    // Add loading state (if not already in reviews table)
+    // Add loading state
     const loadingEl = doc.querySelector('#reviews-loading');
     if (loadingEl) {
       reviewsContent.appendChild(loadingEl.cloneNode(true));
@@ -3101,7 +3103,7 @@ async function loadReviewsPage() {
     pageContainer.innerHTML = '';
     pageContainer.appendChild(reviewsContent);
     
-    // Initialize reviews functionality with proper Firebase context
+    // Initialize reviews functionality
     initializeReviewsPage();
     
   } catch (error) {
