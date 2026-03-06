@@ -804,6 +804,10 @@
     window.applyReviewFilter(filter);
     window.renderReviews();
   };
+
+  // Check if form exists and is visible
+console.log(document.getElementById('reviewForm')); 
+console.log(getComputedStyle(document.getElementById('reviewForm')).display);
   
   // Update statistics
   window.updateReviewStats = function() {
