@@ -3436,8 +3436,36 @@ async function loadPage(page) {
 
 function initializeReviews() {
   console.log('Initializing reviews page...');
+  
+  // The review page's script should have already run
+  // But we can call its initialization functions if needed
+  if (typeof window.loadReviews === 'function') {
+    window.loadReviews();
+  }
+  
+  // Setup any additional event listeners if needed
+  const searchInput = document.getElementById('search-reviews');
+  if (searchInput) {
+    // Remove any existing listeners and add new one
+    searchInput.removeEventListener('input', window.handleReviewSearch);
+    window.handleReviewSearch = function(e) {
+      const term = e.target.value.toLowerCase();
+      if (!term) { 
+        window.applyReviewFilter(window.currentReviewFilter); 
+      } else { 
+        window.filteredReviews = window.allReviews.filter(r => 
+          (r.reviewerName?.toLowerCase() || '').includes(term) || 
+          (r.city?.toLowerCase() || '').includes(term) || 
+          (r.comment?.toLowerCase() || '').includes(term)
+        ); 
+      }
+      window.currentReviewPage = 1;
+      window.renderReviews();
+    };
+    searchInput.addEventListener('input', window.handleReviewSearch);
+  }
 }
-
+  
 async function loadDashboardPage() {
   // Fetch dashboard HTML
   const response = await fetch('dashhome.html');
@@ -3525,27 +3553,32 @@ async function loadReviewsPage() {
   // Create a container for reviews content
   const reviewsContent = document.createElement('div');
   
-  // Add stats grid
-  const statsGrid = doc.querySelector('.stats-grid');
-  if (statsGrid) reviewsContent.appendChild(statsGrid.cloneNode(true));
-  
-  // Add review form panel
-  const formPanel = doc.querySelector('.email-template-panel');
-  if (formPanel) reviewsContent.appendChild(formPanel.cloneNode(true));
+  // Add review form (not email-template-panel)
+  const reviewForm = doc.querySelector('.review-form');
+  if (reviewForm) reviewsContent.appendChild(reviewForm.cloneNode(true));
   
   // Add filters bar
   const filtersBar = doc.querySelector('.filters-bar');
   if (filtersBar) reviewsContent.appendChild(filtersBar.cloneNode(true));
   
-  // Add table container
-  const tableContainer = doc.querySelector('.table-container');
-  if (tableContainer) {
-    const clonedContainer = tableContainer.cloneNode(true);
-    const tbody = clonedContainer.querySelector('#table-body');
+  // Add stats grid
+  const statsGrid = doc.querySelector('.stats-grid');
+  if (statsGrid) reviewsContent.appendChild(statsGrid.cloneNode(true));
+  
+  // Add loading state
+  const loadingEl = doc.querySelector('#reviews-loading');
+  if (loadingEl) reviewsContent.appendChild(loadingEl.cloneNode(true));
+  
+  // Add reviews table (not table-container)
+  const reviewsTable = doc.querySelector('.reviews-table');
+  if (reviewsTable) {
+    const clonedTable = reviewsTable.cloneNode(true);
+    // Clear dynamic content
+    const tbody = clonedTable.querySelector('#reviews-table-body');
     if (tbody) tbody.innerHTML = '';
-    const mobileCards = clonedContainer.querySelector('#mobile-cards');
+    const mobileCards = clonedTable.querySelector('#reviews-mobile-cards');
     if (mobileCards) mobileCards.innerHTML = '';
-    reviewsContent.appendChild(clonedContainer);
+    reviewsContent.appendChild(clonedTable);
   }
   
   // Clear and append
@@ -3554,8 +3587,11 @@ async function loadReviewsPage() {
   
   // Initialize reviews functionality
   initializeReviews();
+  
+  // The review page's own script will run automatically
+  // because it's included in the fetched HTML
 }
-
+  
 // ========== DASHBOARD FUNCTIONS ==========
 function initializeDashboard() {
   console.log('Initializing dashboard...');
