@@ -686,30 +686,365 @@
 </style>
 
 <script>
-(function() {
-  console.log('Reviews page loaded');
+// ===== GLOBALLY ACCESSIBLE REVIEW FUNCTIONS =====
+// Store variables in window object
+window.allReviews = [];
+window.filteredReviews = [];
+window.currentReviewFilter = 'all';
+window.currentReviewPage = 1;
+window.reviewItemsPerPage = 10;
+window.reviewProducts = {};
+window.reviewImageUrl = '';
+
+// Show notification function (global)
+window.showReviewNotification = function(message, type = 'success') {
+  // Try to use parent notification first
+  if (typeof window.parent.showNotification === 'function') {
+    window.parent.showNotification(message, type);
+    return;
+  }
   
-  // Global variables
-  window.allReviews = [];
-  window.filteredReviews = [];
-  window.currentReviewFilter = 'all';
+  // Fallback notification
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  setTimeout(() => {
+    notification.remove();
+  }, 2000);
+};
+
+// Load products for dropdown
+window.loadReviewProducts = async function() {
+  try {
+    const snap = await db.collection('products').get();
+    let options = '<option value="">Choose product...</option>';
+    snap.docs.forEach(doc => {
+      const prod = doc.data();
+      window.reviewProducts[doc.id] = { 
+        title: prod.title, 
+        primaryImg: prod.primaryImg || (prod.media?.[0]?.url) || 'https://via.placeholder.com/80',
+        price: prod.price
+      };
+      options += `<option value="${doc.id}">${prod.title}</option>`;
+    });
+    const selectProduct = document.getElementById('review-product-id');
+    if (selectProduct) selectProduct.innerHTML = options;
+  } catch (e) { 
+    console.error('Error loading products:', e); 
+    window.showReviewNotification('Error loading products', 'error');
+  }
+};
+
+// Load reviews from Firestore
+window.loadReviews = async function() {
+  const loadingEl = document.getElementById('reviews-loading');
+  if (loadingEl) loadingEl.style.display = 'flex';
+  
+  try {
+    const snap = await db.collection('reviews').orderBy('timestamp', 'desc').get();
+    window.allReviews = snap.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      timestamp: doc.data().timestamp?.toDate() || new Date()
+    }));
+    
+    await window.loadReviewProducts();
+    window.applyReviewFilter(window.currentReviewFilter);
+    window.updateReviewStats();
+    window.renderReviews();
+    
+  } catch (error) {
+    console.error('Error loading reviews:', error);
+    window.showReviewNotification('error loading reviews', 'error');
+  } finally {
+    if (loadingEl) loadingEl.style.display = 'none';
+  }
+};
+
+// Apply filter logic
+window.applyReviewFilter = function(filter) {
+  if (filter === 'all') {
+    window.filteredReviews = [...window.allReviews];
+  } else if (filter === 'verified') {
+    window.filteredReviews = window.allReviews.filter(r => r.verified === true);
+  } else if (filter === 'unverified') {
+    window.filteredReviews = window.allReviews.filter(r => !r.verified);
+  } else if (filter === 'with-image') {
+    window.filteredReviews = window.allReviews.filter(r => r.imageUrl && r.imageUrl.trim() !== '');
+  }
+};
+
+// Filter reviews function (global)
+window.filterReviews = function(filter) {
+  window.currentReviewFilter = filter;
   window.currentReviewPage = 1;
-  window.reviewItemsPerPage = 10;
-  window.reviewProducts = {};
-  window.reviewImageUrl = '';
   
-  // DOM Elements
+  document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+  const activeTab = document.getElementById(`filter-${filter}`);
+  if (activeTab) activeTab.classList.add('active');
+  
+  window.applyReviewFilter(filter);
+  window.renderReviews();
+};
+
+// Update statistics
+window.updateReviewStats = function() {
   const totalEl = document.getElementById('total-reviews');
   const verifiedEl = document.getElementById('verified-reviews');
   const imagesEl = document.getElementById('reviews-with-images');
   const productsReviewedEl = document.getElementById('reviewed-products');
+  
+  if (totalEl) totalEl.textContent = window.allReviews.length;
+  if (verifiedEl) verifiedEl.textContent = window.allReviews.filter(r => r.verified).length;
+  if (imagesEl) imagesEl.textContent = window.allReviews.filter(r => r.imageUrl && r.imageUrl.trim() !== '').length;
+  if (productsReviewedEl) productsReviewedEl.textContent = new Set(window.allReviews.map(r => r.productId)).size;
+};
+
+// Render reviews
+window.renderReviews = function() {
+  if (!window.filteredReviews) return;
+  
   const tableBody = document.getElementById('reviews-table-body');
   const mobileCards = document.getElementById('reviews-mobile-cards');
   const emptyState = document.getElementById('reviews-empty-state');
   const paginationDiv = document.getElementById('reviews-pagination');
-  const loadingEl = document.getElementById('reviews-loading');
-  const selectProduct = document.getElementById('review-product-id');
+  
+  if (window.filteredReviews.length === 0) {
+    if (emptyState) emptyState.style.display = 'block';
+    if (tableBody) tableBody.innerHTML = '';
+    if (mobileCards) mobileCards.innerHTML = '';
+    if (paginationDiv) paginationDiv.style.display = 'none';
+    return;
+  }
+  
+  if (emptyState) emptyState.style.display = 'none';
+  
+  const start = (window.currentReviewPage - 1) * window.reviewItemsPerPage;
+  const end = start + window.reviewItemsPerPage;
+  const pageReviews = window.filteredReviews.slice(start, end);
+  
+  // Desktop rows
+  if (tableBody) {
+    tableBody.innerHTML = pageReviews.map(review => {
+      const product = window.reviewProducts[review.productId] || { title: 'Unknown', primaryImg: 'https://via.placeholder.com/80' };
+      const stars = '★'.repeat(Math.floor(review.rating)) + (review.rating % 1 >= 0.5 ? '½' : '');
+      const date = review.timestamp ? review.timestamp.toLocaleDateString('en-IN',{day:'numeric', month:'short', year:'numeric'}) : '';
+      return `<tr>
+        <td>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="product-thumb" style="background-image:url('${product.primaryImg}')"></div>
+            <span class="product-title">${product.title}</span>
+          </div>
+        </td>
+        <td>
+          <div style="font-weight:700;">${review.reviewerName}</div>
+          <div style="font-size:0.7rem;">${review.city || ''}</div>
+        </td>
+        <td>
+          <span class="star-rating">${stars}</span> ${review.rating}
+        </td>
+        <td style="max-width:200px;">${review.comment?.substring(0,50)}${review.comment?.length>50?'…':''}</td>
+        <td>
+          ${review.imageUrl ? 
+            `<div class="review-thumb" style="background-image:url('${review.imageUrl}');" onclick="window.open('${review.imageUrl}')"></div>` : 
+            '—'
+          }
+        </td>
+        <td>
+          ${review.verified ? 
+            '<span class="verified-badge"><i class="fa-solid fa-check"></i> verified</span>' : 
+            'no'
+          }
+        </td>
+        <td><span class="timestamp">${date}</span></td>
+        <td>
+          <div class="action-btns">
+            <button class="action-btn" onclick="editReview('${review.id}')"><i class="fa-solid fa-edit"></i></button>
+            <button class="action-btn" onclick="deleteReview('${review.id}')"><i class="fa-solid fa-trash"></i></button>
+            <button class="action-btn" onclick="viewReviewProduct('${review.productId}')"><i class="fa-solid fa-eye"></i></button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+  
+  // Mobile cards
+  if (mobileCards) {
+    mobileCards.innerHTML = pageReviews.map(review => {
+      const product = window.reviewProducts[review.productId] || { title: 'Unknown', primaryImg: 'https://via.placeholder.com/80' };
+      const stars = '★'.repeat(Math.floor(review.rating)) + (review.rating % 1 >= 0.5 ? '½' : '');
+      return `<div class="notification-card">
+        <div class="card-header">
+          <div class="card-thumb" style="background-image:url('${product.primaryImg}')"></div>
+          <div class="card-title">
+            <h4>${product.title}</h4>
+            <span class="product-id">${review.productId?.slice(0,8)}</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-row"><i class="fa-solid fa-user"></i> ${review.reviewerName} (${review.city})</div>
+          <div class="card-row"><i class="fa-solid fa-star"></i> ${stars} (${review.rating})</div>
+          <div class="card-row"><i class="fa-solid fa-comment"></i> ${review.comment}</div>
+          ${review.imageUrl ? 
+            `<div class="card-row"><i class="fa-solid fa-image"></i> <div class="review-thumb" style="background-image:url('${review.imageUrl}');" onclick="window.open('${review.imageUrl}')"></div></div>` : 
+            ''
+          }
+          <div class="card-row"><i class="fa-regular fa-calendar"></i> ${review.timestamp?.toLocaleDateString()}</div>
+          <div class="card-row"><i class="fa-regular fa-circle-check"></i> verified: ${review.verified ? '✓' : '✗'}</div>
+        </div>
+        <div class="card-footer">
+          <span>ID: ${review.id.slice(0,6)}</span>
+          <div class="card-actions">
+            <button class="action-btn" onclick="editReview('${review.id}')"><i class="fa-solid fa-edit"></i></button>
+            <button class="action-btn" onclick="deleteReview('${review.id}')"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  
+  window.updateReviewPagination();
+};
+
+// Pagination functions
+window.updateReviewPagination = function() {
+  const paginationDiv = document.getElementById('reviews-pagination');
+  const prevBtn = document.getElementById('prev-review-page');
+  const nextBtn = document.getElementById('next-review-page');
+  const pageNumbers = document.getElementById('review-page-numbers');
+  
+  const totalPages = Math.ceil(window.filteredReviews.length / window.reviewItemsPerPage);
+  if (totalPages <= 1) { 
+    if (paginationDiv) paginationDiv.style.display = 'none'; 
+    return; 
+  }
+  
+  if (paginationDiv) paginationDiv.style.display = 'flex';
+  
+  if (prevBtn) prevBtn.disabled = window.currentReviewPage === 1;
+  if (nextBtn) nextBtn.disabled = window.currentReviewPage === totalPages;
+  
+  let nums = '';
+  for (let i = Math.max(1, window.currentReviewPage-2); i <= Math.min(totalPages, window.currentReviewPage+2); i++) {
+    nums += `<button class="page-btn ${i===window.currentReviewPage?'active':''}" onclick="goToReviewPage(${i})">${i}</button>`;
+  }
+  if (pageNumbers) pageNumbers.innerHTML = nums;
+};
+
+window.changeReviewPage = function(dir) {
+  const total = Math.ceil(window.filteredReviews.length / window.reviewItemsPerPage);
+  if (dir === 'prev' && window.currentReviewPage > 1) window.currentReviewPage--;
+  if (dir === 'next' && window.currentReviewPage < total) window.currentReviewPage++;
+  window.renderReviews();
+};
+
+window.goToReviewPage = function(p) { 
+  window.currentReviewPage = p; 
+  window.renderReviews(); 
+};
+
+// Form functions (global)
+window.addReviewImageFromUrl = function() {
+  const url = document.getElementById('review-image-url').value.trim();
+  if (!url) {
+    window.showReviewNotification('enter url', 'error');
+    return;
+  }
+  try { 
+    new URL(url); 
+  } catch { 
+    window.showReviewNotification('invalid url', 'error'); 
+    return; 
+  }
+  window.reviewImageUrl = url;
+  const preview = document.getElementById('review-image-preview');
+  const previewImg = document.getElementById('review-image-preview-img');
+  if (previewImg) previewImg.src = url;
+  if (preview) preview.style.display = 'block';
+  document.getElementById('review-image-url').value = '';
+  window.showReviewNotification('image added');
+};
+
+window.handleReviewImageUpload = function(files) {
+  if (!files.length) return;
+  const file = files[0];
+  const url = URL.createObjectURL(file);
+  window.reviewImageUrl = url;
+  const previewImg = document.getElementById('review-image-preview-img');
+  if (previewImg) previewImg.src = url;
+  document.getElementById('review-image-preview').style.display = 'block';
+  window.showReviewNotification('image uploaded');
+};
+
+window.removeReviewImage = function() {
+  window.reviewImageUrl = '';
+  document.getElementById('review-image-preview').style.display = 'none';
+  const fileInput = document.getElementById('review-image-file');
+  if (fileInput) fileInput.value = '';
+  window.showReviewNotification('image removed');
+};
+
+window.resetReviewForm = function() {
+  document.getElementById('review-form').reset();
   const reviewId = document.getElementById('review-id');
+  const formTitle = document.getElementById('review-form-title');
+  const reviewVerified = document.getElementById('review-verified');
+  
+  if (reviewId) reviewId.value = '';
+  if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> add new review';
+  if (reviewVerified) reviewVerified.checked = true;
+  window.removeReviewImage();
+  document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
+};
+
+window.handleReviewSubmit = async function(e) {
+  e.preventDefault();
+  
+  const productId = document.getElementById('review-product-id').value;
+  if (!productId) { 
+    window.showReviewNotification('select product', 'error'); 
+    return false; 
+  }
+  
+  const reviewData = {
+    productId: productId,
+    reviewerName: document.getElementById('reviewer-name').value,
+    city: document.getElementById('reviewer-city').value,
+    rating: parseFloat(document.getElementById('review-rating').value),
+    comment: document.getElementById('review-comment').value,
+    verified: document.getElementById('review-verified').checked,
+    imageUrl: window.reviewImageUrl || '',
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  
+  try {
+    const reviewId = document.getElementById('review-id');
+    if (reviewId && reviewId.value) {
+      await db.collection('reviews').doc(reviewId.value).update(reviewData);
+      window.showReviewNotification('review updated');
+    } else {
+      await db.collection('reviews').add({ 
+        ...reviewData, 
+        timestamp: firebase.firestore.FieldValue.serverTimestamp() 
+      });
+      window.showReviewNotification('review added');
+    }
+    window.resetReviewForm();
+    await window.loadReviews();
+  } catch (err) { 
+    console.error(err);
+    window.showReviewNotification('error saving', 'error'); 
+  }
+  return false;
+};
+
+window.editReview = function(id) {
+  const review = window.allReviews.find(r => r.id === id);
+  if (!review) return;
+  
+  const reviewId = document.getElementById('review-id');
+  const selectProduct = document.getElementById('review-product-id');
   const reviewerName = document.getElementById('reviewer-name');
   const reviewerCity = document.getElementById('reviewer-city');
   const reviewRating = document.getElementById('review-rating');
@@ -717,413 +1052,85 @@
   const reviewVerified = document.getElementById('review-verified');
   const formTitle = document.getElementById('review-form-title');
   
-  // Show notification function
-  function showNotification(message, type = 'success') {
-    // Try to use parent notification first
-    if (typeof window.parent.showNotification === 'function') {
-      window.parent.showNotification(message, type);
-      return;
-    }
-    
-    // Fallback notification
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    setTimeout(() => {
-      notification.remove();
-    }, 2000);
+  if (reviewId) reviewId.value = review.id;
+  if (selectProduct) selectProduct.value = review.productId;
+  if (reviewerName) reviewerName.value = review.reviewerName;
+  if (reviewerCity) reviewerCity.value = review.city || '';
+  if (reviewRating) reviewRating.value = review.rating;
+  if (reviewComment) reviewComment.value = review.comment;
+  if (reviewVerified) reviewVerified.checked = review.verified === true;
+  
+  if (review.imageUrl) {
+    window.reviewImageUrl = review.imageUrl;
+    const previewImg = document.getElementById('review-image-preview-img');
+    if (previewImg) previewImg.src = review.imageUrl;
+    document.getElementById('review-image-preview').style.display = 'block';
+  } else {
+    window.removeReviewImage();
   }
   
-  // Load products for dropdown
-  window.loadReviewProducts = async function() {
-    try {
-      const snap = await db.collection('products').get();
-      let options = '<option value="">Choose product...</option>';
-      snap.docs.forEach(doc => {
-        const prod = doc.data();
-        window.reviewProducts[doc.id] = { 
-          title: prod.title, 
-          primaryImg: prod.primaryImg || (prod.media?.[0]?.url) || 'https://via.placeholder.com/80',
-          price: prod.price
-        };
-        options += `<option value="${doc.id}">${prod.title}</option>`;
-      });
-      if (selectProduct) selectProduct.innerHTML = options;
-    } catch (e) { 
-      console.error('Error loading products:', e); 
-      showNotification('Error loading products', 'error');
-    }
-  };
-  
-  // Load reviews from Firestore
-  window.loadReviews = async function() {
-    if (loadingEl) loadingEl.style.display = 'flex';
-    
-    try {
-      const snap = await db.collection('reviews').orderBy('timestamp', 'desc').get();
-      window.allReviews = snap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        timestamp: doc.data().timestamp?.toDate() || new Date()
-      }));
-      
-      await window.loadReviewProducts();
-      window.applyReviewFilter(window.currentReviewFilter);
-      window.updateReviewStats();
-      window.renderReviews();
-      
-    } catch (error) {
-      console.error('Error loading reviews:', error);
-      showNotification('error loading reviews', 'error');
-    } finally {
-      if (loadingEl) loadingEl.style.display = 'none';
-    }
-  };
-  
-  // Apply filter logic
-  window.applyReviewFilter = function(filter) {
-    if (filter === 'all') {
-      window.filteredReviews = [...window.allReviews];
-    } else if (filter === 'verified') {
-      window.filteredReviews = window.allReviews.filter(r => r.verified === true);
-    } else if (filter === 'unverified') {
-      window.filteredReviews = window.allReviews.filter(r => !r.verified);
-    } else if (filter === 'with-image') {
-      window.filteredReviews = window.allReviews.filter(r => r.imageUrl && r.imageUrl.trim() !== '');
-    }
-  };
-  
-  // Filter reviews function
-  window.filterReviews = function(filter) {
-    window.currentReviewFilter = filter;
-    window.currentReviewPage = 1;
-    
-    document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-    const activeTab = document.getElementById(`filter-${filter}`);
-    if (activeTab) activeTab.classList.add('active');
-    
-    window.applyReviewFilter(filter);
-    window.renderReviews();
-  };
-  
-  // Update statistics
-  window.updateReviewStats = function() {
-    if (totalEl) totalEl.textContent = window.allReviews.length;
-    if (verifiedEl) verifiedEl.textContent = window.allReviews.filter(r => r.verified).length;
-    if (imagesEl) imagesEl.textContent = window.allReviews.filter(r => r.imageUrl && r.imageUrl.trim() !== '').length;
-    if (productsReviewedEl) productsReviewedEl.textContent = new Set(window.allReviews.map(r => r.productId)).size;
-  };
-  
-  // Render reviews
-  window.renderReviews = function() {
-    if (!window.filteredReviews) return;
-    
-    if (window.filteredReviews.length === 0) {
-      if (emptyState) emptyState.style.display = 'block';
-      if (tableBody) tableBody.innerHTML = '';
-      if (mobileCards) mobileCards.innerHTML = '';
-      if (paginationDiv) paginationDiv.style.display = 'none';
-      return;
-    }
-    
-    if (emptyState) emptyState.style.display = 'none';
-    
-    const start = (window.currentReviewPage - 1) * window.reviewItemsPerPage;
-    const end = start + window.reviewItemsPerPage;
-    const pageReviews = window.filteredReviews.slice(start, end);
-    
-    // Desktop rows
-    if (tableBody) {
-      tableBody.innerHTML = pageReviews.map(review => {
-        const product = window.reviewProducts[review.productId] || { title: 'Unknown', primaryImg: 'https://via.placeholder.com/80' };
-        const stars = '★'.repeat(Math.floor(review.rating)) + (review.rating % 1 >= 0.5 ? '½' : '');
-        const date = review.timestamp ? review.timestamp.toLocaleDateString('en-IN',{day:'numeric', month:'short', year:'numeric'}) : '';
-        return `<tr>
-          <td>
-            <div style="display:flex; align-items:center; gap:10px;">
-              <div class="product-thumb" style="background-image:url('${product.primaryImg}')"></div>
-              <span class="product-title">${product.title}</span>
-            </div>
-          </td>
-          <td>
-            <div style="font-weight:700;">${review.reviewerName}</div>
-            <div style="font-size:0.7rem;">${review.city || ''}</div>
-          </td>
-          <td>
-            <span class="star-rating">${stars}</span> ${review.rating}
-          </td>
-          <td style="max-width:200px;">${review.comment?.substring(0,50)}${review.comment?.length>50?'…':''}</td>
-          <td>
-            ${review.imageUrl ? 
-              `<div class="review-thumb" style="background-image:url('${review.imageUrl}');" onclick="window.open('${review.imageUrl}')"></div>` : 
-              '—'
-            }
-          </td>
-          <td>
-            ${review.verified ? 
-              '<span class="verified-badge"><i class="fa-solid fa-check"></i> verified</span>' : 
-              'no'
-            }
-          </td>
-          <td><span class="timestamp">${date}</span></td>
-          <td>
-            <div class="action-btns">
-              <button class="action-btn" onclick="editReview('${review.id}')"><i class="fa-solid fa-edit"></i></button>
-              <button class="action-btn" onclick="deleteReview('${review.id}')"><i class="fa-solid fa-trash"></i></button>
-              <button class="action-btn" onclick="viewReviewProduct('${review.productId}')"><i class="fa-solid fa-eye"></i></button>
-            </div>
-          </td>
-        </tr>`;
-      }).join('');
-    }
-    
-    // Mobile cards
-    if (mobileCards) {
-      mobileCards.innerHTML = pageReviews.map(review => {
-        const product = window.reviewProducts[review.productId] || { title: 'Unknown', primaryImg: 'https://via.placeholder.com/80' };
-        const stars = '★'.repeat(Math.floor(review.rating)) + (review.rating % 1 >= 0.5 ? '½' : '');
-        return `<div class="notification-card">
-          <div class="card-header">
-            <div class="card-thumb" style="background-image:url('${product.primaryImg}')"></div>
-            <div class="card-title">
-              <h4>${product.title}</h4>
-              <span class="product-id">${review.productId?.slice(0,8)}</span>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-row"><i class="fa-solid fa-user"></i> ${review.reviewerName} (${review.city})</div>
-            <div class="card-row"><i class="fa-solid fa-star"></i> ${stars} (${review.rating})</div>
-            <div class="card-row"><i class="fa-solid fa-comment"></i> ${review.comment}</div>
-            ${review.imageUrl ? 
-              `<div class="card-row"><i class="fa-solid fa-image"></i> <div class="review-thumb" style="background-image:url('${review.imageUrl}');" onclick="window.open('${review.imageUrl}')"></div></div>` : 
-              ''
-            }
-            <div class="card-row"><i class="fa-regular fa-calendar"></i> ${review.timestamp?.toLocaleDateString()}</div>
-            <div class="card-row"><i class="fa-regular fa-circle-check"></i> verified: ${review.verified ? '✓' : '✗'}</div>
-          </div>
-          <div class="card-footer">
-            <span>ID: ${review.id.slice(0,6)}</span>
-            <div class="card-actions">
-              <button class="action-btn" onclick="editReview('${review.id}')"><i class="fa-solid fa-edit"></i></button>
-              <button class="action-btn" onclick="deleteReview('${review.id}')"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          </div>
-        </div>`;
-      }).join('');
-    }
-    
-    window.updateReviewPagination();
-  };
-  
-  // Pagination functions
-  window.updateReviewPagination = function() {
-    const totalPages = Math.ceil(window.filteredReviews.length / window.reviewItemsPerPage);
-    if (totalPages <= 1) { 
-      if (paginationDiv) paginationDiv.style.display = 'none'; 
-      return; 
-    }
-    
-    if (paginationDiv) paginationDiv.style.display = 'flex';
-    
-    const prevBtn = document.getElementById('prev-review-page');
-    const nextBtn = document.getElementById('next-review-page');
-    const pageNumbers = document.getElementById('review-page-numbers');
-    
-    if (prevBtn) prevBtn.disabled = window.currentReviewPage === 1;
-    if (nextBtn) nextBtn.disabled = window.currentReviewPage === totalPages;
-    
-    let nums = '';
-    for (let i = Math.max(1, window.currentReviewPage-2); i <= Math.min(totalPages, window.currentReviewPage+2); i++) {
-      nums += `<button class="page-btn ${i===window.currentReviewPage?'active':''}" onclick="goToReviewPage(${i})">${i}</button>`;
-    }
-    if (pageNumbers) pageNumbers.innerHTML = nums;
-  };
-  
-  window.changeReviewPage = function(dir) {
-    const total = Math.ceil(window.filteredReviews.length / window.reviewItemsPerPage);
-    if (dir === 'prev' && window.currentReviewPage > 1) window.currentReviewPage--;
-    if (dir === 'next' && window.currentReviewPage < total) window.currentReviewPage++;
-    window.renderReviews();
-  };
-  
-  window.goToReviewPage = function(p) { 
-    window.currentReviewPage = p; 
-    window.renderReviews(); 
-  };
-  
-  // Form functions
-  window.addReviewImageFromUrl = function() {
-    const url = document.getElementById('review-image-url').value.trim();
-    if (!url) {
-      showNotification('enter url', 'error');
-      return;
-    }
-    try { 
-      new URL(url); 
-    } catch { 
-      showNotification('invalid url', 'error'); 
-      return; 
-    }
-    window.reviewImageUrl = url;
-    const preview = document.getElementById('review-image-preview');
-    const previewImg = document.getElementById('review-image-preview-img');
-    if (previewImg) previewImg.src = url;
-    if (preview) preview.style.display = 'block';
-    document.getElementById('review-image-url').value = '';
-    showNotification('image added');
-  };
-  
-  window.handleReviewImageUpload = function(files) {
-    if (!files.length) return;
-    const file = files[0];
-    const url = URL.createObjectURL(file);
-    window.reviewImageUrl = url;
-    const previewImg = document.getElementById('review-image-preview-img');
-    if (previewImg) previewImg.src = url;
-    document.getElementById('review-image-preview').style.display = 'block';
-    showNotification('image uploaded');
-  };
-  
-  window.removeReviewImage = function() {
-    window.reviewImageUrl = '';
-    document.getElementById('review-image-preview').style.display = 'none';
-    const fileInput = document.getElementById('review-image-file');
-    if (fileInput) fileInput.value = '';
-    showNotification('image removed');
-  };
-  
-  window.resetReviewForm = function() {
-    document.getElementById('review-form').reset();
-    if (reviewId) reviewId.value = '';
-    if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> add new review';
-    if (reviewVerified) reviewVerified.checked = true;
-    window.removeReviewImage();
-    document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
-  };
-  
-  window.handleReviewSubmit = async function(e) {
-    e.preventDefault();
-    
-    const productId = document.getElementById('review-product-id').value;
-    if (!productId) { 
-      showNotification('select product', 'error'); 
-      return false; 
-    }
-    
-    const reviewData = {
-      productId: productId,
-      reviewerName: document.getElementById('reviewer-name').value,
-      city: document.getElementById('reviewer-city').value,
-      rating: parseFloat(document.getElementById('review-rating').value),
-      comment: document.getElementById('review-comment').value,
-      verified: document.getElementById('review-verified').checked,
-      imageUrl: window.reviewImageUrl || '',
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> edit review';
+  document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
+};
+
+window.deleteReview = async function(id) {
+  if (!confirm('delete review?')) return;
+  try { 
+    await db.collection('reviews').doc(id).delete(); 
+    window.showReviewNotification('deleted'); 
+    await window.loadReviews(); 
+  } catch { 
+    window.showReviewNotification('error', 'error'); 
+  }
+};
+
+window.viewReviewProduct = function(productId) { 
+  window.open(`product.html?id=${productId}`, '_blank'); 
+};
+
+// Export CSV (global)
+window.exportReviews = function() {
+  const data = window.filteredReviews.map(review => {
+    const product = window.reviewProducts[review.productId] || { title: '' };
+    return {
+      product: product.title,
+      reviewer: review.reviewerName,
+      city: review.city,
+      rating: review.rating,
+      comment: review.comment,
+      verified: review.verified ? 'yes' : 'no',
+      image: review.imageUrl ? 'yes' : 'no',
+      date: review.timestamp?.toLocaleDateString() || ''
     };
-    
-    try {
-      if (reviewId && reviewId.value) {
-        await db.collection('reviews').doc(reviewId.value).update(reviewData);
-        showNotification('review updated');
-      } else {
-        await db.collection('reviews').add({ 
-          ...reviewData, 
-          timestamp: firebase.firestore.FieldValue.serverTimestamp() 
-        });
-        showNotification('review added');
-      }
-      window.resetReviewForm();
-      await window.loadReviews();
-    } catch (err) { 
-      console.error(err);
-      showNotification('error saving', 'error'); 
-    }
-    return false;
-  };
+  });
   
-  window.editReview = function(id) {
-    const review = window.allReviews.find(r => r.id === id);
-    if (!review) return;
-    
-    if (reviewId) reviewId.value = review.id;
-    if (selectProduct) selectProduct.value = review.productId;
-    if (reviewerName) reviewerName.value = review.reviewerName;
-    if (reviewerCity) reviewerCity.value = review.city || '';
-    if (reviewRating) reviewRating.value = review.rating;
-    if (reviewComment) reviewComment.value = review.comment;
-    if (reviewVerified) reviewVerified.checked = review.verified === true;
-    
-    if (review.imageUrl) {
-      window.reviewImageUrl = review.imageUrl;
-      const previewImg = document.getElementById('review-image-preview-img');
-      if (previewImg) previewImg.src = review.imageUrl;
-      document.getElementById('review-image-preview').style.display = 'block';
-    } else {
-      window.removeReviewImage();
-    }
-    
-    if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> edit review';
-    document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
-  };
+  if (data.length === 0) {
+    window.showReviewNotification('no reviews to export', 'error');
+    return;
+  }
   
-  window.deleteReview = async function(id) {
-    if (!confirm('delete review?')) return;
-    try { 
-      await db.collection('reviews').doc(id).delete(); 
-      showNotification('deleted'); 
-      await window.loadReviews(); 
-    } catch { 
-      showNotification('error', 'error'); 
-    }
-  };
+  const headers = ['product','reviewer','city','rating','comment','verified','image','date'];
+  const csvRows = [];
+  csvRows.push(headers.join(','));
   
-  window.viewReviewProduct = function(productId) { 
-    window.open(`product.html?id=${productId}`, '_blank'); 
-  };
-  
-  // Export CSV
-  window.exportReviews = function() {
-    const data = window.filteredReviews.map(review => {
-      const product = window.reviewProducts[review.productId] || { title: '' };
-      return {
-        product: product.title,
-        reviewer: review.reviewerName,
-        city: review.city,
-        rating: review.rating,
-        comment: review.comment,
-        verified: review.verified ? 'yes' : 'no',
-        image: review.imageUrl ? 'yes' : 'no',
-        date: review.timestamp?.toLocaleDateString() || ''
-      };
+  for (const row of data) {
+    const values = headers.map(header => {
+      const value = row[header]?.toString() || '';
+      return `"${value.replace(/"/g, '""')}"`;
     });
-    
-    if (data.length === 0) {
-      showNotification('no reviews to export', 'error');
-      return;
-    }
-    
-    const headers = ['product','reviewer','city','rating','comment','verified','image','date'];
-    const csvRows = [];
-    csvRows.push(headers.join(','));
-    
-    for (const row of data) {
-      const values = headers.map(header => {
-        const value = row[header]?.toString() || '';
-        return `"${value.replace(/"/g, '""')}"`;
-      });
-      csvRows.push(values.join(','));
-    }
-    
-    const blob = new Blob([csvRows.join('\n')], {type:'text/csv'});
-    const a = document.createElement('a'); 
-    a.href = URL.createObjectURL(blob); 
-    a.download = 'reviews.csv'; 
-    a.click();
-    showNotification('exported');
-  };
+    csvRows.push(values.join(','));
+  }
   
-  // Search
+  const blob = new Blob([csvRows.join('\n')], {type:'text/csv'});
+  const a = document.createElement('a'); 
+  a.href = URL.createObjectURL(blob); 
+  a.download = 'reviews.csv'; 
+  a.click();
+  window.showReviewNotification('exported');
+};
+
+// Search
+document.addEventListener('DOMContentLoaded', function() {
   const searchInput = document.getElementById('search-reviews');
   if (searchInput) {
     searchInput.addEventListener('input', function(e) {
@@ -1144,5 +1151,5 @@
   
   // Initialize
   window.loadReviews();
-})();
+});
 </script>
