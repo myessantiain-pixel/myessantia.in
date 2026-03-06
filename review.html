@@ -1,4 +1,4 @@
-<!-- review.html - Complete working version -->
+<!-- review.html - Complete working version with full form -->
 <div>
   <!-- Stats Cards -->
   <div class="stats-grid">
@@ -40,10 +40,10 @@
     </div>
   </div>
 
-  <!-- Review Form Panel -->
+  <!-- Review Form Panel (Add/Edit) -->
   <div class="review-form-panel" id="reviewFormPanel">
     <div class="panel-header">
-      <h3><i class="fa-solid fa-pen-to-square"></i> <span id="review-form-title">Add New Review</span></h3>
+      <h3><i class="fa-solid fa-pen-to-square"></i> <span id="review-form-title">add new review</span></h3>
       <div class="close-panel" onclick="toggleReviewPanel()">
         <i class="fa-solid fa-times"></i>
       </div>
@@ -54,93 +54,81 @@
         
         <div class="form-row">
           <div class="form-group">
-            <label><i class="fa-solid fa-box"></i> Product</label>
-            <div class="input-wrapper">
-              <i class="fa-solid fa-box input-icon"></i>
-              <select id="review-product-id" required>
-                <option value="">Select a product...</option>
-              </select>
-            </div>
+            <label><i class="fa-solid fa-box"></i> product</label>
+            <select id="review-product-id" required>
+              <option value="">Choose product...</option>
+            </select>
           </div>
           
           <div class="form-group">
-            <label><i class="fa-solid fa-user"></i> Reviewer Name</label>
-            <div class="input-wrapper">
-              <i class="fa-solid fa-user input-icon"></i>
-              <input type="text" id="reviewer-name" placeholder="e.g. John Doe" required>
-            </div>
+            <label><i class="fa-solid fa-user"></i> reviewer name</label>
+            <input type="text" id="reviewer-name" placeholder="e.g. John Doe" required>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label><i class="fa-solid fa-city"></i> City</label>
-            <div class="input-wrapper">
-              <i class="fa-solid fa-city input-icon"></i>
-              <input type="text" id="reviewer-city" placeholder="e.g. Mumbai" required>
-            </div>
+            <label><i class="fa-solid fa-city"></i> city</label>
+            <input type="text" id="reviewer-city" placeholder="e.g. Mumbai" required>
           </div>
           
           <div class="form-group">
-            <label><i class="fa-solid fa-star"></i> Rating (1-5)</label>
-            <div class="input-wrapper">
-              <i class="fa-solid fa-star input-icon"></i>
-              <input type="number" step="0.5" min="1" max="5" id="review-rating" placeholder="4.5" required>
-            </div>
+            <label><i class="fa-solid fa-star"></i> rating (1-5)</label>
+            <input type="number" step="0.5" min="1" max="5" id="review-rating" placeholder="4.5" required>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group full-width">
-            <label><i class="fa-solid fa-comment"></i> Review Comment</label>
+            <label><i class="fa-solid fa-comment"></i> comment</label>
             <textarea id="review-comment" rows="3" placeholder="Write your review here..." required></textarea>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label><i class="fa-solid fa-image"></i> Review Image (optional)</label>
+            <label><i class="fa-solid fa-image"></i> image (optional)</label>
             <div class="media-upload-row">
               <input type="text" class="media-url-input" id="review-image-url" placeholder="Image URL...">
               <button type="button" class="media-upload-btn" onclick="addReviewImageFromUrl()">
-                <i class="fa-solid fa-plus"></i> Add
+                <i class="fa-solid fa-plus"></i> add
               </button>
               <input type="file" id="review-image-file" class="media-file-input" accept="image/*" onchange="handleReviewImageUpload(this.files)" style="display:none;">
               <label for="review-image-file" class="media-file-label">
-                <i class="fa-solid fa-upload"></i> Upload
+                <i class="fa-solid fa-upload"></i> upload
               </label>
             </div>
             
             <div id="review-image-preview" style="margin-top:12px; display:none;">
-              <div style="display:flex; align-items:center; gap:12px;">
-                <img id="review-image-preview-img" style="width:60px; height:60px; border-radius:12px; border:2px solid #000; object-fit:cover;">
-                <button type="button" class="action-btn" onclick="removeReviewImage()" style="border-radius:40px; padding:6px 16px; width:auto;">
-                  <i class="fa-solid fa-times"></i> Remove
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <img id="review-image-preview-img" style="width:80px; height:80px; border-radius:12px; border:2px solid #000; object-fit:cover;">
+                <button type="button" class="action-btn" onclick="removeReviewImage()" style="border-radius:40px; padding:6px 16px; width:auto; background:#fff;">
+                  <i class="fa-solid fa-times"></i> remove
                 </button>
               </div>
             </div>
           </div>
 
           <div class="form-group">
-            <label><i class="fa-solid fa-check-circle"></i> Verified Purchase</label>
+            <label><i class="fa-solid fa-check-circle"></i> verified purchase</label>
             <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
               <label class="toggle-switch">
                 <input type="checkbox" id="review-verified" checked>
                 <span class="toggle-slider"></span>
               </label>
               <span class="toggle-label">
-                <i class="fa-solid fa-check-circle"></i> Verified
+                <i class="fa-solid fa-check-circle"></i> verified
               </span>
             </div>
           </div>
         </div>
 
-        <div style="display: flex; gap: 16px; margin-top: 24px;">
+        <div class="form-actions">
           <button type="submit" class="btn btn-primary">
-            <i class="fa-solid fa-save"></i> Save Review
+            <i class="fa-solid fa-save"></i> save review
           </button>
           <button type="button" class="btn btn-outline" onclick="resetReviewForm()">
-            <i class="fa-solid fa-times"></i> Cancel
+            <i class="fa-solid fa-times"></i> cancel
           </button>
         </div>
       </form>
@@ -151,66 +139,66 @@
   <div class="filters-bar">
     <div class="search-box">
       <i class="fa-solid fa-search"></i>
-      <input type="text" id="search-reviews" placeholder="Search by reviewer, city or comment...">
+      <input type="text" id="search-reviews" placeholder="search reviewer, city or comment...">
     </div>
     
     <div class="filter-tabs">
-      <span class="filter-tab active" id="filter-all" onclick="filterReviews('all')">All</span>
-      <span class="filter-tab" id="filter-verified" onclick="filterReviews('verified')">Verified</span>
-      <span class="filter-tab" id="filter-unverified" onclick="filterReviews('unverified')">Unverified</span>
-      <span class="filter-tab" id="filter-with-image" onclick="filterReviews('with-image')">With Images</span>
+      <span class="filter-tab active" id="filter-all" onclick="filterReviews('all')">all</span>
+      <span class="filter-tab" id="filter-verified" onclick="filterReviews('verified')">verified</span>
+      <span class="filter-tab" id="filter-unverified" onclick="filterReviews('unverified')">unverified</span>
+      <span class="filter-tab" id="filter-with-image" onclick="filterReviews('with-image')">with images</span>
     </div>
     
     <div style="display: flex; gap: 12px;">
       <button class="export-btn" onclick="toggleReviewPanel()">
-        <i class="fa-solid fa-plus"></i> New Review
+        <i class="fa-solid fa-plus"></i> new review
       </button>
       <button class="export-btn" onclick="exportReviews()">
-        <i class="fa-solid fa-download"></i> Export CSV
+        <i class="fa-solid fa-download"></i> export csv
       </button>
     </div>
   </div>
 
-  <!-- Table Container -->
-  <div class="table-container">
+  <!-- Loading State -->
+  <div id="reviews-loading" class="loading-spinner" style="display: none; justify-content: center; padding: 40px;">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Desktop Table View -->
+  <div class="table-container" id="reviews-table-container">
     <div class="table-header">
-      <h2><i class="fa-solid fa-star"></i> Product Reviews</h2>
+      <h2><i class="fa-solid fa-star"></i> product reviews</h2>
       <div class="header-actions">
         <button class="template-btn" onclick="loadReviews()">
-          <i class="fa-solid fa-rotate"></i> Refresh
+          <i class="fa-solid fa-rotate"></i> refresh
         </button>
       </div>
-    </div>
-    
-    <!-- Loading State -->
-    <div id="reviews-loading" class="loading-spinner" style="display: none;">
-      <div class="spinner"></div>
     </div>
     
     <!-- Empty State -->
     <div id="reviews-empty-state" class="empty-state" style="display: none;">
       <i class="fa-regular fa-star"></i>
-      <h3>No Reviews Yet</h3>
-      <p>Add your first review using the form above</p>
+      <h3>no reviews yet</h3>
+      <p>add your first review using the form above</p>
     </div>
     
-    <!-- Desktop Table View -->
+    <!-- Desktop Table -->
     <div class="table-wrapper" id="reviews-table-wrapper">
       <table>
         <thead>
           <tr>
-            <th>Product</th>
-            <th>Reviewer</th>
-            <th>Rating</th>
-            <th>Comment</th>
-            <th>Image</th>
-            <th>Verified</th>
-            <th>Date</th>
-            <th>Actions</th>
+            <th>product</th>
+            <th>reviewer</th>
+            <th>rating</th>
+            <th>comment</th>
+            <th>image</th>
+            <th>verified</th>
+            <th>date</th>
+            <th>actions</th>
           </tr>
         </thead>
         <tbody id="reviews-table-body">
-          <!-- Will be populated by JavaScript -->
+          <!-- Populated by JavaScript -->
         </tbody>
       </table>
     </div>
@@ -240,6 +228,7 @@
     box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
     margin-bottom: 24px;
     display: none;
+    overflow: hidden;
   }
   
   .review-form-panel.show {
@@ -250,7 +239,6 @@
     background: #000;
     padding: 20px 24px;
     border-bottom: 4px solid #d4af37;
-    border-radius: 38px 38px 0 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -258,12 +246,13 @@
   
   .panel-header h3 {
     color: #fff;
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-weight: 800;
     display: flex;
     align-items: center;
     gap: 12px;
     text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
   }
   
   .panel-header h3 i {
@@ -271,11 +260,12 @@
     background: #fff;
     padding: 8px;
     border-radius: 50%;
+    border: 2px solid #d4af37;
   }
   
   .close-panel {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     background: #fff;
     border: 2px solid #d4af37;
     border-radius: 50%;
@@ -285,16 +275,18 @@
     cursor: pointer;
     font-size: 1.2rem;
     transition: all 0.2s;
+    color: #000;
   }
   
   .close-panel:hover {
     background: #d4af37;
     color: #000;
     transform: scale(1.1);
+    border-color: #000;
   }
   
   .review-form {
-    padding: 24px;
+    padding: 28px;
   }
   
   .form-row {
@@ -308,46 +300,50 @@
     grid-column: 1 / -1;
   }
   
-  .input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
+  .form-group label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
   }
   
-  .input-wrapper i.input-icon {
-    position: absolute;
-    left: 16px;
+  .form-group label i {
     color: #d4af37;
-    z-index: 2;
+    margin-right: 6px;
+    width: 20px;
   }
   
-  .input-wrapper input,
-  .input-wrapper select,
-  .input-wrapper textarea {
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
     width: 100%;
-    padding: 14px 18px 14px 48px;
+    padding: 14px 18px;
     border: 2px solid #000;
     border-radius: 20px;
     font-family: 'Inter', sans-serif;
     font-size: 1rem;
     background: #fcfaf7;
+    transition: all 0.2s;
   }
   
-  .input-wrapper textarea {
-    padding-left: 18px;
-  }
-  
-  .input-wrapper input:focus,
-  .input-wrapper select:focus,
-  .input-wrapper textarea:focus {
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
     outline: none;
     border-color: #d4af37;
     box-shadow: 0 0 0 3px rgba(212,175,55,0.2);
   }
   
+  .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
   .media-upload-row {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
     flex-wrap: wrap;
   }
@@ -358,7 +354,7 @@
     padding: 12px 16px;
     border: 2px solid #000;
     border-radius: 60px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     background: #fcfaf7;
   }
   
@@ -380,11 +376,13 @@
     align-items: center;
     gap: 8px;
     white-space: nowrap;
+    transition: all 0.2s;
   }
   
   .media-upload-btn:hover {
     background: #d4af37;
     color: #000;
+    border-color: #000;
   }
   
   .media-file-label {
@@ -400,12 +398,157 @@
     align-items: center;
     gap: 8px;
     white-space: nowrap;
+    transition: all 0.2s;
   }
   
   .media-file-label:hover {
     background: #000;
     color: #d4af37;
     border-color: #d4af37;
+  }
+  
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+    margin-right: 10px;
+  }
+  
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 30px;
+    border: 2px solid #000;
+    transition: .3s;
+  }
+  
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    border: 2px solid #000;
+    transition: .3s;
+  }
+  
+  input:checked + .toggle-slider {
+    background-color: #d4af37;
+  }
+  
+  input:checked + .toggle-slider:before {
+    transform: translateX(30px);
+    background-color: #000;
+  }
+  
+  .toggle-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .toggle-label i {
+    color: #d4af37;
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  
+  .btn {
+    border-radius: 60px;
+    padding: 14px 32px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    min-width: 160px;
+  }
+  
+  .btn-primary {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+  
+  .btn-primary:hover {
+    background: #d4af37;
+    color: #000;
+    border-color: #000;
+  }
+  
+  .btn-outline {
+    background: transparent;
+    border-color: #000;
+    color: #000;
+  }
+  
+  .btn-outline:hover {
+    background: #000;
+    color: #d4af37;
+    border-color: #d4af37;
+  }
+  
+  .action-btn {
+    width: 38px;
+    height: 38px;
+    border: 2px solid #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .action-btn:hover {
+    background: #000;
+    color: #d4af37;
+    border-color: #d4af37;
+    transform: scale(1.1);
+  }
+  
+  .action-btn i {
+    font-size: 1rem;
+  }
+  
+  .product-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #000;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
   }
   
   .review-thumb {
@@ -449,25 +592,9 @@
     flex-wrap: wrap;
   }
   
-  .action-btn {
-    width: 38px;
-    height: 38px;
-    border: 2px solid #000;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #fff;
-    color: #000;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .action-btn:hover {
-    background: #000;
-    color: #d4af37;
-    border-color: #d4af37;
-    transform: scale(1.1);
+  .product-title {
+    font-weight: 700;
+    font-size: 0.9rem;
   }
   
   .timestamp {
@@ -476,78 +603,44 @@
     font-weight: 500;
   }
   
-  .product-title {
-    font-weight: 700;
-    font-size: 0.9rem;
-  }
-  
-  .product-thumb {
+  .spinner {
     width: 40px;
     height: 40px;
-    border-radius: 8px;
-    background-size: cover;
-    background-position: center;
-    border: 2px solid #000;
-  }
-  
-  .toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 30px;
-    margin-right: 10px;
-  }
-  
-  .toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  .toggle-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    border-radius: 30px;
-    border: 2px solid #000;
-  }
-  
-  .toggle-slider:before {
-    position: absolute;
-    content: "";
-    height: 22px;
-    width: 22px;
-    left: 3px;
-    bottom: 2px;
-    background-color: white;
+    border: 4px solid #f0f0f0;
+    border-top: 4px solid #d4af37;
     border-radius: 50%;
-    border: 2px solid #000;
-    transition: .3s;
+    animation: spin 1s linear infinite;
   }
   
-  input:checked + .toggle-slider {
-    background-color: #d4af37;
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   
-  input:checked + .toggle-slider:before {
-    transform: translateX(30px);
-    background-color: #000;
-  }
-  
-  .toggle-label {
-    font-weight: 600;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  
-  .toggle-label i {
-    color: #d4af37;
+  /* Mobile styles */
+  @media (max-width: 640px) {
+    .review-form {
+      padding: 16px;
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+    
+    .form-actions .btn {
+      width: 100%;
+    }
+    
+    .media-upload-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .media-url-input,
+    .media-upload-btn,
+    .media-file-label {
+      width: 100%;
+    }
   }
 </style>
 
@@ -575,7 +668,7 @@
       window.loadReviewProducts = async function() {
         try {
           const snap = await db.collection('products').get();
-          let options = '<option value="">Select a product...</option>';
+          let options = '<option value="">Choose product...</option>';
           snap.docs.forEach(doc => {
             const prod = doc.data();
             window.reviewProducts[doc.id] = { 
@@ -595,11 +688,12 @@
       // Load reviews from Firestore
       window.loadReviews = async function() {
         const loadingEl = document.getElementById('reviews-loading');
+        const tableContainer = document.getElementById('reviews-table-container');
         const tableWrapper = document.getElementById('reviews-table-wrapper');
         const emptyState = document.getElementById('reviews-empty-state');
         
         if (loadingEl) loadingEl.style.display = 'flex';
-        if (tableWrapper) tableWrapper.style.display = 'none';
+        if (tableContainer) tableContainer.style.display = 'none';
         if (emptyState) emptyState.style.display = 'none';
         
         try {
@@ -610,16 +704,21 @@
             timestamp: doc.data().timestamp?.toDate() || new Date()
           }));
           
-          await loadReviewProducts();
-          applyReviewFilter(window.currentReviewFilter);
-          updateReviewStats();
+          await window.loadReviewProducts();
+          window.applyReviewFilter(window.currentReviewFilter);
+          window.updateReviewStats();
           
           if (loadingEl) loadingEl.style.display = 'none';
+          if (tableContainer) tableContainer.style.display = 'block';
           
           if (window.filteredReviews.length === 0) {
             if (emptyState) emptyState.style.display = 'block';
+            if (tableWrapper) tableWrapper.style.display = 'none';
+            document.getElementById('reviews-mobile-cards').style.display = 'none';
           } else {
-            renderReviews();
+            if (emptyState) emptyState.style.display = 'none';
+            if (tableWrapper) tableWrapper.style.display = 'block';
+            window.renderReviews();
           }
         } catch (error) {
           console.error('Error loading reviews:', error);
@@ -652,8 +751,8 @@
         const activeTab = document.getElementById(`filter-${filter}`);
         if (activeTab) activeTab.classList.add('active');
         
-        applyReviewFilter(filter);
-        renderReviews();
+        window.applyReviewFilter(filter);
+        window.renderReviews();
       };
       
       // Update statistics
@@ -677,22 +776,26 @@
         const end = start + window.reviewItemsPerPage;
         const pageReviews = window.filteredReviews.slice(start, end);
         
-        const tableWrapper = document.getElementById('reviews-table-wrapper');
+        const tableBody = document.getElementById('reviews-table-body');
         const mobileCards = document.getElementById('reviews-mobile-cards');
         const emptyState = document.getElementById('reviews-empty-state');
         const pagination = document.getElementById('reviews-pagination');
+        const tableWrapper = document.getElementById('reviews-table-wrapper');
         
         if (pageReviews.length === 0) {
           if (emptyState) emptyState.style.display = 'block';
+          if (tableWrapper) tableWrapper.style.display = 'none';
+          if (mobileCards) mobileCards.style.display = 'none';
           if (pagination) pagination.style.display = 'none';
           return;
         }
         
         if (emptyState) emptyState.style.display = 'none';
+        if (tableWrapper) tableWrapper.style.display = 'block';
+        if (mobileCards) mobileCards.style.display = 'block';
         if (pagination) pagination.style.display = window.filteredReviews.length > window.reviewItemsPerPage ? 'flex' : 'none';
         
         // Render table rows (desktop view)
-        const tableBody = document.getElementById('reviews-table-body');
         if (tableBody) {
           tableBody.innerHTML = pageReviews.map(review => {
             const product = window.reviewProducts[review.productId] || { 
@@ -731,8 +834,8 @@
                 </td>
                 <td>
                   ${review.verified ? 
-                    '<span class="verified-badge"><i class="fa-solid fa-check"></i> Verified</span>' : 
-                    '<span style="color:#999;">No</span>'
+                    '<span class="verified-badge"><i class="fa-solid fa-check"></i> verified</span>' : 
+                    '<span style="color:#999;">no</span>'
                   }
                 </td>
                 <td><span class="timestamp">${date}</span></td>
@@ -755,9 +858,8 @@
         }
         
         // Render mobile cards
-        const mobileCardsEl = document.getElementById('reviews-mobile-cards');
-        if (mobileCardsEl) {
-          mobileCardsEl.innerHTML = pageReviews.map(review => {
+        if (mobileCards) {
+          mobileCards.innerHTML = pageReviews.map(review => {
             const product = window.reviewProducts[review.productId] || { 
               title: 'Unknown Product', 
               primaryImg: 'https://via.placeholder.com/80'
@@ -800,7 +902,7 @@
                   </div>
                   <div class="card-row">
                     <i class="fa-regular fa-circle-check"></i>
-                    <span>Verified: ${review.verified ? '✓' : '✗'}</span>
+                    <span>verified: ${review.verified ? '✓' : '✗'}</span>
                   </div>
                 </div>
                 <div class="card-footer">
@@ -822,7 +924,7 @@
           }).join('');
         }
         
-        updateReviewPagination();
+        window.updateReviewPagination();
       };
       
       // Pagination functions
@@ -835,17 +937,17 @@
           window.currentReviewPage++;
         }
         
-        renderReviews();
+        window.renderReviews();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
       
       window.goToReviewPage = function(page) {
         window.currentReviewPage = page;
-        renderReviews();
+        window.renderReviews();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
       
-      function updateReviewPagination() {
+      window.updateReviewPagination = function() {
         const totalPages = Math.ceil(window.filteredReviews.length / window.reviewItemsPerPage);
         const pagination = document.getElementById('reviews-pagination');
         const prevBtn = document.getElementById('prev-review-page');
@@ -874,7 +976,7 @@
         }
         
         if (pageNumbers) pageNumbers.innerHTML = pageNumbersHTML;
-      }
+      };
       
       // Form functions
       window.toggleReviewPanel = function() {
@@ -882,7 +984,7 @@
         if (panel) {
           panel.classList.toggle('show');
           if (panel.classList.contains('show')) {
-            resetReviewForm();
+            window.resetReviewForm();
           }
         }
       };
@@ -890,9 +992,9 @@
       window.resetReviewForm = function() {
         document.getElementById('review-form').reset();
         document.getElementById('review-id').value = '';
-        document.getElementById('review-form-title').innerHTML = 'Add New Review';
+        document.getElementById('review-form-title').innerHTML = 'add new review';
         document.getElementById('review-verified').checked = true;
-        removeReviewImage();
+        window.removeReviewImage();
         
         const panel = document.getElementById('reviewFormPanel');
         if (panel && !panel.classList.contains('show')) {
@@ -939,6 +1041,8 @@
         window.reviewImageUrl = '';
         const preview = document.getElementById('review-image-preview');
         if (preview) preview.style.display = 'none';
+        const fileInput = document.getElementById('review-image-file');
+        if (fileInput) fileInput.value = '';
       };
       
       window.handleReviewSubmit = async function(e) {
@@ -954,6 +1058,11 @@
         
         if (!productId) {
           showNotification('Please select a product', 'error');
+          return false;
+        }
+        
+        if (isNaN(rating) || rating < 1 || rating > 5) {
+          showNotification('Please enter a valid rating between 1 and 5', 'error');
           return false;
         }
         
@@ -983,11 +1092,11 @@
           }
           
           // Reset form and close panel
-          resetReviewForm();
+          window.resetReviewForm();
           document.getElementById('reviewFormPanel').classList.remove('show');
           
           // Reload reviews
-          await loadReviews();
+          await window.loadReviews();
         } catch (error) {
           console.error('Error saving review:', error);
           showNotification('Failed to save review', 'error');
@@ -1016,10 +1125,10 @@
           if (previewImg) previewImg.src = review.imageUrl;
           if (preview) preview.style.display = 'block';
         } else {
-          removeReviewImage();
+          window.removeReviewImage();
         }
         
-        document.getElementById('review-form-title').innerHTML = 'Edit Review';
+        document.getElementById('review-form-title').innerHTML = 'edit review';
         
         // Show panel
         const panel = document.getElementById('reviewFormPanel');
@@ -1035,7 +1144,7 @@
         try {
           await db.collection('reviews').doc(id).delete();
           showNotification('Review deleted successfully!', 'success');
-          await loadReviews();
+          await window.loadReviews();
         } catch (error) {
           console.error('Error deleting review:', error);
           showNotification('Failed to delete review', 'error');
@@ -1102,17 +1211,17 @@
           const searchTerm = e.target.value.toLowerCase();
           
           if (!searchTerm) {
-            applyReviewFilter(window.currentReviewFilter);
+            window.applyReviewFilter(window.currentReviewFilter);
           } else {
             window.filteredReviews = window.allReviews.filter(review => 
-              review.reviewerName?.toLowerCase().includes(searchTerm) ||
-              review.city?.toLowerCase().includes(searchTerm) ||
-              review.comment?.toLowerCase().includes(searchTerm)
+              (review.reviewerName?.toLowerCase() || '').includes(searchTerm) ||
+              (review.city?.toLowerCase() || '').includes(searchTerm) ||
+              (review.comment?.toLowerCase() || '').includes(searchTerm)
             );
           }
           
           window.currentReviewPage = 1;
-          renderReviews();
+          window.renderReviews();
         });
       }
       
@@ -1128,7 +1237,7 @@
       }
       
       // Initialize
-      loadReviews();
+      window.loadReviews();
     }
   }, 100);
 })();
