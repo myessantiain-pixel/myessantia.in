@@ -504,10 +504,27 @@
       border-color: #d4af37; /* Gold border on hover */
     }
 
- 
+    /* Square image - NO BLACK FRAME */
+    .review-image-square {
+      width: 100%;
+      aspect-ratio: 1/1; /* Square ratio */
+      overflow: hidden;
+      border: none; /* NO BORDER on image */
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin-bottom: 15px;
+      background-color: #e0e0e0; /* Light grey background for empty space */
+    }
 
     .review-image-square:hover {
       transform: scale(1.02);
+    }
+
+    .review-image-square img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     /* When image fails to load */
@@ -515,119 +532,62 @@
       display: none;
     }
 
+    /* Avatar for no-image reviews - matches frame style */
+    .review-avatar-square {
+      width: 100%;
+      aspect-ratio: 1/1; /* Square ratio */
+      background: #d4af37; /* Gold background for avatar */
+      border-radius: 0; /* No curved edges */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 2.5rem; /* Larger initials */
+      color: #000;
+      margin-bottom: 15px;
+      border: none; /* NO BORDER */
+    }
 
-    /* Make the image container take full width of the review item */
-.review-image-square {
-  width: 100%; /* This ensures it takes full width of parent */
-  aspect-ratio: 1/1; /* Keeps it square */
-  overflow: hidden;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s;
-  margin-bottom: 15px;
-  background-color: #e0e0e0;
-}
+    /* Review content */
+    .review-content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
 
-/* Ensure the image itself fills the container */
-.review-image-square img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* This makes the image cover the entire container without distortion */
-  display: block;
-}
+    /* User name - larger */
+    .review-user-name {
+      font-weight: 800;
+      font-size: 1.2rem; /* Larger font */
+      color: #000;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      word-wrap: break-word;
+      line-height: 1.3;
+    }
 
-/* Make sure the review item has proper width */
-.review-item {
-  display: flex;
-  flex-direction: column;
-  background: #f5f5f5;
-  border: 2px solid #e0e0e0;
-  border-radius: 0;
-  padding: 20px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 3px 3px 0 rgba(0,0,0,0.05);
-  width: 100%; /* Ensure it takes full width of grid cell */
-  box-sizing: border-box; /* Include padding in width calculation */
-}
+    /* Rating stars - larger */
+    .review-stars {
+      color: #d4af37;
+      font-size: 1.1rem; /* Larger stars */
+      letter-spacing: 3px;
+      margin: 5px 0;
+    }
 
-/* Avatar for no-image reviews - also full width */
-.review-avatar-square {
-  width: 100%; /* Full width of parent */
-  aspect-ratio: 1/1;
-  background: #d4af37;
-  border-radius: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 2.5rem;
-  color: #000;
-  margin-bottom: 15px;
-  border: none;
-}
-
-    /* Review content - reduce gaps */
-.review-content {
-  display: flex;
-  flex-direction: column;
-  gap: 4px; /* Reduced from 10px to 4px */
-  flex: 1;
-}
-
-/* User name - slightly smaller margin */
-.review-user-name {
-  font-weight: 800;
-  font-size: 1.2rem;
-  color: #000;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  word-wrap: break-word;
-  line-height: 1.2; /* Slightly reduced line height */
-  margin-bottom: 0; /* Remove any default margin */
-}
-
-/* Rating stars - reduce margin */
-.review-stars {
-  color: #d4af37;
-  font-size: 1.1rem;
-  letter-spacing: 2px; /* Slightly reduced letter spacing */
-  margin: 2px 0; /* Reduced from 5px 0 to 2px 0 */
-  line-height: 1.2;
-}
-
-/* Review description - reduce top margin */
-.review-description {
-  font-size: 1rem;
-  line-height: 1.4; /* Slightly reduced line height */
-  color: #333;
-  margin-top: 2px; /* Reduced from 5px to 2px */
-  word-wrap: break-word;
-  max-height: 150px;
-  overflow-y: auto;
-  padding-right: 8px;
-  scrollbar-width: thin;
-  scrollbar-color: #d4af37 #e0e0e0;
-}
-
-/* If you want even tighter spacing, use this alternative */
-.review-content.tight {
-  gap: 2px;
-}
-
-.review-content.tight .review-user-name {
-  font-size: 1.1rem; /* Slightly smaller if needed */
-  margin-bottom: 0;
-}
-
-.review-content.tight .review-stars {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.review-content.tight .review-description {
-  margin-top: 0;
-  font-size: 0.95rem;
-}
+    /* Review description - larger with proper spacing */
+    .review-description {
+      font-size: 1rem; /* Larger text */
+      line-height: 1.6;
+      color: #333;
+      margin-top: 5px;
+      word-wrap: break-word;
+      max-height: 150px;
+      overflow-y: auto;
+      padding-right: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: #d4af37 #e0e0e0;
+    }
 
     .review-description::-webkit-scrollbar {
       width: 6px;
@@ -673,6 +633,10 @@
       .reviews-grid {
         grid-template-columns: repeat(2, 1fr); /* 2 per line on mobile */
         gap: 15px;
+      }
+      
+      .review-item {
+        padding: 15px;
       }
       
       .review-user-name {
