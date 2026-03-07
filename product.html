@@ -84,13 +84,13 @@
   margin: 0;
 }
 
-/* Individual review item - LIGHT GREY FRAME, NO BLACK BORDER ON IMAGE */
+/* Individual review item - LIGHT GREY FRAME around the entire review */
 .review-item {
   display: flex;
   flex-direction: column;
   padding: 20px;
   background: #ffffff;
-  border: 3px solid #e0e0e0; /* Thicker light grey frame */
+  border: 3px solid #e0e0e0; /* Light grey frame around the whole review */
   border-radius: 0; /* Square edges */
   transition: transform 0.2s ease, border-color 0.2s ease;
   box-shadow: 3px 3px 0 rgba(0,0,0,0.05);
@@ -106,14 +106,15 @@
   box-shadow: 5px 5px 0 rgba(212, 175, 55, 0.15);
 }
 
-/* Image container - NO BLACK BORDER */
+/* Image container - NO BORDER, just lets the image sit inside the review frame */
 .review-image-container {
   width: 100%;
   margin-bottom: 15px;
-  /* No border on the container */
+  background-color: #f5f5f5; /* Light background for images */
+  /* NO border on the container */
 }
 
-/* Image styling - SQUARE but with NO BLACK BORDER */
+/* Image styling - fits within the review frame, no border */
 .review-image {
   width: 100%;
   aspect-ratio: 1/1; /* Square ratio */
@@ -121,7 +122,6 @@
   display: block;
   cursor: pointer;
   transition: transform 0.2s;
-  background-color: #f5f5f5;
   /* NO BORDER at all */
 }
 
@@ -134,7 +134,7 @@
   display: flex;
 }
 
-/* Avatar for no-image reviews - fits within the card naturally */
+/* Avatar for no-image reviews - fits within the review frame */
 .review-avatar {
   width: 100%;
   aspect-ratio: 1/1; /* Square ratio */
