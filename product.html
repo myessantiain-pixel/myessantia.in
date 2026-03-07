@@ -504,27 +504,10 @@
       border-color: #d4af37; /* Gold border on hover */
     }
 
-    /* Square image - NO BLACK FRAME */
-    .review-image-square {
-      width: 100%;
-      aspect-ratio: 1/1; /* Square ratio */
-      overflow: hidden;
-      border: none; /* NO BORDER on image */
-      cursor: pointer;
-      transition: transform 0.2s;
-      margin-bottom: 15px;
-      background-color: #e0e0e0; /* Light grey background for empty space */
-    }
+ 
 
     .review-image-square:hover {
       transform: scale(1.02);
-    }
-
-    .review-image-square img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
     }
 
     /* When image fails to load */
@@ -532,21 +515,6 @@
       display: none;
     }
 
-    /* Avatar for no-image reviews - matches frame style */
-    .review-avatar-square {
-      width: 100%;
-      aspect-ratio: 1/1; /* Square ratio */
-      background: #d4af37; /* Gold background for avatar */
-      border-radius: 0; /* No curved edges */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 2.5rem; /* Larger initials */
-      color: #000;
-      margin-bottom: 15px;
-      border: none; /* NO BORDER */
-    }
 
     /* Review content */
     .review-content {
@@ -555,6 +523,56 @@
       gap: 10px;
       flex: 1;
     }
+
+    /* Make the image container take full width of the review item */
+.review-image-square {
+  width: 100%; /* This ensures it takes full width of parent */
+  aspect-ratio: 1/1; /* Keeps it square */
+  overflow: hidden;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-bottom: 15px;
+  background-color: #e0e0e0;
+}
+
+/* Ensure the image itself fills the container */
+.review-image-square img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* This makes the image cover the entire container without distortion */
+  display: block;
+}
+
+/* Make sure the review item has proper width */
+.review-item {
+  display: flex;
+  flex-direction: column;
+  background: #f5f5f5;
+  border: 2px solid #e0e0e0;
+  border-radius: 0;
+  padding: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.05);
+  width: 100%; /* Ensure it takes full width of grid cell */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+/* Avatar for no-image reviews - also full width */
+.review-avatar-square {
+  width: 100%; /* Full width of parent */
+  aspect-ratio: 1/1;
+  background: #d4af37;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 2.5rem;
+  color: #000;
+  margin-bottom: 15px;
+  border: none;
+}
 
     /* User name - larger */
     .review-user-name {
@@ -633,10 +651,6 @@
       .reviews-grid {
         grid-template-columns: repeat(2, 1fr); /* 2 per line on mobile */
         gap: 15px;
-      }
-      
-      .review-item {
-        padding: 15px;
       }
       
       .review-user-name {
