@@ -2106,7 +2106,7 @@ if (productReviews && productReviews.length > 0) {
     
     return `
       <div class="review-item">
-        <!-- Image container - NO BLACK BORDER -->
+        <!-- Image container - NO BORDER, image fits inside review frame -->
         <div class="review-image-container">
           ${imageUrl ? `
           <img class="review-image" src="${imageUrl}" alt="Review image" onclick="window.open('${imageUrl}', '_blank')" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -2141,7 +2141,6 @@ if (productReviews && productReviews.length > 0) {
     </div>
   `;
 }
-         const container = document.getElementById('product-container');
       container.innerHTML = `
         <div class="product-grid">
           <!-- GALLERY -->
