@@ -466,8 +466,7 @@
       50% { box-shadow: 0 0 20px 5px rgba(212, 175, 55, 0.8); }
       100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.5); }
     }
-
-  /* ===== CUSTOMER REVIEW SECTION ONLY - UPDATED ===== */
+/* ===== CUSTOMER REVIEW SECTION ONLY - 1080×1920 PORTRAIT FRAMES ===== */
 
 /* Reviews header */
 .reviews-header {
@@ -504,15 +503,15 @@
   width: 100%;
 }
 
-/* Grid layout - FOCUS ON IMAGES */
+/* Grid layout - optimized for portrait images */
 .reviews-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 25px;
   margin: 0;
 }
 
-/* Individual review card - minimal styling */
+/* Individual review card */
 .review-item {
   display: flex;
   flex-direction: column;
@@ -526,10 +525,10 @@
   transform: translateY(-5px);
 }
 
-/* LARGE IMAGE - main focus */
-.review-image-large {
+/* 1080×1920 PORTRAIT IMAGE FRAME */
+.review-image-portrait {
   width: 100%;
-  aspect-ratio: 1/1;
+  aspect-ratio: 9/16; /* 1080/1920 = 9/16 - perfect portrait ratio */
   overflow: hidden;
   border: 3px solid #000;
   border-radius: 0;
@@ -540,38 +539,40 @@
   box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
 }
 
-.review-image-large:hover {
+.review-image-portrait:hover {
   transform: scale(1.02);
   border-color: #d4af37;
   box-shadow: 8px 8px 0 rgba(212, 175, 55, 0.2);
 }
 
-.review-image-large img {
+.review-image-portrait img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-/* Large avatar for no-image reviews */
-.review-avatar-large {
+/* Portrait avatar for no-image reviews - same 9:16 ratio */
+.review-avatar-portrait {
   width: 100%;
-  aspect-ratio: 1/1;
+  aspect-ratio: 9/16; /* Same portrait ratio as images */
   background: linear-gradient(135deg, #000, #333);
-  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 3rem;
+  font-size: 2.5rem;
   color: #d4af37;
   margin-bottom: 12px;
   border: 3px solid #d4af37;
   box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
   transition: all 0.3s ease;
+  text-align: center;
+  word-break: break-word;
+  padding: 10px;
 }
 
-.review-avatar-large:hover {
+.review-avatar-portrait:hover {
   transform: scale(1.02);
   border-color: #d4af37;
   box-shadow: 8px 8px 0 rgba(212, 175, 55, 0.2);
@@ -581,32 +582,32 @@
 .review-content {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   padding: 5px 0;
 }
 
-/* SMALLER user name */
+/* SMALL user name */
 .review-user-name {
-  font-weight: 700;
-  font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 0.85rem;
   color: #333;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   word-wrap: break-word;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
-/* SMALLER rating stars */
+/* SMALL rating stars */
 .review-stars {
   color: #d4af37;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   letter-spacing: 2px;
   margin: 2px 0;
 }
 
-/* SMALLER review description */
+/* SMALL review description */
 .review-description {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   line-height: 1.4;
   color: #666;
   margin-top: 2px;
@@ -631,17 +632,24 @@
 }
 
 /* Responsive grid - more columns on larger screens */
-@media (min-width: 1400px) {
+@media (min-width: 1600px) {
+  .reviews-grid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 25px;
+  }
+}
+
+@media (max-width: 1599px) and (min-width: 1400px) {
   .reviews-grid {
     grid-template-columns: repeat(6, 1fr);
-    gap: 30px;
+    gap: 25px;
   }
 }
 
 @media (max-width: 1399px) and (min-width: 1100px) {
   .reviews-grid {
     grid-template-columns: repeat(5, 1fr);
-    gap: 25px;
+    gap: 20px;
   }
 }
 
@@ -662,16 +670,16 @@
 @media (max-width: 499px) {
   .reviews-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    gap: 12px;
   }
   
-  .review-image-large,
-  .review-avatar-large {
+  .review-image-portrait,
+  .review-avatar-portrait {
     box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
   }
   
   .review-user-name {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
   
   .review-stars {
@@ -684,8 +692,8 @@
     max-height: 50px;
   }
   
-  .review-avatar-large {
-    font-size: 2.5rem;
+  .review-avatar-portrait {
+    font-size: 2rem;
   }
 }
 
@@ -693,6 +701,11 @@
 @media (max-width: 350px) {
   .reviews-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .review-image-portrait,
+  .review-avatar-portrait {
+    aspect-ratio: 9/16; /* Keep portrait ratio even on mobile */
   }
 }
 
@@ -764,7 +777,6 @@
   font-size: 1rem;
   color: #666;
 }
-
  
     /* desktop reviews */
     .desktop-reviews { display: none; margin-top: 16px; }
@@ -2084,7 +2096,7 @@
         </div>
       `;
 
-      // Generate reviews HTML with common frame - UPDATED with larger images
+  // Generate reviews HTML with common frame - 1080×1920 PORTRAIT FRAMES
 let reviewsHTML = '';
 
 if (productReviews && productReviews.length > 0) {
@@ -2119,14 +2131,14 @@ if (productReviews && productReviews.length > 0) {
     
     return `
       <div class="review-item">
-        <!-- LARGE IMAGE - main focus -->
+        <!-- 1080×1920 PORTRAIT IMAGE FRAME -->
         ${imageUrl ? `
-        <div class="review-image-large" onclick="window.open('${imageUrl}', '_blank')">
+        <div class="review-image-portrait" onclick="window.open('${imageUrl}', '_blank')">
           <img src="${imageUrl}" alt="Review image" onerror="this.style.display='none'; this.parentElement.classList.add('image-error');">
         </div>
         ` : `
-        <!-- Large avatar for no-image reviews -->
-        <div class="review-avatar-large">
+        <!-- Portrait avatar for no-image reviews -->
+        <div class="review-avatar-portrait">
           ${initials}
         </div>
         `}
