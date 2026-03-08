@@ -212,6 +212,28 @@
       font-weight: var(--font-heading-weight);
     }
 
+    /* Add to your CSS */
+.delivery-eta-circle {
+  background: #d4af37;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #000;
+  flex-shrink: 0;
+}
+
+.delivery-eta-circle i {
+  color: #000;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
     /* Hide scrollbar but keep scrolling functionality for review modal */
 .review-modal-content {
   scrollbar-width: none !important; /* Firefox */
@@ -3503,9 +3525,9 @@ function renderProduct(product) {
             <i class="fa-solid ${sellingPrice >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:#d4af37;"></i>
             <span id="deliveryText">${sellingPrice >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - sellingPrice).toFixed(2)}</span> more`}</span>
           </div>
-       <div class="delivery-eta" style="display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ccc;">
-  <div style="background: #d4af37; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #000; flex-shrink: 0;">
-    <i class="fa-regular fa-calendar-check" style="color: #000; font-size: 1rem;"></i>
+<div class="delivery-eta" style="display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ccc;">
+  <div class="delivery-eta-circle">
+    <i class="fa-regular fa-calendar-check"></i>
   </div>
   <div>
     <div style="font-weight: 800; font-size: 0.85rem; color: #000;">Delivery by</div>
