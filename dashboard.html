@@ -3082,7 +3082,7 @@ async function loadReviewsPage() {
       '.filters-bar',
       '.stats-grid',
       '.review-form',
-      '.rating-override-panel', // Add this new panel
+      '.rating-override-panel',
       '.reviews-table'
     ];
     
@@ -3125,7 +3125,7 @@ function initializeReviewsPage() {
   window.currentReviewPage = 1;
   window.reviewItemsPerPage = 10;
   window.reviewProducts = {};
-  window.reviewImageUrl = ''; // Initialize without triggering notification
+  window.reviewImageUrl = '';
   
   // Make sure image preview is hidden without notification
   const preview = document.getElementById('review-image-preview');
@@ -3160,25 +3160,13 @@ function setupReviewEventListeners() {
     });
   }
   
-  // Form submit - IMPORTANT: Remove any existing listeners
+  // Form submit
   const reviewForm = document.getElementById('review-form');
   if (reviewForm) {
-    // Remove all existing listeners by cloning
     const newForm = reviewForm.cloneNode(true);
     reviewForm.parentNode.replaceChild(newForm, reviewForm);
-    
-    // Add single listener
     newForm.addEventListener('submit', handleReviewSubmit);
   }
-}
-
-function handleFilterClick(e) {
-  const filter = e.currentTarget.dataset.filter;
-  filterReviews(filter);
-}
-
-function handleSearchInput(e) {
-  performSearch(e.target.value);
 }
 
 // Load products for dropdown
@@ -3454,14 +3442,13 @@ function addReviewImageFromUrl() {
   if (previewImg) previewImg.src = url;
   if (preview) preview.style.display = 'block';
   document.getElementById('review-image-url').value = '';
-  showReviewNotification('Image added'); // This will show "Image added"
+  showReviewNotification('Image added');
 }
 
 function handleReviewImageUpload(files) {
   if (!files || !files.length) return;
   const file = files[0];
   
-  // Check file size (e.g., max 5MB)
   if (file.size > 5 * 1024 * 1024) {
     showReviewNotification('Image too large (max 5MB)', 'error');
     return;
@@ -3472,7 +3459,7 @@ function handleReviewImageUpload(files) {
   const previewImg = document.getElementById('review-image-preview-img');
   if (previewImg) previewImg.src = url;
   document.getElementById('review-image-preview').style.display = 'block';
-  showReviewNotification('Image uploaded'); // This will show "Image uploaded"
+  showReviewNotification('Image uploaded');
 }
 
 function removeReviewImage(showNotification = true) {
@@ -3483,7 +3470,6 @@ function removeReviewImage(showNotification = true) {
   const urlInput = document.getElementById('review-image-url');
   if (urlInput) urlInput.value = '';
   
-  // Only show notification if we're actually removing an image (not during initialization)
   if (showNotification) {
     showReviewNotification('Image removed');
   }
@@ -3499,18 +3485,16 @@ function resetReviewForm() {
   if (formTitle) formTitle.innerHTML = 'add new review';
   if (reviewVerified) reviewVerified.checked = true;
   
-  // Pass false to prevent notification during form reset
   removeReviewImage(false);
   
   document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
 }
-// Add a flag to prevent double submission
+
 let isSubmitting = false;
 
 async function handleReviewSubmit(e) {
   e.preventDefault();
   
-  // Prevent double submission
   if (isSubmitting) {
     console.log('Already submitting...');
     return false;
@@ -3524,568 +3508,6 @@ async function handleReviewSubmit(e) {
     isSubmitting = false;
     return false; 
   }
-
- // ========== RICH DESCRIPTION BLOCK FUNCTIONS ==========
-let descriptionBlocks = [];
-
-function addTextBlock() {
-  const template = document.getElementById('text-block-template');
-  const clone = template.content.cloneNode(true);
-  const container = document.getElementById('description-blocks-container');
-  container.appendChild(clone);
-  updatePreview();
-}
-
-function addHeadingBlock() {
-  const template = document.getElementById('heading-block-template');
-  const clone = template.content.cloneNode(true);
-  const container = document.getElementById('description-blocks-container');
-  container.appendChild(clone);
-  updatePreview();
-}
-
-function addImageBlock() {
-  const template = document.getElementById('image-block-template');
-  const clone = template.content.cloneNode(true);
-  const container = document.getElementById('description-blocks-container');
-  container.appendChild(clone);
-  updatePreview();
-}
-
-function addVideoBlock() {
-  const template = document.getElementById('video-block-template');
-  const clone = template.content.cloneNode(true);
-  const container = document.getElementById('description-blocks-container');
-  container.appendChild(clone);
-  updatePreview();
-}
-
-function addBulletBlock() {
-  const template = document.getElementById('bullet-block-template');
-  const clone = template.content.cloneNode(true);
-  const container = document.getElementById('description-blocks-container');
-  
-  // Add first bullet item
-  const bulletContainer = clone.querySelector('.bullet-items-container');
-  addBulletItemToContainer(bulletContainer);
-  
-  container.appendChild(clone);
-  updatePreview();
-}
-
-function addBulletItem(button) {
-  const bulletContainer = button.closest('.bullet-block').querySelector('.bullet-items-container');
-  addBulletItemToContainer(bulletContainer);
-  updatePreview();
-}
-
-function addBulletItemToContainer(container) {
-  const bulletItemDiv = document.createElement('div');
-  bulletItemDiv.className = 'bullet-item';
-  bulletItemDiv.style.display = 'flex';
-  bulletItemDiv.style.alignItems = 'center';
-  bulletItemDiv.style.gap = '10px';
-  bulletItemDiv.style.marginBottom = '8px';
-  
-  bulletItemDiv.innerHTML = `
-    <i class="fa-solid fa-grip-vertical" style="color: #d4af37; cursor: move;"></i>
-    <input type="text" class="bullet-text" placeholder="Enter bullet point..." style="flex: 1; padding: 8px 12px; border: 2px solid #000; border-radius: 12px;" oninput="updatePreview()">
-    <button type="button" class="remove-bullet-btn" style="width: 30px; height: 30px; border-radius: 50%; border: 2px solid #000; background: #ff4444; color: white; cursor: pointer;" onclick="removeBulletItem(this)"><i class="fa-solid fa-times"></i></button>
-  `;
-  
-  container.appendChild(bulletItemDiv);
-}
-
-function removeBulletItem(button) {
-  button.closest('.bullet-item').remove();
-  updatePreview();
-}
-
-function uploadImageForBlock(button) {
-  const block = button.closest('.image-block');
-  const fileInput = block.querySelector('.image-upload-input');
-  fileInput.click();
-}
-
-function handleImageUploadForBlock(input) {
-  const file = input.files[0];
-  if (!file) return;
-  
-  if (file.size > 5 * 1024 * 1024) {
-    showNotification('Image too large (max 5MB)', 'error');
-    return;
-  }
-  
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const block = input.closest('.image-block');
-    const urlInput = block.querySelector('.block-content');
-    const preview = block.querySelector('.image-preview-block');
-    const previewImg = preview.querySelector('img');
-    
-    urlInput.value = e.target.result;
-    previewImg.src = e.target.result;
-    preview.style.display = 'block';
-    updatePreview();
-  };
-  reader.readAsDataURL(file);
-}
-
-function moveBlockUp(button) {
-  const block = button.closest('.description-block');
-  const prevBlock = block.previousElementSibling;
-  if (prevBlock && prevBlock.classList.contains('description-block')) {
-    block.parentNode.insertBefore(block, prevBlock);
-    updatePreview();
-  }
-}
-
-function moveBlockDown(button) {
-  const block = button.closest('.description-block');
-  const nextBlock = block.nextElementSibling;
-  if (nextBlock && nextBlock.classList.contains('description-block')) {
-    block.parentNode.insertBefore(nextBlock, block);
-    updatePreview();
-  }
-}
-
-function removeBlock(button) {
-  if (confirm('Remove this block?')) {
-    const block = button.closest('.description-block');
-    block.remove();
-    updatePreview();
-  }
-}
-
-function updatePreview() {
-  const preview = document.getElementById('description-preview');
-  const blocks = document.querySelectorAll('#description-blocks-container .description-block');
-  
-  let html = '';
-  
-  blocks.forEach(block => {
-    if (block.classList.contains('text-block')) {
-      const text = block.querySelector('.block-content')?.value || '';
-      html += `<p style="margin-bottom: 1.5rem; line-height: 1.6;">${text}</p>`;
-    }
-    else if (block.classList.contains('heading-block')) {
-      const level = block.querySelector('.heading-level')?.value || 'h2';
-      const text = block.querySelector('.block-content')?.value || '';
-      html += `<${level} style="font-family: 'Proza Libre', sans-serif; margin: 2rem 0 1rem; color: #000;">${text}</${level}>`;
-    }
-    else if (block.classList.contains('image-block')) {
-      const url = block.querySelector('.block-content')?.value || '';
-      if (url) {
-        html += `<p style="text-align: center;"><img src="${url}" alt="Product image" style="max-width: 100%; border-radius: 12px; border: 2px solid #000; margin: 1rem 0;"></p>`;
-      }
-    }
-    else if (block.classList.contains('video-block')) {
-      const url = block.querySelector('.block-content')?.value || '';
-      const alignment = block.querySelector('.video-alignment')?.value || 'center';
-      const alignStyle = alignment === 'center' ? 'margin: 0 auto;' : alignment === 'right' ? 'margin-left: auto;' : 'margin-right: auto;';
-      
-      if (url) {
-        if (url.includes('youtube.com') || url.includes('youtu.be')) {
-          // Extract YouTube ID
-          let videoId = '';
-          if (url.includes('youtube.com/watch?v=')) {
-            videoId = url.split('v=')[1]?.split('&')[0];
-          } else if (url.includes('youtu.be/')) {
-            videoId = url.split('youtu.be/')[1]?.split('?')[0];
-          }
-          
-          if (videoId) {
-            html += `<p style="text-align: ${alignment};"><iframe width="100%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="max-width: 560px; ${alignStyle} border-radius: 12px; border: 2px solid #000;"></iframe></p>`;
-          }
-        } else {
-          html += `<p style="text-align: ${alignment};"><video width="100%" height="auto" style="max-width: 360px; border-radius: 10px; display: block; ${alignStyle}" controls><source src="${url}" type="video/mp4">Your browser does not support the video tag.</video></p>`;
-        }
-      }
-    }
-    else if (block.classList.contains('bullet-block')) {
-      const bullets = block.querySelectorAll('.bullet-text');
-      html += `<ul style="margin-bottom: 1.5rem; list-style: none; padding-left: 0;">`;
-      bullets.forEach(bullet => {
-        const text = bullet.value || '';
-        if (text) {
-          html += `<li style="margin-bottom: 0.5rem; display: flex; align-items: center;"><i class="fa-solid fa-check-circle" style="color: #d4af37; margin-right: 10px;"></i>${text}</li>`;
-        }
-      });
-      html += `</ul>`;
-    }
-  });
-  
-  preview.innerHTML = html || '<p style="color: #999; text-align: center;">No description blocks added yet. Use the buttons above to add content.</p>';
-}
-
-// Load description blocks when editing a product
-function loadDescriptionBlocks(blocks) {
-  const container = document.getElementById('description-blocks-container');
-  container.innerHTML = '';
-  
-  if (blocks && Array.isArray(blocks)) {
-    blocks.forEach(block => {
-      if (block.type === 'text') {
-        addTextBlock();
-        const lastBlock = container.lastElementChild;
-        lastBlock.querySelector('.block-content').value = block.content || '';
-      }
-      else if (block.type === 'heading') {
-        addHeadingBlock();
-        const lastBlock = container.lastElementChild;
-        lastBlock.querySelector('.block-content').value = block.content || '';
-        if (block.level) {
-          lastBlock.querySelector('.heading-level').value = block.level;
-        }
-      }
-      else if (block.type === 'image') {
-        addImageBlock();
-        const lastBlock = container.lastElementChild;
-        lastBlock.querySelector('.block-content').value = block.url || '';
-        if (block.url) {
-          const preview = lastBlock.querySelector('.image-preview-block');
-          const previewImg = preview.querySelector('img');
-          previewImg.src = block.url;
-          preview.style.display = 'block';
-        }
-      }
-      else if (block.type === 'video') {
-        addVideoBlock();
-        const lastBlock = container.lastElementChild;
-        lastBlock.querySelector('.block-content').value = block.url || '';
-        if (block.alignment) {
-          lastBlock.querySelector('.video-alignment').value = block.alignment;
-        }
-      }
-      else if (block.type === 'bullets') {
-        addBulletBlock();
-        const lastBlock = container.lastElementChild;
-        const bulletContainer = lastBlock.querySelector('.bullet-items-container');
-        bulletContainer.innerHTML = '';
-        
-        if (block.items && Array.isArray(block.items)) {
-          block.items.forEach(item => {
-            const bulletItemDiv = document.createElement('div');
-            bulletItemDiv.className = 'bullet-item';
-            bulletItemDiv.style.display = 'flex';
-            bulletItemDiv.style.alignItems = 'center';
-            bulletItemDiv.style.gap = '10px';
-            bulletItemDiv.style.marginBottom = '8px';
-            
-            bulletItemDiv.innerHTML = `
-              <i class="fa-solid fa-grip-vertical" style="color: #d4af37; cursor: move;"></i>
-              <input type="text" class="bullet-text" value="${item.replace(/"/g, '&quot;')}" style="flex: 1; padding: 8px 12px; border: 2px solid #000; border-radius: 12px;" oninput="updatePreview()">
-              <button type="button" class="remove-bullet-btn" style="width: 30px; height: 30px; border-radius: 50%; border: 2px solid #000; background: #ff4444; color: white; cursor: pointer;" onclick="removeBulletItem(this)"><i class="fa-solid fa-times"></i></button>
-            `;
-            
-            bulletContainer.appendChild(bulletItemDiv);
-          });
-        }
-      }
-    });
-  }
-  
-  updatePreview();
-}
-
-// Update handleProductSubmit to include description blocks
-async function handleProductSubmit(e) {
-  e.preventDefault();
-
-  const productTitle = document.getElementById('product-title');
-  const productCategory = document.getElementById('product-category');
-  const productPrice = document.getElementById('product-price');
-  const productOriginalPrice = document.getElementById('product-original-price');
-  const productRating = document.getElementById('product-rating');
-  const productReviewCount = document.getElementById('product-review-count');
-  const productStock = document.getElementById('product-stock');
-  const productBrand = document.getElementById('product-brand');
-  const productShortDesc = document.getElementById('product-short-desc');
-  const productId = document.getElementById('product-id');
-  const showOnHome = document.getElementById('show-on-home');
-  const showOnAccessories = document.getElementById('show-on-accessories');
-  const showOnEssentials = document.getElementById('show-on-essentials');
-  const productHighDemand = document.getElementById('product-high-demand');
-
-  const sellingPrice = parseFloat(productPrice.value);
-  const originalPriceInput = parseFloat(productOriginalPrice.value) || 0;
-  
-  // Calculate derived prices
-  const originalPrice = calculateOriginalPrice(sellingPrice, originalPriceInput);
-  const prepaidPrice = calculatePrepaidPrice(sellingPrice);
-  const codPrice = calculateCodPrice(sellingPrice);
-  
-  const rating = parseFloat(productRating.value);
-  const reviewCount = parseInt(productReviewCount.value) || 0;
-  
-  const showOnHomeChecked = showOnHome ? showOnHome.checked : false;
-  const showOnAccessoriesChecked = showOnAccessories ? showOnAccessories.checked : false;
-  const showOnEssentialsChecked = showOnEssentials ? showOnEssentials.checked : false;
-  const highDemandChecked = productHighDemand ? productHighDemand.checked : false;
-
-  // Collect description blocks
-  const descriptionBlocks = [];
-  const blocks = document.querySelectorAll('#description-blocks-container .description-block');
-  
-  blocks.forEach(block => {
-    if (block.classList.contains('text-block')) {
-      const content = block.querySelector('.block-content')?.value;
-      if (content) {
-        descriptionBlocks.push({
-          type: 'text',
-          content: content
-        });
-      }
-    }
-    else if (block.classList.contains('heading-block')) {
-      const content = block.querySelector('.block-content')?.value;
-      const level = block.querySelector('.heading-level')?.value;
-      if (content) {
-        descriptionBlocks.push({
-          type: 'heading',
-          content: content,
-          level: level
-        });
-      }
-    }
-    else if (block.classList.contains('image-block')) {
-      const url = block.querySelector('.block-content')?.value;
-      if (url) {
-        descriptionBlocks.push({
-          type: 'image',
-          url: url
-        });
-      }
-    }
-    else if (block.classList.contains('video-block')) {
-      const url = block.querySelector('.block-content')?.value;
-      const alignment = block.querySelector('.video-alignment')?.value;
-      if (url) {
-        descriptionBlocks.push({
-          type: 'video',
-          url: url,
-          alignment: alignment
-        });
-      }
-    }
-    else if (block.classList.contains('bullet-block')) {
-      const bullets = block.querySelectorAll('.bullet-text');
-      const items = [];
-      bullets.forEach(bullet => {
-        const text = bullet.value;
-        if (text) items.push(text);
-      });
-      if (items.length > 0) {
-        descriptionBlocks.push({
-          type: 'bullets',
-          items: items
-        });
-      }
-    }
-  });
-
-  const productData = {
-    title: productTitle.value,
-    category: productCategory.value,
-    price: sellingPrice,
-    originalPrice: originalPrice,
-    prepaidPrice: prepaidPrice,
-    codPrice: codPrice,
-    rating: rating,
-    reviewCount: reviewCount,
-    stock: parseInt(productStock.value) || 10,
-    brand: productBrand.value || 'MyEssantia',
-    media: productMedia.map(m => ({ url: m.url, type: m.type })),
-    primaryImg: productMedia[selectedMediaIndex]?.url || '',
-    shortDesc: productShortDesc.value,
-    descriptionBlocks: descriptionBlocks, // Store as structured blocks
-    showOnHome: showOnHomeChecked,
-    showOnAccessories: showOnAccessoriesChecked,
-    showOnEssentials: showOnEssentialsChecked,
-    showOnNew: true,
-    highDemand: highDemandChecked
-  };
-
-  if (productId.value) {
-    productData.id = productId.value;
-  }
-
-  await saveProduct(productData);
-}
-
-// Update editProduct function to load description blocks
-window.editProduct = async function(id) {
-  const product = products.find(p => p.id === id);
-  if (!product) return;
-
-  document.getElementById('product-id').value = product.id;
-  document.getElementById('product-creation-date').value = product.createdAt || '';
-  document.getElementById('product-title').value = product.title;
-  document.getElementById('product-category').value = product.category;
-  document.getElementById('product-price').value = product.price;
-  document.getElementById('product-original-price').value = product.originalPrice || '';
-  document.getElementById('product-rating').value = product.rating;
-  document.getElementById('product-review-count').value = product.reviewCount || 0;
-  document.getElementById('product-stock').value = product.stock || 10;
-  document.getElementById('product-brand').value = product.brand || 'MyEssantia';
-  document.getElementById('product-short-desc').value = product.shortDesc || '';
-
-  productMedia = product.media ? [...product.media] : [];
-  
-  if (product.primaryImg && productMedia.length > 0) {
-    selectedMediaIndex = productMedia.findIndex(m => m.url === product.primaryImg);
-    if (selectedMediaIndex === -1) selectedMediaIndex = 0;
-  } else {
-    selectedMediaIndex = 0;
-  }
-  
-  renderMediaGrid();
-
-  // Load description blocks
-  if (product.descriptionBlocks && Array.isArray(product.descriptionBlocks)) {
-    loadDescriptionBlocks(product.descriptionBlocks);
-  } else {
-    // For backward compatibility, convert old description to blocks
-    document.getElementById('description-blocks-container').innerHTML = '';
-    if (product.description) {
-      addTextBlock();
-      const textBlock = document.querySelector('#description-blocks-container .text-block:last-child');
-      if (textBlock) {
-        textBlock.querySelector('.block-content').value = product.description;
-      }
-    }
-    if (product.specs && product.specs.length > 0) {
-      addBulletBlock();
-      const bulletBlock = document.querySelector('#description-blocks-container .bullet-block:last-child');
-      if (bulletBlock) {
-        const bulletContainer = bulletBlock.querySelector('.bullet-items-container');
-        bulletContainer.innerHTML = '';
-        product.specs.forEach(spec => {
-          const bulletItemDiv = document.createElement('div');
-          bulletItemDiv.className = 'bullet-item';
-          bulletItemDiv.style.display = 'flex';
-          bulletItemDiv.style.alignItems = 'center';
-          bulletItemDiv.style.gap = '10px';
-          bulletItemDiv.style.marginBottom = '8px';
-          
-          bulletItemDiv.innerHTML = `
-            <i class="fa-solid fa-grip-vertical" style="color: #d4af37; cursor: move;"></i>
-            <input type="text" class="bullet-text" value="${spec.replace(/"/g, '&quot;')}" style="flex: 1; padding: 8px 12px; border: 2px solid #000; border-radius: 12px;" oninput="updatePreview()">
-            <button type="button" class="remove-bullet-btn" style="width: 30px; height: 30px; border-radius: 50%; border: 2px solid #000; background: #ff4444; color: white; cursor: pointer;" onclick="removeBulletItem(this)"><i class="fa-solid fa-times"></i></button>
-          `;
-          
-          bulletContainer.appendChild(bulletItemDiv);
-        });
-      }
-    }
-    updatePreview();
-  }
-
-  document.getElementById('show-on-home').checked = product.showOnHome || false;
-  document.getElementById('show-on-accessories').checked = product.showOnAccessories || false;
-  document.getElementById('show-on-essentials').checked = product.showOnEssentials || false;
-  document.getElementById('product-high-demand').checked = product.highDemand || false;
-  
-  updateHighDemandChip();
-  updatePricePreviews();
-  
-  document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-edit"></i> edit product';
-  
-  document.querySelector('.product-form').scrollIntoView({ behavior: 'smooth' });
-};
-
-// Update resetForm to clear description blocks
-function resetForm() {
-  document.getElementById('product-form').reset();
-  document.getElementById('product-id').value = '';
-  document.getElementById('product-creation-date').value = '';
-  productMedia = [];
-  selectedMediaIndex = 0;
-  renderMediaGrid();
-  document.getElementById('description-blocks-container').innerHTML = '';
-  updatePreview();
-  document.getElementById('show-on-home').checked = false;
-  document.getElementById('show-on-accessories').checked = false;
-  document.getElementById('show-on-essentials').checked = false;
-  document.getElementById('show-on-new').checked = false;
-  document.getElementById('product-high-demand').checked = false;
-  document.getElementById('product-review-count').value = '0';
-  updateHighDemandChip();
-  updatePricePreviews();
-  document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-plus-circle"></i> add new product';
-}
-
-// Update initializeDashboard to include description blocks initialization
-function initializeDashboard() {
-  console.log('Initializing dashboard with price controls and rich description editor...');
-  
-  // Add price input listener
-  const priceInput = document.getElementById('product-price');
-  if (priceInput) {
-    priceInput.addEventListener('input', updatePricePreviews);
-  }
-  
-  // Clear description blocks container on new form
-  const container = document.getElementById('description-blocks-container');
-  if (container) {
-    container.innerHTML = '';
-    // Add a default text block as starting point
-    addTextBlock();
-  }
-
-  const productForm = document.getElementById('product-form');
-  const productId = document.getElementById('product-id');
-  const productCreationDate = document.getElementById('product-creation-date');
-  const productTitle = document.getElementById('product-title');
-  const productCategory = document.getElementById('product-category');
-  const productRating = document.getElementById('product-rating');
-  const productStock = document.getElementById('product-stock');
-  const productBrand = document.getElementById('product-brand');
-  const productShortDesc = document.getElementById('product-short-desc');
-  const productHighDemand = document.getElementById('product-high-demand');
-  const showOnHome = document.getElementById('show-on-home');
-  const showOnAccessories = document.getElementById('show-on-accessories');
-  const showOnEssentials = document.getElementById('show-on-essentials');
-  const showOnNew = document.getElementById('show-on-new');
-  const productsList = document.getElementById('products-list');
-  const emptyProducts = document.getElementById('empty-products');
-  const totalProducts = document.getElementById('total-products');
-  const newinProducts = document.getElementById('newin-products');
-  const highDemandProducts = document.getElementById('high-demand-products');
-  const totalStock = document.getElementById('total-stock');
-  const productCount = document.getElementById('product-count');
-  const formTitle = document.getElementById('form-title');
-  const cancelEdit = document.getElementById('cancel-edit');
-  const searchInput = document.getElementById('search-products');
-  const highDemandChip = document.getElementById('high-demand-chip');
-  const mediaGrid = document.getElementById('media-grid');
-
-  // Reinitialize media array
-  productMedia = [];
-  selectedMediaIndex = 0;
-  if (mediaGrid) renderMediaGrid();
-
-  // Setup event listeners
-  if (productCategory) {
-    productCategory.addEventListener('change', updateCategorySync);
-  }
-  if (productForm) {
-    productForm.removeEventListener('submit', handleProductSubmit);
-    productForm.addEventListener('submit', handleProductSubmit);
-  }
-  if (cancelEdit) {
-    cancelEdit.addEventListener('click', resetForm);
-  }
-  if (searchInput) {
-    searchInput.addEventListener('input', filterProducts);
-  }
-  if (productHighDemand) {
-    productHighDemand.addEventListener('change', updateHighDemandChip);
-  }
-
-  // Load products
-  loadProducts();
-}
   
   const reviewData = {
     productId: productId,
@@ -4116,7 +3538,6 @@ function initializeDashboard() {
     console.error(err);
     showReviewNotification('Error saving review', 'error'); 
   } finally {
-    // Reset the flag
     isSubmitting = false;
   }
   return false;
@@ -4143,7 +3564,6 @@ function editReview(id) {
   if (reviewComment) reviewComment.value = review.comment;
   if (reviewVerified) reviewVerified.checked = review.verified === true;
   
-  // Handle image - only show preview if there's an image
   const preview = document.getElementById('review-image-preview');
   const previewImg = document.getElementById('review-image-preview-img');
   
@@ -4218,13 +3638,10 @@ function exportReviews() {
   showReviewNotification('Reviews exported');
 }
 
-// Notification function (use existing or create)
 function showReviewNotification(message, type = 'success') {
-  // Use the existing showNotification from main dashboard
   if (typeof showNotification === 'function') {
     showNotification(message, type);
   } else {
-    // Fallback
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.textContent = message;
@@ -4384,7 +3801,6 @@ MyEssantia Team`;
     window.currentNotifyFilter = filter;
     window.currentNotifyPage = 1;
     
-    // Update active tab
     document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
     const activeTab = document.getElementById(`filter-${filter}`);
     if (activeTab) activeTab.classList.add('active');
@@ -4513,7 +3929,6 @@ MyEssantia Team`;
   }
 
   // Render requests
-// Render requests - FIXED VERSION (no double rendering)
 function renderNotifyRequests() {
   if (!window.filteredNotifyRequests) return;
   
@@ -4611,13 +4026,11 @@ if (pagination) pagination.style.display =
     }).join('');
   }
 
-  // Render mobile cards (mobile view) - FIXED: Only render if not already rendered above
+  // Render mobile cards
   const mobileCardsEl = document.getElementById('mobile-cards');
   if (mobileCardsEl) {
-    // Clear existing content first
     mobileCardsEl.innerHTML = '';
     
-    // Then render new content
     mobileCardsEl.innerHTML = pageRequests.map(req => {
       const product = window.notifyProducts[req.productId] || { 
         title: 'Unknown Product', 
@@ -4927,7 +4340,7 @@ db.collection('notifications')
     notifyBadge.textContent = pendingCount;
   });
   
-  // Set up real-time listener for reviews badge
+// Set up real-time listener for reviews badge
 db.collection('reviews')
   .onSnapshot((snapshot) => {
     const reviewsBadge = document.getElementById('reviewsBadge');
@@ -5083,7 +4496,6 @@ window.toggleHighDemand = function() {
   }
 };
 
-
 async function saveProduct(productData) {
   try {
     if (productData.id) {
@@ -5128,23 +4540,19 @@ window.deleteProduct = function(id) {
 
 // ========== PRICE CALCULATION FUNCTIONS ==========
 function calculatePrepaidPrice(sellingPrice) {
-  // 15% off, rounded to nearest integer
   const discount = sellingPrice * 0.15;
   const prepaid = sellingPrice - discount;
   return Math.round(prepaid);
 }
 
 function calculateCodPrice(sellingPrice) {
-  // selling price + ₹100, rounded to nearest integer
   return Math.round(sellingPrice + 100);
 }
 
 function calculateOriginalPrice(sellingPrice, originalPrice) {
-  // If original price is provided, use it. Otherwise calculate default (25% higher)
   if (originalPrice && originalPrice > sellingPrice) {
     return originalPrice;
   } else {
-    // Default: original price is 25% higher than selling price, rounded
     return Math.round(sellingPrice * 1.25);
   }
 }
@@ -5164,6 +4572,275 @@ function updatePricePreviews() {
   }
 }
 
+// ========== RICH DESCRIPTION BLOCK FUNCTIONS ==========
+function addTextBlock() {
+  const template = document.getElementById('text-block-template');
+  const clone = template.content.cloneNode(true);
+  const container = document.getElementById('description-blocks-container');
+  container.appendChild(clone);
+  updatePreview();
+}
+
+function addHeadingBlock() {
+  const template = document.getElementById('heading-block-template');
+  const clone = template.content.cloneNode(true);
+  const container = document.getElementById('description-blocks-container');
+  container.appendChild(clone);
+  updatePreview();
+}
+
+function addImageBlock() {
+  const template = document.getElementById('image-block-template');
+  const clone = template.content.cloneNode(true);
+  const container = document.getElementById('description-blocks-container');
+  container.appendChild(clone);
+  updatePreview();
+}
+
+function addVideoBlock() {
+  const template = document.getElementById('video-block-template');
+  const clone = template.content.cloneNode(true);
+  const container = document.getElementById('description-blocks-container');
+  container.appendChild(clone);
+  updatePreview();
+}
+
+function addBulletBlock() {
+  const template = document.getElementById('bullet-block-template');
+  const clone = template.content.cloneNode(true);
+  const container = document.getElementById('description-blocks-container');
+  
+  const bulletContainer = clone.querySelector('.bullet-items-container');
+  addBulletItemToContainer(bulletContainer);
+  
+  container.appendChild(clone);
+  updatePreview();
+}
+
+function addBulletItem(button) {
+  const bulletContainer = button.closest('.bullet-block').querySelector('.bullet-items-container');
+  addBulletItemToContainer(bulletContainer);
+  updatePreview();
+}
+
+function addBulletItemToContainer(container) {
+  const bulletItemDiv = document.createElement('div');
+  bulletItemDiv.className = 'bullet-item';
+  bulletItemDiv.style.display = 'flex';
+  bulletItemDiv.style.alignItems = 'center';
+  bulletItemDiv.style.gap = '10px';
+  bulletItemDiv.style.marginBottom = '8px';
+  
+  bulletItemDiv.innerHTML = `
+    <i class="fa-solid fa-grip-vertical" style="color: #d4af37; cursor: move;"></i>
+    <input type="text" class="bullet-text" placeholder="Enter bullet point..." style="flex: 1; padding: 8px 12px; border: 2px solid #000; border-radius: 12px;" oninput="updatePreview()">
+    <button type="button" class="remove-bullet-btn" style="width: 30px; height: 30px; border-radius: 50%; border: 2px solid #000; background: #ff4444; color: white; cursor: pointer;" onclick="removeBulletItem(this)"><i class="fa-solid fa-times"></i></button>
+  `;
+  
+  container.appendChild(bulletItemDiv);
+}
+
+function removeBulletItem(button) {
+  button.closest('.bullet-item').remove();
+  updatePreview();
+}
+
+function uploadImageForBlock(button) {
+  const block = button.closest('.image-block');
+  const fileInput = block.querySelector('.image-upload-input');
+  fileInput.click();
+}
+
+function handleImageUploadForBlock(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  if (file.size > 5 * 1024 * 1024) {
+    showNotification('Image too large (max 5MB)', 'error');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const block = input.closest('.image-block');
+    const urlInput = block.querySelector('.block-content');
+    const preview = block.querySelector('.image-preview-block');
+    const previewImg = preview.querySelector('img');
+    
+    urlInput.value = e.target.result;
+    previewImg.src = e.target.result;
+    preview.style.display = 'block';
+    updatePreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function moveBlockUp(button) {
+  const block = button.closest('.description-block');
+  const prevBlock = block.previousElementSibling;
+  if (prevBlock && prevBlock.classList.contains('description-block')) {
+    block.parentNode.insertBefore(block, prevBlock);
+    updatePreview();
+  }
+}
+
+function moveBlockDown(button) {
+  const block = button.closest('.description-block');
+  const nextBlock = block.nextElementSibling;
+  if (nextBlock && nextBlock.classList.contains('description-block')) {
+    block.parentNode.insertBefore(nextBlock, block);
+    updatePreview();
+  }
+}
+
+function removeBlock(button) {
+  if (confirm('Remove this block?')) {
+    const block = button.closest('.description-block');
+    block.remove();
+    updatePreview();
+  }
+}
+
+function updatePreview() {
+  const preview = document.getElementById('description-preview');
+  const blocks = document.querySelectorAll('#description-blocks-container .description-block');
+  
+  let html = '';
+  
+  blocks.forEach(block => {
+    if (block.classList.contains('text-block')) {
+      const text = block.querySelector('.block-content')?.value || '';
+      if (text) {
+        html += `<p style="margin-bottom: 1.5rem; line-height: 1.6;">${text}</p>`;
+      }
+    }
+    else if (block.classList.contains('heading-block')) {
+      const level = block.querySelector('.heading-level')?.value || 'h2';
+      const text = block.querySelector('.block-content')?.value || '';
+      if (text) {
+        html += `<${level} style="font-family: 'Proza Libre', sans-serif; margin: 2rem 0 1rem; color: #000;">${text}</${level}>`;
+      }
+    }
+    else if (block.classList.contains('image-block')) {
+      const url = block.querySelector('.block-content')?.value || '';
+      if (url) {
+        html += `<p style="text-align: center;"><img src="${url}" alt="Product image" style="max-width: 100%; border-radius: 12px; border: 2px solid #000; margin: 1rem 0;"></p>`;
+      }
+    }
+    else if (block.classList.contains('video-block')) {
+      const url = block.querySelector('.block-content')?.value || '';
+      const alignment = block.querySelector('.video-alignment')?.value || 'center';
+      const alignStyle = alignment === 'center' ? 'margin: 0 auto;' : alignment === 'right' ? 'margin-left: auto;' : 'margin-right: auto;';
+      
+      if (url) {
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+          let videoId = '';
+          if (url.includes('youtube.com/watch?v=')) {
+            videoId = url.split('v=')[1]?.split('&')[0];
+          } else if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1]?.split('?')[0];
+          }
+          
+          if (videoId) {
+            html += `<p style="text-align: ${alignment};"><iframe width="100%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="max-width: 560px; ${alignStyle} border-radius: 12px; border: 2px solid #000;"></iframe></p>`;
+          }
+        } else {
+          html += `<p style="text-align: ${alignment};"><video width="100%" height="auto" style="max-width: 360px; border-radius: 10px; display: block; ${alignStyle}" controls><source src="${url}" type="video/mp4">Your browser does not support the video tag.</video></p>`;
+        }
+      }
+    }
+    else if (block.classList.contains('bullet-block')) {
+      const bullets = block.querySelectorAll('.bullet-text');
+      let hasContent = false;
+      let bulletHtml = '<ul style="margin-bottom: 1.5rem; list-style: none; padding-left: 0;">';
+      
+      bullets.forEach(bullet => {
+        const text = bullet.value || '';
+        if (text) {
+          hasContent = true;
+          bulletHtml += `<li style="margin-bottom: 0.5rem; display: flex; align-items: center;"><i class="fa-solid fa-check-circle" style="color: #d4af37; margin-right: 10px;"></i>${text}</li>`;
+        }
+      });
+      
+      bulletHtml += `</ul>`;
+      if (hasContent) {
+        html += bulletHtml;
+      }
+    }
+  });
+  
+  preview.innerHTML = html || '<p style="color: #999; text-align: center;">No description blocks added yet. Use the buttons above to add content.</p>';
+}
+
+function loadDescriptionBlocks(blocks) {
+  const container = document.getElementById('description-blocks-container');
+  container.innerHTML = '';
+  
+  if (blocks && Array.isArray(blocks)) {
+    blocks.forEach(block => {
+      if (block.type === 'text') {
+        addTextBlock();
+        const lastBlock = container.lastElementChild;
+        lastBlock.querySelector('.block-content').value = block.content || '';
+      }
+      else if (block.type === 'heading') {
+        addHeadingBlock();
+        const lastBlock = container.lastElementChild;
+        lastBlock.querySelector('.block-content').value = block.content || '';
+        if (block.level) {
+          lastBlock.querySelector('.heading-level').value = block.level;
+        }
+      }
+      else if (block.type === 'image') {
+        addImageBlock();
+        const lastBlock = container.lastElementChild;
+        lastBlock.querySelector('.block-content').value = block.url || '';
+        if (block.url) {
+          const preview = lastBlock.querySelector('.image-preview-block');
+          const previewImg = preview.querySelector('img');
+          previewImg.src = block.url;
+          preview.style.display = 'block';
+        }
+      }
+      else if (block.type === 'video') {
+        addVideoBlock();
+        const lastBlock = container.lastElementChild;
+        lastBlock.querySelector('.block-content').value = block.url || '';
+        if (block.alignment) {
+          lastBlock.querySelector('.video-alignment').value = block.alignment;
+        }
+      }
+      else if (block.type === 'bullets') {
+        addBulletBlock();
+        const lastBlock = container.lastElementChild;
+        const bulletContainer = lastBlock.querySelector('.bullet-items-container');
+        bulletContainer.innerHTML = '';
+        
+        if (block.items && Array.isArray(block.items)) {
+          block.items.forEach(item => {
+            const bulletItemDiv = document.createElement('div');
+            bulletItemDiv.className = 'bullet-item';
+            bulletItemDiv.style.display = 'flex';
+            bulletItemDiv.style.alignItems = 'center';
+            bulletItemDiv.style.gap = '10px';
+            bulletItemDiv.style.marginBottom = '8px';
+            
+            bulletItemDiv.innerHTML = `
+              <i class="fa-solid fa-grip-vertical" style="color: #d4af37; cursor: move;"></i>
+              <input type="text" class="bullet-text" value="${item.replace(/"/g, '&quot;')}" style="flex: 1; padding: 8px 12px; border: 2px solid #000; border-radius: 12px;" oninput="updatePreview()">
+              <button type="button" class="remove-bullet-btn" style="width: 30px; height: 30px; border-radius: 50%; border: 2px solid #000; background: #ff4444; color: white; cursor: pointer;" onclick="removeBulletItem(this)"><i class="fa-solid fa-times"></i></button>
+            `;
+            
+            bulletContainer.appendChild(bulletItemDiv);
+          });
+        }
+      }
+    });
+  }
+  
+  updatePreview();
+}
+
 // ========== ENHANCED PRODUCT SAVE FUNCTION ==========
 async function handleProductSubmit(e) {
   e.preventDefault();
@@ -5177,8 +4854,6 @@ async function handleProductSubmit(e) {
   const productStock = document.getElementById('product-stock');
   const productBrand = document.getElementById('product-brand');
   const productShortDesc = document.getElementById('product-short-desc');
-  const productDescription = document.getElementById('product-description');
-  const productSpecs = document.getElementById('product-specs');
   const productId = document.getElementById('product-id');
   const showOnHome = document.getElementById('show-on-home');
   const showOnAccessories = document.getElementById('show-on-accessories');
@@ -5188,7 +4863,6 @@ async function handleProductSubmit(e) {
   const sellingPrice = parseFloat(productPrice.value);
   const originalPriceInput = parseFloat(productOriginalPrice.value) || 0;
   
-  // Calculate derived prices
   const originalPrice = calculateOriginalPrice(sellingPrice, originalPriceInput);
   const prepaidPrice = calculatePrepaidPrice(sellingPrice);
   const codPrice = calculateCodPrice(sellingPrice);
@@ -5201,6 +4875,67 @@ async function handleProductSubmit(e) {
   const showOnEssentialsChecked = showOnEssentials ? showOnEssentials.checked : false;
   const highDemandChecked = productHighDemand ? productHighDemand.checked : false;
 
+  // Collect description blocks
+  const descriptionBlocks = [];
+  const blocks = document.querySelectorAll('#description-blocks-container .description-block');
+  
+  blocks.forEach(block => {
+    if (block.classList.contains('text-block')) {
+      const content = block.querySelector('.block-content')?.value;
+      if (content && content.trim()) {
+        descriptionBlocks.push({
+          type: 'text',
+          content: content.trim()
+        });
+      }
+    }
+    else if (block.classList.contains('heading-block')) {
+      const content = block.querySelector('.block-content')?.value;
+      const level = block.querySelector('.heading-level')?.value;
+      if (content && content.trim()) {
+        descriptionBlocks.push({
+          type: 'heading',
+          content: content.trim(),
+          level: level
+        });
+      }
+    }
+    else if (block.classList.contains('image-block')) {
+      const url = block.querySelector('.block-content')?.value;
+      if (url && url.trim()) {
+        descriptionBlocks.push({
+          type: 'image',
+          url: url.trim()
+        });
+      }
+    }
+    else if (block.classList.contains('video-block')) {
+      const url = block.querySelector('.block-content')?.value;
+      const alignment = block.querySelector('.video-alignment')?.value;
+      if (url && url.trim()) {
+        descriptionBlocks.push({
+          type: 'video',
+          url: url.trim(),
+          alignment: alignment
+        });
+      }
+    }
+    else if (block.classList.contains('bullet-block')) {
+      const bullets = block.querySelectorAll('.bullet-text');
+      const items = [];
+      bullets.forEach(bullet => {
+        const text = bullet.value;
+        if (text && text.trim()) items.push(text.trim());
+      });
+      if (items.length > 0) {
+        descriptionBlocks.push({
+          type: 'bullets',
+          items: items
+        });
+      }
+    }
+  });
+
   const productData = {
     title: productTitle.value,
     category: productCategory.value,
@@ -5209,14 +4944,13 @@ async function handleProductSubmit(e) {
     prepaidPrice: prepaidPrice,
     codPrice: codPrice,
     rating: rating,
-    reviewCount: reviewCount, // Store the manual review count
+    reviewCount: reviewCount,
     stock: parseInt(productStock.value) || 10,
     brand: productBrand.value || 'MyEssantia',
     media: productMedia.map(m => ({ url: m.url, type: m.type })),
     primaryImg: productMedia[selectedMediaIndex]?.url || '',
     shortDesc: productShortDesc.value,
-    description: productDescription.value,
-    specs: productSpecs.value ? productSpecs.value.split('\n').filter(s => s.trim()) : [],
+    descriptionBlocks: descriptionBlocks,
     showOnHome: showOnHomeChecked,
     showOnAccessories: showOnAccessoriesChecked,
     showOnEssentials: showOnEssentialsChecked,
@@ -5247,8 +4981,6 @@ window.editProduct = async function(id) {
   document.getElementById('product-stock').value = product.stock || 10;
   document.getElementById('product-brand').value = product.brand || 'MyEssantia';
   document.getElementById('product-short-desc').value = product.shortDesc || '';
-  document.getElementById('product-description').value = product.description || '';
-  document.getElementById('product-specs').value = product.specs ? product.specs.join('\n') : '';
 
   productMedia = product.media ? [...product.media] : [];
   
@@ -5260,6 +4992,49 @@ window.editProduct = async function(id) {
   }
   
   renderMediaGrid();
+
+  // Load description blocks
+  const container = document.getElementById('description-blocks-container');
+  if (container) {
+    if (product.descriptionBlocks && Array.isArray(product.descriptionBlocks)) {
+      loadDescriptionBlocks(product.descriptionBlocks);
+    } else {
+      // For backward compatibility, convert old description to blocks
+      container.innerHTML = '';
+      if (product.description) {
+        addTextBlock();
+        const textBlock = document.querySelector('#description-blocks-container .text-block:last-child');
+        if (textBlock) {
+          textBlock.querySelector('.block-content').value = product.description;
+        }
+      }
+      if (product.specs && product.specs.length > 0) {
+        addBulletBlock();
+        const bulletBlock = document.querySelector('#description-blocks-container .bullet-block:last-child');
+        if (bulletBlock) {
+          const bulletContainer = bulletBlock.querySelector('.bullet-items-container');
+          bulletContainer.innerHTML = '';
+          product.specs.forEach(spec => {
+            const bulletItemDiv = document.createElement('div');
+            bulletItemDiv.className = 'bullet-item';
+            bulletItemDiv.style.display = 'flex';
+            bulletItemDiv.style.alignItems = 'center';
+            bulletItemDiv.style.gap = '10px';
+            bulletItemDiv.style.marginBottom = '8px';
+            
+            bulletItemDiv.innerHTML = `
+              <i class="fa-solid fa-grip-vertical" style="color: #d4af37; cursor: move;"></i>
+              <input type="text" class="bullet-text" value="${spec.replace(/"/g, '&quot;')}" style="flex: 1; padding: 8px 12px; border: 2px solid #000; border-radius: 12px;" oninput="updatePreview()">
+              <button type="button" class="remove-bullet-btn" style="width: 30px; height: 30px; border-radius: 50%; border: 2px solid #000; background: #ff4444; color: white; cursor: pointer;" onclick="removeBulletItem(this)"><i class="fa-solid fa-times"></i></button>
+            `;
+            
+            bulletContainer.appendChild(bulletItemDiv);
+          });
+        }
+      }
+      updatePreview();
+    }
+  }
 
   document.getElementById('show-on-home').checked = product.showOnHome || false;
   document.getElementById('show-on-accessories').checked = product.showOnAccessories || false;
@@ -5309,7 +5084,6 @@ function renderProducts(productsToRender = products) {
     if (product.stock <= 5) stockClass = 'low';
     else if (product.stock <= 15) stockClass = 'medium';
     
-    // Calculate prices for display
     const prepaidPrice = product.prepaidPrice || calculatePrepaidPrice(product.price);
     const codPrice = product.codPrice || calculateCodPrice(product.price);
     const originalPrice = product.originalPrice || calculateOriginalPrice(product.price);
@@ -5471,6 +5245,11 @@ function resetForm() {
   productMedia = [];
   selectedMediaIndex = 0;
   renderMediaGrid();
+  const container = document.getElementById('description-blocks-container');
+  if (container) {
+    container.innerHTML = '';
+    addTextBlock(); // Add a default text block
+  }
   document.getElementById('show-on-home').checked = false;
   document.getElementById('show-on-accessories').checked = false;
   document.getElementById('show-on-essentials').checked = false;
@@ -5484,55 +5263,34 @@ function resetForm() {
 
 // ========== ADD EVENT LISTENERS FOR PRICE CALCULATION ==========
 function initializeDashboard() {
-  console.log('Initializing dashboard with price controls...');
+  console.log('Initializing dashboard with price controls and rich description editor...');
   
-  // Add price input listener
   const priceInput = document.getElementById('product-price');
   if (priceInput) {
     priceInput.addEventListener('input', updatePricePreviews);
   }
   
+  const container = document.getElementById('description-blocks-container');
+  if (container) {
+    container.innerHTML = '';
+    addTextBlock();
+  }
 
   const productForm = document.getElementById('product-form');
-  const productId = document.getElementById('product-id');
-  const productCreationDate = document.getElementById('product-creation-date');
-  const productTitle = document.getElementById('product-title');
   const productCategory = document.getElementById('product-category');
-  const productRating = document.getElementById('product-rating');
-  const productStock = document.getElementById('product-stock');
-  const productBrand = document.getElementById('product-brand');
-  const productShortDesc = document.getElementById('product-short-desc');
-  const productDescription = document.getElementById('product-description');
-  const productSpecs = document.getElementById('product-specs');
-  const productHighDemand = document.getElementById('product-high-demand');
-  const showOnHome = document.getElementById('show-on-home');
-  const showOnAccessories = document.getElementById('show-on-accessories');
-  const showOnEssentials = document.getElementById('show-on-essentials');
-  const showOnNew = document.getElementById('show-on-new');
-  const productsList = document.getElementById('products-list');
-  const emptyProducts = document.getElementById('empty-products');
-  const totalProducts = document.getElementById('total-products');
-  const newinProducts = document.getElementById('newin-products');
-  const highDemandProducts = document.getElementById('high-demand-products');
-  const totalStock = document.getElementById('total-stock');
-  const productCount = document.getElementById('product-count');
-  const formTitle = document.getElementById('form-title');
   const cancelEdit = document.getElementById('cancel-edit');
   const searchInput = document.getElementById('search-products');
-  const highDemandChip = document.getElementById('high-demand-chip');
+  const productHighDemand = document.getElementById('product-high-demand');
   const mediaGrid = document.getElementById('media-grid');
 
-  // Reinitialize media array
   productMedia = [];
   selectedMediaIndex = 0;
   if (mediaGrid) renderMediaGrid();
 
-  // Setup event listeners
   if (productCategory) {
     productCategory.addEventListener('change', updateCategorySync);
   }
   if (productForm) {
-    // Remove existing listener first to prevent duplicates
     productForm.removeEventListener('submit', handleProductSubmit);
     productForm.addEventListener('submit', handleProductSubmit);
   }
@@ -5546,7 +5304,6 @@ function initializeDashboard() {
     productHighDemand.addEventListener('change', updateHighDemandChip);
   }
 
-  // Load products
   loadProducts();
 }
 
@@ -5588,7 +5345,6 @@ function filterProducts() {
   );
   renderProducts(filtered);
 }
-
 
 function updateCategorySync() {
   const category = document.getElementById('product-category');
@@ -5695,9 +5451,23 @@ window.importProducts = function() {
 
 // ========== INITIALIZE ==========
 document.addEventListener('DOMContentLoaded', () => {
-  // Load dashboard by default
   loadPage('dashboard');
 });
+
+// Make rich description functions globally available
+window.addTextBlock = addTextBlock;
+window.addHeadingBlock = addHeadingBlock;
+window.addImageBlock = addImageBlock;
+window.addVideoBlock = addVideoBlock;
+window.addBulletBlock = addBulletBlock;
+window.addBulletItem = addBulletItem;
+window.uploadImageForBlock = uploadImageForBlock;
+window.handleImageUploadForBlock = handleImageUploadForBlock;
+window.moveBlockUp = moveBlockUp;
+window.moveBlockDown = moveBlockDown;
+window.removeBlock = removeBlock;
+window.removeBulletItem = removeBulletItem;
 </script>
+ 
 </body>
 </html>
