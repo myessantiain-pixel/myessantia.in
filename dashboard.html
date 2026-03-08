@@ -4473,20 +4473,20 @@ async function saveProduct(productData) {
         ...data,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      showNotification('product updated successfully!', 'success');
+      showNotification('Product updated successfully!', 'success');
     } else {
       await db.collection('products').add({
         ...productData,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      showNotification('product added successfully!', 'success');
+      showNotification('Product added successfully!', 'success');
     }
     loadProducts();
     resetForm();
   } catch (error) {
     console.error('Error saving product:', error);
-    showNotification('failed to save product', 'error');
+    showNotification(`Failed to save product: ${error.message}`, 'error');
   }
 }
 
@@ -4872,9 +4872,11 @@ function loadDescriptionBlocks(blocks) {
   updatePreview();
 }
 
+// ========== ENHANCED PRODUCT SAVE FUNCTION WITH NULL CHECKS ==========
 async function handleProductSubmit(e) {
   e.preventDefault();
 
+  // Get all form elements with null checks
   const productTitle = document.getElementById('product-title');
   const productCategory = document.getElementById('product-category');
   const productPrice = document.getElementById('product-price');
@@ -4890,8 +4892,23 @@ async function handleProductSubmit(e) {
   const showOnEssentials = document.getElementById('show-on-essentials');
   const productHighDemand = document.getElementById('product-high-demand');
 
-  if (!productTitle || !productTitle.value) {
+  // Validate required fields
+  if (!productTitle) {
+    showNotification('Product title field not found', 'error');
+    return;
+  }
+  if (!productTitle.value) {
     showNotification('Please enter product title', 'error');
+    return;
+  }
+
+  if (!productCategory) {
+    showNotification('Product category field not found', 'error');
+    return;
+  }
+
+  if (!productPrice) {
+    showNotification('Product price field not found', 'error');
     return;
   }
 
@@ -4901,14 +4918,16 @@ async function handleProductSubmit(e) {
     return;
   }
   
-  const originalPriceInput = parseFloat(productOriginalPrice.value) || 0;
+  const originalPriceInput = productOriginalPrice ? parseFloat(productOriginalPrice.value) || 0 : 0;
   
   const originalPrice = calculateOriginalPrice(sellingPrice, originalPriceInput);
   const prepaidPrice = calculatePrepaidPrice(sellingPrice);
   const codPrice = calculateCodPrice(sellingPrice);
   
-  const rating = parseFloat(productRating.value) || 4.5;
-  const reviewCount = parseInt(productReviewCount.value) || 0;
+  const rating = productRating ? parseFloat(productRating.value) || 4.5 : 4.5;
+  const reviewCount = productReviewCount ? parseInt(productReviewCount.value) || 0 : 0;
+  const stock = productStock ? parseInt(productStock.value) || 10 : 10;
+  const brand = productBrand ? productBrand.value || 'MyEssantia' : 'MyEssantia';
   
   const showOnHomeChecked = showOnHome ? showOnHome.checked : false;
   const showOnAccessoriesChecked = showOnAccessories ? showOnAccessories.checked : false;
@@ -4985,11 +5004,11 @@ async function handleProductSubmit(e) {
     codPrice: codPrice,
     rating: rating,
     reviewCount: reviewCount,
-    stock: parseInt(productStock.value) || 10,
-    brand: productBrand.value || 'MyEssantia',
+    stock: stock,
+    brand: brand,
     media: productMedia.map(m => ({ url: m.url, type: m.type })),
     primaryImg: productMedia[selectedMediaIndex]?.url || '',
-    shortDesc: productShortDesc.value,
+    shortDesc: productShortDesc ? productShortDesc.value : '',
     descriptionBlocks: descriptionBlocks,
     showOnHome: showOnHomeChecked,
     showOnAccessories: showOnAccessoriesChecked,
@@ -4998,28 +5017,47 @@ async function handleProductSubmit(e) {
     highDemand: highDemandChecked
   };
 
-  if (productId.value) {
+  if (productId && productId.value) {
     productData.id = productId.value;
   }
 
   await saveProduct(productData);
 }
 
+// ========== ENHANCED EDIT PRODUCT FUNCTION WITH NULL CHECKS ==========
 window.editProduct = async function(id) {
   const product = products.find(p => p.id === id);
   if (!product) return;
 
-  document.getElementById('product-id').value = product.id;
-  document.getElementById('product-creation-date').value = product.createdAt || '';
-  document.getElementById('product-title').value = product.title;
-  document.getElementById('product-category').value = product.category;
-  document.getElementById('product-price').value = product.price;
-  document.getElementById('product-original-price').value = product.originalPrice || '';
-  document.getElementById('product-rating').value = product.rating;
-  document.getElementById('product-review-count').value = product.reviewCount || 0;
-  document.getElementById('product-stock').value = product.stock || 10;
-  document.getElementById('product-brand').value = product.brand || 'MyEssantia';
-  document.getElementById('product-short-desc').value = product.shortDesc || '';
+  // Get all form elements with null checks
+  const productIdEl = document.getElementById('product-id');
+  const productCreationDate = document.getElementById('product-creation-date');
+  const productTitle = document.getElementById('product-title');
+  const productCategory = document.getElementById('product-category');
+  const productPrice = document.getElementById('product-price');
+  const productOriginalPrice = document.getElementById('product-original-price');
+  const productRating = document.getElementById('product-rating');
+  const productReviewCount = document.getElementById('product-review-count');
+  const productStock = document.getElementById('product-stock');
+  const productBrand = document.getElementById('product-brand');
+  const productShortDesc = document.getElementById('product-short-desc');
+  const showOnHome = document.getElementById('show-on-home');
+  const showOnAccessories = document.getElementById('show-on-accessories');
+  const showOnEssentials = document.getElementById('show-on-essentials');
+  const productHighDemand = document.getElementById('product-high-demand');
+  const formTitle = document.getElementById('form-title');
+
+  if (productIdEl) productIdEl.value = product.id;
+  if (productCreationDate) productCreationDate.value = product.createdAt || '';
+  if (productTitle) productTitle.value = product.title;
+  if (productCategory) productCategory.value = product.category;
+  if (productPrice) productPrice.value = product.price;
+  if (productOriginalPrice) productOriginalPrice.value = product.originalPrice || '';
+  if (productRating) productRating.value = product.rating;
+  if (productReviewCount) productReviewCount.value = product.reviewCount || 0;
+  if (productStock) productStock.value = product.stock || 10;
+  if (productBrand) productBrand.value = product.brand || 'MyEssantia';
+  if (productShortDesc) productShortDesc.value = product.shortDesc || '';
 
   productMedia = product.media ? [...product.media] : [];
   
@@ -5076,15 +5114,15 @@ window.editProduct = async function(id) {
     }
   }
 
-  document.getElementById('show-on-home').checked = product.showOnHome || false;
-  document.getElementById('show-on-accessories').checked = product.showOnAccessories || false;
-  document.getElementById('show-on-essentials').checked = product.showOnEssentials || false;
-  document.getElementById('product-high-demand').checked = product.highDemand || false;
+  if (showOnHome) showOnHome.checked = product.showOnHome || false;
+  if (showOnAccessories) showOnAccessories.checked = product.showOnAccessories || false;
+  if (showOnEssentials) showOnEssentials.checked = product.showOnEssentials || false;
+  if (productHighDemand) productHighDemand.checked = product.highDemand || false;
   
   updateHighDemandChip();
   updatePricePreviews();
   
-  document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-edit"></i> edit product';
+  if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> edit product';
   
   document.querySelector('.product-form').scrollIntoView({ behavior: 'smooth' });
 };
@@ -5277,26 +5315,45 @@ function renderProducts(productsToRender = products) {
 }
 
 function resetForm() {
-  document.getElementById('product-form').reset();
-  document.getElementById('product-id').value = '';
-  document.getElementById('product-creation-date').value = '';
+  // Get all form elements with null checks
+  const productForm = document.getElementById('product-form');
+  const productId = document.getElementById('product-id');
+  const productCreationDate = document.getElementById('product-creation-date');
+  const showOnHome = document.getElementById('show-on-home');
+  const showOnAccessories = document.getElementById('show-on-accessories');
+  const showOnEssentials = document.getElementById('show-on-essentials');
+  const showOnNew = document.getElementById('show-on-new');
+  const productHighDemand = document.getElementById('product-high-demand');
+  const productReviewCount = document.getElementById('product-review-count');
+  const formTitle = document.getElementById('form-title');
+  
+  if (productForm) productForm.reset();
+  if (productId) productId.value = '';
+  if (productCreationDate) productCreationDate.value = '';
+  
   productMedia = [];
   selectedMediaIndex = 0;
   renderMediaGrid();
+  
   const container = document.getElementById('description-blocks-container');
   if (container) {
     container.innerHTML = '';
-    addTextBlock();
+    setTimeout(() => {
+      addTextBlock();
+    }, 100);
   }
-  document.getElementById('show-on-home').checked = false;
-  document.getElementById('show-on-accessories').checked = false;
-  document.getElementById('show-on-essentials').checked = false;
-  document.getElementById('show-on-new').checked = false;
-  document.getElementById('product-high-demand').checked = false;
-  document.getElementById('product-review-count').value = '0';
+  
+  if (showOnHome) showOnHome.checked = false;
+  if (showOnAccessories) showOnAccessories.checked = false;
+  if (showOnEssentials) showOnEssentials.checked = false;
+  if (showOnNew) showOnNew.checked = false;
+  if (productHighDemand) productHighDemand.checked = false;
+  if (productReviewCount) productReviewCount.value = '0';
+  
   updateHighDemandChip();
   updatePricePreviews();
-  document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-plus-circle"></i> add new product';
+  
+  if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> add new product';
 }
 
 function initializeDashboard() {
@@ -5393,11 +5450,15 @@ function updateCategorySync() {
   const catValue = category.value;
   
   if (catValue === 'accessories') {
-    document.getElementById('show-on-accessories').checked = true;
-    document.getElementById('show-on-essentials').checked = false;
+    const showOnAccessories = document.getElementById('show-on-accessories');
+    const showOnEssentials = document.getElementById('show-on-essentials');
+    if (showOnAccessories) showOnAccessories.checked = true;
+    if (showOnEssentials) showOnEssentials.checked = false;
   } else if (catValue === 'essentials') {
-    document.getElementById('show-on-essentials').checked = true;
-    document.getElementById('show-on-accessories').checked = false;
+    const showOnAccessories = document.getElementById('show-on-accessories');
+    const showOnEssentials = document.getElementById('show-on-essentials');
+    if (showOnEssentials) showOnEssentials.checked = true;
+    if (showOnAccessories) showOnAccessories.checked = false;
   }
 }
 
@@ -5491,6 +5552,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadPage('dashboard');
 });
 
+// Make rich description functions globally available
 window.addTextBlock = addTextBlock;
 window.addHeadingBlock = addHeadingBlock;
 window.addImageBlock = addImageBlock;
