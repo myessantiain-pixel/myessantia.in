@@ -212,96 +212,149 @@
       font-weight: var(--font-heading-weight);
     }
 
-    /* ===== IMAGE SIZE REDUCTION ===== */
-.main-image {
-  max-width: 80%; /* Reduce from 100% to 80% */
-  margin: 0 auto; /* Center the image */
-}
-
-.gallery-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.thumbnail-grid {
-  max-width: 80%; /* Match the main image width */
-  margin: 0 auto;
-}
-
-/* Optional: If you want even smaller images on desktop */
-@media (min-width: 1024px) {
-  .main-image {
-    max-width: 70%; /* Even smaller on desktop */
-  }
-  
-  .thumbnail-grid {
-    max-width: 70%;
-  }
-}
-
-/* ===== DESCRIPTION SIZE REDUCTION ===== */
+ /* ===== REDUCED DESCRIPTION SECTION STYLES ===== */
 .product__description {
-  max-width: 90%; /* Reduce description width */
-  margin: 2.5rem auto; /* Center the description */
+  margin: 1.5rem 0 !important; /* Reduced from 2.5rem */
+  font-size: 0.95rem !important; /* Smaller base font size */
+  line-height: 1.5 !important;
 }
 
 .product__description p {
-  font-size: 0.95rem; /* Slightly smaller text */
-  line-height: 1.5; /* Tighter line height */
-  margin-bottom: 1rem; /* Less spacing between paragraphs */
+  margin-bottom: 1rem !important; /* Reduced from 1.5rem */
+  font-size: 0.95rem !important;
+}
+
+.product__description h1,
+.product__description h2,
+.product__description h3,
+.product__description h4,
+.product__description h5,
+.product__description h6 {
+  margin: 1.2rem 0 0.8rem !important; /* Reduced margins */
+  font-size: 1.3rem !important; /* Smaller headings */
 }
 
 .product__description h2 {
-  font-size: 1.6rem; /* Smaller headings */
-  margin: 1.5rem 0 1rem;
+  font-size: 1.5rem !important; /* Reduced from 2rem */
+  margin: 1.5rem 0 1rem !important; /* Reduced from 2.5rem 0 1.5rem */
 }
 
 .product__description h3 {
-  font-size: 1.3rem; /* Smaller subheadings */
-  margin: 1.2rem 0 0.8rem;
+  font-size: 1.2rem !important; /* Reduced from 1.8rem */
+  margin: 1.2rem 0 0.8rem !important; /* Reduced from 2rem 0 1rem */
+}
+
+.product__description ul,
+.product__description ol {
+  margin-bottom: 1rem !important;
+  padding-left: 1.5rem !important;
+}
+
+.product__description li {
+  margin-bottom: 0.3rem !important;
+  font-size: 0.95rem !important;
 }
 
 .product__description img {
-  max-width: 80%; /* Reduce image sizes within description */
-  display: block;
-  margin: 1rem auto;
+  max-width: 100%;
+  max-height: 300px !important; /* Limit image height */
+  width: auto;
+  height: auto;
+  border-radius: 8px; /* Slightly smaller border radius */
+  margin: 0.8rem 0 !important; /* Reduced margins */
 }
 
 .product__description video {
-  max-width: 80%; /* Reduce video size */
+  max-width: 100%;
+  max-height: 250px !important; /* Limit video height */
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  margin: 0.8rem auto !important;
 }
 
-/* If you're using the enhanced description classes */
+.product__description iframe {
+  max-width: 100%;
+  max-height: 250px !important; /* Limit iframe (YouTube) height */
+  height: auto !important;
+  aspect-ratio: 16/9;
+  margin: 0.8rem auto !important;
+}
+
+.product__description blockquote {
+  margin: 1rem 0 !important;
+  padding: 0.8rem !important;
+  font-size: 0.95rem !important;
+}
+
+.product__description table {
+  font-size: 0.9rem !important;
+  margin: 1rem 0 !important;
+}
+
+.product__description code,
+.product__description pre {
+  font-size: 0.9rem !important;
+}
+
+/* Compact lists with check icons (common in admin descriptions) */
+.product__description ul li {
+  margin-bottom: 0.3rem !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.product__description ul li i {
+  font-size: 0.9rem !important;
+}
+
+/* For bullet blocks specifically */
+.product__description .bullet-item,
+.product__description [class*="bullet"] {
+  margin-bottom: 0.3rem !important;
+}
+
+/* For the container that holds the description */
 .enhanced-description {
-  max-width: 90%;
-  margin: 20px auto;
-  padding: 20px; /* Slightly less padding */
-}
-
-.enhanced-description p {
-  font-size: 0.95rem;
-  margin-bottom: 1rem;
+  padding: 1.2rem !important; /* Reduced from 24px */
+  margin: 1rem 0 !important; /* Reduced from 20px 0 */
 }
 
 .enhanced-description h3 {
-  font-size: 1.2rem;
-  margin-bottom: 12px;
+  font-size: 1.1rem !important;
+  margin-bottom: 0.8rem !important;
 }
 
-/* Reduce bullet point list sizes */
-.specs-list li {
-  font-size: 0.9rem;
-  padding: 8px 0;
+.enhanced-description p {
+  font-size: 0.9rem !important;
+  margin-bottom: 0.8rem !important;
 }
 
-/* Reduce video grid sizes */
+/* For the main product info column to give more space */
+.product-info {
+  font-size: 0.95rem;
+}
+
+/* Compact the video section */
 .video-grid-enhanced {
-  gap: 10px; /* Smaller gap between videos */
+  gap: 0.8rem !important; /* Reduced from 15px */
+  margin: 0.8rem 0 !important; /* Reduced from 15px 0 */
 }
 
 .video-item-enhanced {
-  max-width: 90%; /* Slightly smaller videos */
+  border-radius: 8px !important;
+}
+
+.video-note {
+  font-size: 0.75rem !important;
+  margin-top: 0.5rem !important;
+}
+
+/* Compact specifications list */
+.specs-list li {
+  padding: 0.5rem 0 !important; /* Reduced from 10px */
+  font-size: 0.85rem !important;
 }
 
     /* Keep all other existing styles exactly the same from your original product.html */
