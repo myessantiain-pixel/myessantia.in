@@ -212,6 +212,98 @@
       font-weight: var(--font-heading-weight);
     }
 
+    /* ===== IMAGE SIZE REDUCTION ===== */
+.main-image {
+  max-width: 80%; /* Reduce from 100% to 80% */
+  margin: 0 auto; /* Center the image */
+}
+
+.gallery-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.thumbnail-grid {
+  max-width: 80%; /* Match the main image width */
+  margin: 0 auto;
+}
+
+/* Optional: If you want even smaller images on desktop */
+@media (min-width: 1024px) {
+  .main-image {
+    max-width: 70%; /* Even smaller on desktop */
+  }
+  
+  .thumbnail-grid {
+    max-width: 70%;
+  }
+}
+
+/* ===== DESCRIPTION SIZE REDUCTION ===== */
+.product__description {
+  max-width: 90%; /* Reduce description width */
+  margin: 2.5rem auto; /* Center the description */
+}
+
+.product__description p {
+  font-size: 0.95rem; /* Slightly smaller text */
+  line-height: 1.5; /* Tighter line height */
+  margin-bottom: 1rem; /* Less spacing between paragraphs */
+}
+
+.product__description h2 {
+  font-size: 1.6rem; /* Smaller headings */
+  margin: 1.5rem 0 1rem;
+}
+
+.product__description h3 {
+  font-size: 1.3rem; /* Smaller subheadings */
+  margin: 1.2rem 0 0.8rem;
+}
+
+.product__description img {
+  max-width: 80%; /* Reduce image sizes within description */
+  display: block;
+  margin: 1rem auto;
+}
+
+.product__description video {
+  max-width: 80%; /* Reduce video size */
+}
+
+/* If you're using the enhanced description classes */
+.enhanced-description {
+  max-width: 90%;
+  margin: 20px auto;
+  padding: 20px; /* Slightly less padding */
+}
+
+.enhanced-description p {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.enhanced-description h3 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+/* Reduce bullet point list sizes */
+.specs-list li {
+  font-size: 0.9rem;
+  padding: 8px 0;
+}
+
+/* Reduce video grid sizes */
+.video-grid-enhanced {
+  gap: 10px; /* Smaller gap between videos */
+}
+
+.video-item-enhanced {
+  max-width: 90%; /* Slightly smaller videos */
+}
+
     /* Keep all other existing styles exactly the same from your original product.html */
     .feature-razor-card .razorpay-promise {
       margin-bottom: 12px;
