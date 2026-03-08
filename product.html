@@ -212,6 +212,57 @@
       font-weight: var(--font-heading-weight);
     }
 
+    /* ===== 2 REVIEWS PER LINE ON DESKTOP ONLY ===== */
+@media (min-width: 1024px) {
+  /* Only target reviews inside desktop section */
+  .desktop-reviews-section .reviews-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 30px !important;
+  }
+  
+  /* Ensure cards are properly sized */
+  .desktop-reviews-section .review-item {
+    width: 100% !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* Make images consistent height */
+  .desktop-reviews-section .review-media {
+    height: 250px !important; /* Fixed height for consistency */
+    overflow: hidden !important;
+  }
+  
+  .desktop-reviews-section .review-media img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+  
+  /* Adjust text sizes for desktop 2-column layout */
+  .desktop-reviews-section .author-name {
+    font-size: 1.1rem !important;
+  }
+  
+  .desktop-reviews-section .review-text {
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    max-height: 150px !important; /* Limit text height */
+    overflow-y: auto !important; /* Add scroll if too long */
+    padding-right: 5px !important;
+  }
+  
+  /* Custom scrollbar for review text */
+  .desktop-reviews-section .review-text::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .desktop-reviews-section .review-text::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 4px;
+  }
+}
+
 /* ===== STICKY LEFT GALLERY WITH SCROLLING RIGHT CONTENT FOR DESKTOP ===== */
 @media (min-width: 1024px) {
   /* Main grid container */
