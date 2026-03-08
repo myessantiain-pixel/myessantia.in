@@ -244,11 +244,6 @@
     font-size: 1.1rem !important;
   }
   
-.desktop-reviews-section .review-text {
-    font-size: 0.95rem !important;
-    line-height: 1.5 !important;
-}
-  
   /* Custom scrollbar for review text */
   .desktop-reviews-section .review-text::-webkit-scrollbar {
     width: 4px;
@@ -1231,12 +1226,36 @@
       fill: #F1C645;
     }
 
-    
-    .review-text {
-      font-size: var(--regular-font-size);
-      line-height: 1.5;
-      color: #000;
-    }
+    /* Base review text style */
+.review-text {
+  font-size: var(--regular-font-size);
+  line-height: 1.5;
+  color: #000;
+  word-wrap: break-word !important; /* Breaks long words if needed */
+  overflow-wrap: break-word !important; /* Modern alternative */
+  white-space: normal !important; /* Ensures text wraps */
+  max-width: 100% !important; /* Prevents overflow */
+}
+
+/* Mobile specific */
+@media (max-width: 499px) {
+  .review-text {
+    font-size: 14px;
+  }
+}
+
+/* Desktop reviews section */
+.desktop-reviews-section .review-text {
+  font-size: 0.95rem !important;
+  line-height: 1.5 !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+  /* Remove any max-height or overflow constraints */
+  max-height: none !important;
+  overflow: visible !important;
+  padding-right: 0 !important;
+}
 
     /* Reviews header */
     .reviews-header {
@@ -1370,10 +1389,6 @@
       .star {
         height: 16px;
         width: 16px;
-      }
-      
-      .review-text {
-        font-size: 14px;
       }
     }
 
