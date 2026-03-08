@@ -32,7 +32,7 @@
       margin: 0; 
       padding: 0; 
       box-sizing: border-box; 
-      -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+      -webkit-tap-highlight-color: transparent;
     }
     
     html, body { 
@@ -42,51 +42,41 @@
       scroll-behavior: smooth;
       position: relative;
       min-height: 100vh;
-      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+      -webkit-overflow-scrolling: touch;
     }
     
     body {
       font-family: 'Inter', sans-serif;
       color: #1e1e1e;
       line-height: 1.4;
-      font-size: 16px; /* Base font size - don't use smaller on mobile */
+      font-size: 16px;
       position: relative;
       overflow-x: hidden;
     }
     
-    /* Fix for 100vh on mobile (addresses address bar issue) */
     :root {
       --vh: 1vh;
       --regular-font-size: 16px;
       --error-color: red;
     }
     
-    /* Container fixes */
     .container { 
       width: 100%; 
       max-width: 1200px; 
       margin: 0 auto; 
-      padding: 0 12px; /* Slightly smaller padding on mobile */
+      padding: 0 12px;
     }
     
     @media (min-width: 640px) { 
       .container { padding: 0 20px; } 
     }
-    
-    /* active nav style */
-    .nav-link.active { color: #d4af37 !important; font-weight: 700; position: relative; }
-    .nav-link.active::after {
-      content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px;
-      background: #d4af37; animation: slideIn 0.3s ease;
-    }
-    @keyframes slideIn { from { width: 0; opacity: 0; } to { width: 100%; opacity: 1; } }
 
     /* ========== BREADCRUMB ========== */
     .breadcrumb {
       display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
       padding: 12px 0; font-size: 0.75rem; color: #4a4a4a;
     }
-    .breadcrumb a { color: #1e1e1e; text-decoration: none; font-weight: 600; transition: color 0.2s; }
+    .breadcrumb a { color: #1e1e1e; text-decoration: none; font-weight: 600; }
     .breadcrumb a:hover { color: #d4af37; }
     .breadcrumb i { font-size: 0.6rem; color: #d4af37; }
 
@@ -106,9 +96,7 @@
     }
 
     /* ========== GALLERY ========== */
-    .gallery-section { 
-      width: 100%; 
-    }
+    .gallery-section { width: 100%; }
     
     @media (min-width: 1024px) { 
       .gallery-section { 
@@ -121,12 +109,12 @@
     .main-image {
       width: 100%; 
       aspect-ratio: 1/1; 
-      border-radius: 16px; /* Slightly smaller on mobile */
+      border-radius: 16px;
       overflow: hidden; 
       margin-bottom: 12px;
       background: #ffffff; 
       border: 2px solid #000000; 
-      box-shadow: 4px 4px 0 rgba(0,0,0,0.15); /* Smaller shadow on mobile */
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
       transition: all 0.3s;
     }
     
@@ -135,11 +123,6 @@
         border-radius: 20px;
         box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
       }
-    }
-    
-    .main-image:hover { 
-      transform: scale(1.01) translate(-1px, -1px); 
-      box-shadow: 6px 6px 0 rgba(212,175,55,0.25); 
     }
     
     .main-image img { 
@@ -152,13 +135,11 @@
     .thumbnail-grid {
       display: grid; 
       grid-template-columns: repeat(4, 1fr); 
-      gap: 6px; /* Smaller gap on mobile */
+      gap: 6px;
     }
     
     @media (min-width: 768px) {
-      .thumbnail-grid {
-        gap: 8px;
-      }
+      .thumbnail-grid { gap: 8px; }
     }
     
     .thumbnail {
@@ -170,15 +151,8 @@
       transition: all 0.2s;
     }
     
-    .thumbnail:hover { 
-      border-color: #d4af37; 
-      transform: translateY(-2px) scale(0.98); 
-    }
-    
-    .thumbnail.active { 
-      border-color: #d4af37; 
-      border-width: 3px; 
-    }
+    .thumbnail:hover { border-color: #d4af37; }
+    .thumbnail.active { border-color: #d4af37; border-width: 3px; }
 
     /* Rating Chart Styles */
     .rating-chart-card {
@@ -272,7 +246,7 @@
       font-size: 0.65rem;
     }
 
-    /* ========== LIVE EFFECTS FOR BADGES ========== */
+    /* ========== BADGES ========== */
     .sold-badge, .live-badge {
       position: relative;
       overflow: hidden;
@@ -305,55 +279,13 @@
       100% { transform: scale(1); }
     }
     
-    .live-badge i {
-      animation: blink 1.5s infinite;
-    }
-    
-    @keyframes blink {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
-
-    /* ========== SHIMMERING EFFECT FOR RAZORPAY ========== */
-    .razorpay-promise {
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    
-    .razorpay-promise::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -60%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 215, 0, 0.2),
-        rgba(255, 215, 0, 0.4),
-        rgba(255, 215, 0, 0.2),
-        transparent
-      );
-      transform: rotate(30deg);
-      animation: shimmer 3s infinite;
-    }
-    
-    @keyframes shimmer {
-      0% { transform: translateX(-100%) rotate(30deg); }
-      100% { transform: translateX(100%) rotate(30deg); }
-    }
-    
-    /* Sale badge with shimmer */
     .sale-badge {
       background: #000;
       color: #d4af37;
-      padding: 4px 10px; /* Smaller padding on mobile */
+      padding: 4px 10px;
       border-radius: 40px;
       font-weight: 800;
-      font-size: 0.8rem; /* Slightly smaller on mobile */
+      font-size: 0.8rem;
       border: 2px solid #d4af37;
       position: relative;
       overflow: hidden;
@@ -370,61 +302,24 @@
       }
     }
 
-    .sale-badge::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -60%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(212, 175, 55, 0.3),
-        rgba(212, 175, 55, 0.6),
-        rgba(212, 175, 55, 0.3),
-        transparent
-      );
-      transform: rotate(30deg);
-      animation: shimmerSale 2.5s infinite;
-    }
-
-    @keyframes shimmerSale {
-      0% { transform: translateX(-100%) rotate(30deg); }
-      100% { transform: translateX(100%) rotate(30deg); }
-    }
-
-    .sale-badge i {
-      font-size: 0.7rem;
-      animation: pulse 1.5s infinite;
-    }
-    
-    @media (min-width: 768px) {
-      .sale-badge i {
-        font-size: 0.8rem;
-      }
-    }
-
-    /* ========== PREPAID & COD BUTTONS ========== */
+    /* ========== PRICE OPTIONS ========== */
     .price-options {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px; /* Smaller gap on mobile */
+      gap: 6px;
       margin-bottom: 12px;
     }
     
     @media (min-width: 768px) {
-      .price-options {
-        gap: 8px;
-      }
+      .price-options { gap: 8px; }
     }
 
     .price-option {
-      padding: 8px 6px; /* Smaller padding on mobile */
-      border-radius: 12px; /* Smaller radius on mobile */
+      padding: 8px 6px;
+      border-radius: 12px;
       text-align: center;
       border: 2px solid;
-      font-size: 0.7rem; /* Smaller font on mobile */
+      font-size: 0.7rem;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s;
       position: relative;
@@ -451,18 +346,8 @@
       color: #d4af37;
     }
 
-    .price-option.prepaid .option-label,
-    .price-option.prepaid .option-price {
-      color: #000;
-    }
-
-    .price-option.cod .option-label,
-    .price-option.cod .option-price {
-      color: #d4af37;
-    }
-
     .option-label {
-      font-size: 0.6rem; /* Smaller on mobile */
+      font-size: 0.6rem;
       font-weight: 700;
       text-transform: uppercase;
       margin-bottom: 2px;
@@ -477,7 +362,7 @@
     }
 
     .option-price {
-      font-size: 1.1rem; /* Smaller on mobile */
+      font-size: 1.1rem;
       font-weight: 800;
       line-height: 1.2;
     }
@@ -488,77 +373,59 @@
       }
     }
 
-    .price-option.prepaid:hover {
-      background: #c4a030;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-
-    .price-option.cod:hover {
-      background: #1a1a1a;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-
     .price-option.selected {
       border-width: 3px;
       transform: scale(0.98);
     }
 
-    /* ========== BUTTON HOVER AND CLICK EFFECTS ========== */
+    /* ========== BUTTONS ========== */
     .btn {
       position: relative;
       overflow: hidden;
       transition: all 0.3s ease;
-      -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+      -webkit-tap-highlight-color: transparent;
+      flex: 1; 
+      padding: 12px; 
+      border-radius: 40px; 
+      font-weight: 800; 
+      font-size: 0.8rem;
+      cursor: pointer; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 4px;
+      border: 2px solid #000; 
+      background: #ffffff; 
+      color: #000; 
+      text-transform: uppercase;
     }
     
-    .btn::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
+    @media (min-width: 768px) {
+      .btn {
+        font-size: 0.85rem;
+        gap: 6px;
+      }
     }
     
-    .btn:active::after {
-      width: 300px;
-      height: 300px;
+    .btn-primary { 
+      background: #000; 
+      color: #d4af37; 
+      border: 2px solid #d4af37; 
     }
     
-    .btn:active {
-      transform: scale(0.95);
-    }
-    
-    .btn-primary {
-      background: linear-gradient(145deg, #000, #1a1a1a);
-      z-index: 1;
-    }
-    
-    .btn-primary:hover {
-      background: linear-gradient(145deg, #d4af37, #e6c200);
-      color: #000;
-      box-shadow: 0 6px 12px rgba(212, 175, 55, 0.3);
-    }
-    
-    .btn-secondary:hover {
-      background: linear-gradient(145deg, #000, #1a1a1a);
-      color: #d4af37;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    .btn-secondary:hover { 
+      background: #000; 
+      color: #d4af37; 
+      border-color: #d4af37; 
     }
 
-    /* ========== DELIVERY CARD FILL EFFECT ========== */
+    /* ========== DELIVERY CARD ========== */
     .delivery-card {
       background: linear-gradient(145deg, #ffffff, #f8f8f8);
       transition: all 0.3s ease;
       border: 2px solid #000;
-      border-radius: 16px; /* Smaller on mobile */
-      padding: 14px; /* Smaller padding on mobile */
+      border-radius: 16px;
+      padding: 14px;
       margin-bottom: 12px;
       box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
     }
@@ -570,429 +437,492 @@
       }
     }
     
-    .delivery-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 6px 6px 0 rgba(212, 175, 55, 0.25);
-    }
-    
     .progress-fill {
       background: linear-gradient(90deg, #d4af37, #f5d742);
       position: relative;
       overflow: hidden;
     }
-    
-    .progress-fill::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
+
+    /* ========== REVIEWS SECTION - COMPLETELY REWORKED ========== */
+    .reviews-section {
+      margin-top: 30px;
       width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      animation: progressWave 2s infinite;
-    }
-    
-    @keyframes progressWave {
-      0% { left: -100%; }
-      50% { left: 100%; }
-      100% { left: 100%; }
     }
 
-    /* ========== SCROLL ANIMATIONS ========== */
-    .scroll-highlight {
-      animation: scrollGlow 1s ease;
-    }
-    
-    @keyframes scrollGlow {
-      0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.5); }
-      50% { box-shadow: 0 0 20px 5px rgba(212, 175, 55, 0.8); }
-      100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.5); }
+    .reviews-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid #d4af37;
     }
 
-    /* ===== CUSTOMER REVIEW SECTION - INCREASED SIZES, NO FRAME ===== */
+    .reviews-header h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #000;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .reviews-header .rating-summary {
+      background: #000;
+      color: #d4af37;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      border: 2px solid #d4af37;
+    }
+
+    /* Review Grid - Fixed for mobile */
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: 1fr; /* Single column on mobile */
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    @media (min-width: 500px) {
+      .reviews-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (min-width: 900px) {
+      .reviews-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (min-width: 1200px) {
+      .reviews-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    /* Review Card - Fixed for mobile visibility */
     .review-card {
-      background-color: #fff;
-      margin: 10px auto;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 16px;
       overflow: hidden;
-      max-width: 500px;
-      width: 100%;
-      border: 0;
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .review-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 8px 8px 0 rgba(212,175,55,0.25);
     }
 
     .review-media {
       width: 100%;
-      background: rgb(255, 255, 255);
+      aspect-ratio: 1/1;
+      background: #f5f5f5;
+      border-bottom: 2px solid #000;
+      overflow: hidden;
     }
 
     .review-media img {
       width: 100%;
-      max-height: 400px;
+      height: 100%;
       object-fit: cover;
       display: block;
-      background: rgb(255, 255, 255);
     }
 
     .review-details {
-      padding: 15px; /* Smaller padding on mobile */
-    }
-    
-    @media (min-width: 768px) {
-      .review-details {
-        padding: 20px;
-      }
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
-    .review-header {
+    .reviewer-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       margin-bottom: 10px;
     }
 
-    .author-name-w-details {
-      margin-bottom: 6px;
-    }
-
-    .author-name {
-      font-weight: bold;
-      font-size: 16px; /* Smaller on mobile */
-      line-height: 1.3;
-    }
-    
-    @media (min-width: 768px) {
-      .author-name {
-        font-size: 18px;
-      }
-    }
-
-    .tydal-star-wrapper {
+    .reviewer-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #d4af37;
+      border: 2px solid #000;
       display: flex;
       align-items: center;
-      gap: 2px;
-      margin-bottom: 8px;
-    }
-    
-    @media (min-width: 768px) {
-      .tydal-star-wrapper {
-        gap: 3px;
-        margin-bottom: 10px;
-      }
-    }
-
-    .star {
-      height: 16px; /* Smaller on mobile */
-      width: 16px;
-      fill: #F1C645;
-    }
-    
-    @media (min-width: 768px) {
-      .star {
-        height: 18px;
-        width: 18px;
-      }
-    }
-
-    .review-text {
-      font-size: 14px; /* Smaller on mobile */
-      line-height: 1.5;
+      justify-content: center;
       color: #000;
-    }
-    
-    @media (min-width: 768px) {
-      .review-text {
-        font-size: 16px;
-      }
-    }
-
-    /* Reviews header */
-    .reviews-header {
-      font-size: 1.5rem; /* Smaller on mobile */
       font-weight: 800;
-      color: #000;
-      border-bottom: 3px solid #d4af37;
-      padding-bottom: 12px;
-      margin-bottom: 20px;
-      text-transform: uppercase;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      letter-spacing: 1px;
-    }
-    
-    @media (min-width: 768px) {
-      .reviews-header {
-        font-size: 2rem;
-        padding-bottom: 18px;
-        margin-bottom: 30px;
-      }
+      font-size: 1.2rem;
+      flex-shrink: 0;
     }
 
-    .reviews-header span:last-child {
+    .reviewer-name {
+      font-weight: 800;
+      font-size: 1rem;
+      color: #000;
+      line-height: 1.2;
+    }
+
+    .reviewer-city {
+      font-size: 0.7rem;
+      color: #666;
+    }
+
+    .review-stars {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 10px;
+      color: #d4af37;
+      font-size: 0.9rem;
+    }
+
+    .review-comment {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #333;
+      margin-bottom: 12px;
+      flex: 1;
+    }
+
+    .review-verified {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      color: #16a34a;
+      font-weight: 600;
+      margin-top: auto;
+    }
+
+    .review-verified i {
+      font-size: 0.8rem;
+    }
+
+    /* Write Review Button */
+    .write-review-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       background: #000;
       color: #d4af37;
-      padding: 6px 14px; /* Smaller on mobile */
-      border-radius: 30px;
-      font-size: 1rem; /* Smaller on mobile */
       border: 2px solid #d4af37;
-    }
-    
-    @media (min-width: 768px) {
-      .reviews-header span:last-child {
-        padding: 10px 24px;
-        font-size: 1.2rem;
-      }
-    }
-
-    /* Main container for all reviews - NO FRAME */
-    .reviews-common-frame {
-      width: 100%;
-      margin: 15px 0 25px;
-    }
-    
-    @media (min-width: 768px) {
-      .reviews-common-frame {
-        margin: 20px 0 30px;
-      }
-    }
-
-    /* Grid layout for reviews */
-    .reviews-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
-      gap: 15px;
-      margin: 0;
+      padding: 14px;
+      border-radius: 40px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 30px;
       width: 100%;
     }
-    
-    @media (min-width: 500px) and (max-width: 799px) {
-      .reviews-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-      }
-    }
-    
-    @media (min-width: 800px) and (max-width: 1023px) {
-      .reviews-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 25px;
-      }
-    }
-    
-    @media (min-width: 1024px) {
-      .reviews-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 30px;
-      }
+
+    .write-review-btn:hover {
+      background: #d4af37;
+      color: #000;
     }
 
-    .review-item {
-      display: flex;
-      flex-direction: column;
-      background: transparent;
-      border: none;
-      padding: 0;
-      transition: transform 0.2s ease;
-      min-width: 0;
-    }
-
-    .review-item:hover {
-      transform: translateY(-5px);
-    }
-
-    .review-item .review-card {
-      margin: 0;
-      max-width: 100%;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
-    }
-
-    /* Desktop reviews section - positioned below rating chart */
-    .desktop-reviews-section {
-      margin-top: 30px;
-      width: 100%;
-    }
-    
-    @media (min-width: 1024px) {
-      .desktop-reviews-section {
-        margin-top: 40px;
-      }
-    }
-
-    .desktop-reviews {
+    /* Write Review Modal */
+    .review-modal {
       display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
     }
 
-    @media (min-width: 1024px) { 
-      .desktop-reviews { 
-        display: block;
-        margin-top: 20px;
-      }
-      
-      .desktop-reviews .reviews-common-frame {
-        width: 100%;
-        margin-bottom: 0;
-      }
+    .review-modal.show {
+      display: flex;
     }
 
-    /* Empty state styling */
-    .reviews-common-frame .empty-state {
+    .review-modal-content {
+      background: #fff;
+      border-radius: 30px;
+      padding: 24px 20px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 4px solid #d4af37;
+      box-shadow: 12px 12px 0 #000;
+      position: relative;
+    }
+
+    .review-modal-content h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: #000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #000;
+      color: #d4af37;
+      border: 2px solid #d4af37;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #000;
+      border-radius: 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #d4af37;
+    }
+
+    .rating-select {
+      display: flex;
+      gap: 10px;
+      font-size: 1.5rem;
+      color: #d4af37;
+      cursor: pointer;
+    }
+
+    .rating-select i {
+      transition: transform 0.2s;
+    }
+
+    .rating-select i:hover {
+      transform: scale(1.2);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 14px;
+      border-radius: 40px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: 2px solid #000;
+    }
+
+    .modal-actions .submit-btn {
+      background: #d4af37;
+      color: #000;
+    }
+
+    .modal-actions .cancel-btn {
+      background: #fff;
+      color: #000;
+    }
+
+    /* Empty State */
+    .empty-reviews {
       text-align: center;
-      padding: 40px 20px; /* Smaller on mobile */
-      color: #666;
+      padding: 40px 20px;
       background: #f9f9f9;
       border: 2px dashed #000;
-      width: 100%;
-    }
-    
-    @media (min-width: 768px) {
-      .reviews-common-frame .empty-state {
-        padding: 100px 30px;
-      }
+      border-radius: 20px;
     }
 
-    .reviews-common-frame .empty-state i {
-      font-size: 4rem; /* Smaller on mobile */
+    .empty-reviews i {
+      font-size: 4rem;
       color: #d4af37;
       margin-bottom: 15px;
     }
-    
-    @media (min-width: 768px) {
-      .reviews-common-frame .empty-state i {
-        font-size: 6rem;
-        margin-bottom: 30px;
-      }
-    }
 
-    .reviews-common-frame .empty-state h3 {
-      font-size: 1.5rem; /* Smaller on mobile */
+    .empty-reviews h3 {
+      font-size: 1.5rem;
       font-weight: 800;
       margin-bottom: 10px;
       color: #000;
     }
-    
-    @media (min-width: 768px) {
-      .reviews-common-frame .empty-state h3 {
-        font-size: 2.2rem;
-        margin-bottom: 20px;
-      }
-    }
 
-    .reviews-common-frame .empty-state p {
-      font-size: 1rem; /* Smaller on mobile */
+    .empty-reviews p {
+      font-size: 1rem;
       color: #666;
+      margin-bottom: 20px;
     }
-    
+
+    .empty-reviews button {
+      background: #000;
+      color: #d4af37;
+      border: 2px solid #d4af37;
+      padding: 12px 30px;
+      border-radius: 40px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 0 auto;
+    }
+
+    /* ========== FAQ SECTION ========== */
+    .faq-section {
+      margin-top: 40px;
+      padding: 20px;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 24px;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
+    }
+
+    .faq-section h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #000;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 3px solid #d4af37;
+      padding-bottom: 15px;
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+    }
+
     @media (min-width: 768px) {
-      .reviews-common-frame .empty-state p {
-        font-size: 1.2rem;
+      .faq-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
       }
     }
 
-    /* Mobile reviews */
-    .mobile-reviews {
-      display: flex;
-      flex-direction: column;
-      margin-top: 20px;
-      width: 100%;
+    .faq-item {
+      border: 2px solid #000;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
     }
-    
-    @media (min-width: 1024px) {
-      .mobile-reviews { 
-        display: none; 
-      }
+
+    .faq-question {
+      padding: 16px;
+      background: #f8f8f8;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border-bottom: 2px solid #000;
+      transition: background 0.2s;
+    }
+
+    .faq-question:hover {
+      background: #d4af37;
+      color: #000;
+    }
+
+    .faq-question i {
+      transition: transform 0.3s;
+    }
+
+    .faq-question.active i {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      padding: 0 16px;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      background: #fff;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .faq-answer.show {
+      padding: 16px;
+      max-height: 200px;
     }
 
     /* ========== PRODUCT INFO ========== */
     .social-strip { 
       display: flex; 
       flex-wrap: wrap; 
-      gap: 6px; /* Smaller gap on mobile */
+      gap: 6px; 
       margin-bottom: 10px; 
     }
     
-    @media (min-width: 768px) {
-      .social-strip {
-        gap: 8px;
-        margin-bottom: 12px;
-      }
-    }
-    
-    .sold-badge {
+    .sold-badge, .live-badge {
       display: inline-flex; 
       align-items: center; 
       gap: 4px; 
-      background: #dc2626; 
-      color: white;
-      padding: 4px 10px; /* Smaller on mobile */
+      padding: 4px 10px;
       border-radius: 40px; 
-      font-size: 0.7rem; /* Smaller on mobile */
+      font-size: 0.7rem;
       font-weight: 700; 
       border: 2px solid #000; 
       box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
     }
     
-    @media (min-width: 768px) {
-      .sold-badge {
-        padding: 6px 14px;
-        font-size: 0.75rem;
-        gap: 6px;
-        box-shadow: 3px 3px 0 rgba(0,0,0,0.15);
-      }
-    }
-    
-    .live-badge {
-      display: inline-flex; 
-      align-items: center; 
-      gap: 4px; 
-      background: #16a34a; 
-      color: white;
-      padding: 4px 10px; /* Smaller on mobile */
-      border-radius: 40px; 
-      font-size: 0.7rem; /* Smaller on mobile */
-      font-weight: 700; 
-      border: 2px solid #000; 
-      box-shadow: 2px 2px 0 rgba(0,0,0,0.15);
-    }
-    
-    @media (min-width: 768px) {
-      .live-badge {
-        padding: 6px 14px;
-        font-size: 0.75rem;
-        gap: 6px;
-        box-shadow: 3px 3px 0 rgba(0,0,0,0.15);
-      }
-    }
-    
-    .live-badge i, .sold-badge i { 
-      font-size: 0.55rem; 
-    }
-    
-    @media (min-width: 768px) {
-      .live-badge i, .sold-badge i {
-        font-size: 0.6rem;
-      }
-    }
-
-    .product-category {
-      font-size: 0.7rem; 
-      font-weight: 700; 
-      color: #d4af37; 
-      text-transform: uppercase;
-      letter-spacing: 0.5px; 
-      margin-bottom: 4px;
-    }
+    .sold-badge { background: #dc2626; color: white; }
+    .live-badge { background: #16a34a; color: white; }
     
     .product-title {
-      font-size: 1.5rem; /* Smaller on mobile */
+      font-size: 1.5rem;
       font-weight: 800; 
       line-height: 1.1; 
       margin-bottom: 10px; 
       color: #000;
-      text-transform: none;
     }
     
     @media (min-width: 768px) { 
-      .product-title { 
-        font-size: 2.2rem; 
-        margin-bottom: 12px;
-      } 
+      .product-title { font-size: 2.2rem; } 
     }
 
     .rating-row {
@@ -1001,15 +931,7 @@
       align-items: center; 
       gap: 8px; 
       margin-bottom: 12px;
-      font-size: 0.8rem; /* Smaller on mobile */
-    }
-    
-    @media (min-width: 768px) {
-      .rating-row {
-        gap: 12px;
-        margin-bottom: 16px;
-        font-size: 0.85rem;
-      }
+      font-size: 0.8rem;
     }
     
     .stars { 
@@ -1018,15 +940,8 @@
       color: #d4af37; 
       font-size: 0.75rem; 
     }
-    
-    @media (min-width: 768px) {
-      .stars {
-        gap: 3px;
-        font-size: 0.85rem;
-      }
-    }
 
-    /* share */
+    /* Share Button */
     .share-wrapper { 
       position: relative; 
       margin-left: auto; 
@@ -1035,28 +950,14 @@
     .share-btn {
       background: #ffffff; 
       border: 2px solid #000; 
-      padding: 4px 12px; /* Smaller on mobile */
+      padding: 4px 12px;
       border-radius: 40px; 
-      font-size: 0.7rem; /* Smaller on mobile */
+      font-size: 0.7rem;
       font-weight: 700; 
       display: flex; 
       align-items: center; 
       gap: 4px; 
       cursor: pointer;
-    }
-    
-    @media (min-width: 768px) {
-      .share-btn {
-        padding: 6px 16px;
-        font-size: 0.8rem;
-        gap: 6px;
-      }
-    }
-    
-    .share-btn:hover { 
-      border-color: #d4af37; 
-      background: #000; 
-      color: #d4af37; 
     }
     
     .share-menu {
@@ -1067,8 +968,8 @@
       border-radius: 16px; 
       box-shadow: 4px 4px 0 rgba(0,0,0,0.15); 
       padding: 12px; 
-      width: 220px; /* Smaller on mobile */
-      z-index: 1000; /* Higher z-index */
+      width: 220px;
+      z-index: 1000; 
       opacity: 0; 
       visibility: hidden; 
       transform: translateY(-5px);
@@ -1076,109 +977,13 @@
       border: 2px solid #000;
     }
     
-    @media (min-width: 768px) {
-      .share-menu {
-        border-radius: 20px;
-        box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
-        padding: 16px;
-        width: 260px;
-        transform: translateY(-8px);
-      }
-    }
-    
     .share-menu.show { 
       opacity: 1; 
       visibility: visible; 
       transform: translateY(0); 
     }
-    
-    .share-grid {
-      display: grid; 
-      grid-template-columns: repeat(3, 1fr); 
-      gap: 4px; 
-      margin-bottom: 10px;
-    }
-    
-    @media (min-width: 768px) {
-      .share-grid {
-        gap: 6px;
-        margin-bottom: 12px;
-      }
-    }
-    
-    .share-option {
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      gap: 2px; 
-      padding: 6px 2px;
-      border-radius: 10px; 
-      background: #f6f6f6; 
-      border: 1px solid #ddd; 
-      font-size: 0.6rem; 
-      font-weight: 600; 
-      cursor: pointer;
-    }
-    
-    @media (min-width: 768px) {
-      .share-option {
-        padding: 8px 4px;
-        border-radius: 12px;
-        font-size: 0.65rem;
-      }
-    }
-    
-    .share-option:hover { 
-      background: #d4af37; 
-      border-color: #000; 
-    }
-    
-    .copy-link { 
-      display: flex; 
-      gap: 4px; 
-    }
-    
-    .copy-link input { 
-      flex: 1; 
-      padding: 6px; 
-      border: 2px solid #000; 
-      border-radius: 10px; 
-      font-size: 0.65rem; 
-    }
-    
-    @media (min-width: 768px) {
-      .copy-link input {
-        padding: 8px;
-        border-radius: 12px;
-        font-size: 0.7rem;
-      }
-    }
-    
-    .copy-btn { 
-      padding: 6px 8px; 
-      background: #000; 
-      color: #d4af37; 
-      border-radius: 10px; 
-      font-weight: 700; 
-      border: 2px solid #000; 
-      cursor: pointer; 
-      font-size: 0.65rem; 
-    }
-    
-    @media (min-width: 768px) {
-      .copy-btn {
-        padding: 8px 12px;
-        border-radius: 12px;
-        font-size: 0.7rem;
-      }
-    }
-    
-    .copy-btn:hover { 
-      background: #d4af37; 
-      color: #000; 
-    }
 
-    /* ===== PRICE CARD – with quantity inline ===== */
+    /* Price Card */
     .price-card {
       background: #ffffff; 
       border-radius: 16px; 
@@ -1188,85 +993,13 @@
       box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
     }
     
-    @media (min-width: 768px) {
-      .price-card {
-        border-radius: 20px;
-        padding: 16px;
-        box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
-      }
-    }
-    
-    .price-header {
-      display: flex; 
-      align-items: baseline; 
-      gap: 8px; 
-      flex-wrap: wrap; 
-      margin-bottom: 4px;
-    }
-    
     .current-price { 
-      font-size: 1.8rem; /* Smaller on mobile */
+      font-size: 1.8rem;
       font-weight: 900; 
       color: #000; 
       line-height: 1; 
     }
     
-    @media (min-width: 768px) {
-      .current-price {
-        font-size: 2.2rem;
-      }
-    }
-    
-    .inr-symbol { 
-      font-size: 1.2rem; /* Smaller on mobile */
-      font-weight: 700; 
-      color: #d4af37; 
-    }
-    
-    @media (min-width: 768px) {
-      .inr-symbol {
-        font-size: 1.4rem;
-      }
-    }
-    
-    .original-price { 
-      font-size: 0.9rem; 
-      color: #777; 
-      text-decoration: line-through; 
-    }
-    
-    .discount { 
-      background: #000; 
-      color: #d4af37; 
-      padding: 2px 8px; /* Smaller on mobile */
-      border-radius: 40px; 
-      font-weight: 800; 
-      font-size: 0.7rem; 
-      border: 2px solid #d4af37; 
-    }
-    
-    @media (min-width: 768px) {
-      .discount {
-        padding: 3px 10px;
-        font-size: 0.8rem;
-      }
-    }
-
-    .tax-info {
-      font-size: 0.7rem; 
-      color: #4a4a4a; 
-      margin-bottom: 10px; 
-      border-bottom: 1px dashed #ccc; 
-      padding-bottom: 6px;
-    }
-    
-    .tax-info i { 
-      color: #d4af37; 
-      margin-right: 4px; 
-      font-size: 0.65rem; 
-    }
-
-    /* quantity + stock on same line */
     .quantity-stock-row {
       display: flex;
       align-items: center;
@@ -1277,88 +1010,16 @@
       padding: 4px 12px;
       border: 2px solid #000;
       margin-top: 10px;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-    }
-    
-    @media (min-width: 768px) {
-      .quantity-stock-row {
-        gap: 16px;
-        padding: 6px 16px;
-        margin-top: 12px;
-      }
-    }
-    
-    .quantity-controls {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: #ffffff;
-      border-radius: 30px;
-      padding: 2px;
-      border: 1px solid #e0e0e0;
-    }
-    
-    @media (min-width: 768px) {
-      .quantity-controls {
-        gap: 8px;
-        padding: 2px;
-      }
-    }
-    
-    .qty-btn {
-      width: 28px; /* Smaller on mobile */
-      height: 28px;
-      border: none;
-      background: transparent;
-      border-radius: 50%;
-      font-size: 1rem; /* Smaller on mobile */
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #000;
-      transition: all 0.2s;
-    }
-    
-    @media (min-width: 768px) {
-      .qty-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 1.2rem;
-      }
-    }
-    
-    .qty-btn:hover:not(:disabled) {
-      background: #d4af37;
-      color: #000;
-      transform: scale(1.05);
-    }
-    
-    .qty-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
     }
     
     .qty-input {
-      width: 35px; /* Smaller on mobile */
+      width: 35px;
       height: 30px;
       border: 2px solid #000;
       border-radius: 20px;
       text-align: center;
       font-size: 0.9rem;
       font-weight: 700;
-      background: #ffffff;
-      color: #000;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-    }
-    
-    @media (min-width: 768px) {
-      .qty-input {
-        width: 45px;
-        height: 36px;
-        font-size: 1rem;
-      }
     }
     
     .stock-badge {
@@ -1366,7 +1027,7 @@
       align-items: center;
       gap: 4px;
       font-weight: 700;
-      font-size: 0.7rem; /* Smaller on mobile */
+      font-size: 0.7rem;
       white-space: nowrap;
       background: #000;
       color: #d4af37;
@@ -1374,438 +1035,62 @@
       border-radius: 30px;
       border: 1px solid #d4af37;
     }
-    
-    @media (min-width: 768px) {
-      .stock-badge {
-        gap: 6px;
-        font-size: 0.8rem;
-        padding: 6px 14px;
-      }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex; 
+      flex-direction: column;
+      gap: 8px; 
+      margin-bottom: 16px;
     }
     
-    .stock-badge i {
-      color: #d4af37;
-      font-size: 0.7rem;
+    @media (min-width: 480px) { 
+      .action-buttons { 
+        flex-direction: row; 
+      } 
     }
 
-    /* DELIVERY BAR */
-    .delivery-header {
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 6px; 
-      flex-wrap: wrap;
-      font-size: 0.75rem;
-    }
-    
-    @media (min-width: 768px) {
-      .delivery-header {
-        margin-bottom: 8px;
-        font-size: 0.8rem;
-      }
-    }
-    
-    .delivery-title { 
-      display: flex; 
-      align-items: center; 
-      gap: 4px; 
-      font-weight: 700; 
-    }
-    
-    .delivery-title i { 
-      color: #d4af37; 
-      font-size: 0.8rem; 
-    }
-    
-    .delivery-min { 
-      background: #000; 
-      color: #d4af37; 
-      padding: 3px 8px; 
-      border-radius: 40px; 
-      font-weight: 600; 
-      font-size: 0.65rem; 
-    }
-    
-    .progress-bar { 
-      height: 6px; /* Smaller on mobile */
-      background: #eaeaea; 
-      border-radius: 8px; 
-      overflow: hidden; 
-      margin: 6px 0; 
-      border: 1px solid #000; 
-    }
-    
-    @media (min-width: 768px) {
-      .progress-bar {
-        height: 8px;
-        margin: 8px 0;
-      }
-    }
-    
-    .progress-fill { 
-      height: 100%; 
-      background: #d4af37; 
-      width: 0%; 
-      transition: width 0.5s; 
-    }
-    
-    .delivery-message { 
-      display: flex; 
-      align-items: center; 
-      gap: 4px; 
-      font-weight: 600; 
-      font-size: 0.75rem; 
-    }
-    
-    .delivery-eta { 
-      margin-top: 6px; 
-      padding-top: 6px; 
-      border-top: 1px dashed #ccc; 
-      display: flex; 
-      align-items: center; 
-      gap: 4px; 
-      font-size: 0.7rem; 
-    }
-    
-    @media (min-width: 768px) {
-      .delivery-eta {
-        margin-top: 8px;
-        padding-top: 8px;
-        gap: 6px;
-        font-size: 0.75rem;
-      }
-    }
-    
-    .delivery-eta i { 
-      color: #d4af37; 
-      width: 16px; 
-      font-size: 0.75rem; 
-    }
-    
-    .eta-bold { 
-      font-weight: 800; 
-      color: #000; 
-    }
-
-    /* COMBINED FEATURE + RAZORPAY CARD */
-    .feature-razor-card {
+    /* Tabs */
+    .tabs {
       background: #ffffff; 
       border-radius: 16px; 
       padding: 14px; 
-      margin-bottom: 12px;
+      margin: 16px 0;
       border: 2px solid #000; 
       box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
     }
     
-    @media (min-width: 768px) {
-      .feature-razor-card {
-        border-radius: 20px;
-        padding: 16px;
-        box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
-      }
-    }
-    
-    .features-grid {
-      display: grid; 
-      grid-template-columns: repeat(2, 1fr); 
-      gap: 6px;
-    }
-    
-    @media (min-width: 768px) {
-      .features-grid {
-        gap: 8px;
-      }
-    }
-    
-    .feature-item {
+    .tab-headers {
       display: flex; 
-      align-items: center; 
-      gap: 6px; 
-      padding: 6px; 
-      background: #fafafa;
-      border-radius: 12px; 
-      border: 2px solid #000;
-      transition: all 0.3s;
-    }
-    
-    @media (min-width: 768px) {
-      .feature-item {
-        gap: 8px;
-        padding: 8px;
-        border-radius: 14px;
-      }
-    }
-    
-    .feature-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    .feature-icon {
-      width: 28px; 
-      height: 28px; 
-      background: #000; 
-      border-radius: 8px; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      color: #d4af37; 
-      border: 1px solid #d4af37; 
-      font-size: 0.7rem;
-    }
-    
-    @media (min-width: 768px) {
-      .feature-icon {
-        width: 32px;
-        height: 32px;
-        font-size: 0.8rem;
-      }
-    }
-    
-    .feature-text h4 { 
-      font-size: 0.7rem; 
-      font-weight: 800; 
-      color: #1e1e1e; 
-    }
-    
-    .feature-text p { 
-      font-size: 0.6rem; 
-      color: #555; 
-    }
-    
-    @media (min-width: 768px) {
-      .feature-text h4 {
-        font-size: 0.8rem;
-      }
-      .feature-text p {
-        font-size: 0.65rem;
-      }
-    }
-
-    .razorpay-promise {
-      display: flex; 
-      align-items: center; 
-      gap: 8px; 
-      padding: 6px; 
-      background: #000; 
-      border-radius: 14px; 
-      border: 2px solid #d4af37; 
+      gap: 12px; 
+      border-bottom: 2px solid #000; 
       margin-bottom: 10px;
     }
     
-    @media (min-width: 768px) {
-      .razorpay-promise {
-        gap: 12px;
-        padding: 8px;
-        border-radius: 16px;
-        margin-bottom: 12px;
-      }
+    .tab-header {
+      padding: 6px 0; 
+      cursor: pointer; 
+      font-weight: 700; 
+      color: #777; 
+      border-bottom: 3px solid transparent;
+      font-size: 0.75rem;
     }
     
-    .promise-icon {
-      width: 32px; 
-      height: 32px; 
-      background: #d4af37; 
-      border-radius: 50%;
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
+    .tab-header.active { 
       color: #000; 
-      font-size: 0.9rem; 
-      border: 2px solid #000;
+      border-bottom-color: #d4af37; 
     }
     
-    @media (min-width: 768px) {
-      .promise-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
-      }
-    }
-    
-    .promise-content h4 { 
+    .tab-content { 
+      display: none; 
       font-size: 0.75rem; 
-      font-weight: 800; 
-      color: #d4af37; 
-      margin-bottom: 2px; 
     }
     
-    .promise-content p { 
-      font-size: 0.65rem; 
-      color: #eee; 
-    }
-    
-    @media (min-width: 768px) {
-      .promise-content h4 {
-        font-size: 0.85rem;
-      }
-      .promise-content p {
-        font-size: 0.7rem;
-      }
+    .tab-content.active { 
+      display: block; 
     }
 
-    /* Razorpay popup card – improved for mobile */
-    .razorpay-popup {
-      display: none;
-      background: #fff9e6;
-      border: 3px solid #d4af37;
-      border-radius: 20px;
-      padding: 16px 12px;
-      margin-bottom: 12px;
-      box-shadow: 6px 6px 0 #000;
-      position: relative;
-      animation: popSlide 0.25s ease;
-    }
-    
-    @media (min-width: 768px) {
-      .razorpay-popup {
-        border-radius: 24px;
-        padding: 24px 20px;
-        margin-bottom: 16px;
-        box-shadow: 8px 8px 0 #000;
-      }
-    }
-    
-    .razorpay-popup.show {
-      display: block;
-    }
-    
-    @keyframes popSlide {
-      0% { opacity: 0; transform: translateY(-10px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    
-    .popup-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1rem;
-      font-weight: 900;
-      color: #000;
-      margin-bottom: 12px;
-      border-bottom: 2px dashed #d4af37;
-      padding-bottom: 8px;
-    }
-    
-    @media (min-width: 768px) {
-      .popup-title {
-        font-size: 1.2rem;
-        gap: 10px;
-        margin-bottom: 16px;
-        padding-bottom: 12px;
-      }
-    }
-    
-    .popup-title i {
-      color: #d4af37;
-      background: #000;
-      border-radius: 50%;
-      padding: 6px;
-      font-size: 0.9rem;
-    }
-    
-    .popup-desc {
-      font-size: 0.85rem;
-      color: #222;
-      margin-bottom: 12px;
-      line-height: 1.5;
-      font-weight: 500;
-    }
-    
-    @media (min-width: 768px) {
-      .popup-desc {
-        font-size: 0.95rem;
-        margin-bottom: 16px;
-      }
-    }
-    
-    .popup-bullets {
-      list-style: none;
-      padding: 0;
-    }
-    
-    .popup-bullets li {
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      margin-bottom: 10px;
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
-    
-    @media (min-width: 768px) {
-      .popup-bullets li {
-        gap: 12px;
-        margin-bottom: 12px;
-        font-size: 0.9rem;
-      }
-    }
-    
-    .popup-bullets li i {
-      color: #d4af37;
-      width: 18px;
-      font-size: 0.9rem;
-      margin-top: 2px;
-    }
-    
-    .popup-footer {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 16px;
-    }
-    
-    @media (min-width: 768px) {
-      .popup-footer {
-        flex-direction: row;
-        gap: 16px;
-        margin-top: 24px;
-        align-items: center;
-        justify-content: space-between;
-      }
-    }
-    
-    .popup-gotit-btn {
-      background: #000;
-      color: #d4af37;
-      border: 2px solid #d4af37;
-      padding: 10px 16px;
-      border-radius: 30px;
-      font-weight: 800;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      width: fit-content;
-    }
-    
-    @media (min-width: 768px) {
-      .popup-gotit-btn {
-        padding: 12px 24px;
-        font-size: 0.9rem;
-      }
-    }
-    
-    .popup-gotit-btn:hover {
-      background: #d4af37;
-      color: #000;
-      transform: translateY(-2px);
-    }
-    
-    .popup-terms-link {
-      color: #d4af37;
-      font-weight: 600;
-      font-size: 0.7rem;
-      text-decoration: underline;
-      cursor: pointer;
-    }
-    
-    @media (min-width: 768px) {
-      .popup-terms-link {
-        font-size: 0.8rem;
-      }
-    }
-
-    /* HIGH DEMAND NOTIFICATION POPUP - FIXED FOR MOBILE */
+    /* High Demand Popup */
     .high-demand-popup {
       display: none;
       position: fixed;
@@ -1817,8 +1102,7 @@
       z-index: 9999;
       align-items: center;
       justify-content: center;
-      animation: fadeIn 0.3s ease;
-      padding: 10px; /* Add padding for mobile */
+      padding: 10px;
     }
     
     .high-demand-popup.show {
@@ -1831,160 +1115,11 @@
       padding: 24px 16px;
       max-width: 400px;
       width: 100%;
-      max-height: 90vh; /* Limit height on mobile */
-      overflow-y: auto; /* Allow scrolling if needed */
+      max-height: 90vh;
+      overflow-y: auto;
       border: 4px solid #d4af37;
       box-shadow: 8px 8px 0 #000;
       position: relative;
-      animation: popScale 0.3s ease;
-    }
-    
-    @media (max-width: 480px) {
-      .popup-content {
-        padding: 20px 12px;
-        border-radius: 24px;
-        box-shadow: 6px 6px 0 #000;
-        max-height: 85vh;
-      }
-    }
-    
-    @keyframes popScale {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    
-    .popup-content h3 {
-      font-size: 1.5rem;
-      font-weight: 900;
-      margin-bottom: 12px;
-      color: #000;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    @media (max-width: 480px) {
-      .popup-content h3 {
-        font-size: 1.3rem;
-        gap: 6px;
-        margin-bottom: 10px;
-      }
-    }
-    
-    .popup-content h3 i {
-      color: #d4af37;
-      font-size: 1.8rem;
-    }
-    
-    .popup-content p {
-      margin-bottom: 12px;
-      font-size: 0.85rem;
-      color: #333;
-      line-height: 1.5;
-    }
-    
-    .popup-content .warning {
-      background: #fef8e7;
-      border: 2px solid #d4af37;
-      border-radius: 16px;
-      padding: 10px;
-      margin-bottom: 16px;
-      font-size: 0.75rem;
-      color: #000;
-      font-weight: 600;
-    }
-    
-    .popup-content .warning i {
-      color: #d4af37;
-      margin-right: 4px;
-    }
-    
-    .email-input-group {
-      margin-bottom: 16px;
-    }
-    
-    .email-input-group label {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 6px;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-    }
-    
-    .email-input-group input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 2px solid #000;
-      border-radius: 30px;
-      font-size: 0.9rem;
-      font-family: 'Inter', sans-serif;
-    }
-    
-    .email-input-group input:focus {
-      outline: none;
-      border-color: #d4af37;
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-    }
-    
-    .popup-actions {
-      display: flex;
-      gap: 10px;
-    }
-    
-    @media (max-width: 480px) {
-      .popup-actions {
-        flex-direction: column;
-      }
-    }
-    
-    .popup-actions button {
-      flex: 1;
-      padding: 12px;
-      border-radius: 30px;
-      font-weight: 800;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      cursor: pointer;
-      border: 2px solid #000;
-      transition: all 0.2s;
-    }
-    
-    .popup-actions .btn-primary {
-      background: #d4af37;
-      color: #000;
-    }
-    
-    .popup-actions .btn-primary:hover {
-      background: #000;
-      color: #d4af37;
-      border-color: #d4af37;
-    }
-    
-    .popup-actions .btn-secondary {
-      background: #fff;
-      color: #000;
-    }
-    
-    .popup-actions .btn-secondary:hover {
-      background: #000;
-      color: #d4af37;
-    }
-    
-    .already-notified {
-      text-align: center;
-      padding: 10px;
-      background: #f0f0f0;
-      border-radius: 30px;
-      border: 2px solid #000;
-      font-weight: 700;
-      color: #000;
-      margin-top: 12px;
-    }
-    
-    .already-notified i {
-      color: #d4af37;
-      margin-right: 4px;
     }
     
     .popup-close-btn {
@@ -2002,248 +1137,10 @@
       justify-content: center;
       cursor: pointer;
       font-size: 1rem;
-      transition: all 0.2s;
       z-index: 10;
     }
-    
-    .popup-close-btn:hover {
-      transform: scale(1.1);
-      background: #d4af37;
-      color: #000;
-    }
 
-    /* action buttons */
-    .action-buttons {
-      display: flex; 
-      flex-direction: column; /* Stack on mobile */
-      gap: 8px; 
-      margin-bottom: 16px;
-    }
-    
-    @media (min-width: 480px) { 
-      .action-buttons { 
-        flex-direction: row; 
-      } 
-    }
-    
-    .btn {
-      flex: 1; 
-      padding: 12px; 
-      border-radius: 40px; 
-      font-weight: 800; 
-      font-size: 0.8rem; /* Smaller on mobile */
-      cursor: pointer; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      gap: 4px;
-      border: 2px solid #000; 
-      background: #ffffff; 
-      color: #000; 
-      text-transform: uppercase;
-      transition: all 0.3s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    @media (min-width: 768px) {
-      .btn {
-        padding: 12px;
-        font-size: 0.85rem;
-        gap: 6px;
-      }
-    }
-    
-    .btn-primary { 
-      background: #000; 
-      color: #d4af37; 
-      border: 2px solid #d4af37; 
-    }
-    
-    .btn-primary:hover { 
-      background: #d4af37; 
-      color: #000; 
-      border-color: #000; 
-      transform: translateY(-2px); 
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-    }
-    
-    .btn-secondary:hover { 
-      background: #000; 
-      color: #d4af37; 
-      border-color: #d4af37; 
-      transform: translateY(-2px); 
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-    }
-    
-    /* Disabled buttons for high demand */
-    .btn.high-demand-disabled {
-      background: #666 !important;
-      color: #ccc !important;
-      border-color: #999 !important;
-      cursor: not-allowed !important;
-      opacity: 0.7;
-    }
-    
-    .btn.high-demand-disabled:hover {
-      transform: none !important;
-      box-shadow: none !important;
-    }
-
-    /* tabs (description, specs, videos) */
-    .tabs {
-      background: #ffffff; 
-      border-radius: 16px; 
-      padding: 14px; 
-      margin-bottom: 16px;
-      border: 2px solid #000; 
-      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
-    }
-    
-    @media (min-width: 768px) {
-      .tabs {
-        border-radius: 20px;
-        padding: 16px;
-        box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
-      }
-    }
-    
-    .tab-headers {
-      display: flex; 
-      gap: 12px; 
-      border-bottom: 2px solid #000; 
-      margin-bottom: 10px;
-    }
-    
-    @media (min-width: 768px) {
-      .tab-headers {
-        gap: 16px;
-        margin-bottom: 12px;
-      }
-    }
-    
-    .tab-header {
-      padding: 6px 0; 
-      cursor: pointer; 
-      font-weight: 700; 
-      color: #777; 
-      border-bottom: 3px solid transparent;
-      font-size: 0.75rem;
-    }
-    
-    @media (min-width: 768px) {
-      .tab-header {
-        padding: 8px 0;
-        font-size: 0.8rem;
-      }
-    }
-    
-    .tab-header:hover { color: #d4af37; }
-    .tab-header.active { color: #000; border-bottom-color: #d4af37; }
-    .tab-content { display: none; font-size: 0.75rem; }
-    
-    @media (min-width: 768px) {
-      .tab-content {
-        font-size: 0.8rem;
-      }
-    }
-    
-    .tab-content.active { display: block; }
-    .specs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-    
-    @media (min-width: 768px) {
-      .specs-grid {
-        gap: 8px;
-      }
-    }
-    
-    .spec-item { padding: 10px; background: #fafafa; border-radius: 10px; border: 1px solid #000; }
-    
-    @media (min-width: 768px) {
-      .spec-item {
-        padding: 12px;
-      }
-    }
-    
-    .spec-label { font-size: 0.65rem; color: #555; font-weight: 600; }
-    .spec-value { font-weight: 800; color: #000; font-size: 0.7rem; }
-    
-    @media (min-width: 768px) {
-      .spec-label {
-        font-size: 0.7rem;
-      }
-      .spec-value {
-        font-size: 0.8rem;
-      }
-    }
-    
-    .video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-    
-    @media (min-width: 768px) {
-      .video-grid {
-        gap: 8px;
-      }
-    }
-    
-    .video-item {
-      aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; position: relative;
-      border: 2px solid #000; background: #000;
-    }
-    
-    .video-item img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-    .video-item i {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: 30px; height: 30px; background: #d4af37; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; color: #000; border: 2px solid #000; font-size: 0.7rem;
-    }
-    
-    @media (min-width: 768px) {
-      .video-item i {
-        width: 36px;
-        height: 36px;
-        font-size: 0.8rem;
-      }
-    }
-
-    /* related products */
-    .related { margin-top: 24px; padding-top: 16px; }
-    
-    @media (min-width: 768px) {
-      .related {
-        margin-top: 32px;
-        padding-top: 24px;
-      }
-    }
-    
-    .related-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; color: #000; text-transform: uppercase; }
-    
-    @media (min-width: 768px) {
-      .related-title {
-        font-size: 1.5rem;
-        margin-bottom: 16px;
-      }
-    }
-    
-    .related-grid {
-      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
-    }
-    
-    @media (min-width: 640px) { 
-      .related-grid { grid-template-columns: repeat(4, 1fr); } 
-    }
-    
-    .related-card {
-      text-decoration: none; color: inherit; background: #ffffff; border-radius: 14px;
-      padding: 10px; border: 2px solid #000; box-shadow: 3px 3px 0 rgba(0,0,0,0.1); display: block;
-      transition: all 0.3s;
-    }
-    
-    .related-card:hover { transform: translateY(-3px); box-shadow: 6px 6px 0 rgba(212,175,55,0.25); }
-    .related-image { aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; margin-bottom: 6px; border: 1px solid #000; }
-    .related-name { font-weight: 800; color: #000; margin-bottom: 2px; text-transform: uppercase; font-size:0.7rem; }
-    .related-price { font-weight: 800; color: #d4af37; font-size: 0.9rem; }
-    .related-add { padding: 6px; background: #000; border-radius: 40px; text-align: center; font-size: 0.65rem; font-weight: 700; color: #d4af37; border: 2px solid #d4af37; margin-top: 4px; }
-
-    /* notification - FIXED FOR MOBILE */
+    /* Notification */
     .notification {
       position: fixed; 
       top: 10px; 
@@ -2260,18 +1157,13 @@
       gap: 6px; 
       font-weight: 700; 
       font-size: 0.8rem; 
-      z-index: 10000; /* Higher z-index */
+      z-index: 10000;
       border: 2px solid #d4af37; 
       box-shadow: 4px 4px 0 rgba(0,0,0,0.25);
       animation: slideInNotification 0.3s ease;
     }
-    
-    @keyframes slideInNotification {
-      from { transform: translateX(-100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
 
-    /* scroll top - FIXED FOR MOBILE */
+    /* Scroll Top */
     .scroll-top {
       position: fixed; 
       bottom: 15px; 
@@ -2290,37 +1182,16 @@
       transition: 0.3s; 
       z-index: 999; 
       font-size: 1rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    }
-    
-    @media (min-width: 768px) {
-      .scroll-top {
-        width: 44px;
-        height: 44px;
-        font-size: 1.2rem;
-      }
     }
     
     .scroll-top.visible { opacity: 1; }
-    .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; transform: scale(1.1); }
+
+    /* Utility */
+    img { max-width: 100%; height: auto; }
+    button { touch-action: manipulation; }
     
-    /* Additional mobile fixes */
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-    
-    button {
-      touch-action: manipulation; /* Improve touch responsiveness */
-    }
-    
-    /* Fix for iOS input zoom */
     @media screen and (-webkit-min-device-pixel-ratio: 0) { 
-      select,
-      textarea,
-      input {
-        font-size: 16px !important; /* Prevents zoom on focus */
-      }
+      input, select, textarea { font-size: 16px !important; }
     }
   </style>
 </head>
@@ -2333,30 +1204,77 @@
   <div class="high-demand-popup" id="highDemandPopup">
     <div class="popup-content">
       <div class="popup-close-btn" onclick="closeHighDemandPopup()">✕</div>
-      <h3>
+      <h3 style="font-size: 1.5rem; display: flex; align-items: center; gap: 8px;">
         <i class="fa-solid fa-fire"></i> High Demand!
       </h3>
       <p>This product is currently in <strong>high demand</strong> and we have limited stock available.</p>
       
-      <div class="warning">
+      <div class="warning" style="background: #fef8e7; border: 2px solid #d4af37; border-radius: 16px; padding: 10px; margin-bottom: 16px; font-size: 0.75rem;">
         <i class="fa-solid fa-exclamation-triangle"></i> Only limited stocks are supplied. We'll notify you when the product is ready to dispatch.
       </div>
       
       <div id="emailNotificationForm">
-        <div class="email-input-group">
-          <label><i class="fa-regular fa-envelope"></i> Enter your email</label>
-          <input type="email" id="notificationEmail" placeholder="your@email.com" required>
+        <div class="email-input-group" style="margin-bottom: 16px;">
+          <label style="display: block; font-weight: 700; margin-bottom: 6px; font-size: 0.8rem;"><i class="fa-regular fa-envelope"></i> Enter your email</label>
+          <input type="email" id="notificationEmail" placeholder="your@email.com" required style="width: 100%; padding: 12px 14px; border: 2px solid #000; border-radius: 30px; font-size: 0.9rem;">
         </div>
         
-        <div class="popup-actions">
-          <button class="btn-primary" onclick="submitNotification('buy')">Notify Me</button>
-          <button class="btn-secondary" onclick="closeHighDemandPopup()">Cancel</button>
+        <div class="popup-actions" style="display: flex; gap: 10px; flex-direction: column;">
+          <button class="btn-primary" onclick="submitNotification('buy')" style="padding: 12px; border-radius: 30px; font-weight: 800; background: #d4af37; color: #000; border: 2px solid #000;">Notify Me</button>
+          <button class="btn-secondary" onclick="closeHighDemandPopup()" style="padding: 12px; border-radius: 30px; font-weight: 800; background: #fff; color: #000; border: 2px solid #000;">Cancel</button>
         </div>
       </div>
       
-      <div id="alreadyNotifiedMessage" class="already-notified" style="display: none;">
-        <i class="fa-solid fa-check-circle"></i> You've already requested notification for this product. We'll email you when it's ready!
+      <div id="alreadyNotifiedMessage" class="already-notified" style="display: none; text-align: center; padding: 10px; background: #f0f0f0; border-radius: 30px; border: 2px solid #000; font-weight: 700;">
+        <i class="fa-solid fa-check-circle"></i> You've already requested notification for this product.
       </div>
+    </div>
+  </div>
+
+  <!-- WRITE REVIEW MODAL -->
+  <div class="review-modal" id="reviewModal">
+    <div class="review-modal-content">
+      <div class="close-modal" onclick="closeReviewModal()">✕</div>
+      <h3><i class="fa-solid fa-pen"></i> Write a Review</h3>
+      
+      <form id="reviewForm" onsubmit="event.preventDefault(); submitReview();">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="reviewerName" placeholder="Enter your name" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Your City</label>
+          <input type="text" id="reviewerCity" placeholder="Enter your city">
+        </div>
+        
+        <div class="form-group">
+          <label>Rating</label>
+          <div class="rating-select" id="ratingStars">
+            <i class="fa-regular fa-star" data-rating="1"></i>
+            <i class="fa-regular fa-star" data-rating="2"></i>
+            <i class="fa-regular fa-star" data-rating="3"></i>
+            <i class="fa-regular fa-star" data-rating="4"></i>
+            <i class="fa-regular fa-star" data-rating="5"></i>
+          </div>
+          <input type="hidden" id="reviewRating" value="0">
+        </div>
+        
+        <div class="form-group">
+          <label>Your Review</label>
+          <textarea id="reviewComment" placeholder="Share your experience with this product..." required></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>Review Image URL (optional)</label>
+          <input type="url" id="reviewImage" placeholder="https://example.com/image.jpg">
+        </div>
+        
+        <div class="modal-actions">
+          <button type="submit" class="submit-btn">Submit Review</button>
+          <button type="button" class="cancel-btn" onclick="closeReviewModal()">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -2381,37 +1299,300 @@
     // ========== PRODUCT PAGE SPECIFIC CODE ==========
     let currentProduct = null;
     let selectedPaymentMethod = 'prepaid';
-    let currentAction = null; // 'buy' or 'cart' for high demand popup
+    let currentAction = null;
     let productReviews = [];
+    let selectedRating = 0;
     
     const STORAGE_KEY = 'myessantia_product_data';
     const NOTIFICATION_STORAGE_KEY = 'myessantia_notifications';
     
-    function getStoredProductData(productId) {
-      const stored = sessionStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const data = JSON.parse(stored);
-        if (data.productId === productId) {
-          return data;
+    // Initialize rating stars
+    function initRatingStars() {
+      const stars = document.querySelectorAll('.rating-select i');
+      stars.forEach(star => {
+        star.addEventListener('mouseenter', function() {
+          const rating = parseInt(this.dataset.rating);
+          highlightStars(rating);
+        });
+        
+        star.addEventListener('mouseleave', function() {
+          highlightStars(selectedRating);
+        });
+        
+        star.addEventListener('click', function() {
+          selectedRating = parseInt(this.dataset.rating);
+          document.getElementById('reviewRating').value = selectedRating;
+          highlightStars(selectedRating);
+        });
+      });
+    }
+    
+    function highlightStars(rating) {
+      const stars = document.querySelectorAll('.rating-select i');
+      stars.forEach((star, index) => {
+        if (index < rating) {
+          star.className = 'fa-solid fa-star';
+        } else {
+          star.className = 'fa-regular fa-star';
         }
+      });
+    }
+    
+    // Open review modal
+    window.openReviewModal = function() {
+      if (!currentProduct) {
+        showNotification('Please wait for product to load', 'error');
+        return;
       }
-      return null;
+      
+      // Check if user is logged in
+      if (typeof window.currentUser === 'undefined' || !window.currentUser) {
+        showNotification('Please login to write a review', 'error');
+        setTimeout(() => {
+          window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+        }, 1500);
+        return;
+      }
+      
+      document.getElementById('reviewModal').classList.add('show');
+      document.body.style.overflow = 'hidden';
+      
+      // Reset form
+      document.getElementById('reviewForm').reset();
+      selectedRating = 0;
+      document.getElementById('reviewRating').value = '0';
+      highlightStars(0);
+    };
+    
+    // Close review modal
+    window.closeReviewModal = function() {
+      document.getElementById('reviewModal').classList.remove('show');
+      document.body.style.overflow = '';
+    };
+    
+    // Submit review
+    window.submitReview = async function() {
+      if (!currentProduct) return;
+      
+      const name = document.getElementById('reviewerName').value.trim();
+      const city = document.getElementById('reviewerCity').value.trim() || 'India';
+      const rating = parseInt(document.getElementById('reviewRating').value);
+      const comment = document.getElementById('reviewComment').value.trim();
+      const imageUrl = document.getElementById('reviewImage').value.trim();
+      
+      if (!name) {
+        showNotification('Please enter your name', 'error');
+        return;
+      }
+      
+      if (rating === 0) {
+        showNotification('Please select a rating', 'error');
+        return;
+      }
+      
+      if (!comment) {
+        showNotification('Please write your review', 'error');
+        return;
+      }
+      
+      try {
+        const reviewData = {
+          productId: currentProduct.id,
+          reviewerName: name,
+          city: city,
+          rating: rating,
+          comment: comment,
+          verified: true,
+          timestamp: new Date().toISOString()
+        };
+        
+        if (imageUrl) {
+          reviewData.imageUrl = imageUrl;
+        }
+        
+        // Add to Firebase if available
+        if (typeof db !== 'undefined' && db) {
+          await db.collection('reviews').add(reviewData);
+        }
+        
+        // Add to local array
+        const newReview = {
+          ...reviewData,
+          id: 'temp-' + Date.now()
+        };
+        
+        productReviews.unshift(newReview);
+        
+        // Re-render reviews
+        renderReviews();
+        
+        showNotification('Thank you for your review!');
+        closeReviewModal();
+        
+      } catch (error) {
+        console.error('Error submitting review:', error);
+        showNotification('Failed to submit review. Please try again.', 'error');
+      }
+    };
+    
+    // Render reviews
+    function renderReviews() {
+      const reviewsContainer = document.getElementById('reviews-container');
+      if (!reviewsContainer) return;
+      
+      if (!productReviews || productReviews.length === 0) {
+        reviewsContainer.innerHTML = `
+          <div class="empty-reviews">
+            <i class="fa-regular fa-star"></i>
+            <h3>No reviews yet</h3>
+            <p>Be the first to share your experience with this product!</p>
+            <button onclick="openReviewModal()">Write a Review</button>
+          </div>
+        `;
+        return;
+      }
+      
+      let reviewsHTML = '<div class="reviews-grid">';
+      
+      productReviews.forEach(review => {
+        // Generate star rating
+        let starsHTML = '';
+        for (let i = 1; i <= 5; i++) {
+          if (i <= review.rating) {
+            starsHTML += '<i class="fa-solid fa-star"></i>';
+          } else {
+            starsHTML += '<i class="fa-regular fa-star"></i>';
+          }
+        }
+        
+        // Get initials for avatar
+        const initials = review.reviewerName
+          .split(' ')
+          .map(word => word[0])
+          .join('')
+          .toUpperCase()
+          .substring(0, 2);
+        
+        const imageUrl = review.imageUrl || 'https://d1327z4fntq4ap.cloudfront.net/00k6827oetc2yh1kg544bpu8rb3e';
+        const city = review.city || 'India';
+        const date = review.timestamp ? new Date(review.timestamp).toLocaleDateString('en-IN') : '';
+        
+        reviewsHTML += `
+          <div class="review-card">
+            <div class="review-media">
+              <img src="${imageUrl}" alt="Review image" onerror="this.src='https://d1327z4fntq4ap.cloudfront.net/00k6827oetc2yh1kg544bpu8rb3e'">
+            </div>
+            <div class="review-details">
+              <div class="reviewer-info">
+                <div class="reviewer-avatar">${initials}</div>
+                <div>
+                  <div class="reviewer-name">${review.reviewerName}</div>
+                  <div class="reviewer-city">${city}</div>
+                </div>
+              </div>
+              <div class="review-stars">${starsHTML}</div>
+              <div class="review-comment">${review.comment}</div>
+              ${review.verified ? `
+                <div class="review-verified">
+                  <i class="fa-solid fa-circle-check"></i> Verified Purchase
+                </div>
+              ` : ''}
+              ${date ? `<div style="font-size: 0.65rem; color: #999; margin-top: 8px;">${date}</div>` : ''}
+            </div>
+          </div>
+        `;
+      });
+      
+      reviewsHTML += '</div>';
+      
+      // Add write review button
+      reviewsHTML += `
+        <button class="write-review-btn" onclick="openReviewModal()">
+          <i class="fa-solid fa-pen"></i> Write a Review
+        </button>
+      `;
+      
+      reviewsContainer.innerHTML = reviewsHTML;
     }
-
-    function storeProductData(productId, data) {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
-        productId,
-        ...data
-      }));
+    
+    // FAQ data
+    const faqData = [
+      {
+        question: 'What is the estimated delivery time?',
+        answer: 'Orders are typically delivered within 5-7 business days. You will receive a tracking link once your order is shipped.'
+      },
+      {
+        question: 'What is your return policy?',
+        answer: 'We offer 7-day easy returns. Items must be unused and in original packaging. Return shipping is free for defective items.'
+      },
+      {
+        question: 'Is this product authentic?',
+        answer: 'Yes, all products on MyEssantia are 100% authentic and sourced directly from brands or authorized distributors.'
+      },
+      {
+        question: 'Do you ship internationally?',
+        answer: 'Currently we ship only within India. International shipping will be available soon.'
+      },
+      {
+        question: 'How do I track my order?',
+        answer: 'Once your order ships, you will receive an email and SMS with tracking details. You can also track in your account dashboard.'
+      },
+      {
+        question: 'What payment methods do you accept?',
+        answer: 'We accept all major credit/debit cards, UPI, net banking, and Cash on Delivery (COD).'
+      }
+    ];
+    
+    // Render FAQ section
+    function renderFAQ() {
+      let faqHTML = `
+        <div class="faq-section">
+          <h2><i class="fa-solid fa-circle-question"></i> Frequently Asked Questions</h2>
+          <div class="faq-grid">
+      `;
+      
+      faqData.forEach((item, index) => {
+        faqHTML += `
+          <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(${index})">
+              <span>${item.question}</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer" id="faq-${index}">
+              ${item.answer}
+            </div>
+          </div>
+        `;
+      });
+      
+      faqHTML += `
+          </div>
+        </div>
+      `;
+      
+      return faqHTML;
     }
-
-    // Check if user has already requested notification for this product
+    
+    // Toggle FAQ
+    window.toggleFAQ = function(index) {
+      const answer = document.getElementById(`faq-${index}`);
+      const question = answer.previousElementSibling;
+      
+      if (answer.classList.contains('show')) {
+        answer.classList.remove('show');
+        question.classList.remove('active');
+      } else {
+        answer.classList.add('show');
+        question.classList.add('active');
+      }
+    };
+    
+    // Check if user has already requested notification
     function hasRequestedNotification(productId) {
       const notifications = JSON.parse(localStorage.getItem(NOTIFICATION_STORAGE_KEY) || '{}');
       return !!notifications[productId];
     }
 
-    // Mark that user has requested notification for this product
     function markNotificationRequested(productId, email) {
       const notifications = JSON.parse(localStorage.getItem(NOTIFICATION_STORAGE_KEY) || '{}');
       notifications[productId] = {
@@ -2422,7 +1603,6 @@
       localStorage.setItem(NOTIFICATION_STORAGE_KEY, JSON.stringify(notifications));
     }
 
-    // Submit notification to Firestore
     async function submitNotificationToFirebase(productId, email, actionType) {
       try {
         if (typeof db !== 'undefined' && db) {
@@ -2430,54 +1610,33 @@
             productId: productId,
             productTitle: currentProduct?.title || 'Unknown Product',
             email: email,
-            actionType: actionType, // 'buy' or 'cart'
+            actionType: actionType,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             status: 'pending'
           });
-          console.log('Notification saved to Firebase');
-        } else {
-          // Fallback to localStorage if Firebase not available
-          console.log('Firebase not available, saving to localStorage only');
         }
       } catch (error) {
-        console.error('Error saving notification to Firebase:', error);
+        console.error('Error saving notification:', error);
       }
     }
 
     function getRandomSold() { return Math.floor(Math.random() * (2000 - 500 + 1)) + 500; }
     function getRandomViewers() { return Math.floor(Math.random() * (35 - 8 + 1)) + 8; }
 
-    // Load reviews for this product from Firestore
     async function loadProductReviews(productId) {
       try {
-        console.log('Loading reviews for product:', productId);
+        if (typeof db === 'undefined' || !db) return [];
+        if (!productId) return [];
         
-        if (typeof db === 'undefined' || !db) {
-          console.log('Firebase db not available');
-          return [];
-        }
-        
-        if (!productId) {
-          console.log('No product ID provided');
-          return [];
-        }
-        
-        // TEMPORARY FIX: Remove orderBy while index is building
         const snapshot = await db.collection('reviews')
           .where('productId', '==', productId)
-          .get(); // Removed .orderBy('timestamp', 'desc')
+          .get();
         
-        console.log(`Found ${snapshot.docs.length} reviews for product ${productId}`);
-        
-        if (snapshot.empty) {
-          console.log('No reviews found for this product');
-          return [];
-        }
+        if (snapshot.empty) return [];
         
         const reviews = snapshot.docs.map(doc => {
           const data = doc.data();
           
-          // Handle timestamp properly
           let reviewDate = new Date();
           if (data.timestamp) {
             if (data.timestamp.toDate) {
@@ -2501,10 +1660,7 @@
           };
         });
         
-        // Sort manually (descending order)
         reviews.sort((a, b) => b.timestamp - a.timestamp);
-        
-        console.log('Processed reviews:', reviews);
         return reviews;
         
       } catch (error) {
@@ -2516,11 +1672,9 @@
     function getProductId() { return new URLSearchParams(window.location.search).get('id'); }
 
     function generateRatingDistribution(reviews) {
-      // Default distribution
       let distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
       
       if (reviews.length === 0) {
-        // Default distribution based on product rating if no reviews
         const baseRating = currentProduct?.rating || 4.5;
         if (baseRating >= 4.5) {
           distribution = { 5: 75, 4: 15, 3: 6, 2: 3, 1: 1 };
@@ -2532,15 +1686,11 @@
           distribution = { 5: 20, 4: 25, 3: 25, 2: 18, 1: 12 };
         }
       } else {
-        // Calculate distribution from actual reviews
         reviews.forEach(review => {
           const rating = Math.round(review.rating);
-          if (rating >= 1 && rating <= 5) {
-            distribution[rating]++;
-          }
+          if (rating >= 1 && rating <= 5) distribution[rating]++;
         });
         
-        // Convert counts to percentages
         const total = reviews.length;
         if (total > 0) {
           distribution = {
@@ -2553,11 +1703,8 @@
         }
       }
       
-      // Ensure percentages add to 100
       const sum = distribution[5] + distribution[4] + distribution[3] + distribution[2] + distribution[1];
-      if (sum !== 100 && sum > 0) {
-        distribution[5] += (100 - sum);
-      }
+      if (sum !== 100 && sum > 0) distribution[5] += (100 - sum);
       
       return distribution;
     }
@@ -2586,60 +1733,24 @@
 
     function selectPaymentMethod(method, event) {
       selectedPaymentMethod = method;
-      document.querySelectorAll('.price-option').forEach(opt => {
-        opt.classList.remove('selected');
-      });
+      document.querySelectorAll('.price-option').forEach(opt => opt.classList.remove('selected'));
       event.currentTarget.classList.add('selected');
-      
-      event.currentTarget.style.transform = 'scale(0.95)';
-      setTimeout(() => {
-        event.currentTarget.style.transform = '';
-      }, 200);
-      
-      setTimeout(() => {
-        const actionButtons = document.querySelector('.action-buttons');
-        if (actionButtons) {
-          actionButtons.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          actionButtons.classList.add('scroll-highlight');
-          setTimeout(() => {
-            actionButtons.classList.remove('scroll-highlight');
-          }, 1000);
-        }
-      }, 300);
     }
 
-    // Toggle Razorpay popup
     window.toggleRazorpayPopup = function() {
-      const popup = document.getElementById('razorpayPopup');
-      if (popup) popup.classList.toggle('show');
+      document.getElementById('razorpayPopup').classList.toggle('show');
     };
 
-    // Close Razorpay popup (now only called from "Yes, got it" button)
     window.closeRazorpayPopup = function() {
-      const popup = document.getElementById('razorpayPopup');
-      if (popup) popup.classList.remove('show');
+      document.getElementById('razorpayPopup').classList.remove('show');
     };
 
-    function toggleReviews() {
-      const container = document.getElementById('reviews-container');
-      const btn = document.getElementById('view-more-btn');
-      if (container.classList.contains('expanded')) {
-        container.classList.remove('expanded');
-        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> View More Reviews';
-      } else {
-        container.classList.add('expanded');
-        btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Show Less';
-      }
-    }
-
-    // High Demand Popup Functions
     window.showHighDemandPopup = function(action) {
       currentAction = action;
       const popup = document.getElementById('highDemandPopup');
       const emailForm = document.getElementById('emailNotificationForm');
       const alreadyMessage = document.getElementById('alreadyNotifiedMessage');
       
-      // Check if already requested
       if (hasRequestedNotification(currentProduct.id)) {
         emailForm.style.display = 'none';
         alreadyMessage.style.display = 'block';
@@ -2650,17 +1761,13 @@
       }
       
       popup.classList.add('show');
-      
-      // Prevent body scroll when popup is open
       document.body.style.overflow = 'hidden';
     };
 
     window.closeHighDemandPopup = function() {
       document.getElementById('highDemandPopup').classList.remove('show');
-      currentAction = null;
-      
-      // Restore body scroll
       document.body.style.overflow = '';
+      currentAction = null;
     };
 
     window.submitNotification = async function(actionType) {
@@ -2672,19 +1779,12 @@
         return;
       }
       
-      // Mark as requested in localStorage
       markNotificationRequested(currentProduct.id, email);
-      
-      // Submit to Firebase
       await submitNotificationToFirebase(currentProduct.id, email, actionType);
       
-      // Update UI
       document.getElementById('emailNotificationForm').style.display = 'none';
       document.getElementById('alreadyNotifiedMessage').style.display = 'block';
-      
       showNotification('We\'ll notify you when this product is ready to dispatch!');
-      
-      // Update button states if needed
       updateButtonStates();
     };
 
@@ -2693,7 +1793,6 @@
     }
 
     function showNotification(message, type = 'success') {
-      // Remove any existing notifications
       const existingNotifications = document.querySelectorAll('.notification');
       existingNotifications.forEach(notif => notif.remove());
       
@@ -2706,26 +1805,20 @@
       }
       notification.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
       document.body.appendChild(notification);
-      setTimeout(() => {
-        notification.remove();
-      }, 3000);
+      setTimeout(() => notification.remove(), 3000);
     }
 
-    // USE THE GLOBAL addToCart FUNCTION FROM common.js
     window.addToCart = function() {
       if (!currentProduct) return;
       
-      // Check if product is in high demand
       if (currentProduct.highDemand) {
         showHighDemandPopup('cart');
         return;
       }
       
-      // Call the global addToCart function from common.js
       if (typeof window.addToCartGlobal === 'function') {
         window.addToCartGlobal(currentProduct.id);
       } else {
-        // Fallback if global function isn't available
         const quantity = parseInt(document.getElementById('productQuantity').value) || 1;
         
         if (currentProduct.stock <= 0) {
@@ -2771,25 +1864,19 @@
       }
     };
 
-    // USE THE GLOBAL buyNow FUNCTION FROM common.js
     window.buyNow = function() {
       if (!currentProduct) return;
       
-      // Check if product is in high demand
       if (currentProduct.highDemand) {
         showHighDemandPopup('buy');
         return;
       }
       
-      // Call the global buyNow function from common.js
       if (typeof window.buyNowGlobal === 'function') {
         window.buyNowGlobal(currentProduct.id);
       } else {
-        // Fallback
         window.addToCart();
-        setTimeout(() => {
-          window.location.href = 'checkout.html';
-        }, 500);
+        setTimeout(() => window.location.href = 'checkout.html', 500);
       }
     };
 
@@ -2800,7 +1887,6 @@
       if (!addToCartBtn || !buyNowBtn || !currentProduct) return;
       
       if (currentProduct.highDemand) {
-        // Check if already requested
         if (hasRequestedNotification(currentProduct.id)) {
           addToCartBtn.innerHTML = '<i class="fa-regular fa-bell"></i> Will Notify Soon!';
           buyNowBtn.innerHTML = '<i class="fa-regular fa-bell"></i> Will Notify Soon!';
@@ -2809,7 +1895,6 @@
           addToCartBtn.disabled = true;
           buyNowBtn.disabled = true;
         } else {
-          // Keep buttons active but they'll trigger popup
           addToCartBtn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> Add to Cart';
           buyNowBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> Buy Now';
           addToCartBtn.classList.remove('high-demand-disabled');
@@ -2818,7 +1903,6 @@
           buyNowBtn.disabled = false;
         }
       } else {
-        // Normal mode
         addToCartBtn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> Add to Cart';
         buyNowBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> Buy Now';
         addToCartBtn.classList.remove('high-demand-disabled');
@@ -2833,10 +1917,7 @@
       if (!productId) return showNotFound();
       
       try {
-        console.log('Loading product with ID:', productId);
-        
         if (typeof db === 'undefined' || !db) {
-          console.log('Firebase not available, using demo product');
           currentProduct = {
             id: productId,
             title: 'Minimalist Leather Backpack',
@@ -2850,13 +1931,7 @@
           };
           document.getElementById('breadcrumb-product').textContent = currentProduct.title;
           
-          // Try to load reviews even in demo mode
-          try {
-            productReviews = await loadProductReviews(productId);
-          } catch (e) {
-            productReviews = [];
-          }
-          
+          productReviews = await loadProductReviews(productId);
           renderProduct(currentProduct);
           return;
         }
@@ -2867,13 +1942,7 @@
         currentProduct = { id: doc.id, ...doc.data() };
         document.getElementById('breadcrumb-product').textContent = currentProduct.title;
         
-        console.log('Product loaded:', currentProduct.title);
-        
-        // Load reviews for this product
         productReviews = await loadProductReviews(productId);
-        console.log('Reviews loaded:', productReviews.length);
-        
-        // Now render with reviews
         renderProduct(currentProduct);
         
       } catch (error) { 
@@ -2891,13 +1960,7 @@
         };
         document.getElementById('breadcrumb-product').textContent = currentProduct.title;
         
-        // Try to load reviews even after error
-        try {
-          productReviews = await loadProductReviews(productId);
-        } catch (e) {
-          productReviews = [];
-        }
-        
+        productReviews = await loadProductReviews(productId);
         renderProduct(currentProduct);
       }
     }
@@ -2924,17 +1987,14 @@
       
       const stock = product.stock || 10;
       const originalPrice = Math.round(product.price * 1.25);
-      const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
       const prepaidPrice = Math.round(product.price * 0.92);
       const codPrice = Math.round(product.price * 1.04);
       const soldCount = getRandomSold();
       const liveViewers = getRandomViewers();
       
-      // Calculate rating distribution from actual reviews
       const ratingDist = generateRatingDistribution(productReviews);
       const reviewCount = productReviews.length > 0 ? productReviews.length : Math.floor(Math.random() * (350 - 45 + 1)) + 45;
 
-      // Create rating chart HTML
       const ratingChartHTML = `
         <div class="rating-chart-card">
           <div class="rating-chart-header">
@@ -2958,117 +2018,6 @@
         </div>
       `;
 
-      // Generate reviews HTML with new card design
-      let reviewsHTML = '';
-
-      if (productReviews && productReviews.length > 0) {
-        // Add reviews header
-        reviewsHTML = `<div class="reviews-header">
-          <span>Customer Reviews</span>
-          <span>★ ${(product.rating || 4.5).toFixed(1)} (${productReviews.length})</span>
-        </div>`;
-        
-        // Create a common frame container - NO FRAME
-        reviewsHTML += `<div class="reviews-common-frame">`;
-        reviewsHTML += `<div class="reviews-grid">`;
-        
-        reviewsHTML += productReviews.map(review => {
-          // Generate star rating as SVGs
-          const rating = review.rating || 5;
-          const fullStars = Math.floor(rating);
-          const hasHalf = rating % 1 >= 0.5;
-          
-          let starsHTML = '';
-          for (let i = 1; i <= 5; i++) {
-            if (i <= fullStars) {
-              // Full star
-              starsHTML += `
-                <svg class="star" enable-background="new 0 0 24 24" viewBox="3.44 3.57 17.11 16.36">
-                  <path d="m0 0h24v24h-24z" fill="none"></path>
-                  <path d="m0 0h24v24h-24z" fill="none"></path>
-                  <path d="m12 17.27 4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72 3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41-1.89-4.46c-.34-.81-1.5-.81-1.84 0l-1.89 4.45-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08z"></path>
-                </svg>
-              `;
-            } else if (i === fullStars + 1 && hasHalf) {
-              // Half star
-              starsHTML += `
-                <svg class="star" enable-background="new 0 0 24 24" viewBox="3.44 3.56 17.12 16.37">
-                  <path d="m0 0h24v24h-24z" fill="none"></path>
-                  <path d="m19.65 9.04-4.84-.42-1.89-4.45c-.34-.81-1.5-.81-1.84 0l-1.89 4.46-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5 4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.73 3.67-3.18c.67-.58.32-1.68-.56-1.75zm-7.65 6.36-3.76 2.27 1-4.28-3.32-2.88 4.38-.38 1.7-4.03 1.71 4.04 4.38.38-3.32 2.88 1 4.28z"></path>
-                </svg>
-              `;
-            } else {
-              // Empty star
-              starsHTML += `
-                <svg class="star" enable-background="new 0 0 24 24" viewBox="3.44 3.57 17.11 16.36">
-                  <path d="m22 9.24-7.19-.62-2.81-6.77v16.92l6.19 3.74-1.64-7.03 5.45-4.73z" fill="#F1C645"></path>
-                  <path d="M12 2.5L9.19 9.01 2 9.24l5.45 4.73L5.82 20.9 12 17.15" fill="#F1C645"></path>
-                </svg>
-              `;
-            }
-          }
-          
-          const imageUrl = review.imageUrl || 'https://d1327z4fntq4ap.cloudfront.net/00k6827oetc2yh1kg544bpu8rb3e';
-          
-          return `
-            <div class="review-item">
-              <div class="review-card">
-                <div class="review-media">
-                  <img src="${imageUrl}" alt="Product review image" onerror="this.src='https://d1327z4fntq4ap.cloudfront.net/00k6827oetc2yh1kg544bpu8rb3e'">
-                </div>
-                <div class="review-details">
-                  <div class="review-header">
-                    <div class="author-name-w-details">
-                      <div class="author-name">${review.reviewerName}</div>
-                    </div>
-                  </div>
-                  <div class="tydal-star-wrapper">
-                    ${starsHTML}
-                  </div>
-                  <div class="review-text">
-                    ${review.comment}
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-        }).join('');
-        
-        reviewsHTML += `</div>`; // Close reviews-grid
-        reviewsHTML += `</div>`; // Close reviews-common-frame
-      } else {
-        reviewsHTML = `
-          <div class="reviews-header">
-            <span>Customer Reviews</span>
-            <span>★ ${(product.rating || 4.5).toFixed(1)} (0)</span>
-          </div>
-          <div class="reviews-common-frame">
-            <div class="empty-state">
-              <i class="fa-regular fa-star"></i>
-              <h3>No reviews yet</h3>
-              <p>Be the first to review this product!</p>
-            </div>
-          </div>
-        `;
-      }
-
-      // DESKTOP REVIEWS SECTION - positioned below rating chart
-      const desktopReviewsHTML = `
-        <div class="desktop-reviews-section">
-          <div class="desktop-reviews">
-            ${reviewsHTML}
-          </div>
-        </div>
-      `;
-      
-      // MOBILE REVIEWS SECTION (hidden on desktop)
-      const mobileReviewsHTML = `
-        <div class="mobile-reviews">
-          ${ratingChartHTML}
-          ${reviewsHTML}
-        </div>
-      `;
-
       const container = document.getElementById('product-container');
       container.innerHTML = `
         <div class="product-grid">
@@ -3078,7 +2027,6 @@
             <div class="thumbnail-grid">
               ${images.map((img, i) => `<div class="thumbnail ${i === 0 ? 'active' : ''}" onclick="changeImage('${img}', this)"><img src="${img}"></div>`).join('')}
             </div>
-            <!-- Rating Chart below thumbnails -->
             ${ratingChartHTML}
           </div>
           
@@ -3097,27 +2045,28 @@
               <div class="share-wrapper">
                 <button class="share-btn" onclick="toggleShare(event)"><i class="fa-solid fa-share-alt"></i> Share</button>
                 <div class="share-menu" id="shareMenu">
-                  <div class="share-grid">
-                    <div class="share-option" onclick="shareOn('facebook')"><i class="fa-brands fa-facebook"></i><span>Facebook</span></div>
-                    <div class="share-option" onclick="shareOn('twitter')"><i class="fa-brands fa-twitter"></i><span>Twitter</span></div>
-                    <div class="share-option" onclick="shareOn('whatsapp')"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></div>
+                  <div class="share-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 10px;">
+                    <div class="share-option" onclick="shareOn('facebook')" style="display: flex; flex-direction: column; align-items: center; padding: 6px 2px; background: #f6f6f6; border-radius: 10px; cursor: pointer;"><i class="fa-brands fa-facebook"></i><span style="font-size: 0.6rem;">Facebook</span></div>
+                    <div class="share-option" onclick="shareOn('twitter')" style="display: flex; flex-direction: column; align-items: center; padding: 6px 2px; background: #f6f6f6; border-radius: 10px; cursor: pointer;"><i class="fa-brands fa-twitter"></i><span style="font-size: 0.6rem;">Twitter</span></div>
+                    <div class="share-option" onclick="shareOn('whatsapp')" style="display: flex; flex-direction: column; align-items: center; padding: 6px 2px; background: #f6f6f6; border-radius: 10px; cursor: pointer;"><i class="fa-brands fa-whatsapp"></i><span style="font-size: 0.6rem;">WhatsApp</span></div>
                   </div>
-                  <div class="copy-link">
-                    <input id="shareLink" value="${window.location.href}" readonly>
-                    <button class="copy-btn" onclick="copyLink()">Copy</button>
+                  <div class="copy-link" style="display: flex; gap: 4px;">
+                    <input id="shareLink" value="${window.location.href}" readonly style="flex: 1; padding: 6px; border: 2px solid #000; border-radius: 10px; font-size: 0.65rem;">
+                    <button class="copy-btn" onclick="copyLink()" style="padding: 6px 8px; background: #000; color: #d4af37; border-radius: 10px; font-weight: 700; border: 2px solid #000; cursor: pointer; font-size: 0.65rem;">Copy</button>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- PRICE CARD with quantity -->
+            <!-- PRICE CARD -->
             <div class="price-card">
-              <div class="price-header">
+              <div class="price-header" style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
                 <span class="current-price"><span class="inr-symbol">₹</span>${product.price.toFixed(2)}</span>
-                <span class="original-price">₹${originalPrice.toFixed(2)}</span>
+                <span class="original-price" style="font-size: 0.9rem; color: #777; text-decoration: line-through;">₹${originalPrice.toFixed(2)}</span>
                 <span class="discount sale-badge"><i class="fa-solid fa-tag"></i> SALE</span>
               </div>
-              <div class="tax-info"><i class="fa-solid fa-receipt"></i> Taxes included. Shipping calculated at checkout.</div>
+              <div class="tax-info" style="font-size: 0.7rem; color: #4a4a4a; margin-bottom: 10px; border-bottom: 1px dashed #ccc; padding-bottom: 6px;"><i class="fa-solid fa-receipt"></i> Taxes included. Shipping calculated at checkout.</div>
+              
               <div class="price-options">
                 <div class="price-option prepaid selected" onclick="selectPaymentMethod('prepaid', event)">
                   <div class="option-label">Prepaid</div>
@@ -3130,10 +2079,10 @@
               </div>
               
               <div class="quantity-stock-row">
-                <div class="quantity-controls">
-                  <button class="qty-btn" onclick="updateQuantity(-1)" ${stock === 0 ? 'disabled' : ''}>−</button>
+                <div class="quantity-controls" style="display: flex; align-items: center; gap: 4px;">
+                  <button class="qty-btn" onclick="updateQuantity(-1)" style="width: 28px; height: 28px; border: none; background: transparent; font-size: 1rem; font-weight: 800; cursor: pointer;" ${stock === 0 ? 'disabled' : ''}>−</button>
                   <input type="text" class="qty-input" id="productQuantity" value="1" readonly>
-                  <button class="qty-btn" onclick="updateQuantity(1)" ${stock === 0 ? 'disabled' : ''}>+</button>
+                  <button class="qty-btn" onclick="updateQuantity(1)" style="width: 28px; height: 28px; border: none; background: transparent; font-size: 1rem; font-weight: 800; cursor: pointer;" ${stock === 0 ? 'disabled' : ''}>+</button>
                 </div>
                 <div class="stock-badge">
                   <i class="fa-solid ${stock > 10 ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> 
@@ -3142,19 +2091,20 @@
               </div>
             </div>
 
+            <!-- DELIVERY CARD -->
             <div class="delivery-card">
-              <div class="delivery-header">
+              <div class="delivery-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; font-size: 0.75rem;">
                 <span class="delivery-title"><i class="fa-solid fa-truck"></i> Free Delivery</span>
-                <span class="delivery-min">Min. ₹1,299</span>
+                <span class="delivery-min" style="background: #000; color: #d4af37; padding: 3px 8px; border-radius: 40px; font-weight: 600; font-size: 0.65rem;">Min. ₹1,299</span>
               </div>
-              <div class="progress-bar">
-                <div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div>
+              <div class="progress-bar" style="height: 6px; background: #eaeaea; border-radius: 8px; overflow: hidden; margin: 6px 0; border: 1px solid #000;">
+                <div class="progress-fill" id="deliveryProgress" style="height: 100%; background: #d4af37; width: ${Math.min(100, (product.price / 1299) * 100)}%"></div>
               </div>
-              <div class="delivery-message" id="deliveryMessage">
+              <div class="delivery-message" id="deliveryMessage" style="display: flex; align-items: center; gap: 4px; font-weight: 600; font-size: 0.75rem;">
                 <i class="fa-solid ${product.price >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:#d4af37;"></i>
                 <span id="deliveryText">${product.price >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - product.price).toFixed(2)}</span> more`}</span>
               </div>
-              <div class="delivery-eta" style="display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ccc;">
+              <div class="delivery-eta" style="display: flex; align-items: center; gap: 10px; margin-top: 6px; padding-top: 6px; border-top: 1px dashed #ccc;">
                 <div style="background: #d4af37; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #000; flex-shrink: 0;">
                   <i class="fa-regular fa-calendar-check" style="color: #000; font-size: 1rem;"></i>
                 </div>
@@ -3165,64 +2115,48 @@
               </div>
             </div>
 
-            <div class="feature-razor-card">
-              <!-- Razorpay popup card (no close button) -->
-              <div id="razorpayPopup" class="razorpay-popup">
-                <div class="popup-title">
-                  <i class="fa-solid fa-shield"></i> Razorpay Money Back Promise
+            <!-- FEATURE CARD -->
+            <div class="feature-razor-card" style="background: #ffffff; border-radius: 16px; padding: 14px; margin-bottom: 12px; border: 2px solid #000; box-shadow: 4px 4px 0 rgba(0,0,0,0.1);">
+              <div id="razorpayPopup" class="razorpay-popup" style="display: none; background: #fff9e6; border: 3px solid #d4af37; border-radius: 20px; padding: 16px 12px; margin-bottom: 12px; box-shadow: 6px 6px 0 #000;">
+                <div class="popup-title" style="display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 900; margin-bottom: 12px; border-bottom: 2px dashed #d4af37; padding-bottom: 8px;">
+                  <i class="fa-solid fa-shield" style="color: #d4af37; background: #000; border-radius: 50%; padding: 6px; font-size: 0.9rem;"></i> Razorpay Money Back Promise
                 </div>
-                <div class="popup-desc">
+                <div class="popup-desc" style="font-size: 0.85rem; color: #222; margin-bottom: 12px; line-height: 1.5;">
                   Your purchase from MyEssantia is protected by Razorpay Money Back Promise
                 </div>
-                
                 <div class="popup-bullets">
-                  <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                  <div style="display: flex; gap: 8px; margin-bottom: 10px; font-size: 0.8rem;">
                     <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
                     <span><strong>100% refund</strong> on non-delivery or damaged/defective items</span>
                   </div>
-                  <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                  <div style="display: flex; gap: 8px; margin-bottom: 10px; font-size: 0.8rem;">
                     <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
                     <span><strong>100% free</strong> with no hidden costs</span>
                   </div>
                 </div>
-                
-                <p style="font-size: 0.85rem; margin-bottom: 16px; font-style: italic;">
-                  Razorpay offers Money Back Promise only on select businesses that pass detailed background checks.
-                </p>
-                
-                <div class="popup-footer">
-                  <button onclick="closeRazorpayPopup()" class="popup-gotit-btn">
-                    Yes, got it
-                  </button>
-                  <a href="shipping.html" class="popup-terms-link">
-                    Read detailed terms and conditions
-                  </a>
+                <p style="font-size: 0.8rem; margin-bottom: 12px; font-style: italic;">Razorpay offers Money Back Promise only on select businesses that pass detailed background checks.</p>
+                <div class="popup-footer" style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
+                  <button onclick="closeRazorpayPopup()" class="popup-gotit-btn" style="background: #000; color: #d4af37; border: 2px solid #d4af37; padding: 10px 16px; border-radius: 30px; font-weight: 800; font-size: 0.8rem; cursor: pointer; width: fit-content;">Yes, got it</button>
+                  <a href="shipping.html" class="popup-terms-link" style="color: #d4af37; font-weight: 600; font-size: 0.7rem; text-decoration: underline;">Read detailed terms</a>
                 </div>
               </div>
               
-              <!-- Razorpay Promise clickable -->
-              <div class="razorpay-promise" onclick="toggleRazorpayPopup()">
-                <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
+              <div class="razorpay-promise" onclick="toggleRazorpayPopup()" style="display: flex; align-items: center; gap: 8px; padding: 6px; background: #000; border-radius: 14px; border: 2px solid #d4af37; margin-bottom: 10px; cursor: pointer;">
+                <div class="promise-icon" style="width: 32px; height: 32px; background: #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; border: 2px solid #000;"><i class="fa-solid fa-shield"></i></div>
                 <div class="promise-content">
-                  <h4>Razorpay Money Back Promise</h4>
-                  <p>Click to view full guarantee</p>
+                  <h4 style="font-size: 0.75rem; font-weight: 800; color: #d4af37; margin-bottom: 2px;">Razorpay Money Back Promise</h4>
+                  <p style="font-size: 0.65rem; color: #eee;">Click to view full guarantee</p>
                 </div>
               </div>
               
-              <div class="features-grid">
-                <div class="feature-item">
-                  <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
-                  <div class="feature-text">
-                    <h4>Free Shipping</h4>
-                    <p>Above ₹1,299</p>
-                  </div>
+              <div class="features-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+                <div class="feature-item" style="display: flex; align-items: center; gap: 6px; padding: 6px; background: #fafafa; border-radius: 12px; border: 2px solid #000;">
+                  <div class="feature-icon" style="width: 28px; height: 28px; background: #000; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #d4af37; border: 1px solid #d4af37;"><i class="fa-solid fa-truck-fast"></i></div>
+                  <div class="feature-text"><h4 style="font-size: 0.7rem; font-weight: 800;">Free Shipping</h4><p style="font-size: 0.6rem; color: #555;">Above ₹1,299</p></div>
                 </div>
-                <div class="feature-item">
-                  <div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div>
-                  <div class="feature-text">
-                    <h4>Easy Returns</h4>
-                    <p>7-Days</p>
-                  </div>
+                <div class="feature-item" style="display: flex; align-items: center; gap: 6px; padding: 6px; background: #fafafa; border-radius: 12px; border: 2px solid #000;">
+                  <div class="feature-icon" style="width: 28px; height: 28px; background: #000; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #d4af37; border: 1px solid #d4af37;"><i class="fa-solid fa-rotate-left"></i></div>
+                  <div class="feature-text"><h4 style="font-size: 0.7rem; font-weight: 800;">Easy Returns</h4><p style="font-size: 0.6rem; color: #555;">7-Days</p></div>
                 </div>
               </div>
             </div>
@@ -3237,7 +2171,7 @@
               </button>
             </div>
 
-            <!-- TABS (description, specs, videos) -->
+            <!-- TABS -->
             <div class="tabs">
               <div class="tab-headers">
                 <div class="tab-header active" onclick="switchTab('desc')">Description</div>
@@ -3248,46 +2182,57 @@
                 <p>${product.description || product.shortDesc || 'Premium quality product from MyEssantia.'}</p>
               </div>
               <div class="tab-content" id="tab-specs">
-                <div class="specs-grid">
-                  <div class="spec-item">
-                    <div class="spec-label">Material</div>
-                    <div class="spec-value">Premium Quality</div>
+                <div class="specs-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+                  <div class="spec-item" style="padding: 10px; background: #fafafa; border-radius: 10px; border: 1px solid #000;">
+                    <div class="spec-label" style="font-size: 0.65rem; color: #555;">Material</div>
+                    <div class="spec-value" style="font-weight: 800; font-size: 0.7rem;">Premium Quality</div>
                   </div>
-                  <div class="spec-item">
-                    <div class="spec-label">Brand</div>
-                    <div class="spec-value">${product.brand || 'MyEssantia'}</div>
+                  <div class="spec-item" style="padding: 10px; background: #fafafa; border-radius: 10px; border: 1px solid #000;">
+                    <div class="spec-label" style="font-size: 0.65rem; color: #555;">Brand</div>
+                    <div class="spec-value" style="font-weight: 800; font-size: 0.7rem;">${product.brand || 'MyEssantia'}</div>
                   </div>
                 </div>
               </div>
               <div class="tab-content" id="tab-videos">
-                <div class="video-grid">
-                  <div class="video-item">
-                    <img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400">
-                    <i class="fa-solid fa-play"></i>
+                <div class="video-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+                  <div class="video-item" style="aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; position: relative; border: 2px solid #000;">
+                    <img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400" style="width: 100%; height: 100%; object-fit: cover;">
+                    <i class="fa-solid fa-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; border: 2px solid #000;"></i>
                   </div>
-                  <div class="video-item">
-                    <img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400">
-                    <i class="fa-solid fa-play"></i>
+                  <div class="video-item" style="aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; position: relative; border: 2px solid #000;">
+                    <img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400" style="width: 100%; height: 100%; object-fit: cover;">
+                    <i class="fa-solid fa-play" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; border: 2px solid #000;"></i>
                   </div>
                 </div>
               </div>
             </div>
             
-            <!-- MOBILE REVIEWS SECTION (visible only on mobile) -->
-            ${mobileReviewsHTML}
+            <!-- REVIEWS SECTION (visible on all devices) -->
+            <div class="reviews-section">
+              <div class="reviews-header">
+                <h2>Customer Reviews</h2>
+                <div class="rating-summary">★ ${(product.rating || 4.5).toFixed(1)} (${productReviews.length})</div>
+              </div>
+              <div id="reviews-container"></div>
+            </div>
+            
+            <!-- FAQ SECTION -->
+            ${renderFAQ()}
           </div>
         </div>
-        
-        <!-- DESKTOP REVIEWS SECTION - BELOW THE GRID -->
-        ${desktopReviewsHTML}
       `;
 
-      updateDeliveryBar(product.price);
+      // Render reviews
+      renderReviews();
       
-      // Update button states based on high demand
+      // Initialize rating stars if modal is present
+      if (document.querySelector('.rating-select')) {
+        initRatingStars();
+      }
+      
+      updateDeliveryBar(product.price);
       updateButtonStates();
       
-      // Update delivery dates
       const dates = getDeliveryDates();
       document.getElementById('deliveryDates').textContent = dates.display;
     }
@@ -3331,17 +2276,13 @@
     };
 
     document.addEventListener('DOMContentLoaded', () => { 
-      // Ensure header and footer are loaded
       if (typeof window.loadComponents === 'function') {
         window.loadComponents();
       }
-      
       loadProduct();
       
-      // Handle orientation change
       window.addEventListener('orientationchange', function() {
         setTimeout(() => {
-          // Recalculate any height-dependent elements
           if (document.querySelector('.high-demand-popup.show')) {
             document.body.style.overflow = 'hidden';
           }
@@ -3386,21 +2327,15 @@
     
     function getDeliveryDates() {
       const today = new Date();
-      
-      // Calculate min delivery date (5 days from now)
       const minDate = new Date(today);
       minDate.setDate(today.getDate() + 5);
-      
-      // Calculate max delivery date (7 days from now)
       const maxDate = new Date(today);
       maxDate.setDate(today.getDate() + 7);
       
-      // Format dates
       const options = { day: 'numeric', month: 'short' };
       const minDateStr = minDate.toLocaleDateString('en-IN', options);
       const maxDateStr = maxDate.toLocaleDateString('en-IN', options);
       
-      // Add year if month is December/January (to avoid confusion)
       const minYear = minDate.getFullYear();
       const maxYear = maxDate.getFullYear();
       const currentYear = today.getFullYear();
@@ -3425,23 +2360,16 @@
       document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 200); 
     });
 
-    // Make sure cart icon works by ensuring common.js functions are available
-    window.ensureCartFunctionality = function() {
-      console.log('Product page ready, cart functions should be available from common.js');
-    };
-    
-    // Handle escape key for popups
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         const highDemandPopup = document.getElementById('highDemandPopup');
-        if (highDemandPopup.classList.contains('show')) {
-          closeHighDemandPopup();
-        }
+        if (highDemandPopup.classList.contains('show')) closeHighDemandPopup();
+        
+        const reviewModal = document.getElementById('reviewModal');
+        if (reviewModal.classList.contains('show')) closeReviewModal();
         
         const razorpayPopup = document.getElementById('razorpayPopup');
-        if (razorpayPopup.classList.contains('show')) {
-          razorpayPopup.classList.remove('show');
-        }
+        if (razorpayPopup.classList.contains('show')) razorpayPopup.classList.remove('show');
       }
     });
   </script>
