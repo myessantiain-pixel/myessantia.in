@@ -212,6 +212,64 @@
       font-weight: var(--font-heading-weight);
     }
 
+    /* ===== ALIGN REVIEWS HEADER IN ONE LINE ON MOBILE ===== */
+@media (max-width: 1023px) {
+  .reviews-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .reviews-header span:first-child {
+    font-size: 1.2rem !important;
+    white-space: nowrap !important;
+  }
+  
+  .reviews-header > div {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+  }
+  
+  .reviews-header > div span {
+    font-size: 0.9rem !important;
+    white-space: nowrap !important;
+  }
+  
+  .write-review-btn {
+    padding: 4px 12px !important;
+    font-size: 0.7rem !important;
+    white-space: nowrap !important;
+  }
+  
+  .write-review-btn i {
+    font-size: 0.65rem !important;
+  }
+}
+
+/* For very small screens, make it even more compact */
+@media (max-width: 480px) {
+  .reviews-header span:first-child {
+    font-size: 1rem !important;
+  }
+  
+  .reviews-header > div span {
+    font-size: 0.8rem !important;
+  }
+  
+  .write-review-btn {
+    padding: 3px 8px !important;
+    font-size: 0.65rem !important;
+  }
+}
+
     /* ===== FIX DUPLICATE REVIEWS ON MOBILE ===== */
 @media (max-width: 1023px) {
   /* Hide desktop reviews section on mobile */
