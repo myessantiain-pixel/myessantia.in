@@ -99,29 +99,90 @@
         </div>
       </div>
 
-      <!-- Section 2: Pricing & Ratings -->
-      <div class="form-section">
-        <div class="form-section-title">
-          <i class="fa-solid fa-chart-line"></i>
-          <span>pricing & ratings</span>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label><i class="fa-solid fa-indian-rupee-sign"></i> price (₹)</label>
-            <div class="input-wrapper">
-              <i class="input-icon fa-solid fa-currency"></i>
-              <input type="number" id="product-price" step="0.01" min="0" placeholder="1999.99" required>
-            </div>
-          </div>
-          <div class="form-group">
-            <label><i class="fa-solid fa-star"></i> rating (0-5)</label>
-            <div class="input-wrapper">
-              <i class="input-icon fa-solid fa-star"></i>
-              <input type="number" id="product-rating" step="0.1" min="0" max="5" placeholder="4.5" required>
-            </div>
-          </div>
-        </div>
+   <!-- Section 2: Pricing & Ratings - UPDATED VERSION -->
+<div class="form-section">
+  <div class="form-section-title">
+    <i class="fa-solid fa-chart-line"></i>
+    <span>pricing & ratings</span>
+  </div>
+  
+  <!-- Original Price Fields -->
+  <div class="form-row">
+    <div class="form-group">
+      <label><i class="fa-solid fa-indian-rupee-sign"></i> original price (₹) - MRP</label>
+      <div class="input-wrapper">
+        <i class="input-icon fa-solid fa-currency"></i>
+        <input type="number" id="product-original-price" step="0.01" min="0" placeholder="2499.99" required>
       </div>
+      <div class="field-hint">
+        <i class="fa-solid fa-info-circle"></i> displayed as crossed-out MRP
+      </div>
+    </div>
+    <div class="form-group">
+      <label><i class="fa-solid fa-tag"></i> selling price (₹)</label>
+      <div class="input-wrapper">
+        <i class="input-icon fa-solid fa-star"></i>
+        <input type="number" id="product-price" step="0.01" min="0" placeholder="1999.99" required>
+      </div>
+      <div class="field-hint">
+        <i class="fa-solid fa-info-circle"></i> final price after discount
+      </div>
+    </div>
+  </div>
+
+  <!-- Price Override Settings -->
+  <div class="form-row" style="background: #fcfaf7; padding: 16px; border-radius: 20px; border: 2px solid #d4af37; margin-top: 16px;">
+    <div class="form-group" style="grid-column: span 2;">
+      <label><i class="fa-solid fa-sliders"></i> price calculation overrides</label>
+      <div class="field-hint">
+        <i class="fa-solid fa-info-circle"></i> leave blank to use default calculations (15% off for prepaid, +₹100 for COD)
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label><i class="fa-regular fa-credit-card"></i> prepaid price (₹)</label>
+      <div class="input-wrapper">
+        <i class="input-icon fa-solid fa-mobile-alt"></i>
+        <input type="number" id="product-prepaid-price" step="0.01" min="0" placeholder="auto-calculated">
+      </div>
+      <div class="field-hint">
+        <i class="fa-regular fa-circle-check"></i> 15% off from selling price by default
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label><i class="fa-solid fa-truck"></i> COD price (₹)</label>
+      <div class="input-wrapper">
+        <i class="input-icon fa-solid fa-cash-register"></i>
+        <input type="number" id="product-cod-price" step="0.01" min="0" placeholder="auto-calculated">
+      </div>
+      <div class="field-hint">
+        <i class="fa-regular fa-circle-check"></i> selling price + ₹100 by default
+      </div>
+    </div>
+  </div>
+
+  <!-- Rating & Review Counts -->
+  <div class="form-row" style="margin-top: 16px;">
+    <div class="form-group">
+      <label><i class="fa-solid fa-star"></i> average rating (0-5)</label>
+      <div class="input-wrapper">
+        <i class="input-icon fa-solid fa-star"></i>
+        <input type="number" id="product-rating" step="0.1" min="0" max="5" placeholder="4.5" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label><i class="fa-solid fa-users"></i> total review count</label>
+      <div class="input-wrapper">
+        <i class="input-icon fa-regular fa-comment"></i>
+        <input type="number" id="product-review-count" min="0" placeholder="127" value="0">
+      </div>
+      <div class="field-hint">
+        <i class="fa-regular fa-circle-check"></i> displayed as "X reviews" on product page
+      </div>
+    </div>
+  </div>
+</div>
 
       <!-- Section 3: Media - Unified Upload -->
       <div class="form-section">
