@@ -888,9 +888,9 @@ function renderProducts() {
     // Use originalPrice from admin panel for sale check
     const hasSale = product.originalPrice && product.originalPrice > product.price;
     
-    return `
-      <div class="product-card" data-product-id="${product.id}">
-        <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
+  return `
+    <div class="product-card" data-product-id="${product.id}">
+      <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
           <div class="image-frame">
             ${isNew ? `
               <span class="new-badge">
@@ -910,13 +910,13 @@ function renderProducts() {
             ${hasSale ? `<span class="old-price">₹${formatPrice(product.originalPrice)}</span>` : ''}
             <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
           </div>
-        </a>
-        <button class="card-add-btn" onclick="handleProductAdd('${product.id}', this); event.stopPropagation();">
-          <i class="fa-solid fa-cart-plus"></i> add
-        </button>
-      </div>
-    `;
-  }).join('');
+    </a>
+      <button class="card-add-btn" onclick="handleProductAdd('${product.id}', this); event.preventDefault(); event.stopPropagation(); return false;">
+        <i class="fa-solid fa-cart-plus"></i> add
+      </button>
+    </div>
+  `;
+}).join('');
 }
 
       // ===== OPTIMIZED HANDLE PRODUCT ADD WITH IMMEDIATE RESPONSE =====
@@ -985,6 +985,46 @@ function renderProducts() {
       }
     });
   };
+
+    // Update the setupCategoryChips function for better click handling:
+function setupCategoryChips() {
+  const chips = document.querySelectorAll('.category-chip');
+  const categoryFilter = document.getElementById('category-filter');
+  
+  chips.forEach(chip => {
+    // Remove any existing listeners to prevent duplicates
+    chip.removeEventListener('click', handleChipClick);
+    chip.addEventListener('click', handleChipClick);
+  });
+
+  function handleChipClick(e) {
+    const chip = e.currentTarget;
+    
+    // Prevent multiple rapid clicks
+    if (chip.classList.contains('processing')) return;
+    chip.classList.add('processing');
+    
+    // Remove active class from all chips
+    chips.forEach(c => c.classList.remove('active'));
+    
+    // Add active class to clicked chip
+    chip.classList.add('active');
+    
+    // Update hidden category filter
+    const category = chip.dataset.category;
+    if (categoryFilter) {
+      categoryFilter.value = category;
+    }
+    
+    // Re-render products
+    renderProducts();
+    
+    // Remove processing flag after a short delay
+    setTimeout(() => {
+      chip.classList.remove('processing');
+    }, 300);
+  }
+}
 
   // Function to ensure cart buttons have no underline
   function ensureCartButtonsNoUnderline() {
