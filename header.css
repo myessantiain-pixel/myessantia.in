@@ -1,66 +1,111 @@
+/* ===== TOP BAR ===== */
 .top-bar {
   background: #000;
   color: #f0f0f0;
-  padding: 0.4rem 0;
-  font-size: 0.7rem;
+  padding: 0.5rem 0;
   border-bottom: 2px solid #d4af37;
   width: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
 .top-bar .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0;
+  width: 100%;
 }
 
-.top-bar-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
+/* Scroll container */
+.top-bar-scroll {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-.top-bar-links a {
-  text-decoration: none;
-  color: #fff;
-  font-size: 0.65rem;
-  font-weight: 500;
-  transition: 0.2s;
+.top-bar-scroll-content {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  animation: scrollTopBar 25s linear infinite;
+  padding: 0 10px;
+}
+
+/* Scroll items */
+.scroll-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 500;
   letter-spacing: 0.3px;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.top-bar-links a:hover {
+.scroll-item i {
+  font-size: 0.8rem;
   color: #d4af37;
 }
 
-.top-bar-links i {
-  font-size: 0.75rem;
+/* Dot separator */
+.scroll-dot {
+  color: #d4af37;
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 1rem;
+  display: inline-block;
 }
 
+/* Continuous scroll animation */
+@keyframes scrollTopBar {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Pause animation on hover */
+.top-bar-scroll:hover .top-bar-scroll-content {
+  animation-play-state: paused;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .scroll-item {
+    font-size: 0.65rem;
+  }
+  
+  .scroll-item i {
+    font-size: 0.7rem;
+  }
+  
+  .scroll-dot {
+    margin: 0 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .scroll-item {
+    font-size: 0.6rem;
+    gap: 0.3rem;
+  }
+  
+  .scroll-item i {
+    font-size: 0.65rem;
+  }
+  
+  .scroll-dot {
+    margin: 0 0.4rem;
+  }
+}
+
+/* Remove old top-bar styles */
+.top-bar-links,
 .trust-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  background: rgba(212, 175, 55, 0.15);
-  padding: 0.2rem 0.8rem;
-  border-radius: 40px;
-  border: 1px solid #d4af37;
-  font-size: 0.65rem;
-  white-space: nowrap;
-}
-
-.trust-badge i {
-  color: #d4af37;
-  font-size: 0.7rem;
+  display: none;
 }
 
 /* ==================== MAIN HEADER ==================== */
