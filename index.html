@@ -933,72 +933,88 @@
       return hoursDiff < 24;
     }
     
-    // Render products function with exact same style as accessories page
-    function renderProducts() {
-      const grid = document.getElementById('product-grid-container');
-      if (!grid) return;
-      
-      // Use window.products which is set by common.js
-      const homeProducts = (window.products || []).filter(p => p.showOnHome === true);
-      
-      // Add fallback oldPrice for testing - this ensures sale badges appear
-      homeProducts.forEach(product => {
-        if (!product.oldPrice && product.price) {
-          product.oldPrice = product.price * 1.2; // 20% higher for demo
-        }
-      });
-      
-      if (homeProducts.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-state">
-            <i class="fa-solid fa-box-open"></i>
-            <h3>no products found</h3>
-            <p>Check back later for new arrivals!</p>
-          </div>
-        `;
-        return;
+// Render products function with proper media hover support
+function renderProducts() {
+  const grid = document.getElementById('product-grid-container');
+  if (!grid) return;
+  
+  // Use window.products which is set by common.js
+  const homeProducts = (window.products || []).filter(p => p.showOnHome === true);
+  
+  if (homeProducts.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <i class="fa-solid fa-box-open"></i>
+        <h3>no products found</h3>
+        <p>Check back later for new arrivals!</p>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = '';
+  homeProducts.forEach(product => {
+    // Get primary image - from media array or fallback
+    let mainImage = '';
+    let secondImage = '';
+    
+    // Check if product has media array
+    if (product.media && Array.isArray(product.media) && product.media.length > 0) {
+      // Primary image is either primaryImg or first media item
+      if (product.primaryImg) {
+        mainImage = product.primaryImg;
+      } else {
+        mainImage = product.media[0].url || 'https://via.placeholder.com/300';
       }
       
-      let html = '';
-      homeProducts.forEach(product => {
-        const mainImage = product.images?.[0] || product.primaryImg || 'https://via.placeholder.com/300';
-        const secondImage = product.images?.[1] || product.secondaryImg || mainImage;
-        
-        const hasSale = product.oldPrice && product.oldPrice > product.price;
-        const isNew = isNewProduct(product);
-        
-        html += `
-          <div class="product-card" data-product-id="${product.id}">
-            <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
-              <div class="image-frame">
-                ${isNew ? `
-                  <span class="new-badge">
-                    <i class="fa-regular fa-star"></i> NEW
-                  </span>
-                ` : ''}
-                ${hasSale ? `
-                  <span class="sale-badge-image">SALE</span>
-                ` : ''}
-                <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-                <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
-              </div>
-              <p class="product-category">${product.category || 'accessory'}</p>
-              <h3 class="product-title">${product.title}</h3>
-              <div class="product-rating">${renderRating(product.rating)}</div>
-              <div class="product-price-block">
-                ${hasSale ? `<span class="old-price">₹${formatPrice(product.oldPrice)}</span>` : ''}
-                <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
-              </div>
-            </a>
-            <button class="card-add-btn" onclick="handleHomeAdd('${product.id}', this); event.stopPropagation();">
-              <i class="fa-solid fa-cart-plus"></i> add
-            </button>
-          </div>
-        `;
-      });
-      
-      grid.innerHTML = html;
+      // Second image/video for hover - second media item if available
+      if (product.media.length >= 2) {
+        secondImage = product.media[1].url;
+      } else {
+        // If only one media, duplicate primary for hover
+        secondImage = mainImage;
+      }
+    } else {
+      // Fallback for older products without media array
+      mainImage = product.images?.[0] || product.primaryImg || 'https://via.placeholder.com/300';
+      secondImage = product.images?.[1] || product.secondaryImg || mainImage;
     }
+    
+    const hasSale = product.originalPrice && product.originalPrice > product.price;
+    const isNew = isNewProduct(product);
+    
+    html += `
+      <div class="product-card" data-product-id="${product.id}">
+        <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
+          <div class="image-frame">
+            ${isNew ? `
+              <span class="new-badge">
+                <i class="fa-regular fa-star"></i> NEW
+              </span>
+            ` : ''}
+            ${hasSale ? `
+              <span class="sale-badge-image">SALE</span>
+            ` : ''}
+            <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+            <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+          </div>
+          <p class="product-category">${product.category || 'accessory'}</p>
+          <h3 class="product-title">${product.title}</h3>
+          <div class="product-rating">${renderRating(product.rating)}</div>
+          <div class="product-price-block">
+            ${hasSale ? `<span class="old-price">₹${formatPrice(product.originalPrice)}</span>` : ''}
+            <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
+          </div>
+        </a>
+        <button class="card-add-btn" onclick="handleHomeAdd('${product.id}', this); event.stopPropagation();">
+          <i class="fa-solid fa-cart-plus"></i> add
+        </button>
+      </div>
+    `;
+  });
+  
+  grid.innerHTML = html;
+}
     
     // Handle add to cart with button feedback
     window.handleHomeAdd = function(productId, btn) {
