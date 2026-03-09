@@ -4,20 +4,17 @@
   color: #f0f0f0;
   padding: 0.75rem 0;
   border-bottom: 2px solid #d4af37;
-  width: 100vw; /* Full viewport width */
+  width: 100%;
   position: relative;
-  left: 0;
-  right: 0;
-  margin-left: calc(-50vw + 50%); /* Centering fix */
-  margin-right: calc(-50vw + 50%); /* Centering fix */
   overflow: hidden;
 }
 
+/* Override any container restrictions */
 .top-bar .container {
   width: 100%;
-  max-width: 100%; /* Override any max-width restrictions */
-  padding: 0;
-  margin: 0;
+  max-width: 100% !important; /* Force override */
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .top-bar-scroll {
