@@ -18,13 +18,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
-  <!-- Common CSS - FIXED PATH -->
-  <link rel="stylesheet" href="/common.css">
-  <link rel="stylesheet" href="/header.css">
-  <link rel="stylesheet" href="/footer.css">
-  
-  <!-- Common JS - FIXED PATH -->
-  <script src="/common.js"></script>
+  <!-- Common CSS -->
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="footer.css">
   
   <style>
     /* ===== GLOBAL FONT VARIABLES - UNIFIED ===== */
@@ -2458,6 +2455,30 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // ========== HEADER/FOOTER LOADING FUNCTION ==========
+    async function loadComponents() {
+      try {
+        // Load header
+        const headerResponse = await fetch('header.html');
+        const headerHtml = await headerResponse.text();
+        document.getElementById('header').innerHTML = headerHtml;
+        
+        // Load footer
+        const footerResponse = await fetch('footer.html');
+        const footerHtml = await footerResponse.text();
+        document.getElementById('footer').innerHTML = footerHtml;
+        
+        // Initialize cart count after header is loaded
+        if (typeof window.updateCartCount === 'function') {
+          window.updateCartCount();
+        }
+      } catch (error) {
+        console.error('Error loading components:', error);
+        document.getElementById('header').innerHTML = '<div style="padding:20px; text-align:center;">Header failed to load</div>';
+        document.getElementById('footer').innerHTML = '<div style="padding:20px; text-align:center;">Footer failed to load</div>';
+      }
+    }
+
     // ========== PRODUCT PAGE SPECIFIC CODE ==========
     let currentProduct = null;
     let selectedPaymentMethod = 'prepaid';
@@ -2884,13 +2905,51 @@
         return;
       }
       
-      // Use the global addToCart function from common.js
-      if (typeof window.addToCart === 'function') {
-        window.addToCart(currentProduct.id);
+      if (typeof window.addToCartGlobal === 'function') {
+        window.addToCartGlobal(currentProduct.id);
       } else {
-        // Fallback if common.js isn't loaded yet
-        console.error('addToCart function not available');
-        showNotification('Cart functionality is loading. Please try again.', 'error');
+        const quantity = parseInt(document.getElementById('productQuantity')?.value) || 1;
+        
+        if (currentProduct.stock <= 0) {
+          showNotification('Sorry, this product is out of stock!');
+          return;
+        }
+
+        if (quantity > currentProduct.stock) {
+          showNotification(`Only ${currentProduct.stock} items available!`);
+          return;
+        }
+
+        if (window.cart && Array.isArray(window.cart)) {
+          const existingItem = window.cart.find(item => item.id === currentProduct.id);
+          
+          if (existingItem) {
+            existingItem.quantity += quantity;
+          } else {
+            window.cart.push({
+              id: currentProduct.id,
+              title: currentProduct.title,
+              category: currentProduct.category || 'accessory',
+              price: currentProduct.price,
+              primaryImg: currentProduct.primaryImg || (currentProduct.images && currentProduct.images[0]) || (currentProduct.media?.images && currentProduct.media.images[0]?.url),
+              quantity: quantity
+            });
+          }
+          
+          localStorage.setItem('MyEssantia_cart', JSON.stringify(window.cart));
+          
+          if (typeof window.updateCartCount === 'function') {
+            window.updateCartCount();
+          }
+        }
+        
+        showNotification(`Added ${quantity} item${quantity > 1 ? 's' : ''} to cart!`);
+        
+        setTimeout(() => {
+          if (typeof window.openCart === 'function') {
+            window.openCart();
+          }
+        }, 500);
       }
     };
 
@@ -2902,12 +2961,10 @@
         return;
       }
       
-      // Use the global buyNow function from common.js
-      if (typeof window.buyNow === 'function') {
-        window.buyNow(currentProduct.id);
+      if (typeof window.buyNowGlobal === 'function') {
+        window.buyNowGlobal(currentProduct.id);
       } else {
-        // Fallback
-        window.addToCart(currentProduct.id);
+        window.addToCart();
         setTimeout(() => {
           window.location.href = 'checkout.html';
         }, 500);
@@ -2956,7 +3013,7 @@
         const doc = await db.collection('products').doc(productId).get();
         if (!doc.exists) {
           // Try to load from localStorage as fallback
-          const localProducts = JSON.parse(localStorage.getItem('MyEssantia_products') || '[]');
+          const localProducts = JSON.parse(localStorage.getItem('myessantia_products') || '[]');
           const localProduct = localProducts.find(p => p.id === productId);
           if (localProduct) {
             currentProduct = localProduct;
