@@ -349,7 +349,6 @@
       text-decoration: line-through; 
     }
     
-   /* ===== IMPROVED BUTTON STYLES FOR IMMEDIATE RESPONSE ===== */
   .card-add-btn {
     display: flex; 
     align-items: center; 
@@ -374,8 +373,10 @@
     position: relative;
     z-index: 20; /* Higher than product link */
     outline: none;
-    -webkit-appearance: none; /* Remove default button styles on iOS */
+    -webkit-appearance: none;
     appearance: none;
+    border-radius: 60px !important; /* Force border radius */
+    text-decoration: none;
   }
   
   /* Active state for immediate tactile feedback */
@@ -397,6 +398,7 @@
     color: white;
     pointer-events: none;
     transform: scale(1);
+    animation: none; /* Remove any animations that might interfere */
   }
   
   .card-add-btn.added i {
@@ -423,8 +425,9 @@
     color: inherit;
   }
   
-  /* Sort select improvements */
+  /* Improve sort select for better touch response */
   .sort-select {
+    cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     transition: all 0.15s;
@@ -437,33 +440,38 @@
   
   .sort-select select {
     cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
+    background: transparent;
   }
   
-  /* Scroll top button improvement */
+  /* Improve scroll top button */
   .scroll-top {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
     transition: all 0.15s;
+    cursor: pointer;
   }
   
   .scroll-top:active {
     transform: scale(0.9);
     background: #d4af37;
     color: #000;
-    border-color: #000;
   }
   
-  /* Breadcrumbs links improvement */
+  /* Improve breadcrumb links */
   .breadcrumbs a {
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
   
-  .breadcrumbs a:active {
-    color: #d4af37;
-    transform: scale(0.95);
-    display: inline-block;
+  /* Prevent any text selection on interactive elements */
+  .card-add-btn,
+  .sort-select,
+  .scroll-top,
+  .breadcrumbs a {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
   
   /* Improve click area on mobile */
@@ -476,6 +484,7 @@
     
     .sort-select {
       min-height: 48px;
+      padding: 0.5rem 1rem;
     }
     
     .sort-select select {
@@ -488,6 +497,15 @@
       min-height: 44px;
       font-size: 0.85rem;
     }
+  }
+  
+  /* Optimize for high-performance animations */
+  .product-card {
+    will-change: transform;
+  }
+  
+  .card-add-btn {
+    will-change: transform, background-color;
   }
 
     /* ===== EMPTY STATE ===== */
@@ -637,8 +655,13 @@
    // Render products in grid
 function renderProducts() {
   const gridContainer = document.getElementById('product-grid-container');
-  const sortSelect = document.getElementById('sort-select');
-  
+ const sortSelect = document.getElementById('sort-select');
+  if (sortSelect) {
+    // Remove any existing listeners to prevent duplicates
+    sortSelect.removeEventListener('change', handleSortChange);
+    sortSelect.addEventListener('change', handleSortChange);
+  }
+    
   if (!gridContainer) return;
 
   // Ensure products exist
@@ -660,6 +683,21 @@ function renderProducts() {
     `;
     return;
   }
+
+  function handleSortChange(e) {
+  // Provide visual feedback
+  const select = e.target;
+  const parent = select.closest('.sort-select');
+  if (parent) {
+    parent.style.transform = 'scale(0.98)';
+    setTimeout(() => {
+      parent.style.transform = 'scale(1)';
+    }, 100);
+  }
+  
+  // Call render function
+  renderProducts();
+}
 
   function getSortedProducts() {
     let sorted = [...essentialsProducts];
@@ -713,9 +751,9 @@ function renderProducts() {
       const hasSale = product.originalPrice && product.originalPrice > product.price;
       const isNew = isNewProduct(product);
       
-      gridHtml += `
-        <div class="product-card" data-product-id="${product.id}">
-          <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
+gridHtml += `
+  <div class="product-card" data-product-id="${product.id}">
+    <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
             <div class="image-frame">
               ${isNew ? `
                 <span class="new-badge">
@@ -736,11 +774,11 @@ function renderProducts() {
               <span class="current-price"><span class="inr-symbol">₹</span>${window.formatPrice ? window.formatPrice(product.price) : product.price}</span>
             </div>
           </a>
-          <button class="card-add-btn" onclick="handleEssentialAdd('${product.id}', this); event.stopPropagation();">
-            <i class="fa-solid fa-cart-plus"></i> add
-          </button>
-        </div>
-      `;
+    <button class="card-add-btn" onclick="handleEssentialAdd('${product.id}', this); event.preventDefault(); event.stopPropagation(); return false;">
+    <i class="fa-solid fa-cart-plus"></i> add
+    </button>
+  </div>
+`;
     });
     
     gridContainer.innerHTML = gridHtml;
@@ -754,8 +792,7 @@ function renderProducts() {
   }
 }
 
-     // ===== OPTIMIZED HANDLE ESSENTIAL ADD WITH IMMEDIATE RESPONSE =====
-  window.handleEssentialAdd = function(productId, btn) {
+      window.handleEssentialAdd = function(productId, btn) {
     // Prevent multiple rapid clicks
     if (btn.disabled) return;
     
@@ -806,6 +843,7 @@ function renderProducts() {
         
         btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
         
+        // Reset button
         setTimeout(() => {
           btn.classList.remove('added');
           btn.innerHTML = originalHTML;
@@ -814,7 +852,7 @@ function renderProducts() {
       }
     });
   };
-
+    
     // ===== INITIALIZATION =====
     document.addEventListener('DOMContentLoaded', async () => {
       // Load components (header, footer, modals) using common.js function
