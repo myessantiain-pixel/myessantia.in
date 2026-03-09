@@ -840,69 +840,92 @@ function renderProducts() {
   }).join('');
 }
 
-    // Handle add to cart with button feedback
-    window.handleProductAdd = function(productId, btn) {
-      // Show added effect
-      btn.classList.add('added');
-      btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-      
+      // ===== OPTIMIZED HANDLE PRODUCT ADD WITH IMMEDIATE RESPONSE =====
+  window.handleProductAdd = function(productId, btn) {
+    // Prevent multiple rapid clicks
+    if (btn.disabled) return;
+    
+    // Disable button immediately to prevent double-clicks
+    btn.disabled = true;
+    
+    // Store original HTML for later reset
+    const originalHTML = btn.innerHTML;
+    
+    // IMMEDIATE visual feedback - change button state right away
+    btn.classList.add('added');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> adding...';
+    
+    // Use requestAnimationFrame to ensure UI updates before heavy operations
+    requestAnimationFrame(() => {
       // Use master function from common.js
       if (typeof window.masterAddToCart === 'function') {
+        // Call master function synchronously
         window.masterAddToCart(productId, false);
         
-        // Open cart modal after a short delay
-        setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-            
-            // Remove underline from cart modal buttons
-            setTimeout(() => {
-              const cartButtons = document.querySelectorAll('.cart-buttons .btn, .cart-modal .btn, .cart-footer .btn');
-              cartButtons.forEach(btn => {
-                btn.style.textDecoration = 'none';
-                btn.style.borderBottom = 'none';
-              });
-            }, 100);
-          }
+        // Open cart modal immediately
+        if (typeof window.openCart === 'function') {
+          window.openCart();
           
-          // Reset button after 2 seconds
+          // Remove underline from cart modal buttons (async but doesn't block)
           setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 2000);
-        }, 200);
+            const cartButtons = document.querySelectorAll('.cart-buttons .btn, .cart-modal .btn, .cart-footer .btn');
+            cartButtons.forEach(btn => {
+              btn.style.textDecoration = 'none';
+              btn.style.borderBottom = 'none';
+            });
+          }, 50);
+        }
+        
+        // Update button to "added" state
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+        
+        // Reset button after 1.5 seconds
+        setTimeout(() => {
+          btn.classList.remove('added');
+          btn.innerHTML = originalHTML;
+          btn.disabled = false; // Re-enable button
+        }, 1500);
       } else {
         // Fallback
         if (typeof window.addToCart === 'function') {
           window.addToCart(productId);
           
+          // Open cart if available
+          if (typeof window.openCart === 'function') {
+            window.openCart();
+          }
+          
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+          
           setTimeout(() => {
             btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 2000);
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+          }, 1500);
         }
       }
-    };
+    });
+  };
 
-    // Function to ensure cart buttons have no underline
-    function ensureCartButtonsNoUnderline() {
-      const cartButtons = document.querySelectorAll('.cart-buttons .btn, .cart-modal .btn, .cart-footer .btn');
-      cartButtons.forEach(btn => {
-        btn.style.textDecoration = 'none';
-        btn.style.borderBottom = 'none';
-        
-        // Also remove any hover underlines
-        btn.addEventListener('mouseenter', function() {
-          this.style.textDecoration = 'none';
-          this.style.borderBottom = 'none';
-        });
-        
-        btn.addEventListener('mouseleave', function() {
-          this.style.textDecoration = 'none';
-          this.style.borderBottom = 'none';
-        });
+  // Function to ensure cart buttons have no underline
+  function ensureCartButtonsNoUnderline() {
+    const cartButtons = document.querySelectorAll('.cart-buttons .btn, .cart-modal .btn, .cart-footer .btn');
+    cartButtons.forEach(btn => {
+      btn.style.textDecoration = 'none';
+      btn.style.borderBottom = 'none';
+      
+      // Remove any hover underlines
+      btn.addEventListener('mouseenter', function() {
+        this.style.textDecoration = 'none';
+        this.style.borderBottom = 'none';
       });
-    }
+      
+      btn.addEventListener('mouseleave', function() {
+        this.style.textDecoration = 'none';
+        this.style.borderBottom = 'none';
+      });
+    });
+  }
 
     // ===== INITIALIZATION =====
     document.addEventListener('DOMContentLoaded', async () => {
