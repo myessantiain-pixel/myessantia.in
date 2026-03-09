@@ -1086,36 +1086,26 @@ function updateProfileIcon() {
 
 // ===== INFINITE SCROLL STRIPS =====
 function initInfiniteScroll() {
-  // Top Bar with debugging
+  // Top Bar Infinite Scroll
   const topBarContent = document.querySelector('.top-bar-scroll-content');
   if (topBarContent) {
-    console.log('Top bar found:', topBarContent);
-    
-    const items = topBarContent.children;
-    console.log('Number of items:', items.length);
-    
-    if (items.length === 0) return;
-    
-    let totalWidth = 0;
-    for (let i = 0; i < items.length; i++) {
-      console.log(`Item ${i} width:`, items[i].offsetWidth);
-      totalWidth += items[i].offsetWidth;
-    }
-    
-    console.log('Total width of one set:', totalWidth);
-    
-    // Clone the content
+    // Store original HTML
     const originalHTML = topBarContent.innerHTML;
+    
+    // Clear and set with original + duplicate (exact copy)
     topBarContent.innerHTML = originalHTML + originalHTML;
     
     let position = 0;
-    const speed = 0.5;
+    const speed = 0.5; // Scroll speed
     
     function scrollTopBar() {
       position -= speed;
       
-      if (Math.abs(position) >= totalWidth) {
-        console.log('Resetting position');
+      // Get width of original content (half of total)
+      const originalWidth = topBarContent.scrollWidth / 2;
+      
+      // Reset when first set completely scrolls out
+      if (Math.abs(position) >= originalWidth) {
         position = 0;
       }
       
@@ -1123,24 +1113,18 @@ function initInfiniteScroll() {
       requestAnimationFrame(scrollTopBar);
     }
     
-    setTimeout(scrollTopBar, 500);
+    // Start animation
+    scrollTopBar();
   }
   
   // Value Strip Infinite Scroll
   const valueStripScroll = document.querySelector('.value-strip-scroll');
   if (valueStripScroll) {
-    // Get all value items
-    const valueItems = valueStripScroll.children;
-    if (valueItems.length === 0) return;
+    // Store original HTML
+    const originalHTML = valueStripScroll.innerHTML;
     
-    // Calculate total width of one set
-    let valueTotalWidth = 0;
-    for (let i = 0; i < valueItems.length; i++) {
-      valueTotalWidth += valueItems[i].offsetWidth;
-    }
-    
-    // Clone the entire set
-    valueStripScroll.innerHTML = valueStripScroll.innerHTML + valueStripScroll.innerHTML;
+    // Clear and set with original + duplicate
+    valueStripScroll.innerHTML = originalHTML + originalHTML;
     
     let valuePosition = 0;
     const valueSpeed = 0.5;
@@ -1148,7 +1132,11 @@ function initInfiniteScroll() {
     function scrollValueStrip() {
       valuePosition -= valueSpeed;
       
-      if (Math.abs(valuePosition) >= valueTotalWidth) {
+      // Get width of original content (half of total)
+      const originalWidth = valueStripScroll.scrollWidth / 2;
+      
+      // Reset when first set completely scrolls out
+      if (Math.abs(valuePosition) >= originalWidth) {
         valuePosition = 0;
       }
       
@@ -1156,19 +1144,14 @@ function initInfiniteScroll() {
       requestAnimationFrame(scrollValueStrip);
     }
     
-    setTimeout(scrollValueStrip, 100);
+    scrollValueStrip();
   }
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-  // Small delay to ensure all elements are rendered
-  setTimeout(initInfiniteScroll, 200);
-});
-
-// Also initialize on window load for safety
-window.addEventListener('load', function() {
-  initInfiniteScroll();
+  // Small delay to ensure DOM is fully rendered
+  setTimeout(initInfiniteScroll, 100);
 });
 
 // ========== INITIALIZATION ==========
