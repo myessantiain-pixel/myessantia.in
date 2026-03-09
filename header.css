@@ -4,22 +4,34 @@
   color: #f0f0f0;
   padding: 0.75rem 0;
   border-bottom: 2px solid #d4af37;
-  width: 100%;
-  overflow: hidden;
+  width: 100vw; /* Full viewport width */
   position: relative;
+  left: 0;
+  right: 0;
+  margin-left: calc(-50vw + 50%); /* Centering fix */
+  margin-right: calc(-50vw + 50%); /* Centering fix */
+  overflow: hidden;
 }
 
 .top-bar .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0;
   width: 100%;
+  max-width: 100%; /* Override any max-width restrictions */
+  padding: 0;
+  margin: 0;
 }
 
 .top-bar-scroll {
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.top-bar-scroll-content {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  padding: 0 10px;
+  will-change: transform;
 }
 
 .scroll-item {
@@ -45,13 +57,6 @@
   font-weight: 700;
   margin: 0 2rem;
   display: inline-block;
-}
-
-.top-bar-scroll-content {
-  display: inline-flex;
-  align-items: center;
-  animation: scrollTopBar 20s linear infinite;
-  white-space: nowrap;
 }
 
 @keyframes scrollTopBar {
