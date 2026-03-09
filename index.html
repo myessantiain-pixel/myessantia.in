@@ -377,40 +377,172 @@
       text-decoration: line-through; 
     }
     
+  .card-add-btn {
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 6px;
+    background: #000; 
+    border: 2px solid #000; 
+    border-radius: 60px;
+    padding: 0.7rem 0.3rem; 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+    color: #fff;
+    cursor: pointer; 
+    width: 100%; 
+    margin: 0.5rem 0 0; 
+    min-height: 44px;
+    transition: all 0.15s; 
+    text-transform: uppercase;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent; /* Remove mobile tap highlight */
+    touch-action: manipulation; /* Optimize for touch */
+    user-select: none; /* Prevent text selection on double-click */
+    position: relative;
+    z-index: 20; /* Higher than product link */
+    outline: none;
+    -webkit-appearance: none; /* Remove default button styles on iOS */
+    appearance: none;
+  }
+  
+  /* Active state for immediate tactile feedback */
+  .card-add-btn:active {
+    transform: scale(0.97);
+    background: #d4af37;
+    color: #000;
+    border-color: #d4af37;
+  }
+  
+  .card-add-btn:active i {
+    color: #000;
+  }
+  
+  /* Added state */
+  .card-add-btn.added {
+    background: #2e7d32;
+    border-color: #2e7d32;
+    color: white;
+    pointer-events: none;
+    transform: scale(1);
+  }
+  
+  .card-add-btn.added i {
+    color: white;
+  }
+  
+  /* Disabled state */
+  .card-add-btn:disabled {
+    opacity: 0.9;
+    cursor: wait;
+    transform: scale(1);
+  }
+  
+  /* Ensure product link doesn't interfere with button clicks */
+  .product-card {
+    position: relative;
+  }
+  
+  .product-card a {
+    position: relative;
+    z-index: 1;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* Improve hero buttons for better touch response */
+  .btn {
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+  }
+  
+  .btn:active {
+    transform: scale(0.97);
+  }
+  
+  .btn-primary:active {
+    background: #d4af37;
+    color: #000;
+  }
+  
+  .btn-outline:active {
+    background: #000;
+    color: #d4af37;
+    border-color: #d4af37;
+  }
+  
+  /* Improve carousel arrows for touch */
+  .carousel-arrow {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: all 0.15s;
+  }
+  
+  .carousel-arrow:active {
+    transform: translateY(-50%) scale(0.95);
+    background: #d4af37;
+    border-color: #d4af37;
+  }
+  
+  /* Improve scroll top button */
+  .scroll-top {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: all 0.15s;
+  }
+  
+  .scroll-top:active {
+    transform: scale(0.9);
+    background: #d4af37;
+    color: #000;
+  }
+  
+  /* Improve category chip (value strip items) */
+  .value-item {
+    transition: all 0.15s;
+    cursor: default;
+  }
+  
+  /* Improve review dots */
+  .review-dot {
+    transition: all 0.15s;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .review-dot:active {
+    transform: scale(1.5);
+  }
+  
+  /* Improve click area on mobile */
+  @media (max-width: 768px) {
     .card-add-btn {
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      gap: 6px;
-      background: #000; 
-      border: 2px solid #000; 
-      border-radius: 60px;
-      padding: 0.7rem 0.3rem; 
-      font-size: 0.85rem; 
-      font-weight: 600; 
-      color: #fff;
-      cursor: pointer; 
-      width: 100%; 
-      margin: 0.5rem 0 0; 
-      min-height: 44px;
-      transition: all 0.15s; 
-      text-transform: uppercase;
-      text-decoration: none; /* Remove underline from button text */
+      min-height: 48px;
+      font-size: 0.9rem;
+      padding: 0.7rem 0.3rem;
     }
-    .card-add-btn i { color: #d4af37; transition: color 0.15s; }
-    .card-add-btn:hover { background: #d4af37; color: #000; border-color: #d4af37; }
-    .card-add-btn:hover i { color: #000; }
     
-    /* Added state for add-to-cart feedback */
-    .card-add-btn.added {
-      background: #2e7d32;
-      border-color: #2e7d32;
-      color: white;
-      pointer-events: none;
+    .btn {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .card-add-btn.added i {
-      color: white;
+    
+    .hero-buttons .btn {
+      min-height: 44px;
     }
+  }
+  
+  @media (max-width: 480px) {
+    .card-add-btn {
+      min-height: 44px;
+      font-size: 0.85rem;
+    }
+  }
 
     /* ===== EMPTY STATE ===== */
     .empty-state {
@@ -1016,38 +1148,63 @@ function renderProducts() {
   grid.innerHTML = html;
 }
     
-    // Handle add to cart with button feedback
-    window.handleHomeAdd = function(productId, btn) {
-      // Show added effect
-      btn.classList.add('added');
-      btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-      
+     window.handleHomeAdd = function(productId, btn) {
+    // Prevent multiple rapid clicks
+    if (btn.disabled) return;
+    
+    // Disable button immediately to prevent double-clicks
+    btn.disabled = true;
+    
+    // Store original HTML for later reset
+    const originalHTML = btn.innerHTML;
+    
+    // IMMEDIATE visual feedback - change button state right away
+    btn.classList.add('added');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> adding...';
+    
+    // Use requestAnimationFrame to ensure UI updates before heavy operations
+    requestAnimationFrame(() => {
       // Use master function from common.js
       if (typeof window.masterAddToCart === 'function') {
+        // Call master function synchronously
         window.masterAddToCart(productId, false);
         
-        // Open cart modal after a short delay
+        // Open cart modal immediately (no delay)
+        if (typeof window.openCart === 'function') {
+          window.openCart();
+        }
+        
+        // Update button to "added" state
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+        
+        // Reset button after 1.5 seconds (shorter than before for better UX)
         setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          // Reset button back to "add" after cart opens
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 2000); // Show "added" for 2 seconds before reverting
-        }, 200);
+          btn.classList.remove('added');
+          btn.innerHTML = originalHTML;
+          btn.disabled = false; // Re-enable button
+        }, 1500);
       } else {
         // Fallback
         if (typeof window.addToCart === 'function') {
           window.addToCart(productId);
+          
+          // Open cart if available
+          if (typeof window.openCart === 'function') {
+            window.openCart();
+          }
+          
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+          
           setTimeout(() => {
             btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 2000);
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+          }, 1500);
         }
       }
-    };
+    });
+  };
+
     
     // Scroll to products section
     function scrollToProducts() {
