@@ -1061,18 +1061,27 @@ function initInfiniteScroll() {
   // Top Bar Infinite Scroll
   const topBarContent = document.querySelector('.top-bar-scroll-content');
   if (topBarContent) {
-    // Clone the content for seamless scrolling
-    const topBarItems = topBarContent.innerHTML;
-    topBarContent.innerHTML = topBarItems + topBarItems; // Double the content
+    // Get all items and dots
+    const items = topBarContent.children;
+    if (items.length === 0) return;
+    
+    // Calculate total width of one set
+    let totalWidth = 0;
+    for (let i = 0; i < items.length; i++) {
+      totalWidth += items[i].offsetWidth;
+    }
+    
+    // Clone the entire set for seamless scrolling
+    topBarContent.innerHTML = topBarContent.innerHTML + topBarContent.innerHTML;
     
     let position = 0;
-    const speed = 0.5; // Scroll speed (pixels per frame)
+    const speed = 0.5; // Scroll speed
     
     function scrollTopBar() {
       position -= speed;
       
       // Reset position when first set completely scrolls out
-      if (Math.abs(position) >= topBarContent.scrollWidth / 2) {
+      if (Math.abs(position) >= totalWidth) {
         position = 0;
       }
       
@@ -1080,24 +1089,33 @@ function initInfiniteScroll() {
       requestAnimationFrame(scrollTopBar);
     }
     
-    scrollTopBar();
+    // Start animation after a small delay to ensure layout is complete
+    setTimeout(scrollTopBar, 100);
   }
   
   // Value Strip Infinite Scroll
   const valueStripScroll = document.querySelector('.value-strip-scroll');
   if (valueStripScroll) {
-    // Clone the content for seamless scrolling
-    const valueItems = valueStripScroll.innerHTML;
-    valueStripScroll.innerHTML = valueItems + valueItems; // Double the content
+    // Get all value items
+    const valueItems = valueStripScroll.children;
+    if (valueItems.length === 0) return;
+    
+    // Calculate total width of one set
+    let valueTotalWidth = 0;
+    for (let i = 0; i < valueItems.length; i++) {
+      valueTotalWidth += valueItems[i].offsetWidth;
+    }
+    
+    // Clone the entire set
+    valueStripScroll.innerHTML = valueStripScroll.innerHTML + valueStripScroll.innerHTML;
     
     let valuePosition = 0;
-    const valueSpeed = 0.5; // Scroll speed (pixels per frame)
+    const valueSpeed = 0.5;
     
     function scrollValueStrip() {
       valuePosition -= valueSpeed;
       
-      // Reset position when first set completely scrolls out
-      if (Math.abs(valuePosition) >= valueStripScroll.scrollWidth / 2) {
+      if (Math.abs(valuePosition) >= valueTotalWidth) {
         valuePosition = 0;
       }
       
@@ -1105,12 +1123,18 @@ function initInfiniteScroll() {
       requestAnimationFrame(scrollValueStrip);
     }
     
-    scrollValueStrip();
+    setTimeout(scrollValueStrip, 100);
   }
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+  // Small delay to ensure all elements are rendered
+  setTimeout(initInfiniteScroll, 200);
+});
+
+// Also initialize on window load for safety
+window.addEventListener('load', function() {
   initInfiniteScroll();
 });
 
