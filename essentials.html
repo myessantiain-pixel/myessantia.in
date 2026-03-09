@@ -349,39 +349,146 @@
       text-decoration: line-through; 
     }
     
+   /* ===== IMPROVED BUTTON STYLES FOR IMMEDIATE RESPONSE ===== */
+  .card-add-btn {
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 6px;
+    background: #000; 
+    border: 2px solid #000; 
+    border-radius: 60px;
+    padding: 0.7rem 0.3rem; 
+    font-size: 0.85rem; 
+    font-weight: 600; 
+    color: #fff;
+    cursor: pointer; 
+    width: 100%; 
+    margin: 0.5rem 0 0; 
+    min-height: 44px;
+    transition: all 0.15s; 
+    text-transform: uppercase;
+    -webkit-tap-highlight-color: transparent; /* Remove mobile tap highlight */
+    touch-action: manipulation; /* Optimize for touch */
+    user-select: none; /* Prevent text selection on double-click */
+    position: relative;
+    z-index: 20; /* Higher than product link */
+    outline: none;
+    -webkit-appearance: none; /* Remove default button styles on iOS */
+    appearance: none;
+  }
+  
+  /* Active state for immediate tactile feedback */
+  .card-add-btn:active {
+    transform: scale(0.97);
+    background: #d4af37;
+    color: #000;
+    border-color: #d4af37;
+  }
+  
+  .card-add-btn:active i {
+    color: #000;
+  }
+  
+  /* Added state */
+  .card-add-btn.added {
+    background: #2e7d32;
+    border-color: #2e7d32;
+    color: white;
+    pointer-events: none;
+    transform: scale(1);
+  }
+  
+  .card-add-btn.added i {
+    color: white;
+  }
+  
+  /* Disabled state */
+  .card-add-btn:disabled {
+    opacity: 0.9;
+    cursor: wait;
+    transform: scale(1);
+  }
+  
+  /* Ensure product link doesn't interfere with button clicks */
+  .product-card {
+    position: relative;
+  }
+  
+  .product-card a {
+    position: relative;
+    z-index: 1;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* Sort select improvements */
+  .sort-select {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: all 0.15s;
+  }
+  
+  .sort-select:active {
+    transform: scale(0.98);
+    background: #1a1a1a;
+  }
+  
+  .sort-select select {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Scroll top button improvement */
+  .scroll-top {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: all 0.15s;
+  }
+  
+  .scroll-top:active {
+    transform: scale(0.9);
+    background: #d4af37;
+    color: #000;
+    border-color: #000;
+  }
+  
+  /* Breadcrumbs links improvement */
+  .breadcrumbs a {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  
+  .breadcrumbs a:active {
+    color: #d4af37;
+    transform: scale(0.95);
+    display: inline-block;
+  }
+  
+  /* Improve click area on mobile */
+  @media (max-width: 768px) {
     .card-add-btn {
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      gap: 6px;
-      background: #000; 
-      border: 2px solid #000; 
-      border-radius: 60px;
-      padding: 0.7rem 0.3rem; 
-      font-size: 0.85rem; 
-      font-weight: 600; 
-      color: #fff;
-      cursor: pointer; 
-      width: 100%; 
-      margin: 0.5rem 0 0; 
-      min-height: 44px;
-      transition: all 0.15s; 
-      text-transform: uppercase;
+      min-height: 48px;
+      font-size: 0.9rem;
+      padding: 0.7rem 0.3rem;
     }
-    .card-add-btn i { color: #d4af37; transition: color 0.15s; }
-    .card-add-btn:hover { background: #d4af37; color: #000; border-color: #d4af37; }
-    .card-add-btn:hover i { color: #000; }
     
-    /* Added state for add-to-cart feedback */
-    .card-add-btn.added {
-      background: #2e7d32;
-      border-color: #2e7d32;
-      color: white;
-      pointer-events: none;
+    .sort-select {
+      min-height: 48px;
     }
-    .card-add-btn.added i {
-      color: white;
+    
+    .sort-select select {
+      font-size: 0.9rem;
     }
+  }
+  
+  @media (max-width: 480px) {
+    .card-add-btn {
+      min-height: 44px;
+      font-size: 0.85rem;
+    }
+  }
 
     /* ===== EMPTY STATE ===== */
     .empty-state {
@@ -647,50 +754,66 @@ function renderProducts() {
   }
 }
 
-    // Handle add to cart with button feedback and cart opening
-    window.handleEssentialAdd = function(productId, btn) {
+     // ===== OPTIMIZED HANDLE ESSENTIAL ADD WITH IMMEDIATE RESPONSE =====
+  window.handleEssentialAdd = function(productId, btn) {
+    // Prevent multiple rapid clicks
+    if (btn.disabled) return;
+    
+    // Disable button immediately to prevent double-clicks
+    btn.disabled = true;
+    
+    // Store original HTML for later reset
+    const originalHTML = btn.innerHTML;
+    
+    // IMMEDIATE visual feedback - change button state right away
+    btn.classList.add('added');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> adding...';
+    
+    // Use requestAnimationFrame to ensure UI updates before heavy operations
+    requestAnimationFrame(() => {
       // Use the master function from common.js
       if (typeof window.masterAddToCart === 'function') {
-        // Show added effect
-        btn.classList.add('added');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        
-        // Call master function (it will add to cart, sync, etc.)
+        // Call master function synchronously
         window.masterAddToCart(productId, false);
         
-        // Open cart modal after a short delay
+        // Open cart modal immediately (no delay)
+        if (typeof window.openCart === 'function') {
+          window.openCart();
+        }
+        
+        // Update button to "added" state
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+        
+        // Reset button after 1.5 seconds
         setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          // Reset button after cart opens
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
-        }, 200);
+          btn.classList.remove('added');
+          btn.innerHTML = originalHTML;
+          btn.disabled = false; // Re-enable button
+        }, 1500);
       } else {
         // Fallback if master function not ready
         console.warn('masterAddToCart not available yet');
-        btn.classList.add('added');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
         
         // Try to use standard addToCart
         if (typeof window.addToCart === 'function') {
           window.addToCart(productId);
         }
         
+        // Open cart immediately
+        if (typeof window.openCart === 'function') {
+          window.openCart();
+        }
+        
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+        
         setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
-        }, 200);
+          btn.classList.remove('added');
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+        }, 1500);
       }
-    };
+    });
+  };
 
     // ===== INITIALIZATION =====
     document.addEventListener('DOMContentLoaded', async () => {
