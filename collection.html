@@ -715,112 +715,130 @@
       }
     }
 
-    // ===== MAIN RENDERING FUNCTION =====
-    function renderProducts() {
-      const grid = document.getElementById('product-grid');
-      const categoryFilter = document.getElementById('category-filter')?.value || 'all';
-      const sortFilter = document.getElementById('sort-filter')?.value || 'default';
-      const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
+  // ===== MAIN RENDERING FUNCTION =====
+function renderProducts() {
+  const grid = document.getElementById('product-grid');
+  const categoryFilter = document.getElementById('category-filter')?.value || 'all';
+  const sortFilter = document.getElementById('sort-filter')?.value || 'default';
+  const searchTerm = document.getElementById('search-input')?.value.toLowerCase() || '';
 
-      if (!grid || !window.products) return;
+  if (!grid || !window.products) return;
 
-      // Add fallback oldPrice for testing
-      window.products.forEach(product => {
-        if (!product.oldPrice && product.price) {
-          product.oldPrice = product.price * 1.2; // 20% higher for demo
-        }
-      });
-
-      let filteredProducts = window.products.filter(product => {
-        // Category filter
-        if (categoryFilter !== 'all') {
-          if (categoryFilter === 'accessories' && product.category !== 'accessories') return false;
-          if (categoryFilter === 'essentials' && product.category !== 'essentials') return false;
-          
-          if (categoryFilter === 'newarrival') {
-            if (!isNewProduct(product) && !product.showOnNew) return false;
-          }
-        }
-
-        // Search filter
-        if (searchTerm) {
-          const searchable = `${product.title} ${product.category} ${product.brand || ''}`.toLowerCase();
-          if (!searchable.includes(searchTerm)) return false;
-        }
-
-        return true;
-      });
-
-      // Sorting
-      switch(sortFilter) {
-        case 'price-low':
-          filteredProducts.sort((a, b) => (a.price || 0) - (b.price || 0));
-          break;
-        case 'price-high':
-          filteredProducts.sort((a, b) => (b.price || 0) - (a.price || 0));
-          break;
-        case 'rating':
-          filteredProducts.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-          break;
-        case 'newest':
-          filteredProducts.sort((a, b) => {
-            const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
-            const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
-            return dateB - dateA;
-          });
-          break;
-        default:
-          // Keep original order
-          break;
+  let filteredProducts = window.products.filter(product => {
+    // Category filter
+    if (categoryFilter !== 'all') {
+      if (categoryFilter === 'accessories' && product.category !== 'accessories') return false;
+      if (categoryFilter === 'essentials' && product.category !== 'essentials') return false;
+      
+      if (categoryFilter === 'newarrival') {
+        if (!isNewProduct(product) && !product.showOnNew) return false;
       }
-
-      if (filteredProducts.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-state">
-            <i class="fa-solid fa-box-open"></i>
-            <h3>no products found</h3>
-            <p>Try adjusting your filters or search term.</p>
-          </div>
-        `;
-        return;
-      }
-
-      grid.innerHTML = filteredProducts.map(product => {
-        const mainImage = product.images?.[0] || product.primaryImg || 'https://via.placeholder.com/300';
-        const secondImage = product.images?.[1] || product.secondaryImg || mainImage;
-        const isNew = isNewProduct(product) || product.showOnNew;
-        const hasSale = product.oldPrice && product.oldPrice > product.price;
-        
-        return `
-          <div class="product-card" data-product-id="${product.id}">
-            <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
-              <div class="image-frame">
-                ${isNew ? `
-                  <span class="new-badge">
-                    <i class="fa-regular fa-star"></i> NEW
-                  </span>
-                ` : ''}
-                ${hasSale ? `
-                  <span class="sale-badge-image">SALE</span>
-                ` : ''}
-                <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-                <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
-              </div>
-              <p class="product-category">${product.category || 'product'}</p>
-              <h3 class="product-title">${product.title}</h3>
-              <div class="product-rating">${renderRating(product.rating)}</div>
-              <div class="product-price-block">
-                ${hasSale ? `<span class="old-price">₹${formatPrice(product.oldPrice)}</span>` : ''}
-                <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
-              </div>
-            </a>
-            <button class="card-add-btn" onclick="handleProductAdd('${product.id}', this); event.stopPropagation();">
-              <i class="fa-solid fa-cart-plus"></i> add
-            </button>
-          </div>
-        `;
-      }).join('');
     }
+
+    // Search filter
+    if (searchTerm) {
+      const searchable = `${product.title} ${product.category} ${product.brand || ''}`.toLowerCase();
+      if (!searchable.includes(searchTerm)) return false;
+    }
+
+    return true;
+  });
+
+  // Sorting
+  switch(sortFilter) {
+    case 'price-low':
+      filteredProducts.sort((a, b) => (a.price || 0) - (b.price || 0));
+      break;
+    case 'price-high':
+      filteredProducts.sort((a, b) => (b.price || 0) - (a.price || 0));
+      break;
+    case 'rating':
+      filteredProducts.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      break;
+    case 'newest':
+      filteredProducts.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+        const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+        return dateB - dateA;
+      });
+      break;
+    default:
+      // Keep original order
+      break;
+  }
+
+  if (filteredProducts.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <i class="fa-solid fa-box-open"></i>
+        <h3>no products found</h3>
+        <p>Try adjusting your filters or search term.</p>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = filteredProducts.map(product => {
+    // Get primary and secondary images from media array
+    let mainImage = '';
+    let secondImage = '';
+    
+    // Check if product has media array (from admin panel)
+    if (product.media && Array.isArray(product.media) && product.media.length > 0) {
+      // Primary image - use primaryImg if set, otherwise first media item
+      if (product.primaryImg) {
+        mainImage = product.primaryImg;
+      } else {
+        mainImage = product.media[0].url || 'https://via.placeholder.com/300';
+      }
+      
+      // Secondary image for hover - use second media item if available
+      if (product.media.length >= 2) {
+        secondImage = product.media[1].url;
+      } else {
+        // If only one media item, duplicate primary for hover
+        secondImage = mainImage;
+      }
+    } else {
+      // Fallback for older products without media array
+      mainImage = product.images?.[0] || product.primaryImg || 'https://via.placeholder.com/300';
+      secondImage = product.images?.[1] || product.secondaryImg || mainImage;
+    }
+    
+    const isNew = isNewProduct(product) || product.showOnNew;
+    // Use originalPrice from admin panel for sale check
+    const hasSale = product.originalPrice && product.originalPrice > product.price;
+    
+    return `
+      <div class="product-card" data-product-id="${product.id}">
+        <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
+          <div class="image-frame">
+            ${isNew ? `
+              <span class="new-badge">
+                <i class="fa-regular fa-star"></i> NEW
+              </span>
+            ` : ''}
+            ${hasSale ? `
+              <span class="sale-badge-image">SALE</span>
+            ` : ''}
+            <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+            <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+          </div>
+          <p class="product-category">${product.category || 'product'}</p>
+          <h3 class="product-title">${product.title}</h3>
+          <div class="product-rating">${renderRating(product.rating)}</div>
+          <div class="product-price-block">
+            ${hasSale ? `<span class="old-price">₹${formatPrice(product.originalPrice)}</span>` : ''}
+            <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
+          </div>
+        </a>
+        <button class="card-add-btn" onclick="handleProductAdd('${product.id}', this); event.stopPropagation();">
+          <i class="fa-solid fa-cart-plus"></i> add
+        </button>
+      </div>
+    `;
+  }).join('');
+}
 
     // Handle add to cart with button feedback
     window.handleProductAdd = function(productId, btn) {
