@@ -87,6 +87,34 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
+function initTopBarScroll() {
+  const topBarContent = document.querySelector('.top-bar-scroll-content');
+  if (!topBarContent) return;
+  
+  // Double the content for seamless scrolling
+  topBarContent.innerHTML = topBarContent.innerHTML + topBarContent.innerHTML;
+  
+  let position = 0;
+  const speed = 0.5;
+  
+  function scroll() {
+    position -= speed;
+    
+    // Reset when half the content is scrolled
+    if (Math.abs(position) >= topBarContent.scrollWidth / 2) {
+      position = 0;
+    }
+    
+    topBarContent.style.transform = `translateX(${position}px)`;
+    requestAnimationFrame(scroll);
+  }
+  
+  scroll();
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initTopBarScroll);
+
 // ========== FIREBASE DATA FUNCTIONS ==========
 async function loadUserCart(userId) {
   try {
