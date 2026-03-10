@@ -2886,51 +2886,54 @@
       }
     };
 
-    window.showHighDemandPopup = function(action) {
-      currentAction = action;
-      const popup = document.getElementById('highDemandPopup');
-      const emailForm = document.getElementById('emailNotificationForm');
-      const alreadyMessage = document.getElementById('alreadyNotifiedMessage');
-      
-      if (hasRequestedNotification(currentProduct.id)) {
+ // Use the global addToCart from common.js
+// No need to redefine addToCart here
+
+window.showHighDemandPopup = function(action) {
+    currentAction = action;
+    const popup = document.getElementById('highDemandPopup');
+    const emailForm = document.getElementById('emailNotificationForm');
+    const alreadyMessage = document.getElementById('alreadyNotifiedMessage');
+    
+    if (hasRequestedNotification(currentProduct.id)) {
         if (emailForm) emailForm.style.display = 'none';
         if (alreadyMessage) alreadyMessage.style.display = 'block';
-      } else {
+    } else {
         if (emailForm) emailForm.style.display = 'block';
         if (alreadyMessage) alreadyMessage.style.display = 'none';
         const emailInput = document.getElementById('notificationEmail');
         if (emailInput) emailInput.value = '';
-      }
-      
-      if (popup) popup.classList.add('show');
-    };
+    }
+    
+    if (popup) popup.classList.add('show');
+};
 
-    window.closeHighDemandPopup = function() {
-      const popup = document.getElementById('highDemandPopup');
-      if (popup) popup.classList.remove('show');
-      currentAction = null;
-    };
+window.closeHighDemandPopup = function() {
+    const popup = document.getElementById('highDemandPopup');
+    if (popup) popup.classList.remove('show');
+    currentAction = null;
+};
 
-    window.submitNotification = async function(actionType) {
-      if (!currentProduct) return;
-      
-      const email = document.getElementById('notificationEmail')?.value.trim();
-      if (!email || !isValidEmail(email)) {
+window.submitNotification = async function(actionType) {
+    if (!currentProduct) return;
+    
+    const email = document.getElementById('notificationEmail')?.value.trim();
+    if (!email || !isValidEmail(email)) {
         showNotification('Please enter a valid email address', 'error');
         return;
-      }
-      
-      markNotificationRequested(currentProduct.id, email);
-      await submitNotificationToFirebase(currentProduct.id, email, actionType);
-      
-      const emailForm = document.getElementById('emailNotificationForm');
-      const alreadyMessage = document.getElementById('alreadyNotifiedMessage');
-      if (emailForm) emailForm.style.display = 'none';
-      if (alreadyMessage) alreadyMessage.style.display = 'block';
-      
-      showNotification('We\'ll notify you when this product is ready to dispatch!');
-      updateButtonStates();
-    };
+    }
+    
+    markNotificationRequested(currentProduct.id, email);
+    await submitNotificationToFirebase(currentProduct.id, email, actionType);
+    
+    const emailForm = document.getElementById('emailNotificationForm');
+    const alreadyMessage = document.getElementById('alreadyNotifiedMessage');
+    if (emailForm) emailForm.style.display = 'none';
+    if (alreadyMessage) alreadyMessage.style.display = 'block';
+    
+    showNotification('We\'ll notify you when this product is ready to dispatch!');
+    updateButtonStates();
+};
 
     function isValidEmail(email) {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -3654,14 +3657,14 @@ window.buyNow = function() {
               </div>
             </div>
 
-            <div class="action-buttons">
-              <button class="btn btn-secondary" onclick="addToCart()" ${stock === 0 ? 'disabled' : ''}>
-                <i class="fa-solid fa-cart-plus"></i> Add to Cart
-              </button>
-              <button class="btn btn-primary" onclick="buyNow()" ${stock === 0 ? 'disabled' : ''}>
-                <i class="fa-solid fa-bolt"></i> Buy Now
-              </button>
-            </div>
+           <div class="action-buttons">
+    <button class="btn btn-secondary" onclick="addToCart('${product.id}')" ${stock === 0 ? 'disabled' : ''}>
+        <i class="fa-solid fa-cart-plus"></i> Add to Cart
+    </button>
+    <button class="btn btn-primary" onclick="buyNow('${product.id}')" ${stock === 0 ? 'disabled' : ''}>
+        <i class="fa-solid fa-bolt"></i> Buy Now
+    </button>
+</div>
 
             <!-- PRODUCT DESCRIPTION - Rich HTML from admin blocks -->
             ${productDescriptionHTML}
