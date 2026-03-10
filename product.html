@@ -3777,7 +3777,7 @@ function renderProduct(product) {
       const tx = document.getElementById('deliveryText'); 
       if(!p || !tx) return; 
       p.style.width = Math.min(100, (t/999) * 100) + '%'; 
-      tx.innerHTML = t >= 999 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - t).toFixed(2)}</span> more`; 
+      tx.innerHTML = t >= 999 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(999 - t).toFixed(2)}</span> more`; 
     }
 
     window.toggleShare = function(e) { 
