@@ -90,10 +90,10 @@
           <input type="text" id="reviewer-city" required>
         </div>
         <div class="form-group">
-  <label><i class="fa-solid fa-star"></i> rating (0-5)</label>
-  <input type="number" step="0.1" min="0" max="5" id="review-rating" value="5" required>
-  <small class="hint">You can use decimals (e.g., 4.5, 3.8)</small>
-</div>
+          <label><i class="fa-solid fa-star"></i> rating (1-5)</label>
+          <input type="number" step="0.5" min="1" max="5" id="review-rating" required>
+        </div>
+      </div>
       
       <div class="form-row">
         <div class="form-group full-width">
@@ -120,6 +120,16 @@
             <button type="button" class="action-btn" onclick="removeReviewImage()" style="margin-top:6px;">
               <i class="fa-solid fa-times"></i> remove
             </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-check-circle"></i> verified purchase</label>
+          <div class="toggle-container">
+            <label class="toggle-switch">
+              <input type="checkbox" id="review-verified" checked> 
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">verified</span>
           </div>
         </div>
       </div>
