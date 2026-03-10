@@ -2951,97 +2951,56 @@
       }, 3000);
     }
 
-// ===== FIXED CART FUNCTIONS =====
+// In your product page HTML, replace the existing addToCart and buyNow functions with:
+
 window.addToCart = function() {
-  console.log('🛒 Add to cart called', currentProduct);
-  
-  if (!currentProduct) {
-    showNotification('Product not loaded', 'error');
-    return;
-  }
+  if (!currentProduct) return;
   
   if (currentProduct.highDemand) {
     showHighDemandPopup('cart');
     return;
   }
   
-  // Get quantity
-  const quantityInput = document.getElementById('productQuantity');
-  const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
+  // Get quantity from input
+  const quantity = parseInt(document.getElementById('productQuantity')?.value) || 1;
   
   if (currentProduct.stock <= 0) {
-    showNotification('Sorry, this product is out of stock!', 'error');
+    showNotification('Sorry, this product is out of stock!');
     return;
   }
 
   if (quantity > currentProduct.stock) {
-    showNotification(`Only ${currentProduct.stock} items available!`, 'error');
+    showNotification(`Only ${currentProduct.stock} items available!`);
     return;
   }
 
-  // Create product object
-  const productToAdd = {
-    id: currentProduct.id,
-    title: currentProduct.title,
-    price: currentProduct.price,
-    image: currentProduct.primaryImg || (currentProduct.images && currentProduct.images[0]) || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600',
-    quantity: quantity
-  };
-
-  console.log('Adding product:', productToAdd);
-
-  // Get existing cart from localStorage
-  let cart = JSON.parse(localStorage.getItem('MyEssantia_cart') || '[]');
-  console.log('Current cart:', cart);
-  
-  // Check if product already exists
-  const existingItemIndex = cart.findIndex(item => item.id === productToAdd.id);
-  
-  if (existingItemIndex >= 0) {
-    // Update quantity
-    cart[existingItemIndex].quantity += quantity;
+  // Call the global addToCart function from common.js
+  if (typeof window.globalAddToCart === 'function') {
+    window.globalAddToCart(currentProduct.id, quantity);
   } else {
-    // Add new item
-    cart.push(productToAdd);
+    // Fallback if global function not available
+    console.error('Global addToCart function not found');
+    showNotification('Error adding to cart. Please try again.', 'error');
   }
-  
-  // Save to localStorage
-  localStorage.setItem('MyEssantia_cart', JSON.stringify(cart));
-  console.log('Updated cart:', cart);
-  
-  // Update cart count in header
-  updateCartCountDisplay(cart);
-  
-  // Show success notification
-  showNotification(`${productToAdd.title} added to cart!`, 'success');
-  
-  // Open cart drawer after adding
-  setTimeout(() => {
-    openCartDrawer();
-  }, 500);
 };
 
 window.buyNow = function() {
-  console.log('⚡ Buy now called', currentProduct);
-  
-  if (!currentProduct) {
-    showNotification('Product not loaded', 'error');
-    return;
-  }
+  if (!currentProduct) return;
   
   if (currentProduct.highDemand) {
     showHighDemandPopup('buy');
     return;
   }
   
-  // First add to cart
+  // Add to cart first
   window.addToCart();
   
   // Then redirect to checkout
   setTimeout(() => {
-    window.location.href = 'checkout.html';
-  }, 800);
+    window.location.href = 'checkout.html'; // or wherever your checkout is
+  }, 500);
 };
+    
 
     function updateButtonStates() {
       const addToCartBtn = document.querySelector('.btn-secondary');
