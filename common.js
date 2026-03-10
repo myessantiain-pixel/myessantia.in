@@ -501,13 +501,9 @@ function setupCartButtonListener() {
   });
 }
 
-
-// In common.js, replace:
+// ========== MAIN ADD TO CART FUNCTION (SINGLE SOURCE OF TRUTH) ==========
 window.addToCart = async function(productId, button = null) {
-
-// With:
-window.globalAddToCart = async function(productId, quantity = 1, button = null) {
-  console.log('Adding to cart:', productId, 'Quantity:', quantity);
+  console.log('Adding to cart:', productId);
   
   // If button not provided, try to get it from the event
   if (!button && event) {
@@ -528,11 +524,11 @@ window.globalAddToCart = async function(productId, quantity = 1, button = null) 
   const existingItem = cart.find(item => item.id === productId);
 
   if (existingItem) {
-    if (existingItem.quantity + quantity > product.stock) {
+    if (existingItem.quantity >= product.stock) {
       alert('Sorry, not enough stock available!');
       return;
     }
-    existingItem.quantity += quantity;
+    existingItem.quantity += 1;
     console.log('Updated quantity:', existingItem);
   } else {
     const newItem = {
@@ -541,7 +537,7 @@ window.globalAddToCart = async function(productId, quantity = 1, button = null) 
       category: product.category,
       price: product.price,
       primaryImg: product.primaryImg || (product.images && product.images[0]),
-      quantity: quantity
+      quantity: 1
     };
     cart.push(newItem);
     console.log('New item added:', newItem);
@@ -586,18 +582,14 @@ window.globalAddToCart = async function(productId, quantity = 1, button = null) 
   }
 };
 
-// Keep a legacy wrapper for backward compatibility
+// Legacy support for onclick="addToCart('id')" - still works!
 window.addToCartLegacy = function(productId) {
-  window.globalAddToCart(productId, 1, event?.target?.closest('button'));
+  window.addToCart(productId, event?.target?.closest('button'));
 };
-  
+
 // Buy Now function
-// In common.js, update the buyNow function:
 window.buyNow = function(productId) {
-  window.globalAddToCart(productId, 1, event?.target?.closest('button'));
-  setTimeout(() => {
-    window.location.href = 'index.html';
-  }, 500);
+  window.addToCart(productId, event?.target?.closest('button'));
 };
 
 // ========== CART FUNCTIONS ==========
