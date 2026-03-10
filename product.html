@@ -3604,11 +3604,11 @@ function renderProduct(product) {
             <span class="delivery-min">Min. ₹1,299</span>
           </div>
           <div class="progress-bar">
-            <div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (sellingPrice / 1299) * 100)}%"></div>
+            <div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (sellingPrice / 999) * 100)}%"></div>
           </div>
           <div class="delivery-message" id="deliveryMessage">
-            <i class="fa-solid ${sellingPrice >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:#d4af37;"></i>
-            <span id="deliveryText">${sellingPrice >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - sellingPrice).toFixed(2)}</span> more`}</span>
+            <i class="fa-solid ${sellingPrice >= 999 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:#d4af37;"></i>
+            <span id="deliveryText">${sellingPrice >= 999 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(999 - sellingPrice).toFixed(2)}</span> more`}</span>
           </div>
           <div class="delivery-eta" style="display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #ccc;">
             <div style="background: #d4af37; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #000; flex-shrink: 0;">
@@ -3776,8 +3776,8 @@ function renderProduct(product) {
       const p = document.getElementById('deliveryProgress'); 
       const tx = document.getElementById('deliveryText'); 
       if(!p || !tx) return; 
-      p.style.width = Math.min(100, (t/1299) * 100) + '%'; 
-      tx.innerHTML = t >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - t).toFixed(2)}</span> more`; 
+      p.style.width = Math.min(100, (t/999) * 100) + '%'; 
+      tx.innerHTML = t >= 999 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - t).toFixed(2)}</span> more`; 
     }
 
     window.toggleShare = function(e) { 
