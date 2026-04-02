@@ -98,6 +98,36 @@
       margin-bottom: 8px;
     }
 
+    /* Drag and Drop Styles */
+.description-block {
+  cursor: grab;
+  transition: all 0.2s ease;
+}
+
+.description-block:active {
+  cursor: grabbing;
+}
+
+.description-block.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.description-block.drag-over {
+  border-color: #d4af37;
+  border-width: 3px;
+  box-shadow: 0 0 0 2px #d4af37;
+  transform: scale(1.01);
+}
+
+.drag-handle {
+  cursor: grab;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
     .login-header h2 strong {
       color: #d4af37;
     }
@@ -5933,6 +5963,12 @@ function initializeDashboard() {
   const container = document.getElementById('description-blocks-container');
   if (container) {
     container.innerHTML = '';
+
+    // Initialize drag and drop for description blocks
+setTimeout(() => {
+  initDragAndDrop();
+}, 200);
+    
     // Add a default text block
     setTimeout(() => {
       addTextBlock();
@@ -6059,7 +6095,192 @@ function updateNewInStatus() {
     renderProducts();
     updateStats();
   }
+
+
+  // ========== DRAG AND DROP FOR DESCRIPTION BLOCKS ==========
+let draggedItem = null;
+
+function initDragAndDrop() {
+  const blocks = document.querySelectorAll('#description-blocks-container .description-block');
+  
+  blocks.forEach(block => {
+    // Make block draggable
+    block.setAttribute('draggable', 'true');
+    
+    // Remove existing listeners to avoid duplicates
+    block.removeEventListener('dragstart', handleDragStart);
+    block.removeEventListener('dragend', handleDragEnd);
+    block.removeEventListener('dragover', handleDragOver);
+    block.removeEventListener('dragenter', handleDragEnter);
+    block.removeEventListener('dragleave', handleDragLeave);
+    block.removeEventListener('drop', handleDrop);
+    
+    // Add event listeners
+    block.addEventListener('dragstart', handleDragStart);
+    block.addEventListener('dragend', handleDragEnd);
+    block.addEventListener('dragover', handleDragOver);
+    block.addEventListener('dragenter', handleDragEnter);
+    block.addEventListener('dragleave', handleDragLeave);
+    block.addEventListener('drop', handleDrop);
+  });
 }
+
+function handleDragStart(e) {
+  draggedItem = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/html', this.innerHTML);
+  
+  // Required for Firefox
+  e.dataTransfer.setData('text/plain', '');
+}
+
+function handleDragEnd(e) {
+  this.classList.remove('dragging');
+  
+  // Remove drag-over class from all blocks
+  document.querySelectorAll('#description-blocks-container .description-block').forEach(block => {
+    block.classList.remove('drag-over');
+  });
+  
+  draggedItem = null;
+}
+
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault();
+  }
+  e.dataTransfer.dropEffect = 'move';
+  return false;
+}
+
+function handleDragEnter(e) {
+  if (draggedItem !== this) {
+    this.classList.add('drag-over');
+  }
+}
+
+function handleDragLeave(e) {
+  this.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  
+  this.classList.remove('drag-over');
+  
+  if (draggedItem && draggedItem !== this) {
+    const container = document.getElementById('description-blocks-container');
+    const blocks = Array.from(container.children);
+    
+    const draggedIndex = blocks.indexOf(draggedItem);
+    const targetIndex = blocks.indexOf(this);
+    
+    if (draggedIndex < targetIndex) {
+      this.parentNode.insertBefore(draggedItem, this.nextSibling);
+    } else {
+      this.parentNode.insertBefore(draggedItem, this);
+    }
+    
+    // Update preview after reordering
+    updatePreview();
+    
+    // Re-initialize drag and drop for the reordered blocks
+    setTimeout(() => {
+      initDragAndDrop();
+    }, 100);
+  }
+  
+  return false;
+}
+
+// Update the function that adds new blocks to also initialize drag and drop
+function addTextBlockWithDrag() {
+  addTextBlock();
+  setTimeout(() => {
+    initDragAndDrop();
+  }, 100);
+}
+
+function addHeadingBlockWithDrag() {
+  addHeadingBlock();
+  setTimeout(() => {
+    initDragAndDrop();
+  }, 100);
+}
+
+function addImageBlockWithDrag() {
+  addImageBlock();
+  setTimeout(() => {
+    initDragAndDrop();
+  }, 100);
+}
+
+function addVideoBlockWithDrag() {
+  addVideoBlock();
+  setTimeout(() => {
+    initDragAndDrop();
+  }, 100);
+}
+
+function addBulletBlockWithDrag() {
+  addBulletBlock();
+  setTimeout(() => {
+    initDragAndDrop();
+  }, 100);
+}
+
+// Override the existing add block functions to include drag initialization
+const originalAddTextBlock = window.addTextBlock;
+const originalAddHeadingBlock = window.addHeadingBlock;
+const originalAddImageBlock = window.addImageBlock;
+const originalAddVideoBlock = window.addVideoBlock;
+const originalAddBulletBlock = window.addBulletBlock;
+
+window.addTextBlock = function() {
+  if (originalAddTextBlock) originalAddTextBlock();
+  setTimeout(() => initDragAndDrop(), 100);
+};
+
+window.addHeadingBlock = function() {
+  if (originalAddHeadingBlock) originalAddHeadingBlock();
+  setTimeout(() => initDragAndDrop(), 100);
+};
+
+window.addImageBlock = function() {
+  if (originalAddImageBlock) originalAddImageBlock();
+  setTimeout(() => initDragAndDrop(), 100);
+};
+
+window.addVideoBlock = function() {
+  if (originalAddVideoBlock) originalAddVideoBlock();
+  setTimeout(() => initDragAndDrop(), 100);
+};
+
+window.addBulletBlock = function() {
+  if (originalAddBulletBlock) originalAddBulletBlock();
+  setTimeout(() => initDragAndDrop(), 100);
+};
+
+// Call initDragAndDrop when loading products (after description blocks are loaded)
+function loadDescriptionBlocksWithDrag(blocks) {
+  loadDescriptionBlocks(blocks);
+  setTimeout(() => {
+    initDragAndDrop();
+  }, 100);
+}
+
+// Override loadDescriptionBlocks
+const originalLoadDescriptionBlocks = window.loadDescriptionBlocks;
+window.loadDescriptionBlocks = function(blocks) {
+  if (originalLoadDescriptionBlocks) originalLoadDescriptionBlocks(blocks);
+  setTimeout(() => initDragAndDrop(), 100);
+};
+
+
+
+  
 
 function showNotification(message, type = 'info') {
   const notification = document.createElement('div');
