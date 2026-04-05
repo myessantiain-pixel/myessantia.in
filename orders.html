@@ -1,72 +1,78 @@
 <div class="filters-bar">
   <div class="search-box">
     <i class="fa-solid fa-search"></i>
-    <input type="text" id="search-orders-page" placeholder="search order id, customer or email...">
+    <input type="text" id="search-orders-admin" placeholder="search order id, customer, email or phone...">
   </div>
 
   <div class="filter-tabs">
-    <span class="filter-tab order-filter-tab active" data-filter="all">all</span>
-    <span class="filter-tab order-filter-tab" data-filter="paid">paid</span>
-    <span class="filter-tab order-filter-tab" data-filter="pending">pending</span>
-    <span class="filter-tab order-filter-tab" data-filter="high-value">high value</span>
+    <span class="filter-tab active" data-filter="all">all</span>
+    <span class="filter-tab" data-filter="pending">pending</span>
+    <span class="filter-tab" data-filter="processing">processing</span>
+    <span class="filter-tab" data-filter="completed">completed</span>
+    <span class="filter-tab" data-filter="cancelled">cancelled</span>
+  </div>
+
+  <div class="action-group" style="display:flex; gap:8px; flex-wrap:wrap;">
+    <button class="export-btn" onclick="exportOrdersAdmin()">
+      <i class="fa-solid fa-download"></i> export
+    </button>
   </div>
 </div>
 
 <div class="stats-grid">
   <div class="stat-card">
-    <div class="stat-icon"><i class="fa-solid fa-box-open"></i></div>
+    <div class="stat-icon"><i class="fa-solid fa-bag-shopping"></i></div>
     <div class="stat-info">
-      <h3 id="orders-total-count">0</h3>
+      <h3 id="orders-total">0</h3>
       <p>total orders</p>
     </div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div>
+    <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
     <div class="stat-info">
-      <h3 id="orders-paid-count">0</h3>
-      <p>paid</p>
+      <h3 id="orders-pending">0</h3>
+      <p>pending</p>
     </div>
   </div>
   <div class="stat-card">
     <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
     <div class="stat-info">
-      <h3 id="orders-value-count">₹0</h3>
+      <h3 id="orders-revenue">0</h3>
       <p>revenue</p>
     </div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon"><i class="fa-solid fa-cube"></i></div>
+    <div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div>
     <div class="stat-info">
-      <h3 id="orders-items-count">0</h3>
-      <p>items sold</p>
+      <h3 id="orders-completed">0</h3>
+      <p>completed</p>
     </div>
   </div>
 </div>
 
-<div id="orders-loading" class="loading-state" style="display:none;">
+<div id="orders-loading" class="loading-spinner" style="display:none; justify-content:center; padding:40px;">
   <div class="spinner"></div>
 </div>
 
 <div class="reviews-table">
   <div class="table-header">
-    <h2><i class="fa-solid fa-box-open"></i> all orders</h2>
+    <h2><i class="fa-solid fa-bag-shopping"></i> customer orders</h2>
   </div>
 
   <div id="orders-empty-state" class="empty-state" style="display:none;">
-    <i class="fa-regular fa-folder-open"></i>
+    <i class="fa-solid fa-box-open"></i>
     <h3>no orders found</h3>
-    <p>No order records match this filter.</p>
+    <p>orders saved in Firestore will appear here.</p>
   </div>
 
-  <div class="table-wrapper">
+  <div class="table-wrapper" id="orders-table-wrapper">
     <table>
       <thead>
         <tr>
-          <th>order id</th>
+          <th>order</th>
           <th>customer</th>
-          <th>email</th>
           <th>items</th>
-          <th>total</th>
+          <th>amount</th>
           <th>status</th>
           <th>date</th>
           <th>actions</th>
@@ -79,11 +85,11 @@
   <div id="orders-mobile-cards" class="mobile-cards"></div>
 
   <div class="pagination" id="orders-pagination" style="display:none;">
-    <button class="page-btn" id="prev-order-page" onclick="changeOrderPage('prev')">
+    <button class="page-btn" id="prev-orders-page" onclick="changeOrdersPage('prev')">
       <i class="fa-solid fa-chevron-left"></i>
     </button>
-    <div class="page-numbers" id="order-page-numbers"></div>
-    <button class="page-btn" id="next-order-page" onclick="changeOrderPage('next')">
+    <div class="page-numbers" id="orders-page-numbers"></div>
+    <button class="page-btn" id="next-orders-page" onclick="changeOrdersPage('next')">
       <i class="fa-solid fa-chevron-right"></i>
     </button>
   </div>
