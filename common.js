@@ -19,7 +19,7 @@ let cart = [];
 let currentUser = null;
 let products = [];
 
-// ========== CHECKOUT ADDON STATE ==========
+// ========== CHECKOUT STATE ==========
 let checkoutLoaded = false;
 let checkoutMapsLoaded = false;
 let checkoutState = {
@@ -82,10 +82,7 @@ auth.onAuthStateChanged(async (user) => {
     
     localStorage.setItem('MyEssantia_user', JSON.stringify(currentUser));
     
-    // Load user's cart from Firestore and merge with local cart
     await loadUserCart(user.uid);
-    
-    // Load products from Firestore
     await loadProducts();
     
     updateProfileIcon();
@@ -93,12 +90,10 @@ auth.onAuthStateChanged(async (user) => {
       renderProfileContent();
     }
     
-    // Update cart count after everything is loaded
     updateCartCount();
   } else {
     currentUser = null;
     localStorage.removeItem('MyEssantia_user');
-    // Don't clear cart when user logs out - keep local cart
     updateProfileIcon();
     if (document.getElementById('profile-content')) {
       renderProfileContent();
@@ -110,7 +105,6 @@ function initTopBarScroll() {
   const topBarContent = document.querySelector('.top-bar-scroll-content');
   if (!topBarContent) return;
   
-  // Double the content for seamless scrolling
   topBarContent.innerHTML = topBarContent.innerHTML + topBarContent.innerHTML;
   
   let position = 0;
@@ -119,7 +113,6 @@ function initTopBarScroll() {
   function scroll() {
     position -= speed;
     
-    // Reset when half the content is scrolled
     if (Math.abs(position) >= topBarContent.scrollWidth / 2) {
       position = 0;
     }
@@ -131,7 +124,6 @@ function initTopBarScroll() {
   scroll();
 }
 
-// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', initTopBarScroll);
 
 // ========== FIREBASE DATA FUNCTIONS ==========
@@ -145,25 +137,18 @@ async function loadUserCart(userId) {
       console.log('Firebase cart loaded:', firebaseCart);
     }
     
-    // Merge Firebase cart with local cart if both exist
     if (firebaseCart.length > 0 && cart.length > 0) {
-      // Merge carts (prefer Firebase cart for logged in user)
       cart = mergeCarts(cart, firebaseCart);
       console.log('Carts merged:', cart);
     } else if (firebaseCart.length > 0) {
-      // Use Firebase cart if it exists
       cart = firebaseCart;
       console.log('Using Firebase cart:', cart);
     }
-    // Otherwise keep local cart
     
-    // Save merged cart to localStorage
     saveCartToLocalStorage();
-    
     updateCartCount();
   } catch (error) {
     console.error('Error loading cart:', error);
-    // Keep using local cart if Firebase fails
     updateCartCount();
   }
 }
@@ -175,7 +160,6 @@ function mergeCarts(localCart, firebaseCart) {
   localCart.forEach(localItem => {
     const existingItem = merged.find(item => item.id === localItem.id);
     if (existingItem) {
-      // Take the higher quantity
       existingItem.quantity = Math.max(existingItem.quantity, localItem.quantity);
     } else {
       merged.push(localItem);
@@ -194,11 +178,9 @@ async function saveCartToFirebase() {
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     console.log('Cart saved to Firebase');
-    // Also save to localStorage as backup
     saveCartToLocalStorage();
   } catch (error) {
     console.error('Error saving cart to Firebase:', error);
-    // Still save to localStorage even if Firebase fails
     saveCartToLocalStorage();
   }
 }
@@ -212,12 +194,9 @@ async function loadProducts() {
     }));
     
     console.log('Products loaded:', products.length);
-    
-    // Cache products in localStorage for offline access
     localStorage.setItem('MyEssantia_products', JSON.stringify(products));
   } catch (error) {
     console.error('Error loading products:', error);
-    // Fallback to localStorage if Firebase fails
     const cached = localStorage.getItem('MyEssantia_products');
     products = cached ? JSON.parse(cached) : [];
     console.log('Products loaded from cache:', products.length);
@@ -245,8 +224,8 @@ function getStockStatus(stock) {
   return '<span class="stock-badge out-of-stock">Out of Stock</span>';
 }
 
-function checkoutFormatMoney(value) {
-  return "₹" + Number(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+function checkoutFormatPrice(price) {
+  return "₹" + Number(price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
 
 // ========== FALLBACK COMPONENTS ==========
@@ -258,6 +237,7 @@ function getFallbackHeader() {
           My<span style="color: #d4af37;">Essantia</span>
         </div>
         <div class="header-icons">
+          <a href="#" id="search-icon" style="margin: 0 0.5rem;"><i class="fa-solid fa-magnifying-glass"></i></a>
           <a href="#" id="profile-icon" style="margin: 0 0.5rem;"><i class="fa-regular fa-user"></i></a>
           <a href="#" id="cart-icon" style="margin: 0 0.5rem; position: relative;">
             <i class="fa-regular fa-shopping-bag"></i>
@@ -290,7 +270,6 @@ async function loadComponents() {
     const footerData = await footerResponse.text();
     document.getElementById('footer').innerHTML = footerData;
 
-    // Load products after components are loaded
     await loadProducts();
 
     setTimeout(() => {
@@ -298,7 +277,6 @@ async function loadComponents() {
         initializeApp();
       }
       setupEventListeners();
-      // Update cart count after components are loaded
       updateCartCount();
     }, 50);
   } catch (error) {
@@ -306,7 +284,6 @@ async function loadComponents() {
     document.getElementById('header').innerHTML = getFallbackHeader();
     document.getElementById('footer').innerHTML = getFallbackFooter();
     
-    // Fallback to cached products
     const cached = localStorage.getItem('MyEssantia_products');
     products = cached ? JSON.parse(cached) : [];
     
@@ -315,7 +292,6 @@ async function loadComponents() {
         initializeApp();
       }
       setupEventListeners();
-      // Update cart count
       updateCartCount();
     }, 50);
   }
@@ -325,13 +301,11 @@ async function loadComponents() {
 function setupEventListeners() {
   console.log('Setting up event listeners');
   
-  // Mobile menu elements
   const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
   const mobileDropdown = document.getElementById('mobileDropdown');
   const mobileMenuClose = document.getElementById('mobileMenuClose');
   
   if (mobileMenuToggle && mobileDropdown) {
-    // Open menu on hamburger click
     mobileMenuToggle.addEventListener('click', function(e) {
       e.stopPropagation();
       this.classList.toggle('active');
@@ -346,7 +320,6 @@ function setupEventListeners() {
       }
     });
 
-    // Close menu with close button
     if (mobileMenuClose) {
       mobileMenuClose.addEventListener('click', function() {
         mobileMenuToggle.classList.remove('active');
@@ -356,7 +329,6 @@ function setupEventListeners() {
       });
     }
 
-    // Close menu when clicking on a navigation link
     const mobileLinks = document.querySelectorAll('.mobile-menu-link');
     mobileLinks.forEach(link => {
       link.addEventListener('click', () => {
@@ -367,7 +339,6 @@ function setupEventListeners() {
       });
     });
 
-    // Close menu when clicking outside
     document.addEventListener('click', function(e) {
       if (mobileDropdown.classList.contains('show')) {
         if (!mobileDropdown.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
@@ -380,15 +351,12 @@ function setupEventListeners() {
     });
   }
 
-  // Use event delegation for cart icon
   document.addEventListener('click', function(e) {
     const cartIcon = e.target.closest('#cart-icon');
     if (cartIcon) {
       e.preventDefault();
-      console.log('Cart icon clicked (delegated)');
       openCart();
       
-      // Close mobile menu if open
       if (mobileDropdown && mobileDropdown.classList.contains('show')) {
         mobileMenuToggle?.classList.remove('active');
         mobileDropdown.classList.remove('show');
@@ -402,10 +370,8 @@ function setupEventListeners() {
     const profileIcon = e.target.closest('#profile-icon');
     if (profileIcon) {
       e.preventDefault();
-      console.log('Profile icon clicked (delegated)');
       openProfile();
       
-      // Close mobile menu if open
       if (mobileDropdown && mobileDropdown.classList.contains('show')) {
         mobileMenuToggle?.classList.remove('active');
         mobileDropdown.classList.remove('show');
@@ -415,74 +381,37 @@ function setupEventListeners() {
     }
   });
 
-  // These will be set up again when modals are loaded
-  const setupModalListeners = () => {
-    const closeCart = document.getElementById('close-cart');
-    if (closeCart) {
-      closeCart.addEventListener('click', function(e) {
-        e.preventDefault();
-        closeModal('cart-modal');
-      });
+  document.addEventListener('click', function(e) {
+    const searchIcon = e.target.closest('#search-icon');
+    if (searchIcon) {
+      e.preventDefault();
+      openSearch();
+      
+      if (mobileDropdown && mobileDropdown.classList.contains('show')) {
+        mobileMenuToggle?.classList.remove('active');
+        mobileDropdown.classList.remove('show');
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
+      }
     }
+  });
 
-    const closeProfile = document.getElementById('close-profile');
-    if (closeProfile) {
-      closeProfile.addEventListener('click', function(e) {
-        e.preventDefault();
-        closeModal('profile-modal');
-      });
-    }
-
-    const checkoutBtn = document.getElementById('checkout-btn');
-    if (checkoutBtn) {
-      checkoutBtn.addEventListener('click', async function(e) {
-        e.preventDefault();
-        if (!currentUser) {
-          alert('Please login to checkout');
-          closeModal('cart-modal');
-          openProfile();
-          return;
-        }
-        if (cart.length === 0) {
-          alert('Your cart is empty!');
-        } else {
-          saveCartToLocalStorage();
-          if (currentUser) {
-            try {
-              await saveCartToFirebase();
-            } catch (error) {
-              console.error('Error saving cart before checkout:', error);
-            }
-          }
-          closeModal('cart-modal');
-          await openCheckout();
-        }
-      });
-    }
-  };
-
-  // Try to set up modal listeners immediately
   setupModalListeners();
 
   window.addEventListener('click', function(e) {
     const cartModal = document.getElementById('cart-modal');
     const profileModal = document.getElementById('profile-modal');
+    const searchModal = document.getElementById('search-modal');
     const checkoutOverlay = document.getElementById('checkout-overlay');
     
-    if (e.target === cartModal) {
-      closeModal('cart-modal');
-    }
-    if (e.target === profileModal) {
-      closeModal('profile-modal');
-    }
-    if (e.target === checkoutOverlay) {
-      closeCheckout();
-    }
+    if (e.target === cartModal) closeModal('cart-modal');
+    if (e.target === profileModal) closeModal('profile-modal');
+    if (e.target === searchModal) closeModal('search-modal');
+    if (e.target === checkoutOverlay) closeCheckout();
   });
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-      // Close mobile menu if open
       if (mobileDropdown && mobileDropdown.classList.contains('show')) {
         mobileMenuToggle?.classList.remove('active');
         mobileDropdown.classList.remove('show');
@@ -490,14 +419,13 @@ function setupEventListeners() {
         document.body.style.overflow = '';
       }
       
-      // Close modals
       closeModal('cart-modal');
       closeModal('profile-modal');
+      closeModal('search-modal');
       closeCheckout();
     }
   });
   
-  // Handle window resize - close mobile menu on resize to desktop
   window.addEventListener('resize', function() {
     if (window.innerWidth > 768) {
       if (mobileDropdown && mobileDropdown.classList.contains('show')) {
@@ -509,13 +437,73 @@ function setupEventListeners() {
     }
   });
   
-  // Setup cart buttons using event delegation
   setupCartButtonListener();
+}
+
+function setupModalListeners() {
+  const closeCart = document.getElementById('close-cart');
+  if (closeCart) {
+    closeCart.addEventListener('click', function(e) {
+      e.preventDefault();
+      closeModal('cart-modal');
+    });
+  }
+
+  const closeProfile = document.getElementById('close-profile');
+  if (closeProfile) {
+    closeProfile.addEventListener('click', function(e) {
+      e.preventDefault();
+      closeModal('profile-modal');
+    });
+  }
+
+  const closeSearch = document.getElementById('close-search');
+  if (closeSearch) {
+    closeSearch.addEventListener('click', function(e) {
+      e.preventDefault();
+      closeModal('search-modal');
+    });
+  }
+
+  const searchInput = document.getElementById('search-products-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      renderSearchResults(this.value.trim());
+    });
+  }
+
+  const checkoutBtn = document.getElementById('checkout-btn');
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', async function(e) {
+      e.preventDefault();
+
+      if (!currentUser) {
+        closeModal('cart-modal');
+        openProfile();
+        return;
+      }
+
+      if (cart.length === 0) {
+        return;
+      }
+
+      saveCartToLocalStorage();
+      if (currentUser) {
+        try {
+          await saveCartToFirebase();
+        } catch (error) {
+          console.error('Error saving cart before checkout:', error);
+        }
+      }
+
+      closeModal('cart-modal');
+      await openCheckout();
+    });
+  }
 }
 
 // ========== CART BUTTON SETUP (Event Delegation) ==========
 function setupCartButtonListener() {
-  // Listen for clicks on any button with data-add-to-cart attribute
   document.addEventListener('click', function(e) {
     const button = e.target.closest('[data-add-to-cart]');
     if (button) {
@@ -526,11 +514,10 @@ function setupCartButtonListener() {
   });
 }
 
-// ========== MAIN ADD TO CART FUNCTION (SINGLE SOURCE OF TRUTH) ==========
+// ========== MAIN ADD TO CART FUNCTION ==========
 window.addToCart = async function(productId, button = null) {
   console.log('Adding to cart:', productId);
   
-  // If button not provided, try to get it from the event
   if (!button && event) {
     button = event.target?.closest('button');
   }
@@ -554,24 +541,19 @@ window.addToCart = async function(productId, button = null) {
       return;
     }
     existingItem.quantity += 1;
-    console.log('Updated quantity:', existingItem);
   } else {
-    const newItem = {
+    cart.push({
       id: productId,
       title: product.title,
       category: product.category,
       price: product.price,
       primaryImg: product.primaryImg || (product.images && product.images[0]),
       quantity: 1
-    };
-    cart.push(newItem);
-    console.log('New item added:', newItem);
+    });
   }
 
-  // Save to localStorage immediately
   saveCartToLocalStorage();
 
-  // Save to Firebase if user is logged in
   if (currentUser) {
     try {
       await saveCartToFirebase();
@@ -582,7 +564,6 @@ window.addToCart = async function(productId, button = null) {
   
   updateCartCount();
   
-  // Show animation on the button
   if (button) {
     const originalHTML = button.innerHTML;
     const originalBg = button.style.background;
@@ -596,31 +577,23 @@ window.addToCart = async function(productId, button = null) {
       button.innerHTML = originalHTML;
       button.style.background = originalBg;
       button.style.color = originalColor;
-      // Open cart after animation
-      console.log('Opening cart after add');
       openCart();
     }, 500);
   } else {
-    // Open cart immediately if button not found
-    console.log('Opening cart immediately');
     setTimeout(() => openCart(), 300);
   }
 };
 
-// Legacy support for onclick="addToCart('id')" - still works!
 window.addToCartLegacy = function(productId) {
   window.addToCart(productId, event?.target?.closest('button'));
 };
 
-// Buy Now function
 window.buyNow = function(productId) {
   window.addToCart(productId, event?.target?.closest('button'));
 };
 
 // ========== CART FUNCTIONS ==========
 window.updateQuantity = async function(productId, change) {
-  console.log('Updating quantity:', productId, change);
-  
   const itemIndex = cart.findIndex(item => item.id === productId);
   if (itemIndex === -1) return;
 
@@ -630,29 +603,23 @@ window.updateQuantity = async function(productId, change) {
 
   if (newQuantity <= 0) {
     cart.splice(itemIndex, 1);
-    console.log('Item removed');
   } else if (product && newQuantity > product.stock) {
     alert('Sorry, not enough stock available!');
     return;
   } else {
     item.quantity = newQuantity;
-    console.log('Quantity updated to:', newQuantity);
   }
 
-  // Save to localStorage immediately
   saveCartToLocalStorage();
 
-  // Save to Firebase if user is logged in
   if (currentUser) {
     await saveCartToFirebase();
   }
   
   updateCartCount();
   
-  // Re-render cart items if cart modal is open
   const cartModal = document.getElementById('cart-modal');
   if (cartModal && cartModal.classList.contains('show')) {
-    console.log('Re-rendering cart items');
     renderCartItems();
   }
 
@@ -660,27 +627,25 @@ window.updateQuantity = async function(productId, change) {
     renderCheckoutCart();
     updateCheckoutTotals();
   }
+
+  if (document.getElementById('search-modal')?.classList.contains('show')) {
+    renderSearchResults(document.getElementById('search-products-input')?.value || '');
+  }
 };
 
 window.removeFromCart = async function(productId) {
-  console.log('Removing from cart:', productId);
-  
   cart = cart.filter(item => item.id !== productId);
   
-  // Save to localStorage immediately
   saveCartToLocalStorage();
 
-  // Save to Firebase if user is logged in
   if (currentUser) {
     await saveCartToFirebase();
   }
   
   updateCartCount();
   
-  // Re-render cart items if cart modal is open
   const cartModal = document.getElementById('cart-modal');
   if (cartModal && cartModal.classList.contains('show')) {
-    console.log('Re-rendering cart items');
     renderCartItems();
   }
 
@@ -691,16 +656,11 @@ window.removeFromCart = async function(productId) {
 };
 
 function renderCartItems() {
-  console.log('Rendering cart items. Cart length:', cart.length);
-  
   const cartItemsContainer = document.getElementById('cart-items');
   const cartItemCount = document.getElementById('cart-item-count');
   const cartTotalAmount = document.getElementById('cart-total-amount');
 
-  if (!cartItemsContainer) {
-    console.error('Cart items container not found!');
-    return;
-  }
+  if (!cartItemsContainer) return;
 
   if (!cart || cart.length === 0) {
     cartItemsContainer.innerHTML = `
@@ -753,15 +713,10 @@ function renderCartItems() {
   if (cartItemCount) cartItemCount.textContent = totalItems;
   if (cartTotalAmount) cartTotalAmount.textContent = `₹${formatPrice(total)}`;
   
-  // Attach event listeners to the new buttons
   attachCartButtonListeners();
-  
-  console.log('Cart totals:', { totalItems, total });
 }
 
-// Add this new function to attach event listeners to cart buttons
 function attachCartButtonListeners() {
-  // Decrease quantity buttons
   document.querySelectorAll('.decrease-qty').forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
@@ -773,7 +728,6 @@ function attachCartButtonListeners() {
     });
   });
 
-  // Increase quantity buttons
   document.querySelectorAll('.increase-qty').forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
@@ -785,7 +739,6 @@ function attachCartButtonListeners() {
     });
   });
 
-  // Remove buttons
   document.querySelectorAll('.remove-from-cart').forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
@@ -803,41 +756,26 @@ function updateCartCount() {
   if (cartCount) {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = totalItems;
-    console.log('Cart count updated:', totalItems);
-  } else {
-    console.warn('Cart count element not found');
   }
 }
 
 // ========== MODAL FUNCTIONS ==========
 function openCart() {
-  console.log('Opening cart modal');
-  
   const cartModal = document.getElementById('cart-modal');
   if (cartModal) {
-    console.log('Cart modal found');
-    // Make sure cart items are rendered before showing modal
     renderCartItems();
-    
-    // Force the modal to be visible
     cartModal.style.display = 'flex';
     cartModal.classList.add('show');
     document.body.style.overflow = 'hidden';
-    console.log('Cart modal opened');
   } else {
-    console.warn('Cart modal not found, attempting to load');
-    // Try to load modals if they're not present
     loadCommonModals().then(() => {
       setTimeout(() => {
         const modal = document.getElementById('cart-modal');
         if (modal) {
-          console.log('Cart modal loaded and opened');
           renderCartItems();
           modal.style.display = 'flex';
           modal.classList.add('show');
           document.body.style.overflow = 'hidden';
-        } else {
-          console.error('Failed to load cart modal');
         }
       }, 100);
     });
@@ -845,30 +783,46 @@ function openCart() {
 }
 
 function openProfile() {
-  console.log('Opening profile modal');
-  
   const profileModal = document.getElementById('profile-modal');
   if (profileModal) {
-    console.log('Profile modal found');
     renderProfileContent();
     profileModal.classList.add('show');
     document.body.style.overflow = 'hidden';
   } else {
-    console.warn('Profile modal not found, attempting to load');
-    // Try to load modals if they're not present
     loadCommonModals().then(() => {
       setTimeout(() => {
         const modal = document.getElementById('profile-modal');
         if (modal) {
-          console.log('Profile modal loaded and opened');
           renderProfileContent();
           modal.classList.add('show');
           document.body.style.overflow = 'hidden';
-        } else {
-          console.error('Failed to load profile modal');
         }
       }, 100);
     });
+  }
+}
+
+async function openSearch() {
+  if (!products.length) {
+    await loadProducts();
+  }
+
+  const searchModal = document.getElementById('search-modal');
+  if (searchModal) {
+    searchModal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    renderSearchResults('');
+    setTimeout(() => {
+      document.getElementById('search-products-input')?.focus();
+    }, 80);
+  } else {
+    await loadCommonModals();
+    setTimeout(() => {
+      document.getElementById('search-modal')?.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      renderSearchResults('');
+      document.getElementById('search-products-input')?.focus();
+    }, 100);
   }
 }
 
@@ -878,76 +832,64 @@ function closeModal(modalId) {
     modal.style.display = '';
     modal.classList.remove('show');
     document.body.style.overflow = '';
-    console.log('Modal closed:', modalId);
   }
 }
 
-// Make modal functions globally available
 window.openCart = openCart;
 window.closeModal = closeModal;
 
+// ========== SEARCH FUNCTIONS ==========
+function renderSearchResults(query = '') {
+  const results = document.getElementById('search-results');
+  if (!results) return;
+
+  const normalized = query.trim().toLowerCase();
+  const filtered = products.filter(product => {
+    const title = (product.title || '').toLowerCase();
+    const category = (product.category || '').toLowerCase();
+    return !normalized || title.includes(normalized) || category.includes(normalized);
+  });
+
+  if (!filtered.length) {
+    results.innerHTML = `
+      <div class="search-empty">
+        <i class="fa-solid fa-magnifying-glass" style="font-size:1.6rem; margin-bottom:0.75rem;"></i>
+        <p>No products found.</p>
+      </div>
+    `;
+    return;
+  }
+
+  results.innerHTML = filtered.map(product => `
+    <div class="search-product-card">
+      <div class="search-product-image" style="background-image:url('${product.primaryImg || (product.images && product.images[0]) || 'https://via.placeholder.com/120'}')"></div>
+      <div class="search-product-info">
+        <h4>${product.title || 'Untitled Product'}</h4>
+        <div class="search-product-meta">${product.category || 'Category'}</div>
+        <div class="search-product-price">₹${formatPrice(product.price || 0)}</div>
+      </div>
+      <div class="search-product-action">
+        <button class="search-add-btn" data-add-to-cart="${product.id}">
+          <i class="fa-solid fa-bag-shopping"></i> Add to Cart
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
 // ========== LOAD COMMON MODALS ==========
 async function loadCommonModals() {
-  console.log('Loading common modals');
-  
   try {
-    // Check if modals already exist
     if (document.getElementById('cart-modal')) {
-      console.log('Modals already exist');
       return;
     }
     
     const response = await fetch('common.html');
     const data = await response.text();
     document.getElementById('common-modals').innerHTML = data;
-    console.log('Modals loaded from common.html');
     
-    // Re-setup event listeners for modal buttons
     setTimeout(() => {
-      const closeCart = document.getElementById('close-cart');
-      if (closeCart) {
-        closeCart.addEventListener('click', (e) => {
-          e.preventDefault();
-          closeModal('cart-modal');
-        });
-      }
-      
-      const closeProfile = document.getElementById('close-profile');
-      if (closeProfile) {
-        closeProfile.addEventListener('click', (e) => {
-          e.preventDefault();
-          closeModal('profile-modal');
-        });
-      }
-
-      const checkoutBtn = document.getElementById('checkout-btn');
-      if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', async function(e) {
-          e.preventDefault();
-          if (!currentUser) {
-            alert('Please login to checkout');
-            closeModal('cart-modal');
-            openProfile();
-            return;
-          }
-          if (cart.length === 0) {
-            alert('Your cart is empty!');
-          } else {
-            saveCartToLocalStorage();
-            if (currentUser) {
-              try {
-                await saveCartToFirebase();
-              } catch (error) {
-                console.error('Error saving cart before checkout:', error);
-              }
-            }
-            closeModal('cart-modal');
-            await openCheckout();
-          }
-        });
-      }
-      
-      console.log('Modal event listeners setup');
+      setupModalListeners();
     }, 100);
   } catch (error) {
     console.error('Error loading modals:', error);
@@ -969,8 +911,8 @@ function renderProfileContent() {
                onerror="this.src='https://via.placeholder.com/150'">
         </div>
 
-        <div class="profile-name">${currentUser.name}</div>
-        <div class="profile-email">${currentUser.email}</div>
+        <div class="profile-name" style="text-align:center;">${currentUser.name}</div>
+        <div class="profile-email" style="text-align:center; display:block; width:100%;">${currentUser.email}</div>
 
         <button class="logout-btn" onclick="window.logout()">
           Logout
@@ -1059,44 +1001,30 @@ function updateProfileIcon() {
 
 // ===== INFINITE SCROLL STRIPS =====
 function initInfiniteScroll() {
-  // Top Bar Infinite Scroll
   const topBarContent = document.querySelector('.top-bar-scroll-content');
   if (topBarContent) {
-    // Store original HTML
     const originalHTML = topBarContent.innerHTML;
-    
-    // Clear and set with original + duplicate (exact copy)
     topBarContent.innerHTML = originalHTML + originalHTML;
     
     let position = 0;
-    const speed = 0.5; // Scroll speed
+    const speed = 0.5;
     
     function scrollTopBar() {
       position -= speed;
-      
-      // Get width of original content (half of total)
       const originalWidth = topBarContent.scrollWidth / 2;
-      
-      // Reset when first set completely scrolls out
       if (Math.abs(position) >= originalWidth) {
         position = 0;
       }
-      
       topBarContent.style.transform = `translateX(${position}px)`;
       requestAnimationFrame(scrollTopBar);
     }
     
-    // Start animation
     scrollTopBar();
   }
   
-  // Value Strip Infinite Scroll
   const valueStripScroll = document.querySelector('.value-strip-scroll');
   if (valueStripScroll) {
-    // Store original HTML
     const originalHTML = valueStripScroll.innerHTML;
-    
-    // Clear and set with original + duplicate
     valueStripScroll.innerHTML = originalHTML + originalHTML;
     
     let valuePosition = 0;
@@ -1104,15 +1032,10 @@ function initInfiniteScroll() {
     
     function scrollValueStrip() {
       valuePosition -= valueSpeed;
-      
-      // Get width of original content (half of total)
       const originalWidth = valueStripScroll.scrollWidth / 2;
-      
-      // Reset when first set completely scrolls out
       if (Math.abs(valuePosition) >= originalWidth) {
         valuePosition = 0;
       }
-      
       valueStripScroll.style.transform = `translateX(${valuePosition}px)`;
       requestAnimationFrame(scrollValueStrip);
     }
@@ -1121,9 +1044,7 @@ function initInfiniteScroll() {
   }
 }
 
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-  // Small delay to ensure DOM is fully rendered
   setTimeout(initInfiniteScroll, 100);
 });
 
@@ -1132,10 +1053,7 @@ async function ensureCheckoutLoaded() {
   if (checkoutLoaded && document.getElementById('checkout-overlay')) return;
 
   const root = document.getElementById('checkout-modal-root');
-  if (!root) {
-    console.warn('checkout-modal-root not found');
-    return;
-  }
+  if (!root) return;
 
   try {
     const response = await fetch('checkout.html');
@@ -1206,43 +1124,27 @@ function resetCheckout() {
 
   const savedUser = currentUser || JSON.parse(localStorage.getItem('MyEssantia_user') || 'null');
 
-  const mobileInput = document.getElementById('mobileInput');
-  const fullName = document.getElementById('fullName');
-  const email = document.getElementById('email');
-  const addressLine = document.getElementById('addressLine');
-  const landmark = document.getElementById('landmark');
-  const city = document.getElementById('city');
-  const pincode = document.getElementById('pincode');
-  const state = document.getElementById('state');
-  const altPhone = document.getElementById('altPhone');
-  const promoCode = document.getElementById('promoCode');
+  document.getElementById('mobileInput').value = '';
+  document.getElementById('fullName').value = savedUser?.name || '';
+  document.getElementById('email').value = savedUser?.email || '';
+  document.getElementById('addressLine').value = '';
+  document.getElementById('landmark').value = '';
+  document.getElementById('city').value = '';
+  document.getElementById('pincode').value = '';
+  document.getElementById('state').value = '';
+  document.getElementById('altPhone').value = '';
+  document.getElementById('promoCode').value = '';
 
-  if (mobileInput) mobileInput.value = '';
-  if (fullName) fullName.value = savedUser?.name || '';
-  if (email) email.value = savedUser?.email || '';
-  if (addressLine) addressLine.value = '';
-  if (landmark) landmark.value = '';
-  if (city) city.value = '';
-  if (pincode) pincode.value = '';
-  if (state) state.value = '';
-  if (altPhone) altPhone.value = '';
-  if (promoCode) promoCode.value = '';
+  document.getElementById('loginMessage').innerHTML = '';
+  document.getElementById('detailsMessage').innerHTML = '';
+  document.getElementById('promoMessage').innerHTML = '';
+  document.getElementById('paymentMessage').innerHTML = '';
 
-  const loginMessage = document.getElementById('loginMessage');
-  const detailsMessage = document.getElementById('detailsMessage');
-  const promoMessage = document.getElementById('promoMessage');
-  const paymentMessage = document.getElementById('paymentMessage');
-
-  if (loginMessage) loginMessage.innerHTML = '';
-  if (detailsMessage) detailsMessage.innerHTML = '';
-  if (promoMessage) promoMessage.innerHTML = '';
-  if (paymentMessage) paymentMessage.innerHTML = '';
-
-  document.getElementById('otpBlock')?.classList.add('hidden');
-  document.getElementById('verifyOtpBtn')?.classList.add('hidden');
-  document.getElementById('sendOtpBtn')?.classList.remove('hidden');
-  document.getElementById('detailsCard')?.classList.add('hidden');
-  document.getElementById('paymentCard')?.classList.add('hidden');
+  document.getElementById('otpBlock').classList.add('hidden');
+  document.getElementById('verifyOtpBtn').classList.add('hidden');
+  document.getElementById('sendOtpBtn').classList.remove('hidden');
+  document.getElementById('detailsCard').classList.add('hidden');
+  document.getElementById('paymentCard').classList.add('hidden');
 
   document.querySelectorAll('.otp-digit').forEach(input => input.value = '');
 
@@ -1272,7 +1174,7 @@ function renderCheckoutCart() {
         <div class="checkout-item-name">${item.title}</div>
         <div class="checkout-item-sub">Qty ${item.quantity}</div>
       </div>
-      <div class="checkout-item-price">${checkoutFormatMoney(item.price * item.quantity)}</div>
+      <div class="checkout-item-price">${checkoutFormatPrice(item.price * item.quantity)}</div>
     </div>
   `).join('');
 }
@@ -1292,21 +1194,15 @@ function updateCheckoutTotals() {
 
   checkoutState.total = checkoutState.subtotal - checkoutState.discount;
 
-  const subtotal = document.getElementById('subtotal');
-  const totalAmount = document.getElementById('totalAmount');
+  document.getElementById('subtotal').textContent = checkoutFormatPrice(checkoutState.subtotal);
+  document.getElementById('totalAmount').textContent = checkoutFormatPrice(checkoutState.total);
+
   const discountRow = document.getElementById('discountRow');
-  const discountAmount = document.getElementById('discountAmount');
-
-  if (subtotal) subtotal.textContent = checkoutFormatMoney(checkoutState.subtotal);
-  if (totalAmount) totalAmount.textContent = checkoutFormatMoney(checkoutState.total);
-
-  if (discountRow && discountAmount) {
-    if (checkoutState.discount > 0) {
-      discountRow.classList.remove('hidden');
-      discountAmount.textContent = '-' + checkoutFormatMoney(checkoutState.discount);
-    } else {
-      discountRow.classList.add('hidden');
-    }
+  if (checkoutState.discount > 0) {
+    discountRow.classList.remove('hidden');
+    document.getElementById('discountAmount').textContent = '-' + checkoutFormatPrice(checkoutState.discount);
+  } else {
+    discountRow.classList.add('hidden');
   }
 }
 
@@ -1327,33 +1223,32 @@ function setCheckoutStep(step) {
     if (state.completed.includes(id)) el.classList.add('completed');
   });
 
-  if (document.getElementById('stepStatus1')) document.getElementById('stepStatus1').textContent = state.s1;
-  if (document.getElementById('stepStatus2')) document.getElementById('stepStatus2').textContent = state.s2;
-  if (document.getElementById('stepStatus3')) document.getElementById('stepStatus3').textContent = state.s3;
-  if (document.getElementById('progressFill')) document.getElementById('progressFill').style.width = state.p;
+  document.getElementById('stepStatus1').textContent = state.s1;
+  document.getElementById('stepStatus2').textContent = state.s2;
+  document.getElementById('stepStatus3').textContent = state.s3;
+  document.getElementById('progressFill').style.width = state.p;
 }
 
 function sendCheckoutOTP() {
-  const mobile = document.getElementById('mobileInput')?.value.trim() || '';
+  const mobile = document.getElementById('mobileInput').value.trim();
   const msgDiv = document.getElementById('loginMessage');
 
   if (!/^\d{10}$/.test(mobile)) {
-    if (msgDiv) msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Enter a valid 10-digit mobile number.</div>`;
+    msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Enter a valid 10-digit mobile number.</div>`;
     return;
   }
 
   checkoutState.generatedOTP = '123456';
-
-  document.getElementById('otpBlock')?.classList.remove('hidden');
-  document.getElementById('verifyOtpBtn')?.classList.remove('hidden');
-  document.getElementById('sendOtpBtn')?.classList.add('hidden');
+  document.getElementById('otpBlock').classList.remove('hidden');
+  document.getElementById('verifyOtpBtn').classList.remove('hidden');
+  document.getElementById('sendOtpBtn').classList.add('hidden');
 
   const digits = checkoutState.generatedOTP.split('');
   document.querySelectorAll('.otp-digit').forEach((input, index) => {
     input.value = digits[index] || '';
   });
 
-  if (msgDiv) msgDiv.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> OTP sent to +91 ${mobile}</div>`;
+  msgDiv.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> OTP sent to +91 ${mobile}</div>`;
 }
 
 function verifyCheckoutOTP() {
@@ -1361,29 +1256,25 @@ function verifyCheckoutOTP() {
   const msgDiv = document.getElementById('loginMessage');
 
   if (enteredOTP !== checkoutState.generatedOTP) {
-    if (msgDiv) msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Invalid OTP. Please try again.</div>`;
+    msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Invalid OTP. Please try again.</div>`;
     return;
   }
 
   checkoutState.verifiedMobile = true;
-  document.getElementById('detailsCard')?.classList.remove('hidden');
-  document.getElementById('paymentCard')?.classList.add('hidden');
+  document.getElementById('detailsCard').classList.remove('hidden');
+  document.getElementById('paymentCard').classList.add('hidden');
   setCheckoutStep(2);
 
-  if (msgDiv) msgDiv.innerHTML = `<div class="checkout-alert success"><i class="fas fa-circle-check"></i> Mobile verified successfully. Please enter address and email.</div>`;
-
-  setTimeout(() => {
-    document.getElementById('detailsCard')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 150);
+  msgDiv.innerHTML = `<div class="checkout-alert success"><i class="fas fa-circle-check"></i> Mobile verified successfully. Please enter address and email.</div>`;
 }
 
 function validateCheckoutDetails() {
-  const name = document.getElementById('fullName')?.value.trim() || '';
-  const email = document.getElementById('email')?.value.trim() || '';
-  const address = document.getElementById('addressLine')?.value.trim() || '';
-  const city = document.getElementById('city')?.value.trim() || '';
-  const pincode = document.getElementById('pincode')?.value.trim() || '';
-  const state = document.getElementById('state')?.value.trim() || '';
+  const name = document.getElementById('fullName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const address = document.getElementById('addressLine').value.trim();
+  const city = document.getElementById('city').value.trim();
+  const pincode = document.getElementById('pincode').value.trim();
+  const state = document.getElementById('state').value.trim();
 
   if (!name || !email || !address || !city || !state || !/^\d{6}$/.test(pincode)) return false;
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
@@ -1395,75 +1286,69 @@ function showCheckoutPaymentSection() {
   const msgDiv = document.getElementById('detailsMessage');
 
   if (!checkoutState.verifiedMobile) {
-    if (msgDiv) msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Please verify mobile number first.</div>`;
+    msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Please verify mobile number first.</div>`;
     return;
   }
 
   if (!validateCheckoutDetails()) {
-    if (msgDiv) msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Fill valid address and email details.</div>`;
+    msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Fill valid address and email details.</div>`;
     return;
   }
 
   sessionStorage.setItem('checkout_customer', JSON.stringify({
-    name: document.getElementById('fullName')?.value.trim() || '',
-    email: document.getElementById('email')?.value.trim() || '',
-    address: document.getElementById('addressLine')?.value.trim() || '',
-    landmark: document.getElementById('landmark')?.value.trim() || '',
-    city: document.getElementById('city')?.value.trim() || '',
-    pincode: document.getElementById('pincode')?.value.trim() || '',
-    state: document.getElementById('state')?.value.trim() || '',
-    mobile: document.getElementById('mobileInput')?.value.trim() || '',
-    altPhone: document.getElementById('altPhone')?.value.trim() || ''
+    name: document.getElementById('fullName').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    address: document.getElementById('addressLine').value.trim(),
+    landmark: document.getElementById('landmark').value.trim(),
+    city: document.getElementById('city').value.trim(),
+    pincode: document.getElementById('pincode').value.trim(),
+    state: document.getElementById('state').value.trim(),
+    mobile: document.getElementById('mobileInput').value.trim(),
+    altPhone: document.getElementById('altPhone').value.trim()
   }));
 
-  document.getElementById('paymentCard')?.classList.remove('hidden');
+  document.getElementById('paymentCard').classList.remove('hidden');
   setCheckoutStep(3);
-
-  if (msgDiv) msgDiv.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> Details saved. Continue with payment.</div>`;
-
-  setTimeout(() => {
-    document.getElementById('paymentCard')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 150);
+  msgDiv.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> Details saved. Continue with payment.</div>`;
 }
 
 function applyCheckoutPromo() {
-  const code = document.getElementById('promoCode')?.value.trim().toUpperCase() || '';
+  const code = document.getElementById('promoCode').value.trim().toUpperCase();
   const msgDiv = document.getElementById('promoMessage');
 
   if (!code) {
-    if (msgDiv) msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-ticket"></i> Enter a promo code.</div>`;
+    msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-ticket"></i> Enter a promo code.</div>`;
     return;
   }
 
   if (!checkoutPromos[code]) {
     checkoutState.appliedPromo = null;
     updateCheckoutTotals();
-    if (msgDiv) msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Invalid or expired promo code.</div>`;
+    msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Invalid or expired promo code.</div>`;
     return;
   }
 
   checkoutState.appliedPromo = { code, ...checkoutPromos[code] };
   updateCheckoutTotals();
-  if (document.getElementById('promoCode')) document.getElementById('promoCode').value = '';
-  if (msgDiv) msgDiv.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> ${checkoutPromos[code].msg}</div>`;
+  document.getElementById('promoCode').value = '';
+  msgDiv.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> ${checkoutPromos[code].msg}</div>`;
 }
 
 function payCheckoutNow() {
   const paymentMessage = document.getElementById('paymentMessage');
 
   if (!checkoutState.verifiedMobile) {
-    if (paymentMessage) paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Verify mobile number first.</div>`;
+    paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Verify mobile number first.</div>`;
     return;
   }
 
   if (!validateCheckoutDetails()) {
-    if (paymentMessage) paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Enter valid address and email details first.</div>`;
+    paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Enter valid address and email details first.</div>`;
     return;
   }
 
   const customer = JSON.parse(sessionStorage.getItem('checkout_customer') || '{}');
-
-  if (paymentMessage) paymentMessage.innerHTML = `<div class="checkout-alert info"><i class="fas fa-lock"></i> Opening Razorpay checkout...</div>`;
+  paymentMessage.innerHTML = `<div class="checkout-alert info"><i class="fas fa-lock"></i> Opening Razorpay checkout...</div>`;
 
   const options = {
     key: "rzp_test_YourKeyHere",
@@ -1472,16 +1357,24 @@ function payCheckoutNow() {
     name: "MyEssantia",
     description: "Checkout Payment",
     image: "https://placehold.co/100x100/dcefe7/1d7a68?text=M",
-    handler: function(response) {
+    handler: async function(response) {
       const orderId = "ESS" + Date.now();
-      if (paymentMessage) paymentMessage.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> Payment successful. Order ID: ${orderId}</div>`;
+      paymentMessage.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> Payment successful. Order ID: ${orderId}</div>`;
+
+      cart = [];
+      saveCartToLocalStorage();
+      if (currentUser) {
+        await saveCartToFirebase();
+      }
+      updateCartCount();
+      renderCartItems();
 
       setTimeout(() => {
         closeCheckout();
         alert(
           "Order Confirmed!\n\n" +
           "Order ID: " + orderId + "\n" +
-          "Amount: " + checkoutFormatMoney(checkoutState.total) + "\n" +
+          "Amount: " + checkoutFormatPrice(checkoutState.total) + "\n" +
           "Payment ID: " + response.razorpay_payment_id + "\n" +
           "Customer: " + customer.name
         );
@@ -1500,7 +1393,7 @@ function payCheckoutNow() {
     },
     modal: {
       ondismiss: function() {
-        if (paymentMessage) paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Payment popup closed.</div>`;
+        paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Payment popup closed.</div>`;
       }
     }
   };
@@ -1508,24 +1401,18 @@ function payCheckoutNow() {
   const rzp = new Razorpay(options);
 
   rzp.on("payment.failed", function(response) {
-    if (paymentMessage) paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Payment failed: ${response.error.description}</div>`;
+    paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Payment failed: ${response.error.description}</div>`;
   });
 
   rzp.open();
 }
 
 function extractCheckoutAddressData(place) {
-  const parts = {
-    city: '',
-    state: '',
-    pincode: ''
-  };
-
+  const parts = { city: '', state: '', pincode: '' };
   if (!place || !place.address_components) return parts;
 
   place.address_components.forEach(component => {
     const types = component.types || [];
-
     if (types.includes('postal_code')) parts.pincode = component.long_name;
     if (types.includes('administrative_area_level_1')) parts.state = component.long_name;
     if (types.includes('locality')) parts.city = component.long_name;
@@ -1540,36 +1427,28 @@ function extractCheckoutAddressData(place) {
 function fillCheckoutAddress(place) {
   if (!place) return;
 
-  if (place.formatted_address && document.getElementById('addressLine')) {
+  if (place.formatted_address) {
     document.getElementById('addressLine').value = place.formatted_address;
   }
 
-  const extracted = extractCheckoutAddressData(place);
-
-  if (extracted.city && document.getElementById('city')) {
-    document.getElementById('city').value = extracted.city;
-  }
-  if (extracted.state && document.getElementById('state')) {
-    document.getElementById('state').value = extracted.state;
-  }
-  if (extracted.pincode && document.getElementById('pincode')) {
-    document.getElementById('pincode').value = extracted.pincode;
-  }
+  const data = extractCheckoutAddressData(place);
+  if (data.city) document.getElementById('city').value = data.city;
+  if (data.state) document.getElementById('state').value = data.state;
+  if (data.pincode) document.getElementById('pincode').value = data.pincode;
 }
 
 function initCheckoutAutocomplete() {
-  const addressInput = document.getElementById('addressLine');
-  if (!addressInput || !window.google || !google.maps || !google.maps.places) return;
+  const input = document.getElementById('addressLine');
+  if (!input || !window.google || !google.maps || !google.maps.places) return;
 
-  checkoutState.autocomplete = new google.maps.places.Autocomplete(addressInput, {
+  checkoutState.autocomplete = new google.maps.places.Autocomplete(input, {
     types: ['address'],
     componentRestrictions: { country: 'in' },
     fields: ['formatted_address', 'address_components', 'geometry', 'name']
   });
 
   checkoutState.autocomplete.addListener('place_changed', function() {
-    const place = checkoutState.autocomplete.getPlace();
-    fillCheckoutAddress(place);
+    fillCheckoutAddress(checkoutState.autocomplete.getPlace());
   });
 }
 
@@ -1596,11 +1475,9 @@ function loadCheckoutGooglePlaces() {
 }
 
 // ========== INITIALIZATION ==========
-// Setup cart button listener when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
   console.log('DOM Content Loaded');
   
-  // Load modals first
   loadCommonModals().then(() => {
     setupCartButtonListener();
     updateCartCount();
@@ -1608,15 +1485,12 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// Also try to load modals on window load
 window.addEventListener('load', function() {
   console.log('Window Loaded');
   
   if (!document.getElementById('cart-modal')) {
-    console.log('Loading modals on window load');
     loadCommonModals();
   }
   
-  // Log cart state on load
   console.log('Current cart on load:', cart);
 });
