@@ -1,0 +1,737 @@
+<div id="checkout-overlay" class="checkout-overlay">
+  <div class="checkout-popup">
+    <button class="checkout-close-btn" id="close-checkout-modal">
+      <i class="fas fa-xmark"></i>
+    </button>
+
+    <div class="checkout-stack">
+      <div class="checkout-hero">
+        <div class="checkout-hero-top">
+          <div class="checkout-brand">
+            <h1>my<span>essantia</span></h1>
+            <p>smart checkout experience</p>
+          </div>
+          <div class="checkout-pill">Fast & Secure</div>
+        </div>
+
+        <div class="checkout-progress-wrap">
+          <div class="checkout-progress-track">
+            <div class="checkout-progress-fill" id="progressFill"></div>
+          </div>
+
+          <div class="checkout-stepper">
+            <div class="checkout-step active" id="stepLogin">
+              <div class="checkout-step-dot">1</div>
+              <div class="checkout-step-title">Step 1</div>
+              <div class="checkout-step-status" id="stepStatus1">In Progress</div>
+            </div>
+            <div class="checkout-step" id="stepAddress">
+              <div class="checkout-step-dot">2</div>
+              <div class="checkout-step-title">Step 2</div>
+              <div class="checkout-step-status" id="stepStatus2">Pending</div>
+            </div>
+            <div class="checkout-step" id="stepPayment">
+              <div class="checkout-step-dot">3</div>
+              <div class="checkout-step-title">Step 3</div>
+              <div class="checkout-step-status" id="stepStatus3">Pending</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="checkout-card">
+        <div class="checkout-head">
+          <h3>Your Cart</h3>
+          <div class="checkout-badge" id="checkoutItemsBadge">0 products</div>
+        </div>
+        <div id="checkoutCartItemsContainer" class="checkout-cart-list"></div>
+      </div>
+
+      <div class="checkout-card">
+        <div class="checkout-head">
+          <h3>Login With Mobile</h3>
+          <div class="checkout-badge">Step 1</div>
+        </div>
+
+        <div class="checkout-field-group">
+          <div class="checkout-field">
+            <label>Mobile Number</label>
+            <div class="checkout-mobile-row">
+              <div class="checkout-prefix">+91</div>
+              <input type="tel" id="mobileInput" placeholder="9876543210" maxlength="10" />
+            </div>
+          </div>
+
+          <div id="otpBlock" class="checkout-field hidden">
+            <label>Enter OTP</label>
+            <div class="checkout-otp-grid">
+              <input type="text" maxlength="1" class="otp-digit" />
+              <input type="text" maxlength="1" class="otp-digit" />
+              <input type="text" maxlength="1" class="otp-digit" />
+              <input type="text" maxlength="1" class="otp-digit" />
+              <input type="text" maxlength="1" class="otp-digit" />
+              <input type="text" maxlength="1" class="otp-digit" />
+            </div>
+          </div>
+
+          <div class="checkout-grid-2">
+            <button id="sendOtpBtn" class="checkout-btn checkout-btn-primary">
+              <i class="fas fa-paper-plane"></i> Send OTP
+            </button>
+            <button id="verifyOtpBtn" class="checkout-btn checkout-btn-soft hidden">
+              <i class="fas fa-check-circle"></i> Verify OTP
+            </button>
+          </div>
+
+          <div id="loginMessage"></div>
+        </div>
+      </div>
+
+      <div id="detailsCard" class="checkout-card hidden">
+        <div class="checkout-head">
+          <h3>Address & Email</h3>
+          <div class="checkout-badge">Step 2</div>
+        </div>
+
+        <div class="checkout-field-group">
+          <div class="checkout-field">
+            <label>Full Name</label>
+            <input type="text" id="fullName" placeholder="Rahul Sharma" />
+          </div>
+
+          <div class="checkout-field">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="rahul@example.com" />
+          </div>
+
+          <div class="checkout-field">
+            <label>Address</label>
+            <input type="text" id="addressLine" placeholder="Type your delivery address" autocomplete="off" />
+            <div class="checkout-field-note">
+              Start typing your address, choose a Google suggestion, and city, state, pincode will auto-fill.
+            </div>
+          </div>
+
+          <div class="checkout-field">
+            <label>Landmark / Apartment / Area</label>
+            <textarea id="landmark" placeholder="Optional extra delivery info"></textarea>
+          </div>
+
+          <div class="checkout-grid-2">
+            <div class="checkout-field">
+              <label>City</label>
+              <input type="text" id="city" placeholder="Mumbai" />
+            </div>
+
+            <div class="checkout-field">
+              <label>Pincode</label>
+              <input type="text" id="pincode" placeholder="400001" maxlength="6" />
+            </div>
+          </div>
+
+          <div class="checkout-grid-2">
+            <div class="checkout-field">
+              <label>State</label>
+              <input type="text" id="state" placeholder="Maharashtra" />
+            </div>
+
+            <div class="checkout-field">
+              <label>Alternate Phone</label>
+              <input type="tel" id="altPhone" placeholder="Optional" />
+            </div>
+          </div>
+
+          <button class="checkout-btn checkout-btn-primary" id="continueToPaymentBtn">
+            Continue to Payment
+          </button>
+
+          <div id="detailsMessage"></div>
+        </div>
+      </div>
+
+      <div id="paymentCard" class="checkout-card hidden">
+        <div class="checkout-head">
+          <h3>Payment Gateway</h3>
+          <div class="checkout-badge">Step 3</div>
+        </div>
+
+        <div class="checkout-field-group">
+          <div class="checkout-field">
+            <label>Promo Code</label>
+            <div class="checkout-promo-row">
+              <input type="text" id="promoCode" placeholder="Enter promo code" />
+              <button class="checkout-btn checkout-btn-soft promo-inline-btn" id="applyPromoBtn">Apply</button>
+            </div>
+          </div>
+
+          <div id="promoMessage"></div>
+
+          <div class="checkout-payment-box">
+            <div class="checkout-payment-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div>
+              <h4>Pay Online With Razorpay</h4>
+              <p>UPI, Cards, Wallets, Netbanking</p>
+            </div>
+          </div>
+
+          <div class="checkout-summary">
+            <div class="checkout-summary-row">
+              <span>Subtotal</span>
+              <span id="subtotal">₹0.00</span>
+            </div>
+            <div id="discountRow" class="checkout-summary-row hidden">
+              <span>Discount</span>
+              <span id="discountAmount">-₹0.00</span>
+            </div>
+            <div class="checkout-summary-row">
+              <span>Shipping</span>
+              <span>Free</span>
+            </div>
+            <div class="checkout-summary-row total">
+              <span>Total</span>
+              <span id="totalAmount">₹0.00</span>
+            </div>
+          </div>
+
+          <div class="checkout-footer-stick">
+            <button class="checkout-btn checkout-btn-primary" id="payNowBtn">
+              <i class="fas fa-lock"></i> Checkout
+            </button>
+          </div>
+
+          <div id="paymentMessage"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --checkout-bg: #e9f5f1;
+    --checkout-surface: #fdfefd;
+    --checkout-panel: #ffffff;
+    --checkout-text: #16312c;
+    --checkout-muted: #60756f;
+    --checkout-line: #d8ebe4;
+    --checkout-accent: #1d7a68;
+    --checkout-accent-2: #114b40;
+    --checkout-accent-soft: #def2ec;
+    --checkout-success: #157347;
+    --checkout-danger: #c24132;
+    --checkout-shadow: 0 30px 70px rgba(17, 75, 64, 0.16);
+  }
+
+  .checkout-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(12, 31, 27, 0.5);
+    backdrop-filter: blur(10px);
+    display: none;
+    justify-content: flex-end;
+    z-index: 10050;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .checkout-overlay.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .checkout-popup {
+    width: 100%;
+    max-width: 440px;
+    height: 100vh;
+    background: var(--checkout-surface);
+    box-shadow: var(--checkout-shadow);
+    transform: translateX(100%);
+    transition: transform 0.28s ease;
+    overflow-y: auto;
+    padding: 18px;
+    position: relative;
+    color: var(--checkout-text);
+    font-family: "Outfit", sans-serif;
+  }
+
+  .checkout-overlay.active .checkout-popup {
+    transform: translateX(0);
+  }
+
+  .checkout-close-btn {
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--checkout-accent-soft);
+    color: var(--checkout-text);
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .checkout-stack {
+    display: grid;
+    gap: 16px;
+    padding-top: 8px;
+  }
+
+  .checkout-hero {
+    background: linear-gradient(145deg, #f7fffc, #dbefe8);
+    border: 1px solid var(--checkout-line);
+    border-radius: 26px;
+    padding: 18px;
+  }
+
+  .checkout-hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding-right: 48px;
+    margin-bottom: 18px;
+  }
+
+  .checkout-brand h1 {
+    font-size: 22px;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    margin-bottom: 6px;
+  }
+
+  .checkout-brand h1 span {
+    color: var(--checkout-accent);
+  }
+
+  .checkout-brand p {
+    font-size: 12px;
+    color: var(--checkout-muted);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+  }
+
+  .checkout-pill {
+    background: rgba(255,255,255,0.84);
+    border: 1px solid rgba(29,122,104,0.12);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--checkout-accent-2);
+    white-space: nowrap;
+  }
+
+  .checkout-progress-wrap {
+    position: relative;
+    padding-top: 2px;
+  }
+
+  .checkout-progress-track {
+    position: absolute;
+    top: 20px;
+    left: 12%;
+    width: 76%;
+    height: 8px;
+    background: rgba(17,75,64,0.12);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .checkout-progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--checkout-accent), var(--checkout-accent-2));
+    transition: width 0.35s ease;
+  }
+
+  .checkout-stepper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .checkout-step {
+    text-align: center;
+  }
+
+  .checkout-step-dot {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    border: 2px solid rgba(17,75,64,0.18);
+    background: #ffffff;
+    color: var(--checkout-muted);
+    transition: all 0.2s ease;
+  }
+
+  .checkout-step-title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    margin-bottom: 3px;
+  }
+
+  .checkout-step-status {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--checkout-muted);
+  }
+
+  .checkout-step.active .checkout-step-dot,
+  .checkout-step.completed .checkout-step-dot {
+    background: linear-gradient(135deg, var(--checkout-accent), var(--checkout-accent-2));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 10px 22px rgba(17,75,64,0.18);
+  }
+
+  .checkout-step.active .checkout-step-title,
+  .checkout-step.completed .checkout-step-title {
+    color: var(--checkout-accent-2);
+  }
+
+  .checkout-step.completed .checkout-step-status {
+    color: var(--checkout-success);
+  }
+
+  .checkout-step.active .checkout-step-status {
+    color: var(--checkout-accent);
+  }
+
+  .checkout-card {
+    background: var(--checkout-panel);
+    border: 1px solid var(--checkout-line);
+    border-radius: 26px;
+    padding: 16px;
+  }
+
+  .checkout-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .checkout-head h3 {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+  }
+
+  .checkout-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--checkout-accent-2);
+    background: #e9f7f2;
+    border-radius: 999px;
+    padding: 6px 10px;
+  }
+
+  .checkout-cart-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .checkout-cart-item {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 18px;
+    border: 1px solid #e2f0eb;
+    background: #f8fdfb;
+  }
+
+  .checkout-thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background-size: cover;
+    background-position: center;
+    background-color: #dcf0ea;
+  }
+
+  .checkout-item-name {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .checkout-item-sub {
+    font-size: 12px;
+    color: var(--checkout-muted);
+    font-weight: 600;
+  }
+
+  .checkout-item-price {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--checkout-accent-2);
+    white-space: nowrap;
+  }
+
+  .checkout-field-group {
+    display: grid;
+    gap: 12px;
+  }
+
+  .checkout-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--checkout-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .checkout-field-note {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--checkout-muted);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .checkout-mobile-row,
+  .checkout-promo-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .checkout-prefix {
+    min-width: 64px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: var(--checkout-accent-soft);
+    border: 1px solid var(--checkout-line);
+    color: var(--checkout-accent-2);
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  .checkout-overlay input,
+  .checkout-overlay textarea {
+    width: 100%;
+    border: 1px solid var(--checkout-line);
+    border-radius: 14px;
+    background: #fff;
+    padding: 13px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--checkout-text);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .checkout-overlay textarea {
+    resize: vertical;
+    min-height: 78px;
+  }
+
+  .checkout-overlay input:focus,
+  .checkout-overlay textarea:focus {
+    border-color: var(--checkout-accent);
+    box-shadow: 0 0 0 4px rgba(29,122,104,0.08);
+  }
+
+  .checkout-otp-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+
+  .otp-digit {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 800;
+    padding: 12px 0 !important;
+  }
+
+  .checkout-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .checkout-btn {
+    width: 100%;
+    border: 0;
+    cursor: pointer;
+    border-radius: 16px;
+    padding: 14px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+
+  .checkout-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .checkout-btn-primary {
+    background: linear-gradient(135deg, var(--checkout-accent), var(--checkout-accent-2));
+    color: #fff;
+    box-shadow: 0 14px 28px rgba(17,75,64,0.18);
+  }
+
+  .checkout-btn-soft {
+    background: #eef8f4;
+    color: var(--checkout-accent-2);
+    border: 1px solid var(--checkout-line);
+  }
+
+  .promo-inline-btn {
+    width: auto;
+    padding-inline: 16px;
+  }
+
+  .checkout-summary {
+    display: grid;
+    gap: 10px;
+  }
+
+  .checkout-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--checkout-muted);
+    font-weight: 700;
+  }
+
+  .checkout-summary-row.total {
+    padding-top: 10px;
+    border-top: 1px dashed var(--checkout-line);
+    font-size: 16px;
+    color: var(--checkout-text);
+    font-weight: 800;
+  }
+
+  .checkout-payment-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid var(--checkout-line);
+    background: #f7fcfa;
+    margin-bottom: 12px;
+  }
+
+  .checkout-payment-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: #e2f3ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--checkout-accent-2);
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+
+  .checkout-payment-box h4 {
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 3px;
+  }
+
+  .checkout-payment-box p {
+    font-size: 12px;
+    color: var(--checkout-muted);
+    font-weight: 600;
+  }
+
+  .checkout-alert {
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .checkout-alert.success {
+    background: #e8f7ef;
+    color: var(--checkout-success);
+  }
+
+  .checkout-alert.error {
+    background: #fff1ef;
+    color: var(--checkout-danger);
+  }
+
+  .checkout-alert.info {
+    background: #ebf7f3;
+    color: var(--checkout-accent-2);
+  }
+
+  .checkout-footer-stick {
+    position: sticky;
+    bottom: 0;
+    padding-top: 12px;
+    background: linear-gradient(180deg, rgba(253,254,253,0) 0%, rgba(253,254,253,0.96) 15%, rgba(253,254,253,1) 100%);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .pac-container {
+    z-index: 10100 !important;
+    border-radius: 16px;
+    border: 1px solid var(--checkout-line);
+    box-shadow: 0 24px 50px rgba(17,75,64,0.16);
+    font-family: "Outfit", sans-serif;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .pac-item {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .pac-item:hover {
+    background: #eef8f4;
+  }
+
+  @media (max-width: 520px) {
+    .checkout-popup {
+      max-width: 100%;
+    }
+
+    .checkout-grid-2 {
+      grid-template-columns: 1fr;
+    }
+
+    .checkout-progress-track {
+      left: 10%;
+      width: 80%;
+    }
+  }
+</style>
