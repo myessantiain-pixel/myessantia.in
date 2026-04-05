@@ -727,27 +727,28 @@
       <div class="menu-item-badge" id="reviewsBadge">0</div>
     </div>
 
-    <div class="menu-item" onclick="loadPage('request')" id="menuRequest">
-      <div class="menu-item-icon">
-        <i class="fa-solid fa-envelope-open-text"></i>
-      </div>
-      <div class="menu-item-content">
-        <div class="menu-item-title">request</div>
-        <div class="menu-item-desc">user submitted enquiries</div>
-      </div>
-      <div class="menu-item-badge" id="requestBadge">0</div>
-    </div>
+<!-- Add these two menu items inside .menu-items -->
+<div class="menu-item" onclick="loadPage('request')" id="menuRequest">
+  <div class="menu-item-icon">
+    <i class="fa-solid fa-envelope-open-text"></i>
+  </div>
+  <div class="menu-item-content">
+    <div class="menu-item-title">request</div>
+    <div class="menu-item-desc">user enquiries</div>
+  </div>
+  <div class="menu-item-badge" id="requestBadge">0</div>
+</div>
 
-    <div class="menu-item" onclick="loadPage('orders')" id="menuOrders">
-      <div class="menu-item-icon">
-        <i class="fa-solid fa-box-open"></i>
-      </div>
-      <div class="menu-item-content">
-        <div class="menu-item-title">orders</div>
-        <div class="menu-item-desc">all placed orders</div>
-      </div>
-      <div class="menu-item-badge" id="ordersBadge">0</div>
-    </div>
+<div class="menu-item" onclick="loadPage('orders')" id="menuOrders">
+  <div class="menu-item-icon">
+    <i class="fa-solid fa-box-open"></i>
+  </div>
+  <div class="menu-item-content">
+    <div class="menu-item-title">orders</div>
+    <div class="menu-item-desc">all placed orders</div>
+  </div>
+  <div class="menu-item-badge" id="ordersBadge">0</div>
+</div>
   </div>
 
   <div class="menu-footer">
@@ -1073,11 +1074,13 @@ async function loadPage(page) {
     return;
   }
 
+  currentPage = page;
+
   menuDashboard.classList.remove('active');
   menuNotify.classList.remove('active');
   menuReviews.classList.remove('active');
-  menuRequest.classList.remove('active');
-  menuOrders.classList.remove('active');
+  if (menuRequest) menuRequest.classList.remove('active');
+  if (menuOrders) menuOrders.classList.remove('active');
 
   if (page === 'dashboard') {
     menuDashboard.classList.add('active');
@@ -1117,6 +1120,20 @@ async function loadPage(page) {
   } finally {
     loadingOverlay.classList.remove('show');
   }
+}
+
+async function loadRequestPage() {
+  const response = await fetch('request.html');
+  if (!response.ok) throw new Error(`Failed to load request.html: ${response.status}`);
+  pageContainer.innerHTML = await response.text();
+  initializeRequestPage();
+}
+
+async function loadOrdersPage() {
+  const response = await fetch('orders.html');
+  if (!response.ok) throw new Error(`Failed to load orders.html: ${response.status}`);
+  pageContainer.innerHTML = await response.text();
+  initializeOrdersPage();
 }
 
 async function loadDashboardPage() {
@@ -1223,30 +1240,16 @@ async function loadReviewsPage() {
   initializeReviewsPage();
 }
 
-async function loadRequestPage() {
-  const response = await fetch('request.html');
-  if (!response.ok) throw new Error(`Failed to load request.html: ${response.status}`);
-  pageContainer.innerHTML = await response.text();
-  initializeRequestPage();
-}
-
-async function loadOrdersPage() {
-  const response = await fetch('orders.html');
-  if (!response.ok) throw new Error(`Failed to load orders.html: ${response.status}`);
-  pageContainer.innerHTML = await response.text();
-  initializeOrdersPage();
-}
-
-function initializeRequestPage() {
+  function initializeRequestPage() {
   window.requestItems = [];
   window.filteredRequestItems = [];
   window.currentRequestFilter = 'all';
   window.currentRequestPage = 1;
   window.requestItemsPerPage = 10;
 
-  document.querySelectorAll('.request-filter-tab').forEach(tab => {
+  document.querySelectorAll('.request-page .request-filter-tab').forEach(tab => {
     tab.addEventListener('click', function() {
-      document.querySelectorAll('.request-filter-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.request-page .request-filter-tab').forEach(t => t.classList.remove('active'));
       this.classList.add('active');
       window.currentRequestFilter = this.dataset.filter;
       window.currentRequestPage = 1;
@@ -1344,7 +1347,7 @@ function renderRequestItems() {
       <td><strong>${item.name || '-'}</strong></td>
       <td>${item.email || '-'}</td>
       <td>${item.phone || '-'}</td>
-      <td style="max-width:240px;">${(item.message || '').slice(0, 90)}${(item.message || '').length > 90 ? '...' : ''}</td>
+      <td>${(item.message || '').slice(0, 90)}${(item.message || '').length > 90 ? '...' : ''}</td>
       <td>${Array.isArray(item.images) ? item.images.length : 0}</td>
       <td><span class="request-status-badge ${(item.status || 'received').toLowerCase()}">${item.status || 'received'}</span></td>
       <td>${item.requestDate.toLocaleDateString('en-IN')}</td>
@@ -1452,9 +1455,9 @@ function initializeOrdersPage() {
   window.currentOrderPage = 1;
   window.orderItemsPerPage = 10;
 
-  document.querySelectorAll('.order-filter-tab').forEach(tab => {
+  document.querySelectorAll('.orders-page .order-filter-tab').forEach(tab => {
     tab.addEventListener('click', function() {
-      document.querySelectorAll('.order-filter-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.orders-page .order-filter-tab').forEach(t => t.classList.remove('active'));
       this.classList.add('active');
       window.currentOrderFilter = this.dataset.filter;
       window.currentOrderPage = 1;
@@ -1627,6 +1630,16 @@ window.viewOrderJson = function(id) {
   alert(JSON.stringify(order, null, 2));
 };
 
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
+}
+
 db.collection('notifications').onSnapshot((snapshot) => {
   const pendingCount = snapshot.docs.filter(doc => {
     const data = doc.data();
@@ -1646,6 +1659,32 @@ db.collection('enquiries').onSnapshot((snapshot) => {
 db.collection('orders').onSnapshot((snapshot) => {
   ordersBadge.textContent = snapshot.size;
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    addLogoutButton();
+  }, 1000);
+});
+
+window.logout = logout;
+
+document.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter' && document.getElementById('loginOverlay') && !document.getElementById('loginOverlay').classList.contains('hidden')) {
+    handleLogin(e);
+  }
+});
+
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.attributeName === 'class') {
+      if (!document.getElementById('loginOverlay').classList.contains('hidden')) {
+        document.getElementById('email').focus();
+      }
+    }
+  });
+});
+
+observer.observe(document.getElementById('loginOverlay'), { attributes: true });
 
 function showNotification(message, type = 'info') {
   const notification = document.createElement('div');
