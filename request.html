@@ -1,71 +1,76 @@
 <div class="filters-bar">
   <div class="search-box">
     <i class="fa-solid fa-search"></i>
-    <input type="text" id="search-requests-page" placeholder="search name, email, phone or message...">
+    <input type="text" id="search-requests-admin" placeholder="search name, email, phone or message...">
   </div>
 
   <div class="filter-tabs">
-    <span class="filter-tab request-filter-tab active" data-filter="all">all</span>
-    <span class="filter-tab request-filter-tab" data-filter="received">received</span>
-    <span class="filter-tab request-filter-tab" data-filter="processing">processing</span>
-    <span class="filter-tab request-filter-tab" data-filter="completed">completed</span>
-    <span class="filter-tab request-filter-tab" data-filter="with-image">with images</span>
+    <span class="filter-tab active" data-filter="all">all</span>
+    <span class="filter-tab" data-filter="received">received</span>
+    <span class="filter-tab" data-filter="processing">processing</span>
+    <span class="filter-tab" data-filter="completed">completed</span>
+    <span class="filter-tab" data-filter="with-image">with images</span>
+  </div>
+
+  <div class="action-group" style="display:flex; gap:8px; flex-wrap:wrap;">
+    <button class="export-btn" onclick="exportAdminRequests()">
+      <i class="fa-solid fa-download"></i> export
+    </button>
   </div>
 </div>
 
 <div class="stats-grid">
   <div class="stat-card">
-    <div class="stat-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+    <div class="stat-icon"><i class="fa-regular fa-message"></i></div>
     <div class="stat-info">
-      <h3 id="total-requests-count">0</h3>
+      <h3 id="requests-total">0</h3>
       <p>total requests</p>
     </div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon"><i class="fa-solid fa-inbox"></i></div>
+    <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
     <div class="stat-info">
-      <h3 id="received-requests-count">0</h3>
-      <p>received</p>
+      <h3 id="requests-open">0</h3>
+      <p>open requests</p>
     </div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon"><i class="fa-solid fa-gears"></i></div>
+    <div class="stat-icon"><i class="fa-regular fa-image"></i></div>
     <div class="stat-info">
-      <h3 id="processing-requests-count">0</h3>
-      <p>processing</p>
-    </div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-icon"><i class="fa-solid fa-image"></i></div>
-    <div class="stat-info">
-      <h3 id="request-images-count">0</h3>
+      <h3 id="requests-images">0</h3>
       <p>with images</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon"><i class="fa-regular fa-envelope"></i></div>
+    <div class="stat-info">
+      <h3 id="requests-users">0</h3>
+      <p>unique emails</p>
     </div>
   </div>
 </div>
 
-<div id="requests-loading" class="loading-state" style="display:none;">
+<div id="requests-loading" class="loading-spinner" style="display:none; justify-content:center; padding:40px;">
   <div class="spinner"></div>
 </div>
 
 <div class="reviews-table">
   <div class="table-header">
-    <h2><i class="fa-solid fa-envelope-open-text"></i> enquiry requests</h2>
+    <h2><i class="fa-regular fa-message"></i> enquiry requests</h2>
   </div>
 
   <div id="requests-empty-state" class="empty-state" style="display:none;">
     <i class="fa-regular fa-folder-open"></i>
-    <h3>no requests found</h3>
-    <p>No enquiry submissions match this filter.</p>
+    <h3>no requests yet</h3>
+    <p>new submitted enquiries will appear here.</p>
   </div>
 
-  <div class="table-wrapper">
+  <div class="table-wrapper" id="requests-table-wrapper">
     <table>
       <thead>
         <tr>
-          <th>name</th>
-          <th>email</th>
-          <th>phone</th>
+          <th>customer</th>
+          <th>contact</th>
           <th>message</th>
           <th>images</th>
           <th>status</th>
@@ -89,97 +94,3 @@
     </button>
   </div>
 </div>
-
-<style>
-.request-status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 40px;
-  font-weight: 700;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  border: 2px solid #000;
-}
-.request-status-badge.received { background:#e8eaf6; color:#283593; }
-.request-status-badge.processing { background:#fff3e0; color:#ef6c00; }
-.request-status-badge.completed { background:#e8f5e9; color:#2e7d32; }
-.request-status-badge.cancelled { background:#ffebee; color:#c62828; }
-.request-action-btns {
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-}
-.request-action-btns button {
-  width:34px;
-  height:34px;
-  border-radius:50%;
-  border:2px solid #000;
-  background:#fff;
-  cursor:pointer;
-}
-.request-action-btns button:hover {
-  background:#000;
-  color:#d4af37;
-  border-color:#d4af37;
-}
-.request-card {
-  background:#fff;
-  border:2px solid #000;
-  border-radius:20px;
-  padding:16px;
-  margin-bottom:12px;
-  box-shadow:4px 4px 0 rgba(0,0,0,0.1);
-}
-.request-card-head {
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  align-items:flex-start;
-  margin-bottom:12px;
-  border-bottom:2px solid #d4af37;
-  padding-bottom:10px;
-}
-.request-card-head h4 {
-  font-size:1rem;
-  font-weight:800;
-  margin:0 0 4px;
-}
-.request-card-head p {
-  font-size:0.75rem;
-  color:#666;
-  margin:0;
-}
-.request-card-body {
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  font-size:0.85rem;
-}
-.request-card-body i {
-  color:#d4af37;
-  width:18px;
-}
-.request-card-actions {
-  margin-top:12px;
-  display:flex;
-  gap:8px;
-}
-.request-card-actions button {
-  flex:1;
-  padding:10px 12px;
-  border-radius:30px;
-  border:2px solid #000;
-  background:#fff;
-  font-weight:700;
-  text-transform:uppercase;
-  cursor:pointer;
-  font-size:0.72rem;
-}
-.request-card-actions button:hover {
-  background:#000;
-  color:#d4af37;
-  border-color:#d4af37;
-}
-</style>
