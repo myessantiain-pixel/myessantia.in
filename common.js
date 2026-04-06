@@ -22,6 +22,9 @@ let products = [];
 // ========== CHECKOUT STATE ==========
 let checkoutLoaded = false;
 let checkoutMapsLoaded = false;
+let cartButtonListenerBound = false;
+let modalListenersBound = false;
+
 let checkoutState = {
   appliedPromo: null,
   subtotal: 0,
@@ -38,17 +41,9 @@ const checkoutPromos = {
   SAVE100: { type: "fixed", value: 100, msg: "₹100 OFF applied!" }
 };
 
-const shippingOptions = {
-  standard: {
-    label: "Standard Shipping",
-    fee: 60,
-    eta: "3-5 business days"
-  },
-  express: {
-    label: "Express Shipping",
-    fee: 140,
-    eta: "1-2 business days"
-  }
+const checkoutShippingOptions = {
+  standard: { type: "standard", label: "Standard Shipping", value: 60, eta: "3 - 5 business days" },
+  express: { type: "express", label: "Express Shipping", value: 140, eta: "1 - 2 business days" }
 };
 
 // ========== LOAD CART FROM LOCALSTORAGE ON INIT ==========
@@ -83,6 +78,7 @@ loadCartFromLocalStorage();
 // ========== FIREBASE AUTH STATE OBSERVER ==========
 auth.onAuthStateChanged(async (user) => {
   console.log('Auth state changed:', user ? 'Logged in' : 'Logged out');
+
   if (user) {
     currentUser = {
       uid: user.uid,
@@ -99,6 +95,7 @@ auth.onAuthStateChanged(async (user) => {
     await loadProducts();
 
     updateProfileIcon();
+
     if (document.getElementById('profile-content')) {
       renderProfileContent();
     }
@@ -108,6 +105,7 @@ auth.onAuthStateChanged(async (user) => {
     currentUser = null;
     localStorage.removeItem('MyEssantia_user');
     updateProfileIcon();
+
     if (document.getElementById('profile-content')) {
       renderProfileContent();
     }
@@ -116,8 +114,9 @@ auth.onAuthStateChanged(async (user) => {
 
 function initTopBarScroll() {
   const topBarContent = document.querySelector('.top-bar-scroll-content');
-  if (!topBarContent) return;
+  if (!topBarContent || topBarContent.dataset.initialized === 'true') return;
 
+  topBarContent.dataset.initialized = 'true';
   topBarContent.innerHTML = topBarContent.innerHTML + topBarContent.innerHTML;
 
   let position = 0;
@@ -241,6 +240,13 @@ function checkoutFormatPrice(price) {
   return "₹" + Number(price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
 
+function getCheckoutShippingCharge() {
+  if (checkoutState.shippingMethod === 'standard') {
+    return checkoutState.subtotal > 999 ? 0 : checkoutShippingOptions.standard.value;
+  }
+  return checkoutShippingOptions.express.value;
+}
+
 // ========== FALLBACK COMPONENTS ==========
 function getFallbackHeader() {
   return `
@@ -318,7 +324,9 @@ function setupEventListeners() {
   const mobileDropdown = document.getElementById('mobileDropdown');
   const mobileMenuClose = document.getElementById('mobileMenuClose');
 
-  if (mobileMenuToggle && mobileDropdown) {
+  if (mobileMenuToggle && mobileDropdown && !mobileMenuToggle.dataset.listenerBound) {
+    mobileMenuToggle.dataset.listenerBound = 'true';
+
     mobileMenuToggle.addEventListener('click', function(e) {
       e.stopPropagation();
       this.classList.toggle('active');
@@ -364,130 +372,126 @@ function setupEventListeners() {
     });
   }
 
-  document.addEventListener('click', function(e) {
-    const cartIcon = e.target.closest('#cart-icon');
-    if (cartIcon) {
-      e.preventDefault();
-      openCart();
+  if (!document.body.dataset.globalModalClicksBound) {
+    document.body.dataset.globalModalClicksBound = 'true';
 
-      if (mobileDropdown && mobileDropdown.classList.contains('show')) {
-        mobileMenuToggle?.classList.remove('active');
-        mobileDropdown.classList.remove('show');
-        document.body.classList.remove('menu-open');
-        document.body.style.overflow = '';
+    document.addEventListener('click', function(e) {
+      const cartIcon = e.target.closest('#cart-icon');
+      if (cartIcon) {
+        e.preventDefault();
+        openCart();
+
+        if (mobileDropdown && mobileDropdown.classList.contains('show')) {
+          mobileMenuToggle?.classList.remove('active');
+          mobileDropdown.classList.remove('show');
+          document.body.classList.remove('menu-open');
+          document.body.style.overflow = '';
+        }
       }
-    }
-  });
+    });
 
-  document.addEventListener('click', function(e) {
-    const profileIcon = e.target.closest('#profile-icon');
-    if (profileIcon) {
-      e.preventDefault();
-      openProfile();
+    document.addEventListener('click', function(e) {
+      const profileIcon = e.target.closest('#profile-icon');
+      if (profileIcon) {
+        e.preventDefault();
+        openProfile();
 
-      if (mobileDropdown && mobileDropdown.classList.contains('show')) {
-        mobileMenuToggle?.classList.remove('active');
-        mobileDropdown.classList.remove('show');
-        document.body.classList.remove('menu-open');
-        document.body.style.overflow = '';
+        if (mobileDropdown && mobileDropdown.classList.contains('show')) {
+          mobileMenuToggle?.classList.remove('active');
+          mobileDropdown.classList.remove('show');
+          document.body.classList.remove('menu-open');
+          document.body.style.overflow = '';
+        }
       }
-    }
-  });
+    });
 
-  document.addEventListener('click', function(e) {
-    const searchIcon = e.target.closest('#search-icon');
-    if (searchIcon) {
-      e.preventDefault();
-      openSearch();
+    document.addEventListener('click', function(e) {
+      const searchIcon = e.target.closest('#search-icon');
+      if (searchIcon) {
+        e.preventDefault();
+        openSearch();
 
-      if (mobileDropdown && mobileDropdown.classList.contains('show')) {
-        mobileMenuToggle?.classList.remove('active');
-        mobileDropdown.classList.remove('show');
-        document.body.classList.remove('menu-open');
-        document.body.style.overflow = '';
+        if (mobileDropdown && mobileDropdown.classList.contains('show')) {
+          mobileMenuToggle?.classList.remove('active');
+          mobileDropdown.classList.remove('show');
+          document.body.classList.remove('menu-open');
+          document.body.style.overflow = '';
+        }
       }
-    }
-  });
+    });
+
+    window.addEventListener('click', function(e) {
+      const cartModal = document.getElementById('cart-modal');
+      const profileModal = document.getElementById('profile-modal');
+      const searchModal = document.getElementById('search-modal');
+      const checkoutOverlay = document.getElementById('checkout-overlay');
+
+      if (e.target === cartModal) closeModal('cart-modal');
+      if (e.target === profileModal) closeModal('profile-modal');
+      if (e.target === searchModal) closeModal('search-modal');
+      if (e.target === checkoutOverlay) closeCheckout();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        if (mobileDropdown && mobileDropdown.classList.contains('show')) {
+          mobileMenuToggle?.classList.remove('active');
+          mobileDropdown.classList.remove('show');
+          document.body.classList.remove('menu-open');
+          document.body.style.overflow = '';
+        }
+
+        closeModal('cart-modal');
+        closeModal('profile-modal');
+        closeModal('search-modal');
+        closeCheckout();
+      }
+    });
+
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 768) {
+        if (mobileDropdown && mobileDropdown.classList.contains('show')) {
+          mobileMenuToggle?.classList.remove('active');
+          mobileDropdown.classList.remove('show');
+          document.body.classList.remove('menu-open');
+          document.body.style.overflow = '';
+        }
+      }
+    });
+  }
 
   setupModalListeners();
-
-  window.addEventListener('click', function(e) {
-    const cartModal = document.getElementById('cart-modal');
-    const profileModal = document.getElementById('profile-modal');
-    const searchModal = document.getElementById('search-modal');
-    const checkoutOverlay = document.getElementById('checkout-overlay');
-
-    if (e.target === cartModal) closeModal('cart-modal');
-    if (e.target === profileModal) closeModal('profile-modal');
-    if (e.target === searchModal) closeModal('search-modal');
-    if (e.target === checkoutOverlay) closeCheckout();
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      if (mobileDropdown && mobileDropdown.classList.contains('show')) {
-        mobileMenuToggle?.classList.remove('active');
-        mobileDropdown.classList.remove('show');
-        document.body.classList.remove('menu-open');
-        document.body.style.overflow = '';
-      }
-
-      closeModal('cart-modal');
-      closeModal('profile-modal');
-      closeModal('search-modal');
-      closeCheckout();
-    }
-  });
-
-  window.addEventListener('resize', function() {
-    if (window.innerWidth > 768) {
-      if (mobileDropdown && mobileDropdown.classList.contains('show')) {
-        mobileMenuToggle?.classList.remove('active');
-        mobileDropdown.classList.remove('show');
-        document.body.classList.remove('menu-open');
-        document.body.style.overflow = '';
-      }
-    }
-  });
-
   setupCartButtonListener();
 }
 
 function setupModalListeners() {
-  const closeCart = document.getElementById('close-cart');
-  if (closeCart) {
-    closeCart.addEventListener('click', function(e) {
+  if (modalListenersBound) return;
+  modalListenersBound = true;
+
+  document.addEventListener('click', async function(e) {
+    const closeCart = e.target.closest('#close-cart');
+    if (closeCart) {
       e.preventDefault();
       closeModal('cart-modal');
-    });
-  }
+      return;
+    }
 
-  const closeProfile = document.getElementById('close-profile');
-  if (closeProfile) {
-    closeProfile.addEventListener('click', function(e) {
+    const closeProfile = e.target.closest('#close-profile');
+    if (closeProfile) {
       e.preventDefault();
       closeModal('profile-modal');
-    });
-  }
+      return;
+    }
 
-  const closeSearch = document.getElementById('close-search');
-  if (closeSearch) {
-    closeSearch.addEventListener('click', function(e) {
+    const closeSearch = e.target.closest('#close-search');
+    if (closeSearch) {
       e.preventDefault();
       closeModal('search-modal');
-    });
-  }
+      return;
+    }
 
-  const searchInput = document.getElementById('search-products-input');
-  if (searchInput) {
-    searchInput.addEventListener('input', function() {
-      renderSearchResults(this.value.trim());
-    });
-  }
-
-  const checkoutBtn = document.getElementById('checkout-btn');
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', async function(e) {
+    const checkoutBtn = e.target.closest('#checkout-btn');
+    if (checkoutBtn) {
       e.preventDefault();
 
       if (!currentUser) {
@@ -496,11 +500,10 @@ function setupModalListeners() {
         return;
       }
 
-      if (cart.length === 0) {
-        return;
-      }
+      if (cart.length === 0) return;
 
       saveCartToLocalStorage();
+
       if (currentUser) {
         try {
           await saveCartToFirebase();
@@ -511,12 +514,21 @@ function setupModalListeners() {
 
       closeModal('cart-modal');
       await openCheckout();
-    });
-  }
+    }
+  });
+
+  document.addEventListener('input', function(e) {
+    if (e.target && e.target.id === 'search-products-input') {
+      renderSearchResults(e.target.value.trim());
+    }
+  });
 }
 
 // ========== CART BUTTON SETUP (Event Delegation) ==========
 function setupCartButtonListener() {
+  if (cartButtonListenerBound) return;
+  cartButtonListenerBound = true;
+
   document.addEventListener('click', function(e) {
     const button = e.target.closest('[data-add-to-cart]');
     if (button) {
@@ -531,7 +543,7 @@ function setupCartButtonListener() {
 window.addToCart = async function(productId, button = null) {
   console.log('Adding to cart:', productId);
 
-  if (!button && event) {
+  if (!button && typeof event !== 'undefined') {
     button = event.target?.closest('button');
   }
 
@@ -598,11 +610,11 @@ window.addToCart = async function(productId, button = null) {
 };
 
 window.addToCartLegacy = function(productId) {
-  window.addToCart(productId, event?.target?.closest('button'));
+  window.addToCart(productId, typeof event !== 'undefined' ? event?.target?.closest('button') : null);
 };
 
 window.buyNow = function(productId) {
-  window.addToCart(productId, event?.target?.closest('button'));
+  window.addToCart(productId, typeof event !== 'undefined' ? event?.target?.closest('button') : null);
 };
 
 // ========== CART FUNCTIONS ==========
@@ -731,6 +743,9 @@ function renderCartItems() {
 
 function attachCartButtonListeners() {
   document.querySelectorAll('.decrease-qty').forEach(button => {
+    if (button.dataset.bound === 'true') return;
+    button.dataset.bound = 'true';
+
     button.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -742,6 +757,9 @@ function attachCartButtonListeners() {
   });
 
   document.querySelectorAll('.increase-qty').forEach(button => {
+    if (button.dataset.bound === 'true') return;
+    button.dataset.bound = 'true';
+
     button.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -753,6 +771,9 @@ function attachCartButtonListeners() {
   });
 
   document.querySelectorAll('.remove-from-cart').forEach(button => {
+    if (button.dataset.bound === 'true') return;
+    button.dataset.bound = 'true';
+
     button.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -775,6 +796,7 @@ function updateCartCount() {
 // ========== MODAL FUNCTIONS ==========
 function openCart() {
   const cartModal = document.getElementById('cart-modal');
+
   if (cartModal) {
     renderCartItems();
     cartModal.style.display = 'flex';
@@ -893,9 +915,7 @@ function renderSearchResults(query = '') {
 // ========== LOAD COMMON MODALS ==========
 async function loadCommonModals() {
   try {
-    if (document.getElementById('cart-modal')) {
-      return;
-    }
+    if (document.getElementById('cart-modal')) return;
 
     const response = await fetch('common.html');
     const data = await response.text();
@@ -965,7 +985,6 @@ window.loginWithGoogle = async function() {
 
   try {
     const result = await auth.signInWithPopup(provider);
-
     const isNewUser = result.additionalUserInfo?.isNewUser;
 
     if (isNewUser) {
@@ -1015,7 +1034,8 @@ function updateProfileIcon() {
 // ===== INFINITE SCROLL STRIPS =====
 function initInfiniteScroll() {
   const topBarContent = document.querySelector('.top-bar-scroll-content');
-  if (topBarContent) {
+  if (topBarContent && topBarContent.dataset.infiniteScroll !== 'true') {
+    topBarContent.dataset.infiniteScroll = 'true';
     const originalHTML = topBarContent.innerHTML;
     topBarContent.innerHTML = originalHTML + originalHTML;
 
@@ -1036,7 +1056,8 @@ function initInfiniteScroll() {
   }
 
   const valueStripScroll = document.querySelector('.value-strip-scroll');
-  if (valueStripScroll) {
+  if (valueStripScroll && valueStripScroll.dataset.infiniteScroll !== 'true') {
+    valueStripScroll.dataset.infiniteScroll = 'true';
     const originalHTML = valueStripScroll.innerHTML;
     valueStripScroll.innerHTML = originalHTML + originalHTML;
 
@@ -1062,213 +1083,178 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ========== CHECKOUT DYNAMIC MODAL ==========
-function getCheckoutMarkup() {
+function getFallbackCheckoutMarkup() {
   return `
     <div id="checkout-overlay" class="checkout-overlay">
-      <div class="checkout-shell">
-        <button id="close-checkout-modal" class="checkout-close-btn" aria-label="Close checkout">
+      <div class="checkout-modal">
+        <button id="close-checkout-modal" class="checkout-close-btn">
           <i class="fa-solid fa-xmark"></i>
         </button>
 
         <div class="checkout-header">
-          <div>
-            <div class="checkout-kicker">Secure Checkout</div>
-            <h2>Complete your order</h2>
-            <p>Fast delivery, clean summary, and easy payment.</p>
-          </div>
-          <div class="checkout-badge">
-            <i class="fa-solid fa-shield-heart"></i>
-            100% secure
-          </div>
+          <h2>Checkout</h2>
+          <p>Complete your order details</p>
         </div>
 
-        <div class="checkout-progress">
-          <div class="checkout-progress-track">
+        <div class="checkout-progress-wrapper">
+          <div class="checkout-progress-bar">
             <div id="progressFill" class="checkout-progress-fill"></div>
           </div>
+
           <div class="checkout-steps">
             <div id="stepAddress" class="checkout-step active">
-              <div class="checkout-step-number">1</div>
-              <div>
-                <div class="checkout-step-title">Delivery Address</div>
-                <div id="stepStatus1" class="checkout-step-status">In Progress</div>
+              <div class="checkout-step-circle">1</div>
+              <div class="checkout-step-content">
+                <h4>Delivery Address</h4>
+                <span id="stepStatus1">In Progress</span>
               </div>
             </div>
+
             <div id="stepShippingPayment" class="checkout-step">
-              <div class="checkout-step-number">2</div>
-              <div>
-                <div class="checkout-step-title">Shipping & Payment</div>
-                <div id="stepStatus2" class="checkout-step-status">Pending</div>
+              <div class="checkout-step-circle">2</div>
+              <div class="checkout-step-content">
+                <h4>Shipping & Payment</h4>
+                <span id="stepStatus2">Pending</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="checkout-layout">
-          <div class="checkout-main">
+        <div class="checkout-body">
+          <div class="checkout-left">
             <div id="detailsCard" class="checkout-card">
-              <div class="checkout-card-head">
-                <h3>Delivery details</h3>
-                <span>Where should we send your order?</span>
+              <div class="checkout-card-header">
+                <h3>Delivery Address</h3>
+                <p>Enter your shipping details below.</p>
               </div>
 
               <div id="detailsMessage"></div>
 
-              <div class="checkout-grid two">
-                <div class="checkout-field">
-                  <label for="fullName">Full name</label>
-                  <input type="text" id="fullName" placeholder="Enter your full name">
+              <div class="checkout-form-grid">
+                <div class="checkout-form-group">
+                  <label for="fullName">Full Name</label>
+                  <input type="text" id="fullName" placeholder="Enter full name">
                 </div>
-                <div class="checkout-field">
-                  <label for="email">Email address</label>
-                  <input type="email" id="email" placeholder="Enter your email">
+
+                <div class="checkout-form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" placeholder="Enter email">
                 </div>
-              </div>
 
-              <div class="checkout-grid two">
-                <div class="checkout-field">
-                  <label for="mobileInput">Mobile number</label>
-                  <input type="tel" id="mobileInput" maxlength="10" placeholder="10-digit mobile number">
+                <div class="checkout-form-group">
+                  <label for="mobileInput">Mobile Number</label>
+                  <input type="tel" id="mobileInput" maxlength="10" placeholder="Enter mobile number">
                 </div>
-                <div class="checkout-field">
-                  <label for="altPhone">Alternate mobile number</label>
-                  <input type="tel" id="altPhone" maxlength="10" placeholder="Alternate mobile number">
+
+                <div class="checkout-form-group checkout-form-group-full">
+                  <label for="addressLine">Address</label>
+                  <input type="text" id="addressLine" placeholder="House no, street, area">
                 </div>
-              </div>
 
-              <div class="checkout-field">
-                <label for="addressLine">Address</label>
-                <input type="text" id="addressLine" placeholder="House no, street, area">
-              </div>
+                <div class="checkout-form-group">
+                  <label for="landmark">Landmark</label>
+                  <input type="text" id="landmark" placeholder="Nearby landmark">
+                </div>
 
-              <div class="checkout-field">
-                <label for="landmark">Landmark</label>
-                <input type="text" id="landmark" placeholder="Nearby landmark">
-              </div>
-
-              <div class="checkout-grid three">
-                <div class="checkout-field">
+                <div class="checkout-form-group">
                   <label for="city">City</label>
                   <input type="text" id="city" placeholder="City">
                 </div>
-                <div class="checkout-field">
+
+                <div class="checkout-form-group">
                   <label for="state">State</label>
                   <input type="text" id="state" placeholder="State">
                 </div>
-                <div class="checkout-field">
+
+                <div class="checkout-form-group">
                   <label for="pincode">Pincode</label>
                   <input type="text" id="pincode" maxlength="6" placeholder="Pincode">
                 </div>
               </div>
 
-              <button id="continueToShippingBtn" class="checkout-primary-btn">
-                Continue to shipping & payment
-              </button>
+              <button id="continueToShippingBtn" class="checkout-primary-btn">Continue</button>
             </div>
 
             <div id="shippingPaymentCard" class="checkout-card hidden">
-              <div class="checkout-card-head">
-                <h3>Shipping method</h3>
-                <span>Choose how quickly you want your order.</span>
+              <div class="checkout-card-header">
+                <h3>Shipping Method</h3>
+                <p>Select delivery speed and complete payment.</p>
               </div>
 
               <div id="shippingMessage"></div>
 
-              <div class="shipping-options">
-                <label class="shipping-option-card active" data-shipping-card="standard">
+              <div class="checkout-shipping-options">
+                <label class="checkout-shipping-option active" data-shipping-card="standard">
                   <input type="radio" name="shippingMethod" value="standard" checked>
-                  <div class="shipping-option-main">
-                    <div>
-                      <div class="shipping-option-title">Standard Shipping</div>
-                      <div class="shipping-option-sub">3-5 business days</div>
-                    </div>
-                    <div id="standardShippingPrice" class="shipping-option-price">₹60.00</div>
+                  <div>
+                    <strong>Standard Shipping</strong>
+                    <span>3 - 5 business days</span>
                   </div>
-                  <div class="shipping-option-note">Free on orders above ₹999</div>
+                  <div id="standardShippingPrice">₹60.00</div>
                 </label>
 
-                <label class="shipping-option-card" data-shipping-card="express">
+                <label class="checkout-shipping-option" data-shipping-card="express">
                   <input type="radio" name="shippingMethod" value="express">
-                  <div class="shipping-option-main">
-                    <div>
-                      <div class="shipping-option-title">Express Shipping</div>
-                      <div class="shipping-option-sub">1-2 business days</div>
-                    </div>
-                    <div class="shipping-option-price">₹140.00</div>
+                  <div>
+                    <strong>Express Shipping</strong>
+                    <span>1 - 2 business days</span>
                   </div>
-                  <div class="shipping-option-note">Priority dispatch for faster delivery</div>
+                  <div>₹140.00</div>
                 </label>
               </div>
 
-              <div class="checkout-card-head" style="margin-top: 1.5rem;">
-                <h3>Promo code</h3>
-                <span>Have an offer code? Apply it here.</span>
+              <div class="checkout-card-header" style="margin-top: 20px;">
+                <h3>Promo Code</h3>
               </div>
 
-              <div class="checkout-inline">
+              <div class="checkout-promo-row">
                 <input type="text" id="promoCode" placeholder="Enter promo code">
                 <button id="applyPromoBtn" class="checkout-secondary-btn">Apply</button>
               </div>
 
               <div id="promoMessage"></div>
 
-              <div class="checkout-card-head" style="margin-top: 1.5rem;">
+              <div class="checkout-card-header" style="margin-top: 20px;">
                 <h3>Payment</h3>
-                <span>Pay securely with Razorpay.</span>
-              </div>
-
-              <div class="payment-method-card">
-                <div class="payment-method-icon">
-                  <i class="fa-solid fa-credit-card"></i>
-                </div>
-                <div>
-                  <div class="payment-method-title">Razorpay Secure Checkout</div>
-                  <div class="payment-method-sub">Cards, UPI, wallets, and net banking</div>
-                </div>
+                <p>Pay securely with Razorpay.</p>
               </div>
 
               <div id="paymentMessage"></div>
 
-              <div class="checkout-actions">
-                <button id="backToAddressBtn" class="checkout-ghost-btn">Back</button>
-                <button id="payNowBtn" class="checkout-primary-btn">Pay now</button>
+              <div class="checkout-button-row">
+                <button id="backToDetailsBtn" class="checkout-secondary-btn">Back</button>
+                <button id="payNowBtn" class="checkout-primary-btn">Pay Now</button>
               </div>
             </div>
           </div>
 
-          <div class="checkout-sidebar">
+          <div class="checkout-right">
             <div class="checkout-summary-card">
-              <div class="checkout-summary-head">
-                <h3>Order summary</h3>
+              <div class="checkout-summary-header">
+                <h3>Order Summary</h3>
                 <span id="checkoutItemsBadge">0 products</span>
               </div>
 
-              <div id="checkoutCartItemsContainer" class="checkout-cart-items"></div>
+              <div id="checkoutCartItemsContainer"></div>
 
-              <div class="checkout-summary-divider"></div>
-
-              <div class="checkout-total-row">
+              <div class="checkout-summary-row">
                 <span>Subtotal</span>
                 <span id="subtotal">₹0.00</span>
               </div>
 
-              <div id="discountRow" class="checkout-total-row hidden">
+              <div id="discountRow" class="checkout-summary-row hidden">
                 <span>Discount</span>
                 <span id="discountAmount">-₹0.00</span>
               </div>
 
-              <div class="checkout-total-row">
+              <div class="checkout-summary-row">
                 <span>Shipping</span>
                 <span id="shippingAmount">₹0.00</span>
               </div>
 
-              <div id="freeShippingNote" class="checkout-shipping-note hidden">
-                Standard shipping is free on this order.
-              </div>
+              <div id="freeShippingNote" class="checkout-free-note hidden">Standard shipping is free on orders above ₹999.</div>
 
-              <div class="checkout-summary-divider"></div>
-
-              <div class="checkout-grand-total">
+              <div class="checkout-summary-row total">
                 <span>Total</span>
                 <span id="totalAmount">₹0.00</span>
               </div>
@@ -1277,531 +1263,6 @@ function getCheckoutMarkup() {
         </div>
       </div>
     </div>
-
-    <style>
-      .checkout-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(9, 14, 22, 0.72);
-        backdrop-filter: blur(8px);
-        z-index: 99999;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 1rem;
-      }
-
-      .checkout-overlay.active {
-        display: flex;
-      }
-
-      .checkout-shell {
-        width: min(1180px, 100%);
-        max-height: 94vh;
-        overflow-y: auto;
-        background: linear-gradient(180deg, #fffefb 0%, #ffffff 100%);
-        border-radius: 28px;
-        position: relative;
-        box-shadow: 0 25px 80px rgba(16, 24, 40, 0.22);
-        padding: 1.5rem;
-      }
-
-      .checkout-close-btn {
-        position: absolute;
-        top: 18px;
-        right: 18px;
-        width: 42px;
-        height: 42px;
-        border: none;
-        border-radius: 50%;
-        background: #f4f6f8;
-        color: #0f172a;
-        cursor: pointer;
-        font-size: 1.1rem;
-      }
-
-      .checkout-header {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-        align-items: flex-start;
-        margin-bottom: 1.4rem;
-        padding-right: 3.5rem;
-      }
-
-      .checkout-kicker {
-        font-size: 0.82rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: #0f766e;
-        font-weight: 700;
-        margin-bottom: 0.45rem;
-      }
-
-      .checkout-header h2 {
-        margin: 0;
-        font-size: 2rem;
-        color: #111827;
-      }
-
-      .checkout-header p {
-        margin: 0.45rem 0 0;
-        color: #64748b;
-      }
-
-      .checkout-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: #ecfdf5;
-        color: #047857;
-        padding: 0.8rem 1rem;
-        border-radius: 999px;
-        font-weight: 600;
-        white-space: nowrap;
-      }
-
-      .checkout-progress {
-        background: #fff;
-        border: 1px solid #eef2f7;
-        border-radius: 22px;
-        padding: 1rem 1rem 1.1rem;
-        margin-bottom: 1.4rem;
-      }
-
-      .checkout-progress-track {
-        height: 10px;
-        background: #e5e7eb;
-        border-radius: 999px;
-        overflow: hidden;
-        margin-bottom: 1rem;
-      }
-
-      .checkout-progress-fill {
-        height: 100%;
-        width: 22%;
-        background: linear-gradient(90deg, #0f766e, #14b8a6);
-        border-radius: inherit;
-        transition: width 0.25s ease;
-      }
-
-      .checkout-steps {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.85rem;
-      }
-
-      .checkout-step {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.9rem 1rem;
-        border-radius: 18px;
-        border: 1px solid #e5e7eb;
-        background: #f8fafc;
-      }
-
-      .checkout-step.active {
-        border-color: rgba(20, 184, 166, 0.35);
-        background: rgba(240, 253, 250, 0.95);
-      }
-
-      .checkout-step.completed {
-        border-color: rgba(16, 185, 129, 0.28);
-        background: rgba(236, 253, 245, 0.9);
-      }
-
-      .checkout-step-number {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background: #e2e8f0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        color: #0f172a;
-      }
-
-      .checkout-step.active .checkout-step-number,
-      .checkout-step.completed .checkout-step-number {
-        background: linear-gradient(135deg, #0f766e, #14b8a6);
-        color: #fff;
-      }
-
-      .checkout-step-title {
-        font-weight: 700;
-        color: #0f172a;
-      }
-
-      .checkout-step-status {
-        color: #64748b;
-        font-size: 0.92rem;
-        margin-top: 0.15rem;
-      }
-
-      .checkout-layout {
-        display: grid;
-        grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.9fr);
-        gap: 1.25rem;
-      }
-
-      .checkout-card,
-      .checkout-summary-card {
-        background: #fff;
-        border: 1px solid #edf2f7;
-        border-radius: 24px;
-        padding: 1.25rem;
-        box-shadow: 0 10px 35px rgba(15, 23, 42, 0.04);
-      }
-
-      .checkout-card-head {
-        margin-bottom: 1rem;
-      }
-
-      .checkout-card-head h3,
-      .checkout-summary-head h3 {
-        margin: 0;
-        color: #111827;
-        font-size: 1.15rem;
-      }
-
-      .checkout-card-head span,
-      .checkout-summary-head span {
-        display: block;
-        margin-top: 0.28rem;
-        color: #64748b;
-        font-size: 0.94rem;
-      }
-
-      .checkout-grid {
-        display: grid;
-        gap: 0.9rem;
-      }
-
-      .checkout-grid.two {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .checkout-grid.three {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-
-      .checkout-field {
-        display: flex;
-        flex-direction: column;
-        gap: 0.42rem;
-        margin-bottom: 0.95rem;
-      }
-
-      .checkout-field label {
-        font-size: 0.92rem;
-        font-weight: 600;
-        color: #334155;
-      }
-
-      .checkout-field input {
-        height: 50px;
-        border-radius: 14px;
-        border: 1px solid #dbe2ea;
-        padding: 0 0.95rem;
-        font-size: 0.98rem;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        background: #fff;
-      }
-
-      .checkout-field input:focus,
-      .checkout-inline input:focus {
-        outline: none;
-        border-color: #14b8a6;
-        box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.12);
-      }
-
-      .checkout-inline {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 0.75rem;
-        margin-bottom: 0.9rem;
-      }
-
-      .checkout-inline input {
-        height: 50px;
-        border-radius: 14px;
-        border: 1px solid #dbe2ea;
-        padding: 0 0.95rem;
-        font-size: 0.98rem;
-      }
-
-      .checkout-primary-btn,
-      .checkout-secondary-btn,
-      .checkout-ghost-btn {
-        border: none;
-        cursor: pointer;
-        border-radius: 14px;
-        font-weight: 700;
-        transition: transform 0.15s ease, opacity 0.15s ease;
-      }
-
-      .checkout-primary-btn:hover,
-      .checkout-secondary-btn:hover,
-      .checkout-ghost-btn:hover {
-        transform: translateY(-1px);
-      }
-
-      .checkout-primary-btn {
-        width: 100%;
-        min-height: 52px;
-        background: linear-gradient(135deg, #0f766e, #14b8a6);
-        color: #fff;
-        padding: 0.95rem 1rem;
-      }
-
-      .checkout-secondary-btn {
-        min-width: 110px;
-        min-height: 50px;
-        background: #0f172a;
-        color: #fff;
-        padding: 0 1rem;
-      }
-
-      .checkout-ghost-btn {
-        min-height: 52px;
-        padding: 0.95rem 1.25rem;
-        background: #f1f5f9;
-        color: #0f172a;
-      }
-
-      .checkout-actions {
-        display: grid;
-        grid-template-columns: 130px 1fr;
-        gap: 0.75rem;
-        margin-top: 1.25rem;
-      }
-
-      .shipping-options {
-        display: grid;
-        gap: 0.85rem;
-      }
-
-      .shipping-option-card {
-        display: block;
-        border: 1px solid #dbe5ec;
-        border-radius: 18px;
-        padding: 1rem;
-        background: #fbfdff;
-        cursor: pointer;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-      }
-
-      .shipping-option-card.active {
-        border-color: #14b8a6;
-        background: #f0fdfa;
-        box-shadow: 0 10px 24px rgba(20, 184, 166, 0.12);
-      }
-
-      .shipping-option-card input {
-        display: none;
-      }
-
-      .shipping-option-main {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-      }
-
-      .shipping-option-title {
-        font-weight: 700;
-        color: #111827;
-      }
-
-      .shipping-option-sub,
-      .shipping-option-note {
-        color: #64748b;
-        font-size: 0.92rem;
-      }
-
-      .shipping-option-note {
-        margin-top: 0.35rem;
-      }
-
-      .shipping-option-price {
-        font-weight: 800;
-        color: #0f766e;
-      }
-
-      .payment-method-card {
-        display: flex;
-        align-items: center;
-        gap: 0.9rem;
-        border: 1px solid #dbe5ec;
-        border-radius: 18px;
-        padding: 1rem;
-        background: #fcfffe;
-      }
-
-      .payment-method-icon {
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
-        background: linear-gradient(135deg, #0f766e, #14b8a6);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .payment-method-title {
-        font-weight: 700;
-        color: #111827;
-      }
-
-      .payment-method-sub {
-        color: #64748b;
-        font-size: 0.92rem;
-      }
-
-      .checkout-summary-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      .checkout-cart-items {
-        display: grid;
-        gap: 0.8rem;
-        max-height: 360px;
-        overflow-y: auto;
-      }
-
-      .checkout-cart-item {
-        display: grid;
-        grid-template-columns: 58px 1fr auto;
-        gap: 0.75rem;
-        align-items: center;
-      }
-
-      .checkout-thumb {
-        width: 58px;
-        height: 58px;
-        border-radius: 16px;
-        background-size: cover;
-        background-position: center;
-        background-color: #f8fafc;
-      }
-
-      .checkout-item-name {
-        font-weight: 700;
-        color: #111827;
-        font-size: 0.95rem;
-      }
-
-      .checkout-item-sub {
-        color: #64748b;
-        font-size: 0.88rem;
-        margin-top: 0.15rem;
-      }
-
-      .checkout-item-price {
-        font-weight: 700;
-        color: #111827;
-        white-space: nowrap;
-      }
-
-      .checkout-summary-divider {
-        height: 1px;
-        background: #ecf0f4;
-        margin: 1rem 0;
-      }
-
-      .checkout-total-row,
-      .checkout-grand-total {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 0.8rem;
-        color: #334155;
-      }
-
-      .checkout-grand-total {
-        margin-bottom: 0;
-        font-size: 1.12rem;
-        font-weight: 800;
-        color: #0f172a;
-      }
-
-      .checkout-shipping-note {
-        margin: -0.2rem 0 0.9rem;
-        color: #047857;
-        font-size: 0.9rem;
-        background: #ecfdf5;
-        border-radius: 12px;
-        padding: 0.7rem 0.85rem;
-      }
-
-      .checkout-alert {
-        border-radius: 14px;
-        padding: 0.9rem 1rem;
-        margin-bottom: 1rem;
-        font-size: 0.94rem;
-      }
-
-      .checkout-alert.success {
-        background: #ecfdf5;
-        color: #047857;
-      }
-
-      .checkout-alert.error {
-        background: #fef2f2;
-        color: #b91c1c;
-      }
-
-      .checkout-alert.info {
-        background: #eff6ff;
-        color: #1d4ed8;
-      }
-
-      .hidden {
-        display: none !important;
-      }
-
-      @media (max-width: 991px) {
-        .checkout-layout {
-          grid-template-columns: 1fr;
-        }
-
-        .checkout-shell {
-          padding: 1rem;
-          border-radius: 22px;
-        }
-      }
-
-      @media (max-width: 767px) {
-        .checkout-header {
-          flex-direction: column;
-          padding-right: 3rem;
-        }
-
-        .checkout-steps,
-        .checkout-grid.two,
-        .checkout-grid.three,
-        .checkout-actions,
-        .checkout-inline {
-          grid-template-columns: 1fr;
-        }
-
-        .checkout-step {
-          padding: 0.8rem;
-        }
-
-        .checkout-header h2 {
-          font-size: 1.55rem;
-        }
-      }
-    </style>
   `;
 }
 
@@ -1811,7 +1272,15 @@ async function ensureCheckoutLoaded() {
   const root = document.getElementById('checkout-modal-root');
   if (!root) return;
 
-  root.innerHTML = getCheckoutMarkup();
+  try {
+    const response = await fetch('checkout.html');
+    const html = await response.text();
+    root.innerHTML = html;
+  } catch (error) {
+    console.error('Error loading checkout.html:', error);
+    root.innerHTML = getFallbackCheckoutMarkup();
+  }
+
   checkoutLoaded = true;
   bindCheckoutEvents();
   loadCheckoutGooglePlaces();
@@ -1819,19 +1288,22 @@ async function ensureCheckoutLoaded() {
 
 function bindCheckoutEvents() {
   document.getElementById('close-checkout-modal')?.addEventListener('click', closeCheckout);
-  document.getElementById('continueToShippingBtn')?.addEventListener('click', showCheckoutShippingPaymentSection);
-  document.getElementById('applyPromoBtn')?.addEventListener('click', applyCheckoutPromo);
-  document.getElementById('payNowBtn')?.addEventListener('click', payCheckoutNow);
-  document.getElementById('backToAddressBtn')?.addEventListener('click', function() {
+
+  document.getElementById('continueToShippingBtn')?.addEventListener('click', showCheckoutShippingSection);
+
+  document.getElementById('backToDetailsBtn')?.addEventListener('click', function() {
     document.getElementById('shippingPaymentCard')?.classList.add('hidden');
     document.getElementById('detailsCard')?.classList.remove('hidden');
     setCheckoutStep(1);
   });
 
+  document.getElementById('applyPromoBtn')?.addEventListener('click', applyCheckoutPromo);
+  document.getElementById('payNowBtn')?.addEventListener('click', payCheckoutNow);
+
   document.querySelectorAll('input[name="shippingMethod"]').forEach(input => {
     input.addEventListener('change', function() {
       checkoutState.shippingMethod = this.value;
-      updateShippingSelectionUI();
+      updateCheckoutShippingSelection();
       updateCheckoutTotals();
     });
   });
@@ -1840,8 +1312,10 @@ function bindCheckoutEvents() {
 async function openCheckout() {
   await ensureCheckoutLoaded();
   resetCheckout();
+
   const overlay = document.getElementById('checkout-overlay');
   if (!overlay) return;
+
   overlay.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
@@ -1863,36 +1337,33 @@ function resetCheckout() {
   checkoutState.shipping = 0;
   checkoutState.total = 0;
   checkoutState.discount = 0;
-  checkoutState.shippingMethod = "standard";
+  checkoutState.shippingMethod = 'standard';
 
   const savedUser = currentUser || JSON.parse(localStorage.getItem('MyEssantia_user') || 'null');
 
-  document.getElementById('fullName').value = savedUser?.name || '';
-  document.getElementById('email').value = savedUser?.email || '';
-  document.getElementById('mobileInput').value = '';
-  document.getElementById('altPhone').value = '';
-  document.getElementById('addressLine').value = '';
-  document.getElementById('landmark').value = '';
-  document.getElementById('city').value = '';
-  document.getElementById('pincode').value = '';
-  document.getElementById('state').value = '';
-  document.getElementById('promoCode').value = '';
+  if (document.getElementById('fullName')) document.getElementById('fullName').value = savedUser?.name || '';
+  if (document.getElementById('email')) document.getElementById('email').value = savedUser?.email || '';
+  if (document.getElementById('mobileInput')) document.getElementById('mobileInput').value = '';
+  if (document.getElementById('addressLine')) document.getElementById('addressLine').value = '';
+  if (document.getElementById('landmark')) document.getElementById('landmark').value = '';
+  if (document.getElementById('city')) document.getElementById('city').value = '';
+  if (document.getElementById('pincode')) document.getElementById('pincode').value = '';
+  if (document.getElementById('state')) document.getElementById('state').value = '';
+  if (document.getElementById('promoCode')) document.getElementById('promoCode').value = '';
 
-  document.getElementById('detailsMessage').innerHTML = '';
-  document.getElementById('shippingMessage').innerHTML = '';
-  document.getElementById('promoMessage').innerHTML = '';
-  document.getElementById('paymentMessage').innerHTML = '';
+  if (document.getElementById('detailsMessage')) document.getElementById('detailsMessage').innerHTML = '';
+  if (document.getElementById('shippingMessage')) document.getElementById('shippingMessage').innerHTML = '';
+  if (document.getElementById('promoMessage')) document.getElementById('promoMessage').innerHTML = '';
+  if (document.getElementById('paymentMessage')) document.getElementById('paymentMessage').innerHTML = '';
 
-  document.getElementById('detailsCard').classList.remove('hidden');
-  document.getElementById('shippingPaymentCard').classList.add('hidden');
+  document.getElementById('detailsCard')?.classList.remove('hidden');
+  document.getElementById('shippingPaymentCard')?.classList.add('hidden');
 
   const standardInput = document.querySelector('input[name="shippingMethod"][value="standard"]');
-  if (standardInput) {
-    standardInput.checked = true;
-  }
+  if (standardInput) standardInput.checked = true;
 
   renderCheckoutCart();
-  updateShippingSelectionUI();
+  updateCheckoutShippingSelection();
   updateCheckoutTotals();
   setCheckoutStep(1);
   initCheckoutAutocomplete();
@@ -1923,25 +1394,6 @@ function renderCheckoutCart() {
   `).join('');
 }
 
-function getShippingCharge() {
-  if (checkoutState.shippingMethod === 'standard') {
-    return checkoutState.subtotal > 999 ? 0 : shippingOptions.standard.fee;
-  }
-  return shippingOptions.express.fee;
-}
-
-function updateShippingSelectionUI() {
-  document.querySelectorAll('.shipping-option-card').forEach(card => {
-    const value = card.getAttribute('data-shipping-card');
-    card.classList.toggle('active', value === checkoutState.shippingMethod);
-  });
-
-  const standardShippingPrice = document.getElementById('standardShippingPrice');
-  if (standardShippingPrice) {
-    standardShippingPrice.textContent = checkoutState.subtotal > 999 ? 'FREE' : checkoutFormatPrice(shippingOptions.standard.fee);
-  }
-}
-
 function updateCheckoutTotals() {
   checkoutState.subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   checkoutState.discount = 0;
@@ -1955,38 +1407,54 @@ function updateCheckoutTotals() {
     }
   }
 
-  checkoutState.shipping = getShippingCharge();
-  checkoutState.total = Math.max(0, checkoutState.subtotal - checkoutState.discount + checkoutState.shipping);
+  checkoutState.shipping = getCheckoutShippingCharge();
+  checkoutState.total = checkoutState.subtotal - checkoutState.discount + checkoutState.shipping;
 
-  document.getElementById('subtotal').textContent = checkoutFormatPrice(checkoutState.subtotal);
-  document.getElementById('shippingAmount').textContent = checkoutState.shipping === 0 ? 'FREE' : checkoutFormatPrice(checkoutState.shipping);
-  document.getElementById('totalAmount').textContent = checkoutFormatPrice(checkoutState.total);
+  if (document.getElementById('subtotal')) {
+    document.getElementById('subtotal').textContent = checkoutFormatPrice(checkoutState.subtotal);
+  }
+
+  if (document.getElementById('shippingAmount')) {
+    document.getElementById('shippingAmount').textContent = checkoutState.shipping === 0 ? 'FREE' : checkoutFormatPrice(checkoutState.shipping);
+  }
+
+  if (document.getElementById('totalAmount')) {
+    document.getElementById('totalAmount').textContent = checkoutFormatPrice(checkoutState.total);
+  }
 
   const discountRow = document.getElementById('discountRow');
-  if (checkoutState.discount > 0) {
-    discountRow.classList.remove('hidden');
-    document.getElementById('discountAmount').textContent = '-' + checkoutFormatPrice(checkoutState.discount);
-  } else {
-    discountRow.classList.add('hidden');
+  if (discountRow) {
+    if (checkoutState.discount > 0) {
+      discountRow.classList.remove('hidden');
+      document.getElementById('discountAmount').textContent = '-' + checkoutFormatPrice(checkoutState.discount);
+    } else {
+      discountRow.classList.add('hidden');
+    }
   }
 
   const freeShippingNote = document.getElementById('freeShippingNote');
-  if (checkoutState.shippingMethod === 'standard' && checkoutState.shipping === 0 && checkoutState.subtotal > 999) {
-    freeShippingNote.classList.remove('hidden');
-  } else {
-    freeShippingNote.classList.add('hidden');
+  if (freeShippingNote) {
+    if (checkoutState.shippingMethod === 'standard' && checkoutState.subtotal > 999) {
+      freeShippingNote.classList.remove('hidden');
+    } else {
+      freeShippingNote.classList.add('hidden');
+    }
   }
 
-  updateShippingSelectionUI();
+  const standardShippingPrice = document.getElementById('standardShippingPrice');
+  if (standardShippingPrice) {
+    standardShippingPrice.textContent = checkoutState.subtotal > 999 ? 'FREE' : checkoutFormatPrice(checkoutShippingOptions.standard.value);
+  }
 }
 
 function setCheckoutStep(step) {
   const config = {
-    1: { s1: 'In Progress', s2: 'Pending', p: '48%', active: ['stepAddress'], completed: [] },
+    1: { s1: 'In Progress', s2: 'Pending', p: '50%', active: ['stepAddress'], completed: [] },
     2: { s1: 'Done', s2: 'In Progress', p: '100%', active: ['stepShippingPayment'], completed: ['stepAddress'] }
   };
 
   const state = config[step];
+  if (!state) return;
 
   ['stepAddress', 'stepShippingPayment'].forEach(id => {
     const el = document.getElementById(id);
@@ -1996,108 +1464,134 @@ function setCheckoutStep(step) {
     if (state.completed.includes(id)) el.classList.add('completed');
   });
 
-  document.getElementById('stepStatus1').textContent = state.s1;
-  document.getElementById('stepStatus2').textContent = state.s2;
-  document.getElementById('progressFill').style.width = state.p;
+  if (document.getElementById('stepStatus1')) {
+    document.getElementById('stepStatus1').textContent = state.s1;
+  }
+  if (document.getElementById('stepStatus2')) {
+    document.getElementById('stepStatus2').textContent = state.s2;
+  }
+  if (document.getElementById('progressFill')) {
+    document.getElementById('progressFill').style.width = state.p;
+  }
 }
 
 function validateCheckoutDetails() {
-  const name = document.getElementById('fullName').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const mobile = document.getElementById('mobileInput').value.trim();
-  const altPhone = document.getElementById('altPhone').value.trim();
-  const address = document.getElementById('addressLine').value.trim();
-  const city = document.getElementById('city').value.trim();
-  const pincode = document.getElementById('pincode').value.trim();
-  const state = document.getElementById('state').value.trim();
+  const name = document.getElementById('fullName')?.value.trim() || '';
+  const email = document.getElementById('email')?.value.trim() || '';
+  const mobile = document.getElementById('mobileInput')?.value.trim() || '';
+  const address = document.getElementById('addressLine')?.value.trim() || '';
+  const city = document.getElementById('city')?.value.trim() || '';
+  const pincode = document.getElementById('pincode')?.value.trim() || '';
+  const state = document.getElementById('state')?.value.trim() || '';
 
   if (!name || !email || !mobile || !address || !city || !state || !/^\d{6}$/.test(pincode)) return false;
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return false;
   if (!/^\d{10}$/.test(mobile)) return false;
-  if (altPhone && !/^\d{10}$/.test(altPhone)) return false;
 
   return true;
 }
 
-function showCheckoutShippingPaymentSection() {
+function showCheckoutShippingSection() {
   const msgDiv = document.getElementById('detailsMessage');
 
   if (!validateCheckoutDetails()) {
-    msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Please fill all required delivery details correctly.</div>`;
+    if (msgDiv) {
+      msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Fill valid name, email, mobile number and address details.</div>`;
+    }
     return;
   }
 
   sessionStorage.setItem('checkout_customer', JSON.stringify({
-    name: document.getElementById('fullName').value.trim(),
-    email: document.getElementById('email').value.trim(),
-    address: document.getElementById('addressLine').value.trim(),
-    landmark: document.getElementById('landmark').value.trim(),
-    city: document.getElementById('city').value.trim(),
-    pincode: document.getElementById('pincode').value.trim(),
-    state: document.getElementById('state').value.trim(),
-    mobile: document.getElementById('mobileInput').value.trim(),
-    altPhone: document.getElementById('altPhone').value.trim(),
-    shippingMethod: checkoutState.shippingMethod
+    name: document.getElementById('fullName')?.value.trim() || '',
+    email: document.getElementById('email')?.value.trim() || '',
+    address: document.getElementById('addressLine')?.value.trim() || '',
+    landmark: document.getElementById('landmark')?.value.trim() || '',
+    city: document.getElementById('city')?.value.trim() || '',
+    pincode: document.getElementById('pincode')?.value.trim() || '',
+    state: document.getElementById('state')?.value.trim() || '',
+    mobile: document.getElementById('mobileInput')?.value.trim() || ''
   }));
 
-  document.getElementById('detailsCard').classList.add('hidden');
-  document.getElementById('shippingPaymentCard').classList.remove('hidden');
+  document.getElementById('detailsCard')?.classList.add('hidden');
+  document.getElementById('shippingPaymentCard')?.classList.remove('hidden');
   setCheckoutStep(2);
-  msgDiv.innerHTML = '';
+}
+
+function updateCheckoutShippingSelection() {
+  document.querySelectorAll('[data-shipping-card]').forEach(card => {
+    const method = card.getAttribute('data-shipping-card');
+    card.classList.toggle('active', method === checkoutState.shippingMethod);
+  });
 }
 
 function applyCheckoutPromo() {
-  const code = document.getElementById('promoCode').value.trim().toUpperCase();
+  const code = document.getElementById('promoCode')?.value.trim().toUpperCase() || '';
   const msgDiv = document.getElementById('promoMessage');
 
   if (!code) {
-    msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-ticket"></i> Enter a promo code.</div>`;
+    if (msgDiv) {
+      msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-ticket"></i> Enter a promo code.</div>`;
+    }
     return;
   }
 
   if (!checkoutPromos[code]) {
     checkoutState.appliedPromo = null;
     updateCheckoutTotals();
-    msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Invalid or expired promo code.</div>`;
+    if (msgDiv) {
+      msgDiv.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Invalid or expired promo code.</div>`;
+    }
     return;
   }
 
   checkoutState.appliedPromo = { code, ...checkoutPromos[code] };
   updateCheckoutTotals();
-  document.getElementById('promoCode').value = '';
-  msgDiv.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> ${checkoutPromos[code].msg}</div>`;
+  if (document.getElementById('promoCode')) {
+    document.getElementById('promoCode').value = '';
+  }
+
+  if (msgDiv) {
+    msgDiv.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> ${checkoutPromos[code].msg}</div>`;
+  }
 }
 
 function payCheckoutNow() {
   const paymentMessage = document.getElementById('paymentMessage');
 
   if (!validateCheckoutDetails()) {
-    paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Please complete valid delivery details first.</div>`;
+    if (paymentMessage) {
+      paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Enter valid address and contact details first.</div>`;
+    }
     return;
   }
 
   const customer = JSON.parse(sessionStorage.getItem('checkout_customer') || '{}');
-  customer.shippingMethod = checkoutState.shippingMethod;
-  sessionStorage.setItem('checkout_customer', JSON.stringify(customer));
 
-  paymentMessage.innerHTML = `<div class="checkout-alert info"><i class="fas fa-lock"></i> Opening Razorpay checkout...</div>`;
+  if (paymentMessage) {
+    paymentMessage.innerHTML = `<div class="checkout-alert info"><i class="fas fa-lock"></i> Opening Razorpay checkout...</div>`;
+  }
 
   const options = {
     key: "rzp_test_YourKeyHere",
     amount: Math.round(checkoutState.total * 100),
     currency: "INR",
     name: "MyEssantia",
-    description: `${shippingOptions[checkoutState.shippingMethod].label} Payment`,
+    description: `Checkout Payment - ${checkoutShippingOptions[checkoutState.shippingMethod].label}`,
     image: "https://placehold.co/100x100/dcefe7/1d7a68?text=M",
     handler: async function(response) {
       const orderId = "ESS" + Date.now();
-      paymentMessage.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> Payment successful. Order ID: ${orderId}</div>`;
+
+      if (paymentMessage) {
+        paymentMessage.innerHTML = `<div class="checkout-alert success"><i class="fas fa-check-circle"></i> Payment successful. Order ID: ${orderId}</div>`;
+      }
 
       cart = [];
       saveCartToLocalStorage();
+
       if (currentUser) {
         await saveCartToFirebase();
       }
+
       updateCartCount();
       renderCartItems();
 
@@ -2107,7 +1601,7 @@ function payCheckoutNow() {
           "Order Confirmed!\n\n" +
           "Order ID: " + orderId + "\n" +
           "Amount: " + checkoutFormatPrice(checkoutState.total) + "\n" +
-          "Shipping: " + shippingOptions[checkoutState.shippingMethod].label + "\n" +
+          "Shipping: " + checkoutShippingOptions[checkoutState.shippingMethod].label + "\n" +
           "Payment ID: " + response.razorpay_payment_id + "\n" +
           "Customer: " + customer.name
         );
@@ -2119,15 +1613,17 @@ function payCheckoutNow() {
       contact: customer.mobile || ""
     },
     notes: {
-      shipping_method: shippingOptions[checkoutState.shippingMethod].label,
+      shipping_method: checkoutShippingOptions[checkoutState.shippingMethod].label,
       address: `${customer.address || ""}, ${customer.landmark || ""}, ${customer.city || ""}, ${customer.state || ""} - ${customer.pincode || ""}`
     },
     theme: {
-      color: "#0f766e"
+      color: "#1d7a68"
     },
     modal: {
       ondismiss: function() {
-        paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Payment popup closed.</div>`;
+        if (paymentMessage) {
+          paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Payment popup closed.</div>`;
+        }
       }
     }
   };
@@ -2135,7 +1631,9 @@ function payCheckoutNow() {
   const rzp = new Razorpay(options);
 
   rzp.on("payment.failed", function(response) {
-    paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Payment failed: ${response.error.description}</div>`;
+    if (paymentMessage) {
+      paymentMessage.innerHTML = `<div class="checkout-alert error"><i class="fas fa-circle-exclamation"></i> Payment failed: ${response.error.description}</div>`;
+    }
   });
 
   rzp.open();
@@ -2161,14 +1659,14 @@ function extractCheckoutAddressData(place) {
 function fillCheckoutAddress(place) {
   if (!place) return;
 
-  if (place.formatted_address) {
+  if (place.formatted_address && document.getElementById('addressLine')) {
     document.getElementById('addressLine').value = place.formatted_address;
   }
 
   const data = extractCheckoutAddressData(place);
-  if (data.city) document.getElementById('city').value = data.city;
-  if (data.state) document.getElementById('state').value = data.state;
-  if (data.pincode) document.getElementById('pincode').value = data.pincode;
+  if (data.city && document.getElementById('city')) document.getElementById('city').value = data.city;
+  if (data.state && document.getElementById('state')) document.getElementById('state').value = data.state;
+  if (data.pincode && document.getElementById('pincode')) document.getElementById('pincode').value = data.pincode;
 }
 
 function initCheckoutAutocomplete() {
