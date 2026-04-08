@@ -21,7 +21,6 @@ let products = [];
 
 // ========== CHECKOUT STATE ==========
 let checkoutLoaded = false;
-let checkoutMapsLoaded = false;
 let cartButtonListenerBound = false;
 let modalListenersBound = false;
 
@@ -31,8 +30,7 @@ let checkoutState = {
   shipping: 0,
   total: 0,
   discount: 0,
-  shippingMethod: "standard",
-  autocomplete: null
+  shippingMethod: "standard"
 };
 
 const checkoutPromos = {
@@ -1283,7 +1281,6 @@ async function ensureCheckoutLoaded() {
 
   checkoutLoaded = true;
   bindCheckoutEvents();
-  loadCheckoutGooglePlaces();
 }
 
 function bindCheckoutEvents() {
@@ -1366,7 +1363,6 @@ function resetCheckout() {
   updateCheckoutShippingSelection();
   updateCheckoutTotals();
   setCheckoutStep(1);
-  initCheckoutAutocomplete();
 }
 
 function renderCheckoutCart() {
@@ -1637,73 +1633,6 @@ function payCheckoutNow() {
   });
 
   rzp.open();
-}
-
-function extractCheckoutAddressData(place) {
-  const parts = { city: '', state: '', pincode: '' };
-  if (!place || !place.address_components) return parts;
-
-  place.address_components.forEach(component => {
-    const types = component.types || [];
-    if (types.includes('postal_code')) parts.pincode = component.long_name;
-    if (types.includes('administrative_area_level_1')) parts.state = component.long_name;
-    if (types.includes('locality')) parts.city = component.long_name;
-    if (!parts.city && types.includes('postal_town')) parts.city = component.long_name;
-    if (!parts.city && types.includes('sublocality_level_1')) parts.city = component.long_name;
-    if (!parts.city && types.includes('administrative_area_level_2')) parts.city = component.long_name;
-  });
-
-  return parts;
-}
-
-function fillCheckoutAddress(place) {
-  if (!place) return;
-
-  if (place.formatted_address && document.getElementById('addressLine')) {
-    document.getElementById('addressLine').value = place.formatted_address;
-  }
-
-  const data = extractCheckoutAddressData(place);
-  if (data.city && document.getElementById('city')) document.getElementById('city').value = data.city;
-  if (data.state && document.getElementById('state')) document.getElementById('state').value = data.state;
-  if (data.pincode && document.getElementById('pincode')) document.getElementById('pincode').value = data.pincode;
-}
-
-function initCheckoutAutocomplete() {
-  const input = document.getElementById('addressLine');
-  if (!input || !window.google || !google.maps || !google.maps.places) return;
-
-  checkoutState.autocomplete = new google.maps.places.Autocomplete(input, {
-    types: ['address'],
-    componentRestrictions: { country: 'in' },
-    fields: ['formatted_address', 'address_components', 'geometry', 'name']
-  });
-
-  checkoutState.autocomplete.addListener('place_changed', function() {
-    fillCheckoutAddress(checkoutState.autocomplete.getPlace());
-  });
-}
-
-function loadCheckoutGooglePlaces() {
-  if (checkoutMapsLoaded || (window.google && google.maps && google.maps.places)) {
-    checkoutMapsLoaded = true;
-    initCheckoutAutocomplete();
-    return;
-  }
-
-  window.initCheckoutGooglePlaces = function() {
-    checkoutMapsLoaded = true;
-    initCheckoutAutocomplete();
-  };
-
-  if (document.querySelector('script[data-checkout-google="true"]')) return;
-
-  const script = document.createElement('script');
-script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk&libraries=places&callback=initCheckoutGooglePlaces';
-  script.async = true;
-  script.defer = true;
-  script.dataset.checkoutGoogle = 'true';
-  document.body.appendChild(script);
 }
 
 // ========== INITIALIZATION ==========
